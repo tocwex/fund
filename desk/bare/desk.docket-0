@@ -1,0 +1,9 @@
+:~  title+'fund'
+    info+'A sovereign P2P work completion funder/tracker with on-chain settlement.'
+    color+0x11.1111
+    version+[0 0 0]
+    website+'https://www.pollensyndicate.com/'
+    license+'???'
+    base+'fund'
+    site+/apps/fund
+==

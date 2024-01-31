@@ -1,18 +1,13 @@
+/+  *twind-ui
 |=  =bowl:gall
 ^-  manx
-;html
-  ;head
-    ;title: fund
-    ;meta(charset "utf-8");
-  ==
-  ;body
-    ;main
-      ;h2: %fund demo
+%+  template  "%fund"
+:~  ;main(class "flex flex-col justify-center items-center gap-4 h-full")
+      ;h2(class "text-2xl underline"): %fund demo
       ;p: Signed in as {<src.bowl>}
       ;p
         ; Not you?
-        ;a(href "/~/login?redirect=/apps/fund"): Log in
+        ;a(class "text-blue-500", href "/~/login?redirect=/apps/fund"): Log in
       ==
     ==
-  ==
 ==

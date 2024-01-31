@@ -1,4 +1,4 @@
-/+  dbug, default-agent, server, schooner
+/+  dbug, default-agent, server, schooner, tonic
 /=  index  /app/fund/index
 |%
 +$  versioned-state
@@ -7,10 +7,11 @@
 +$  state-0  [%0 ~]
 +$  card  card:agent:gall
 --
-%-  agent:dbug
 ^-  agent:gall
 =|  state-0
 =*  state  -
+%-  agent:dbug
+%-  agent:tonic
 |_  =bowl:gall
 +*  this  .
     def  ~(. (default-agent this %.n) bowl)

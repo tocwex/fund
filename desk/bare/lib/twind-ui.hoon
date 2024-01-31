@@ -1,10 +1,8 @@
-::  twind-ui.hoon
+::  twind-ui: utilities for generating htmx w/ tailwindcss and shoelace
 ::
 ::  author: ~nocsyx-lassul (w/ mods by ~sidnym-ladrut)
 ::
-::  utilities for generating htmx pages with tailwindcss (via twind)
-::  and shoelace CSS/JS libraries
-::
+/+  tonic
 |%
 ++  mx
   |=  [hed=@tas class=@t =mart =marl]
@@ -12,17 +10,20 @@
   [[hed (welp ~[[`@tas`':class' "tw`{(trip class)}`"]] mart)] marl]
 ::
 ++  template
-  |=  [title=tape body=marl]
+  |=  [desk=term title=tape body=marl]
   ^-  manx
   ;html.sl-theme-dark(hidden "")
     ;head
       ;meta(charset "UTF-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
       ;title: {title}
-      ;link(rel "icon", href "/scratch/icon", type "image/svg+xml");
+      ::  FIXME: The icon here needs to be updated
+      ::  ;link(rel "icon", href "/scratch/icon", type "image/svg+xml");
       ;link(rel "stylesheet", href "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/themes/dark.css");
       ;script(type "module", src "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/shoelace-autoloader.js");
       ;script(type "module"): {setup-script}
+      ;script(src "/session.js");
+      ;+  (inject:tonic desk)
     ==
     ;+  %:  mx
           %body

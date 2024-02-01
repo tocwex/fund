@@ -18,9 +18,12 @@ find bare -type f | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); 
 mkdir -p full/lib/ full/mar full/sur
 # git clone --depth 1 https://github.com/urbit/yard yar
 git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
-cp yar/desk/lib/{dbug*,default-agent*,skeleton*,schooner*,server*,docket*} full/lib/
+cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,docket*} full/lib/
 cp yar/desk/mar/{bill*,docket*,hoon*,json*,kelvin*,mime*,noun*,ship*,txt*} full/mar/
 cp yar/desk/sur/docket* full/sur/
+git clone -b sl/tonic-simplification --depth 1 https://github.com/sidnym-ladrut/gin-tonic.git gat
+cp gat/tonic/lib/tonic.hoon full/lib/
+cp gat/tonic/mar/cass.hoon full/mar/
 ```
 
 ### Deploy Full Desk ###

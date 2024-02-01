@@ -20,6 +20,12 @@
     :~  ;main(class "flex flex-col justify-center items-center gap-4 h-full")
           ;h2(class "text-3xl underline"): %fund demo
           ;p: Signed in as {<src.bowl>}
+          ;*  ?:  =(src.bowl our.bowl)  ~
+            :~  ;p(class "text-red-600")
+                  ; WARNING: Not signed in as host;
+                  ; hot reload will not work!
+                ==
+            ==
           ;sl-dialog(label "Progress Demo", class "dialog-overview")
             ;div(class "w-full h-6 flex text-center")
               ;div(class "w-1/6 h-full bg-red-600"): 15%
@@ -37,13 +43,15 @@
         ;script(type "module"): {script}
     ==
   ++  script
-    """
+    ^~
+    %-  trip
+    '''
     const dialog = document.querySelector('.dialog-overview');
     const openButton = dialog.nextElementSibling;
     const closeButton = dialog.querySelector('sl-button[slot="footer"]');
 
     openButton.addEventListener('click', () => dialog.show());
     closeButton.addEventListener('click', () => dialog.hide());
-    """
+    '''
   --
 --

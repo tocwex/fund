@@ -45,7 +45,7 @@
   ^-  (quip card _this)
   ?+    mark  (on-poke:def mark vase)
       %handle-http-request
-    =-  [-< this(state [%0 ->])]
+    =-  [-< this(+.state ->)]
     %.  [bowl !<(order:rudder vase) ~]
     %:  (steer:rudder _~ _~)
       pages

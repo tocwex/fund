@@ -16,6 +16,7 @@ cd ./desk
 rm -rI full/
 find bare -type f | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
 mkdir -p full/lib/ full/mar full/sur
+ln -sr ../LICENSE.txt full/license.txt
 # git clone --depth 1 https://github.com/urbit/yard yar
 git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
 cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,docket*} full/lib/

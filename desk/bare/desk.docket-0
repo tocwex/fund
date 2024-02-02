@@ -3,7 +3,7 @@
     color+0x11.1111
     version+[0 0 0]
     website+'https://www.pollensyndicate.com/'
-    license+'???'
+    license+'GNU GPLv3'
     base+'fund'
     site+/apps/fund
 ==

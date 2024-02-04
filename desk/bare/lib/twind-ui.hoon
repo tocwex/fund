@@ -12,13 +12,17 @@
 ++  template
   |=  [desk=term title=tape body=marl]
   ^-  manx
-  ;html.sl-theme-dark(hidden "")
+  ;html  ::  .sl-theme-dark(hidden "")
     ;head
       ;meta(charset "UTF-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
       ;title: {title}
       ::  FIXME: The icon here needs to be updated
       ::  ;link(rel "icon", href "/scratch/icon", type "image/svg+xml");
+      ::  FIXME: The fonts aren't working properly; figure out how to
+      ::  override with 'Poppins' font automatically
+      ;link(rel "stylesheet", href "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+      ;script(src "https://unpkg.com/htmx.org");
       ;link(rel "stylesheet", href "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/themes/dark.css");
       ;script(type "module", src "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/shoelace-autoloader.js");
       ;script(type "module"): {setup-script}
@@ -27,7 +31,7 @@
     ==
     ;+  %:  mx
           %body
-          'h-full text-base font-sans text-gray-100 bg-gray-800'
+          'h-full text-base font-sans-serif'
           ~[[%x-data "twind"]]
           body
         ==

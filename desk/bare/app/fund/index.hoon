@@ -1,4 +1,4 @@
-/+  rudder, *twind-ui
+/+  rudder, *twind-ui, s=server
 ^-  (page:rudder ~ ~)
 |_  [=bowl:gall =order:rudder data=~]
 ++  argue  ::  POST reply
@@ -351,17 +351,17 @@
           ;div(class "flex justify-center grow lg:grow-0 lg:justify-end lg:p-2")
             ;div(class "px-10 lg:px-2")
               ;a(href "https://urbit.org/", target "_blank")
-                ;img(src "../assets/urbit-logo.svg");
+                ;img(type "image/svg+xml", src "/apps/fund/urbit-logo");
               ==
             ==
             ;div(class "px-10 lg:px-2")
               ;a(href "https://twitter.com/pollensyndicate", target "_blank")
-                ;img(src "../assets/x-logo.svg");
+                ;img(type "image/svg+xml", src "/apps/fund/x-logo");
               ==
             ==
             ;div(class "px-10 lg:px-2")
               ;a(href "https://github.com/pollen-syndicate", target "_blank")
-                ;img(src "../assets/github-logo.svg");
+                ;img(type "image/svg+xml", src "/apps/fund/github-logo");
               ==
             ==
           ==

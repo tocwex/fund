@@ -105,7 +105,7 @@
             ==
           ==
           ;div(class "m-2 p-2 border-2 border-black rounded-xl")
-            ;div(id "Contribute", class "m-1 px-2 text-3xl min-w-80")
+            ;div(id "Contribute", class "m-1 px-2 text-3xl min-w-[320px]")
               ; Contribute
             ==
             ;div(class "")

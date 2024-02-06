@@ -372,5 +372,10 @@
           ==
         ==
       ==
+      ;div(class "sticky z-50 bottom-0")  ::  debug-only
+        ;*  ?:  =(src.bowl our.bowl)  ~  ::  debug-only
+          :~  ;div(class "w-full flex justify-center bg-red-800 py-1 px-2 text-sm")  ::  debug-only
+                  ; <DEBUG> Not signed in as host; hot reload will not work!  ::  debug-only
+      ==  ==  ==  ::  debug-only
   ==
 --

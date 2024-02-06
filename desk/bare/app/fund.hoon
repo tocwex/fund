@@ -1,5 +1,5 @@
 /+  default-agent, rudder
-/+  dbug, tonic
+/+  dbug, tonic  ::  debug-only
 /~  base    (page:rudder ~ ~)  /app/fund
 /~  assets  (page:rudder ~ ~)  /app/fund/assets
 |%
@@ -33,8 +33,8 @@
 ^-  agent:gall
 =|  state-0
 =*  state  -
-%-  agent:dbug
-%-  agent:tonic
+%-  agent:dbug  ::  debug-only
+%-  agent:tonic  ::  debug-only
 |_  =bowl:gall
 +*  this  .
     def  ~(. (default-agent this %.n) bowl)

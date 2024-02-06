@@ -33,6 +33,20 @@ cp gat/tonic/mar/cass.hoon full/mar/
 ./durploy desk -w zod fund ./desk/full/
 ```
 
+### Toggle Desk Debug Mode ###
+
+To turn *off* debug mode (live code reload, etc.):
+
+```bash
+find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)::  (.*::\s*debug-only$)/\1\2/" {} \;
+```
+
+To turn *on* debug mode (live code reload, etc.):
+
+```bash
+find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)(.*::\s*debug-only$)/\1::  \2/" {} \;
+```
+
 
 [urbit]: https://urbit.org
 [durploy]: https://github.com/sidnym-ladrut/durploy

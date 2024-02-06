@@ -1,14 +1,33 @@
 /+  default-agent, rudder
 /+  dbug, tonic
-/~  pages  (page:rudder ~ ~)  /app/fund
+/~  base    (page:rudder ~ ~)  /app/fund
+/~  assets  (page:rudder ~ ~)  /app/fund/assets
 |%
-+$  card  card:agent:gall
 +$  state-0
   $:  %0
       ~
   ==
 +$  versioned-state
   $%  state-0
+  ==
++$  card  card:agent:gall
+++  pages  ::  map of pages keyed by full web path
+  ~+
+  %-  ~(uni by base)
+  =<  +
+  %+  ~(rib by assets)  0
+  |=  [[k=knot v=(page:rudder ~ ~)] a=@]
+  [0 (crip (welp "assets/" (trip k))) v]
+++  point  ::  web addressing considering full web path
+  =,  rudder
+  |=  [base=(lest @t) have=(set term)]
+  ^-  route
+  |=  trail
+  ^-  (unit place)
+  ?~  site=(decap base site)  ~
+  ?-  spat=(roll u.site |=([n=@t a=@t] ?:(=(a '') n (crip :(welp (trip a) "/" (trip n))))))
+    %$          `[%page | %index]
+    @           ?:((~(has in have) spat) `[%page | spat] ~)
   ==
 --
 ^-  agent:gall
@@ -49,7 +68,7 @@
     %.  [bowl !<(order:rudder vase) ~]
     %:  (steer:rudder _~ _~)
       pages
-      (point:rudder /apps/[dap.bowl] | ~(key by pages))
+      (point /apps/[dap.bowl] ~(key by pages))
       (fours:rudder ~)
       _~
     ==

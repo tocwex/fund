@@ -351,17 +351,17 @@
           ;div(class "flex justify-center grow lg:grow-0 lg:justify-end lg:p-2")
             ;div(class "px-10 lg:px-2")
               ;a(href "https://urbit.org/", target "_blank")
-                ;img(type "image/svg+xml", src "/apps/fund/urbit-logo");
+                ;img(type "image/svg+xml", src "/apps/fund/assets/urbit-logo");
               ==
             ==
             ;div(class "px-10 lg:px-2")
               ;a(href "https://twitter.com/pollensyndicate", target "_blank")
-                ;img(type "image/svg+xml", src "/apps/fund/x-logo");
+                ;img(type "image/svg+xml", src "/apps/fund/assets/x-logo");
               ==
             ==
             ;div(class "px-10 lg:px-2")
               ;a(href "https://github.com/pollen-syndicate", target "_blank")
-                ;img(type "image/svg+xml", src "/apps/fund/github-logo");
+                ;img(type "image/svg+xml", src "/apps/fund/assets/github-logo");
               ==
             ==
           ==

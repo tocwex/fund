@@ -1,16 +1,11 @@
+/-  f=fund
 /+  default-agent, rudder
 /+  dbug, tonic  ::  debug-only
-/~  base    (page:rudder ~ ~)  /app/fund
-/~  assets  (page:rudder ~ ~)  /app/fund/assets
+/~  base    (page:rudder dat-now:f act-now:f)  /app/fund
+/~  assets  (page:rudder dat-now:f act-now:f)  /app/fund/assets
 |%
-+$  state-0
-  $:  %0
-      ~
-  ==
-+$  versioned-state
-  $%  state-0
-  ==
 +$  card  card:agent:gall
++$  state-now  [%0 dat-now:f]
 ++  pages  ::  map of pages keyed by full web path
   ~+
   %-  ~(uni by base)
@@ -26,12 +21,12 @@
   ^-  (unit place)
   ?~  site=(decap base site)  ~
   ?-  spat=(roll u.site |=([n=@t a=@t] ?:(=(a '') n (crip :(welp (trip a) "/" (trip n))))))
-    %$          `[%page | %index]
-    @           ?:((~(has in have) spat) `[%page | spat] ~)
+    %$  `[%page | %index]
+    @   ?:((~(has in have) spat) `[%page | spat] ~)
   ==
 --
 ^-  agent:gall
-=|  state-0
+=|  state-now
 =*  state  -
 %-  agent:dbug  ::  debug-only
 %-  agent:tonic  ::  debug-only
@@ -41,23 +36,21 @@
 ++  on-init
   ^-  (quip card _this)
   :_  this
-  :~
-    :*  %pass  /eyre/connect  %arvo  %e
-        %connect  `/apps/[dap.bowl]  dap.bowl
-    ==
-  ==
+  :~  :*  %pass  /eyre/connect  %arvo  %e
+          %connect  `/apps/[dap.bowl]  dap.bowl
+  ==  ==
 ::
-++  on-save
-  ^-  vase
-  !>(state)
+++  on-save  !>([state epic-now:f])
 ::
 ++  on-load
-  |=  old-state=vase
+  |=  =vase
   ^-  (quip card _this)
-  =/  old  !<(versioned-state old-state)
-  ?-  -.old
-    %0  `this(state old)
-  ==
+  |^  =+  !<([sat=state-any pic=epic:f] vase)
+      ?-  -.sat
+        %0  `this(state sat)
+      ==
+  +$  state-any  $%(state-now)
+  --
 ::
 ++  on-poke
   |=  [=mark =vase]

@@ -1,9 +1,10 @@
-/+  rudder, *twind-ui, s=server
-^-  (page:rudder ~ ~)
-|_  [=bowl:gall =order:rudder data=~]
+/-  f=fund
+/+  rudder, tw=twind, s=server
+^-  (page:rudder dat-now:f act-now:f)
+|_  [=bowl:gall =order:rudder data=dat-now:f]
 ++  argue  ::  POST reply
   |=  [headers=header-list:http body=(unit octs)]
-  ^-  $@(brief:rudder ~)
+  ^-  $@(brief:rudder act-now:f)
   ~
 ++  final  ::  POST render
   |=  [done=? =brief:rudder]
@@ -13,7 +14,7 @@
   |=  [args=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   :-  %page
-  %^  template  q.byk.bowl  "%fund"
+  %^  render:tw  q.byk.bowl  "%fund"
   :~  ;nav(class "mx-4 mt-1.5 mb-2")
         ;ul(class "pb-2 pt-1 flex justify-between items-center border-black border-b-2")
           ;div(class "")

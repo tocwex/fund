@@ -35,13 +35,13 @@ cp gat/tonic/mar/cass.hoon full/mar/
 
 ### Toggle Desk Debug Mode ###
 
-To turn *off* debug mode (live code reload, etc.):
+To turn *on* debug mode (for local debugging):
 
 ```bash
 find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)::  (.*::\s*debug-only$)/\1\2/" {} \;
 ```
 
-To turn *on* debug mode (live code reload, etc.):
+To turn *off* debug mode (for releases):
 
 ```bash
 find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)(.*::\s*debug-only$)/\1::  \2/" {} \;

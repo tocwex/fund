@@ -42,11 +42,13 @@
     '''
     import alpineTurboDriveAdapter from 'https://cdn.skypack.dev/alpine-turbo-drive-adapter';
     import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1';
-    import Alpine from 'https://cdn.skypack.dev/alpinejs@3.x.x'
-    import { tw, apply, setup } from 'https://cdn.skypack.dev/twind'
-    import * as colors from 'https://cdn.skypack.dev/twind/colors'
-    import { css } from 'https://cdn.skypack.dev/twind/css'
-    import 'https://cdn.skypack.dev/twind/shim'
+    import Alpine from 'https://cdn.skypack.dev/alpinejs@3.x.x';
+    import { tw, apply, setup } from 'https://cdn.skypack.dev/twind';
+    import * as colors from 'https://cdn.skypack.dev/twind/colors';
+    import { css } from 'https://cdn.skypack.dev/twind/css';
+    import 'https://cdn.skypack.dev/twind/shim';
+    import { http, createConfig, injected } from 'https://esm.sh/@wagmi/core@2.x';
+    import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
 
     setup({
       theme: {
@@ -113,6 +115,16 @@
         console.error('Async: Could not copy text: ', err);
       });
     }
+
+    window.Wagmi = createConfig({
+      chains: [mainnet, sepolia],
+      // FIXME: Does not work for some reason
+      // connectors: [injected()],
+      transports: {
+        [mainnet.id]: http(),
+        [sepolia.id]: http(),
+      },
+    });
 
     Alpine.start();
     '''

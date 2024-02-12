@@ -5,7 +5,7 @@
 ::  $epic-now: interface version number (value)
 ::
 ++  epic-now  `epic`0
-::  $dat-now: the data structure used by rudder-reltaed requests
+::  $dat-now: the data structure used by rudder-related requests
 ::
 +$  dat-now
   ~

@@ -39,11 +39,7 @@
                     ;a(href "/~/login?redirect=/apps/fund", target "_blank"): login with urbit
                   ;p: logged in as {<src.bowl>}
               ==
-              ::  TODO: Make this display the metamask login information
-              ::  for the current session
-              ;button(id "wallet-connect", class "mx-2 p-1.5 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-sm")
-                ; connect wallet
-              ==
+              ;button(id "wallet-button", class "mx-2 p-1.5 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-sm");
             ==
           ==
         ==
@@ -382,31 +378,6 @@
             ==
           ==
         ==
-        ;script(type "module"): {script}
     ==
-  ++  script
-    ^~
-    %-  trip
-    '''
-    import { connect, getAccount, injected } from 'https://esm.sh/@wagmi/core@2.x';
-
-    // FIXME: This is super ugly; we need a better way to manage wallet
-    // connection state
-    const walletButton = document.querySelector("#wallet-connect");
-
-    const { status: walletStatus, address: walletAddress } = getAccount(window.Wagmi);
-    walletButton.innerHTML = (walletStatus === "connected")
-      ? walletAddress
-      : "connect wallet";
-
-    walletButton.addEventListener("click", (event) => {
-      if (walletStatus === "disconnected") {
-        connect(window.Wagmi, {connector: injected()}).then(() => {
-          const { address: walletAddress } = getAccount(window.Wagmi);
-          walletButton.innerHTML = walletAddress;
-        });
-      }
-    });
-    '''
   --
 --

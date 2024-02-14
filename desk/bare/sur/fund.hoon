@@ -17,7 +17,7 @@
   $:  =bloq
       work=addr
       sess=addr
-      ::  hash=@ux
+      ::  hash=@ux  ::  TODO: include Urbit side?
   ==
 ::  $stub: blockchain donation stub
 ::
@@ -29,10 +29,10 @@
 ::  $role: peer role relative to a work unit
 ::
 +$  role
-  $?  %maker  ::  creator of the project
-      %giver  ::  pledger/donator to the project
-      %sesor  ::  (as)ses(s)or for the project
-      %mirer  ::  (ad)mirer/follower of the project
+  $?  %work  ::  project worker
+      %sess  ::  project assessor
+      %fund  ::  project pledger/donator
+      %look  ::  project follower
   ==
 ::  $stat: status of work unit (project, milestone)
 ::
@@ -90,6 +90,14 @@
       ::  status=stat  ::  reduction of `milestones`
       ::  fill=@rs  ::  reduction over `milestones`
   ==
+::  $peer-project: $project with peer (host) information
+::
++$  peer-project
+  $:  =project
+      =flag
+      stale=?
+      fail=?
+  ==
 ::  $epic: interface version number (type)
 ::
 +$  epic  @ud
@@ -99,12 +107,19 @@
 ::  $dat-now: the data structure used by rudder-related requests
 ::
 +$  dat-now
-  $:  mine=(map flag project)  :: local state
-      hers=(map flag project)  :: remote state
-      rols=(jug flag role)     :: project roles
+  $:  projects=(map flag peer-project)
+      roles=(jug flag role)
   ==
 ::  $act-now: the action structure used by rudder-related POST requests
 ::
 +$  act-now
   ~
+::  $sat-now: the state structure used by the agent
+::
++$  sat-now
+  $:  ours=(map flag project)
+      rols=(jug flag role)
+      ::  subs=_(mk-subs ...)
+      ::  pubs=_(mk-pubs ...)
+  ==
 --

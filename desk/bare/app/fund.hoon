@@ -11,7 +11,7 @@
   %-  ~(uni by base)
   =<  +
   %+  ~(rib by assets)  0
-  |=  [[k=knot v=(page:rudder ~ ~)] a=@]
+  |=  [[k=knot v=(page:rudder dat-now:f act-now:f)] a=@]
   [0 (crip (welp "assets/" (trip k))) v]
 ++  point  ::  web addressing considering full web path
   =,  rudder
@@ -58,12 +58,12 @@
   ?+    mark  (on-poke:def mark vase)
       %handle-http-request
     =-  [-< this(+.state ->)]
-    %.  [bowl !<(order:rudder vase) ~]
-    %:  (steer:rudder _~ _~)
+    %.  [bowl !<(order:rudder vase) +.state]
+    %:  (steer:rudder dat-now:f act-now:f)
       pages
       (point /apps/[dap.bowl] ~(key by pages))
-      (fours:rudder ~)
-      _~
+      (fours:rudder +.state)
+      |=(act=act-now:f ~)
     ==
   ==
 ++  on-peek  on-peek:def

@@ -104,22 +104,16 @@
 ::  $epic-now: interface version number (value)
 ::
 ++  epic-now  `epic`0
-::  $dat-now: the data structure used by rudder-related requests
+::  $dat-now: top-level app data; forwarded to rudder-related requests
 ::
 +$  dat-now
-  $:  projects=(map flag peer-project)
-      roles=(jug flag role)
-  ==
-::  $act-now: the action structure used by rudder-related POST requests
-::
-+$  act-now
-  ~
-::  $sat-now: the state structure used by the agent
-::
-+$  sat-now
   $:  ours=(map flag project)
       rols=(jug flag role)
       ::  subs=_(mk-subs ...)
       ::  pubs=_(mk-pubs ...)
   ==
+::  $act-now: action data forwarded to rudder-related POST requests
+::
++$  act-now
+  ~
 --

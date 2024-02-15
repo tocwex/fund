@@ -1,4 +1,14 @@
+/+  sss
 |%
++|  %meta
+::  $epic: interface version number (type)
+::
++$  epic  @ud
+::  $epic-now: interface version number (value)
+::
+++  epic-now  `epic`0
+
++|  %base
 ::  $flag: identifier for a project (ship, id)
 ::
 +$  flag  (pair @p @tas)
@@ -34,6 +44,9 @@
       %fund  ::  project pledger/donator
       %look  ::  project follower
   ==
+::  $roles: role sets keyed by project id (host/term)
+::
++$  rolz  (jug flag role)
 ::  $stat: status of work unit (project, milestone)
 ::
 +$  stat
@@ -58,17 +71,20 @@
       ship=(unit @p)
       when=stub
   ==
-::  $contribution: pledge (oath) or donation (gift) made by user
+::  $mula: pledge (oath) or donation (gift) made by user
 ::
-+$  contribution
++$  mula
   $%  [%oath oath]
       [%gift gift]
   ==
-::  $milestone: segment of work within a project
+
++|  %core
+::  $mile: segment of work (milestone) within a project
 ::
-+$  milestone
++$  mile
   $:  title=@t
       summary=@t
+      image=(unit @t)
       cost=@rs
       estimate=bloq
       donations=(list gift)
@@ -76,41 +92,56 @@
       ::  terminate=bloq  ::  undecided feature
       ::  fill=@rs  ::  reduction over `contributions`
   ==
-::  $project: collection of work (milestones) requesting funding
+::  $proj: collection of work (milestones) requesting funding
 ::
-+$  project
-  $:  title=@t
-      summary=@t
-      ::  cost=@rs  ::  reduction over `milestones`
-      workers=(set @p)
-      assessment=sess
-      milestones=(list milestone)
-      contract=(unit bill)
-      pledges=(list oath)
-      ::  status=stat  ::  reduction of `milestones`
-      ::  fill=@rs  ::  reduction over `milestones`
+++  proj
+  =<  rock
+  |%
+  +$  rock
+    $:  title=@t
+        summary=@t
+        image=(unit @t)
+        ::  cost=@rs  ::  reduction over `milestones`
+        workers=(set @p)
+        assessment=sess
+        milestones=(list mile)
+        contract=(unit bill)
+        pledges=(list oath)
+        ::  status=stat  ::  reduction of `milestones`
+        ::  fill=@rs  ::  reduction over `milestones`
+    ==
+  +$  wave  [=bowl:gall =poke]
+  ++  lake  (lake:sss rock wave)
+  +$  path  [%fund %proj ship=@ name=@ ~]
+  --
+::  $proz: collection of projects keyed by id (host/term)
+::
++$  proz  (map flag proj)
+::  $prej: project with peer information
+::
++$  prej  [=proj live=?]
+::  $prez: project collection with peer information
+::
++$  prez  (map flag prej)
+
++|  %face
+::  $jolt: raw action identifier
+::
++$  jolt
+  $%  [%init ~]
+      [%drop ~]
+      [%join ~]
   ==
-::  $peer-project: $project with peer (host) information
+::  $poke: project-bound action (jolt)
 ::
-+$  peer-project
-  $:  =project
-      =flag
-      stale=?
-      fail=?
-  ==
-::  $epic: interface version number (type)
-::
-+$  epic  @ud
-::  $epic-now: interface version number (value)
-::
-++  epic-now  `epic`0
++$  poke  (pair flag jolt)
 ::  $dat-now: top-level app data; forwarded to rudder-related requests
 ::
 +$  dat-now
-  $:  ours=(map flag project)
-      rols=(jug flag role)
-      ::  subs=_(mk-subs ...)
-      ::  pubs=_(mk-pubs ...)
+  $:  =proz
+      =rolz
+      subs=_(mk-subs:sss *lake:proj path:proj)
+      pubs=_(mk-pubs:sss *lake:proj path:proj)
   ==
 ::  $act-now: action data forwarded to rudder-related POST requests
 ::

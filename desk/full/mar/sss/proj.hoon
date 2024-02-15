@@ -1,0 +1,1 @@
+../../../bare/mar/sss/proj.hoon

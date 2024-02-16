@@ -1,6 +1,6 @@
 /+  f=fund, *sss
 /+  default-agent, rudder
-/+  dbug, tonic  ::  debug-only
+/+  dbug, verb, tonic  ::  debug-only
 /~  base-pagz  (page:rudder dat-now:f act-now:f)  /app/fund
 /~  aset-pagz  (page:rudder dat-now:f act-now:f)  /app/fund/assets
 |%
@@ -36,6 +36,7 @@
 =|  state-now
 =*  state  -
 =<
+  %+  verb  &  ::  debug-only
   %-  agent:dbug  ::  debug-only
   %-  agent:tonic  ::  debug-only
   |_  =bowl:gall
@@ -113,12 +114,13 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([=flag:f =jolt:f] vase)
-    cor
     ::  ?>  (~(has by us-prez) flag)
-    ::  =/  proj-core  (po-abed:po-core flag)
-    ::  ?:  =(p.flag our.bowl)
-    ::    po-abet:(po-push:proj-core jolt)
-    ::  po-abet:(po-proxy:proj-core jolt)
+    ?:  =(p.flag our.bowl)
+      ?>  |((~(has by us-prez) flag) ?=(%init-proj -.jolt))
+      po-abet:(po-push:(po-abed:po-core flag) jolt)
+    ?:  ?=(%join-proj -.jolt)
+      po-abet:po-join:(po-abed:po-core flag)
+    po-abet:(po-proxy:(po-abed:po-core flag) jolt)
   ::  sss pokes  ::
       %sss-on-rock
     ?-  msg=!<(from:da-proz (fled vase))
@@ -164,6 +166,11 @@
   |=  path=(pole knot)
   ^-  (unit (unit cage))
   ?+    path  [~ ~]
+      [%x %proj ship=@ name=@ ~]
+    =/  ship=@p    (slav %p ship.path)
+    =/  name=@tas  (slav %tas name.path)
+    ``noun+!>((bind (~(get by us-prez) ship name) |=(=prej:f `proj:f`-.prej)))
+  ::
       [%u %proj ship=@ name=@ ~]
     =/  ship=@p    (slav %p ship.path)
     =/  name=@tas  (slav %tas name.path)
@@ -184,7 +191,7 @@
       [~ %sss %scry-response @ @ @ %fund %proj @ @ ~]
     (push (tell:du-proz |3:path sign))
   :: proxy response ::
-      [%fund ship=@ name=@ ~]
+      [%fund %proj ship=@ name=@ ~]
     ?>  ?=(%poke-ack -.sign)
     =/  ship=@p    (slav %p ship.path)
     =/  name=@tas  (slav %tas name.path)
@@ -210,7 +217,7 @@
   %+  ~(rib by read:da-proz)  *prez:f
   |=  [[k=[ship dude p=path:proj:f] v=[s=? f=? p=proj:f]] a=prez:f]
   :_  [k v]
-  (~(put by a) (proj-flag:sss:f p.k) p.v |(s.v f.v))
+  (~(put by a) (proj-flag:sss:f p.k) p.v &(!s.v !f.v))
 ::
 ++  po-core
   |_  [=flag:f =proj:f gone=_|]
@@ -233,6 +240,22 @@
   ++  po-up-area  |=(p=path `(list path)`[(welp po-area p)]~)
   ++  po-du-path  [%fund %proj (scot %p p.flag) q.flag ~]
   ++  po-da-path  [p.flag dap.bowl %fund %proj (scot %p p.flag) q.flag ~]
+  ++  po-do-read  |=(=jolt:f `bean`%.y)  ::  FIXME: Everything is public
+  ++  po-do-writ
+    |=  =jolt:f
+    ^-  bean
+    ::  FIXME: Fairly intuitive yet hilariously obtuse
+    =-  (gte have need)
+    :-  ^=  need  ^-  perm:f
+      ?+  -.jolt    %peon
+        %init-proj  %boss
+        %drop-proj  %boss
+        %edit-proj  %help
+      ==
+    ^=  have  ^-  perm:f
+    ?:  =(our.bowl src.bowl)  %boss
+    ?:  (~(has in workers.proj) src.bowl)  %help
+    %peon
   ::
   ++  po-init
     po-core(cor (push (public:du-proz [po-du-path]~)))
@@ -245,28 +268,25 @@
     |=  =jolt:f
     ^+  po-core
     =/  =dock  [p.flag dap.bowl]
-    =/  =cage  fund-action+!>([flag jolt])
-    =.  cor  (emit %pass po-area %agent dock %poke cage)
-    po-core
+    =/  =cage  fund-poke+!>([flag jolt])
+    po-core(cor (emit %pass po-area %agent dock %poke cage))
   ++  po-pull
     |=  res=into:da-proz
     ^+  po-core
     =/  =jolt:f
       ?-  what.res
-        %tomb  [%drop ~]
+        %tomb  [%drop-proj ~]
         %wave  q.poke.wave.res
-        %rock  [%init ~]
+        %rock  [%init-proj ~]
       ==
-    ?:  ?=(%drop -.jolt)
-      po-leave
-    =.  cor  (pull (apply:da-proz res))
-    po-core
+    ?:  ?=(%drop-proj -.jolt)  po-leave
+    po-core(cor (pull (apply:da-proz res)))
   ++  po-push
     |=  =jolt:f
     ^+  po-core
-    ?:  ?=(%drop -.jolt)
-      =.  cor  (push (kill:du-proz [po-du-path]~))
-      po-core(gone &)
+    ?>  (po-do-writ jolt)
+    ?:  ?=(%drop-proj -.jolt)
+      po-core(cor (push (kill:du-proz [po-du-path]~)), gone &)
     =.  proj  (proj-wash:sss:f proj bowl flag jolt)
     =.  cor   (push (give:du-proz po-du-path bowl flag jolt))
     po-core

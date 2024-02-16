@@ -22,8 +22,21 @@
   ::  +proj-wash: update function for project peer state deltas
   ::
   ++  proj-wash
-    |=  [=rock:proj =wave:proj]
+    |=  [pro=proj bol=bowl:gall [sip=@p nam=@tas] jol=jolt]
     ^-  rock:proj
-    rock
+    ?+    -.jol  pro
+        %init-proj
+      %_  pro
+        workers  (silt [our.bol]~)
+      ==
+    ::
+        %edit-proj
+      %_  pro
+        title    (fall nam.jol title.pro)
+        summary  (fall sum.jol summary.pro)
+        image    (hunt |=(^ %.y) pic.jol image.pro)
+        workers  (fall woz.jol workers.pro)
+      ==
+    ==
   --
 --

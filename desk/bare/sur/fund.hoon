@@ -36,6 +36,13 @@
       from=addr
       coin=addr
   ==
+::  $perm: permission level (associated with $poke/$jolt)
+::
++$  perm
+  $?  %boss  ::  admin action
+      %help  ::  worker action
+      %peon  ::  viewer action
+  ==
 ::  $role: peer role relative to a work unit
 ::
 +$  role
@@ -44,7 +51,7 @@
       %fund  ::  project pledger/donator
       %look  ::  project follower
   ==
-::  $roles: role sets keyed by project id (host/term)
+::  $rolz: role sets keyed by project id (host/term)
 ::
 +$  rolz  (jug flag role)
 ::  $stat: status of work unit (project, milestone)
@@ -119,7 +126,7 @@
 +$  proz  (map flag proj)
 ::  $prej: project with peer information
 ::
-+$  prej  [=proj live=?]
++$  prej  [proj live=?]
 ::  $prez: project collection with peer information
 ::
 +$  prez  (map flag prej)
@@ -128,9 +135,15 @@
 ::  $jolt: raw action identifier
 ::
 +$  jolt
-  $%  [%init ~]
-      [%drop ~]
-      [%join ~]
+  $%  [%init-proj ~]
+      [%drop-proj ~]
+      [%join-proj ~]
+      $:  %edit-proj
+          nam=(unit @t)
+          sum=(unit @t)
+          pic=(unit @t)
+          woz=(unit (set @p))
+      ==
   ==
 ::  $poke: project-bound action (jolt)
 ::

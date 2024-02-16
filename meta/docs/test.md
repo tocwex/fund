@@ -5,7 +5,8 @@
 ### Basic Tests ###
 
 ```
-:fund &fund-poke [[our %test] %init ~]
+:fund &fund-poke [[our %test] %init-proj ~]
+:fund &fund-poke [[our %test] %edit-proj `'test' `'desc' `'https://picsum.photos/200' ~]
 ```
 
 ### Deletion Tests ###
@@ -13,7 +14,7 @@
 Only run these commands after running all of the basic test commands.
 
 ```
-:fund &fund-poke [[our %test] %drop ~]
+:fund &fund-poke [[our %test] %drop-proj ~]
 ```
 
 ### Error Tests ###
@@ -43,8 +44,10 @@ test commands).
 ### Raw Noun Tests ###
 
 ```
+=f -build-file /=fund=/sur/fund/hoon
 .^(bean %gu /=fund=/proj/(scot %p our)/test)
 .^(bean %gu /=fund=/proj/(scot %p our)/gues)
+.^((unit proj:f) %gx /=fund=/proj/(scot %p our)/test/noun)
 ```
 
 ### JSON Tests ###
@@ -69,4 +72,15 @@ TODO
 =p2n -build-tube /=fund=/fund-poke/noun
 =p2ng |=(p=poke:f !<(noun (p2n !>(p))))
 (p2ng *poke:f)
+```
+
+# Multiple Ship Testing #
+
+Run the basic test commands on a fake `~zod` ship, then run the following on
+a different ship:
+
+## Poke Tests ##
+
+```
+:fund &fund-poke [[~zod %test] %join-proj ~]
 ```

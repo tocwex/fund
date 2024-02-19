@@ -1,4 +1,4 @@
-/+  sss
+/+  sss, rudder
 |%
 +|  %meta
 ::  $epic: interface version number (type)
@@ -25,6 +25,7 @@
 ::
 +$  bill
   $:  =bloq
+      oath=addr
       work=addr
       sess=addr
       ::  hash=@ux  ::  TODO: include Urbit side?
@@ -64,25 +65,25 @@
       %done  ::  completed successfully
       %dead  ::  completed unsuccessfully
   ==
-::  $oath: pledge for contribution
+::  $plej: pledge for contribution
 ::
-+$  oath
++$  plej
   $:  cash=@rs
       ship=@p
       when=bloq
   ==
-::  $gift: actualization of contribution
+::  $dona: actualization of contribution (i.e. donation)
 ::
-+$  gift
++$  dona
   $:  cash=@rs
       ship=(unit @p)
       when=stub
   ==
-::  $mula: pledge (oath) or donation (gift) made by user
+::  $mula: contribution via pledge (plej) or donation (dona)
 ::
 +$  mula
-  $%  [%oath oath]
-      [%gift gift]
+  $%  [%plej plej]
+      [%dona dona]
   ==
 
 +|  %core
@@ -93,11 +94,11 @@
       summary=@t
       image=(unit @t)
       cost=@rs
-      estimate=bloq
-      donations=(list gift)
+      estimate=bloq  ::  relative block height, e.g. +120 blocks
+      donations=(list dona)
       status=stat
       ::  terminate=bloq  ::  undecided feature
-      ::  fill=@rs  ::  reduction over `contributions`
+      ::  fill=@rs  ::  reduction over `donations`
   ==
 ::  $proj: collection of work (milestones) requesting funding
 ::
@@ -113,7 +114,7 @@
         assessment=sess
         milestones=(list mile)
         contract=(unit bill)
-        pledges=(list oath)
+        pledges=(list plej)
         ::  status=stat  ::  reduction of `milestones`
         ::  fill=@rs  ::  reduction over `milestones`
     ==
@@ -144,6 +145,26 @@
           pic=(unit @t)
           woz=(unit (set @p))
       ==
+      [%mula-proj mul=mula]
+      [%init-mile mid=@ud]
+      [%drop-mile mid=@ud]
+      $:  %edit-mile
+          mid=@ud
+          nam=(unit @t)
+          sum=(unit @t)
+          pic=(unit @t)
+          cos=(unit @rs)
+          tim=(unit bloq)
+          sat=(unit stat)
+      ==
+      $:  %bump-mile  $%
+          [%born ~]
+          [%lock bil=bill]
+          [%work ~]
+          [%sess ~]
+          [%done ~]
+          [%dead ~]
+      ==  ==
   ==
 ::  $poke: project-bound action (jolt)
 ::
@@ -160,4 +181,10 @@
 ::
 +$  act-now
   ~
+::  $page: base data structure for rudder-related page cores
+::
++$  pag-now  (page:rudder dat-now act-now)
+::  $pagz: map from page path to rudder page core (for imports with /~)
+::
++$  paz-now  (map knot pag-now)
 --

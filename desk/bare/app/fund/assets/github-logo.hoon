@@ -1,6 +1,6 @@
 /-  f=fund
 /+  rudder, tw=twind, s=server
-^-  (page:rudder dat-now:f act-now:f)
+^-  pag-now:f
 |_  [=bowl:gall =order:rudder data=dat-now:f]
 ++  argue  ::  POST reply
   |=  [headers=header-list:http body=(unit octs)]

@@ -1,24 +1,22 @@
 /+  f=fund, *sss
 /+  default-agent, rudder
 /+  dbug, verb, tonic  ::  debug-only
-/~  base-pagz  (page:rudder dat-now:f act-now:f)  /app/fund
-/~  aset-pagz  (page:rudder dat-now:f act-now:f)  /app/fund/assets
+/~  base-pagz  pag-now:f  /app/fund
+/~  aset-pagz  pag-now:f  /app/fund/assets
 |%
 +$  card  card:agent:gall
 +$  state-now  [%0 dat-now:f]
-+$  page  (page:rudder dat-now:f act-now:f)
-+$  pagz  (map knot page)
 ++  my-pagz  ::  map of pages keyed by full web path
   ~+
-  =/  paz=(list [page-map=pagz path-prefix=tape])
+  =/  paz=(list [page-map=paz-now:f path-prefix=tape])
     :~  [base-pagz ""]
         [aset-pagz "assets/"]
     ==
   %+  roll  paz
-  |=  [[nex=pagz pre=tape] fin=pagz]
+  |=  [[nex=paz-now:f pre=tape] fin=paz-now:f]
   %-  ~(uni by fin)
-  =<  +  %+  ~(rib by nex)  *pagz
-  |=  [[k=knot v=page] a=pagz]
+  =<  +  %+  ~(rib by nex)  *paz-now:f
+  |=  [[k=knot v=pag-now:f] a=paz-now:f]
   [(~(put by a) (crip (welp pre (trip k))) v) k v]
 ++  point  ::  web address router considering full web path
   =,  rudder
@@ -114,7 +112,6 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([=flag:f =jolt:f] vase)
-    ::  ?>  (~(has by us-prez) flag)
     ?:  =(p.flag our.bowl)
       ?>  |((~(has by us-prez) flag) ?=(%init-proj -.jolt))
       po-abet:(po-push:(po-abed:po-core flag) jolt)

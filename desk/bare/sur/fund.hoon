@@ -30,7 +30,7 @@
       sess=addr
       ::  hash=@ux  ::  TODO: include Urbit side?
   ==
-::  $stub: blockchain donation stub
+::  $stub: blockchain contribution payment stub
 ::
 +$  stub
   $:  =bloq
@@ -51,7 +51,7 @@
   $~  %look
   $?  %work  ::  project worker
       %sess  ::  project assessor
-      %fund  ::  project pledger/donator
+      %fund  ::  project pledger/contributor
       %look  ::  project follower
   ==
 ::  $rolz: role sets keyed by project id (host/term)
@@ -75,18 +75,18 @@
       ship=@p
       when=bloq
   ==
-::  $dona: actualization of contribution (i.e. donation)
+::  $cont: actualization of contribution
 ::
-+$  dona
++$  cont
   $:  cash=@rs
       ship=(unit @p)
       when=stub
   ==
-::  $mula: contribution via pledge (plej) or donation (dona)
+::  $mula: contribution via pledge (plej) or contribution (cont)
 ::
 +$  mula
   $%  [%plej plej]
-      [%dona dona]
+      [%cont cont]
   ==
 
 +|  %core
@@ -98,10 +98,10 @@
       image=(unit @t)
       cost=@rs
       estimate=bloq  ::  relative block height, e.g. +120 blocks
-      donations=(list dona)
+      contribs=(list cont)
       status=stat
       ::  terminate=bloq  ::  undecided feature
-      ::  fill=@rs  ::  reduction over `donations`
+      ::  fill=@rs  ::  reduction over `contribs`
   ==
 ::  $proj: collection of work (milestones) requesting funding
 ::

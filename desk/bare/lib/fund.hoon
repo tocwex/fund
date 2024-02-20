@@ -61,19 +61,19 @@
         ::  does an extra signature need to take place here?)
         %_(pro pledges [+>.jol pledges.pro])
       ::
-          %dona
-        ::  TODO: Add logic to split up a donation between multiple
+          %cont
+        ::  TODO: Add logic to split up a contribution between multiple
         ::  different milestones if it fills over the caps for
         ::  milestones in the middle of the project
         =-  %+  repl-mile  pin
-            mil(donations `(list dona)`[+>.jol donations.mil])
+            mil(contribs `(list cont)`[+>.jol contribs.mil])
         ^-  [pin=@ mil=mile]
         =<  +>  %^  spin  miz  `[? @ mile]`[| 0 *mile]
         =/  len  (lent milestones.pro)
         |=  [nex=mile dun=? pin=@ mile]
         :-  nex
         ?:  |(dun =(len +(pin)))  +<+
-        =/  fil=@rs  (roll donations.nex |=([n=dona a=@rs] (add:rs a cash.n)))
+        =/  fil=@rs  (roll contribs.nex |=([n=cont a=@rs] (add:rs a cash.n)))
         ?:  (lth:rs fil cost.nex)  [& pin nex]
         [| +(pin) nex]
       ==

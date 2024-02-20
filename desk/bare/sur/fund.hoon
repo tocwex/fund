@@ -71,18 +71,20 @@
 ::  $plej: pledge for contribution
 ::
 +$  plej
-  $:  cash=@rs
-      ship=@p
+  $:  ship=@p
+      cash=@rs
       when=bloq
+      note=@t
   ==
 ::  $cont: actualization of contribution
 ::
 +$  cont
-  $:  cash=@rs
-      ship=(unit @p)
+  $:  ship=(unit @p)
+      cash=@rs
       when=stub
+      note=@t
   ==
-::  $mula: contribution via pledge (plej) or contribution (cont)
+::  $mula: investment via pledge ($plej) or contribution ($cont)
 ::
 +$  mula
   $%  [%plej plej]
@@ -142,6 +144,7 @@
   $%  [%init-proj ~]
       [%drop-proj ~]
       [%join-proj ~]
+      [%exit-proj ~]
       $:  %edit-proj
           nam=(unit @t)
           sum=(unit @t)

@@ -17,6 +17,7 @@
 :fund &fund-poke [[our %test] %bump-proj %sess ~]
 :fund &fund-poke [[our %test] %bump-proj %done ~]
 :fund &fund-poke [[our %test] %bump-proj %work ~]
+:fund &fund-poke [[our %test] %mula-proj %plej our .10 0 (scot %p our)]
 ```
 
 ### Deletion Tests ###
@@ -39,6 +40,8 @@ Only run these commands after running all of the basic test commands.
 :fund &fund-poke [[our %test] %drop-mile 0]
 :fund &fund-poke [[our %test] %bump-proj %born ~]
 :fund &fund-poke [[our %test] %bump-proj %lock `[0 0x0 0x0 0x0]]
+:fund &fund-poke [[our %test] %join-proj ~]
+:fund &fund-poke [[our %test] %exit-proj ~]
 ```
 
 ### Permissions Tests ###
@@ -99,4 +102,5 @@ a different ship:
 
 ```
 :fund &fund-poke [[~zod %test] %join-proj ~]
+:fund &fund-poke [[~zod %test] %exit-proj ~]
 ```

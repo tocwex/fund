@@ -112,12 +112,18 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([=flag:f =jolt:f] vase)
-    ?:  =(p.flag our.bowl)
-      ?>  |((~(has by us-prez) flag) ?=(%init-proj -.jolt))
-      po-abet:(po-push:(po-abed:po-core flag) jolt)
+    =/  has=?  (~(has by us-prez) flag)
+    =/  myn=?  =(our.bowl p.flag)
     ?:  ?=(%join-proj -.jolt)
+      ?>  &(!has !myn)
       po-abet:po-join:(po-abed:po-core flag)
-    po-abet:(po-proxy:(po-abed:po-core flag) jolt)
+    ?:  ?=(%exit-proj -.jolt)
+      ?>  &(has !myn)
+      po-abet:po-exit:(po-abed:po-core flag)
+    ?:  =(p.flag our.bowl)
+      ?>  |(has ?=(%init-proj -.jolt))
+      po-abet:(po-push:(po-abed:po-core flag) jolt)
+    po-abet:(po-poxy:(po-abed:po-core flag) jolt)
   ::  sss pokes  ::
       %sss-on-rock
     ?-  msg=!<(from:da-proz (fled vase))
@@ -243,11 +249,11 @@
     ^-  bean
     ::  FIXME: Fairly intuitive yet hilariously obtuse
     =-  (gte have need)
-    :-  ^=  have  ^-  perm:f
+    :-  ^-  have=perm:f
         ?:  =(our.bowl src.bowl)  %boss
         ?:  |((~(has in workers.proj) src.bowl) =(p.assessment.proj src.bowl))  %help
         %peon
-    ^=  need  ^-  perm:f
+    ^-  need=perm:f
     ?+  -.jolt    %peon
       %init-proj  %boss
       %drop-proj  %boss
@@ -262,10 +268,10 @@
     po-core(cor (push (public:du-proz [po-du-path]~)))
   ++  po-join
     po-core(cor (pull (surf:da-proz po-da-path)))
-  ++  po-leave
+  ++  po-exit
     po-core(cor (pull ~ (quit:da-proz po-da-path)), gone &)
   ::
-  ++  po-proxy
+  ++  po-poxy
     |=  =jolt:f
     ^+  po-core
     =/  =dock  [p.flag dap.bowl]
@@ -280,7 +286,7 @@
         %wave  q.poke.wave.res
         %rock  [%init-proj ~]
       ==
-    ?:  ?=(%drop-proj -.jolt)  po-leave
+    ?:  ?=(%drop-proj -.jolt)  po-exit
     po-core(cor (pull (apply:da-proz res)))
   ++  po-push
     |=  =jolt:f

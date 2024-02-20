@@ -40,6 +40,7 @@
 ::  $perm: permission level (associated with $poke/$jolt)
 ::
 +$  perm
+  $~  %peon
   $?  %boss  ::  admin action
       %help  ::  worker action
       %peon  ::  viewer action
@@ -47,6 +48,7 @@
 ::  $role: peer role relative to a work unit
 ::
 +$  role
+  $~  %look
   $?  %work  ::  project worker
       %sess  ::  project assessor
       %fund  ::  project pledger/donator
@@ -58,6 +60,7 @@
 ::  $stat: status of work unit (project, milestone)
 ::
 +$  stat
+  $~  %born
   $?  %born  ::  proposed (off-chain)
       %lock  ::  locked in (on-chain, scope locked, launched)
       %work  ::  underway (on-chain, work started)
@@ -112,7 +115,7 @@
         ::  cost=@rs  ::  reduction over `milestones`
         workers=(set @p)
         assessment=sess
-        milestones=(list mile)
+        milestones=(lest mile)
         contract=(unit bill)
         pledges=(list plej)
         ::  status=stat  ::  reduction of `milestones`
@@ -144,8 +147,11 @@
           sum=(unit @t)
           pic=(unit @t)
           woz=(unit (set @p))
+          ses=(unit sess)
       ==
       [%mula-proj mul=mula]
+      ::  NOTE: `nex=%lock` status requires non-null `bil`
+      [%bump-proj sat=stat bil=(unit bill)]
       [%init-mile mid=@ud]
       [%drop-mile mid=@ud]
       $:  %edit-mile
@@ -155,16 +161,7 @@
           pic=(unit @t)
           cos=(unit @rs)
           tim=(unit bloq)
-          sat=(unit stat)
       ==
-      $:  %bump-mile  $%
-          [%born ~]
-          [%lock bil=bill]
-          [%work ~]
-          [%sess ~]
-          [%done ~]
-          [%dead ~]
-      ==  ==
   ==
 ::  $poke: project-bound action (jolt)
 ::

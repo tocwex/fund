@@ -243,16 +243,20 @@
     ^-  bean
     ::  FIXME: Fairly intuitive yet hilariously obtuse
     =-  (gte have need)
-    :-  ^=  need  ^-  perm:f
-      ?+  -.jolt    %peon
-        %init-proj  %boss
-        %drop-proj  %boss
-        %edit-proj  %help
-      ==
-    ^=  have  ^-  perm:f
-    ?:  =(our.bowl src.bowl)  %boss
-    ?:  (~(has in workers.proj) src.bowl)  %help
-    %peon
+    :-  ^=  have  ^-  perm:f
+        ?:  =(our.bowl src.bowl)  %boss
+        ?:  |((~(has in workers.proj) src.bowl) =(p.assessment.proj src.bowl))  %help
+        %peon
+    ^=  need  ^-  perm:f
+    ?+  -.jolt    %peon
+      %init-proj  %boss
+      %drop-proj  %boss
+      %edit-proj  %help
+      %bump-proj  %help
+      %init-mile  %help
+      %drop-mile  %help
+      %edit-mile  %help
+    ==
   ::
   ++  po-init
     po-core(cor (push (public:du-proz [po-du-path]~)))

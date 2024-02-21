@@ -15,7 +15,7 @@
   %+  roll  paz
   |=  [[nex=paz-now:f pre=tape] fin=paz-now:f]
   %-  ~(uni by fin)
-  =<  +  %+  ~(rib by nex)  *paz-now:f
+  =<  -  %+  ~(rib by nex)  *paz-now:f
   |=  [[k=knot v=pag-now:f] a=paz-now:f]
   [(~(put by a) (crip (welp pre (trip k))) v) k v]
 ++  point  ::  web address router considering full web path
@@ -145,9 +145,8 @@
     po-abet:(po-pull:(po-abed:po-core (proj-flag:sss:f path.res)) res)
   ::  http pokes  ::
       %handle-http-request
-    =-  =.  cor  (emil -.render)
-        cor(+.state +.render)
-    ^=  render
+    =-  cor(cards (welp (flop caz) cards), +.state dat)
+    ^-  [caz=(list card) dat=dat-now:f]
     %.  [bowl !<(order:rudder vase) +.state]
     %:  (steer:rudder dat-now:f act-now:f)
       my-pagz

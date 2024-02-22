@@ -3,6 +3,17 @@
 /+  dbug, verb, tonic  ::  debug-only
 /~  base-pagz  pag-now:f  /app/fund
 /~  aset-pagz  pag-now:f  /app/fund/assets
+/~  dash-pagz  pag-now:f  /app/fund/dashboards
+::  TODO: Start remove
+/~  pro1-pagz  pag-now:f  /app/fund/projects/project-1
+/~  pro2-pagz  pag-now:f  /app/fund/projects/project-2
+/~  pro3-pagz  pag-now:f  /app/fund/projects/project-3
+/~  pro4-pagz  pag-now:f  /app/fund/projects/project-4
+/~  pro5-pagz  pag-now:f  /app/fund/projects/project-5
+/~  pro6-pagz  pag-now:f  /app/fund/projects/project-6
+/~  pro7-pagz  pag-now:f  /app/fund/projects/project-7
+/~  pro8-pagz  pag-now:f  /app/fund/projects/project-8
+::  TODO: End remove
 |%
 +$  card  card:agent:gall
 +$  state-now  [%0 dat-now:f]
@@ -11,6 +22,17 @@
   =/  paz=(list [page-map=paz-now:f path-prefix=tape])
     :~  [base-pagz ""]
         [aset-pagz "assets/"]
+        [dash-pagz "dashboards/"]
+        ::  TODO: Start remove
+        [pro1-pagz "projects/project-1/"]
+        [pro2-pagz "projects/project-2/"]
+        [pro3-pagz "projects/project-3/"]
+        [pro4-pagz "projects/project-4/"]
+        [pro5-pagz "projects/project-5/"]
+        [pro6-pagz "projects/project-6/"]
+        [pro7-pagz "projects/project-7/"]
+        [pro8-pagz "projects/project-8/"]
+        ::  TODO: End remove
     ==
   %+  roll  paz
   |=  [[nex=paz-now:f pre=tape] fin=paz-now:f]

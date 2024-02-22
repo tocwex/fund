@@ -1,0 +1,1 @@
+../../../../bare/app/fund/dashboards/dashboard-assessor.hoon

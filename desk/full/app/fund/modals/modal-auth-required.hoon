@@ -1,0 +1,1 @@
+../../../../bare/app/fund/modals/modal-auth-required.hoon

@@ -35,7 +35,8 @@
         %init-proj
       ?>  =(%born sat)
       %_  pro
-        workers  (silt [our.bol]~)
+        workers     (silt [our.bol]~)
+        assessment  [our.bol .0]
       ==
     ::
         %edit-proj

@@ -1,0 +1,1 @@
+../../../../bare/app/fund/modals/modal-confirm-pledge-eauth.hoon

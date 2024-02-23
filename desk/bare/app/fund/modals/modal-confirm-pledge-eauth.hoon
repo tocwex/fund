@@ -14,7 +14,7 @@
   |=  [args=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   :-  %page
-  %^  render:tw  q.byk.bowl  "modal: confirm pledge eauth"
-  :~  
+  %^  render:tw  bowl  "modal: confirm pledge eauth"
+  :~
   ==
 --

@@ -104,3 +104,24 @@ a different ship:
 :fund &fund-poke [[~zod %test] %join-proj ~]
 :fund &fund-poke [[~zod %test] %exit-proj ~]
 ```
+
+## eAuth Tests ##
+
+In order to test eAuth, the following test environment preparations/considerations
+need to be accounted for:
+
+- In order for the host ship to remote authenticate a given ship, the given
+  ship must have had at least one successful login through its web portal.
+- As of Arvo `237k`, the default `%eyre` implementation uses a 1-hour lag
+  caching strategy to improve the performance of web portal requests. This
+  should be removed when testing on local ships (which are frequently
+  regenerated) by commenting out the `=.  time …` line in
+  `/=base=/sys/vane/eyre/hoon`.
+- Each ship exposes its web portal URL through the `/e/x/[time]//eauth/url`
+  remote scry endpoint, which can be tested via `dojo` with the following
+  command (assuming a remote ship `~zod`):
+  ```
+  -keen [~zod /e/x/(scot %da now)//eauth/url]
+  ```
+  It's good to test this endpoint as a first step when debugging issues with
+  eAuth on a particular ship.

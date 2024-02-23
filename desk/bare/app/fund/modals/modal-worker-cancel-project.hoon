@@ -14,7 +14,7 @@
   |=  [args=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   :-  %page
-  %^  render:tw  q.byk.bowl  "modal: worker cancel project"
-  :~  
+  %^  render:tw  bowl  "modal: worker cancel project"
+  :~
   ==
 --

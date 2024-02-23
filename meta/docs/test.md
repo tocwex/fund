@@ -6,7 +6,7 @@
 
 ```
 :fund &fund-poke [[our %test] %init-proj ~]
-:fund &fund-poke [[our %test] %edit-proj `'test' `'desc' `'https://picsum.photos/200' ~ `[~nec .0.01]]
+:fund &fund-poke [[our %test] %edit-proj `'test' `'desc' `'https://picsum.photos/200' `[~nec .0.01]]
 :fund &fund-poke [[our %test] %edit-mile 0 `'m2' `'d2' `'https://picsum.photos/200' `.200 `0]
 :fund &fund-poke [[our %test] %init-mile 0]
 :fund &fund-poke [[our %test] %edit-mile 0 `'m1' `'d1' `'https://picsum.photos/200' `.100 `0]
@@ -34,7 +34,7 @@ Only run these commands after running all of the basic test commands.
 
 ```
 :fund &fund-poke [[our %test] %init-proj ~]
-:fund &fund-poke [[our %test] %edit-proj ~ `'desc-2' ~ ~ ~]
+:fund &fund-poke [[our %test] %edit-proj ~ `'desc-2' ~ ~]
 :fund &fund-poke [[our %test] %init-mile 0]
 :fund &fund-poke [[our %test] %edit-mile 0 ~ `'d1-2' ~ ~ ~]
 :fund &fund-poke [[our %test] %drop-mile 0]

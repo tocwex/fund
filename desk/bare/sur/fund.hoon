@@ -61,7 +61,8 @@
 ::
 +$  stat
   $~  %born
-  $?  %born  ::  proposed (off-chain)
+  $?  %born  ::  just created, draft mode (off-chain)
+      %prop  ::  created, proposed to assessor (off-chain)
       %lock  ::  locked in (on-chain, scope locked, launched)
       %work  ::  underway (on-chain, work started)
       %sess  ::  under assessment (on-chain, work reviewed)
@@ -115,7 +116,7 @@
         summary=@t
         image=(unit @t)
         ::  cost=@rs  ::  reduction over `milestones`
-        workers=(set @p)
+        ::  workers=(set @p)  ::  TODO: Future feature
         assessment=sess
         milestones=(lest mile)
         contract=(unit bill)
@@ -149,7 +150,7 @@
           nam=(unit @t)
           sum=(unit @t)
           pic=(unit @t)
-          woz=(unit (set @p))
+          ::  woz=(unit (set @p))
           ses=(unit sess)
       ==
       [%mula-proj mul=mula]

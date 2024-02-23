@@ -271,8 +271,8 @@
     ::  FIXME: Fairly intuitive yet hilariously obtuse
     =-  (gte have need)
     :-  ^-  have=perm:f
-        ?:  =(our.bowl src.bowl)  %boss
-        ?:  |((~(has in workers.proj) src.bowl) =(p.assessment.proj src.bowl))  %help
+        ?:  =(p.flag src.bowl)  %boss
+        ::  ?:  |((~(has in workers.proj) src.bowl) =(p.assessment.proj src.bowl))  %help
         %peon
     ^-  need=perm:f
     ?+  -.jolt    %peon

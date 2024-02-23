@@ -35,7 +35,7 @@
         %init-proj
       ?>  =(%born sat)
       %_  pro
-        workers     (silt [our.bol]~)
+        ::  workers     (silt [our.bol]~)
         assessment  [our.bol .0]
       ==
     ::
@@ -45,7 +45,7 @@
         title       (fall nam.jol title.pro)
         summary     (fall sum.jol summary.pro)
         image       (hunt |=(^ %.y) pic.jol image.pro)
-        workers     (fall woz.jol workers.pro)
+        ::  workers     (fall woz.jol workers.pro)
         assessment  (fall ses.jol assessment.pro)
       ==
     ::

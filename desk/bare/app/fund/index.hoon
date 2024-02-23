@@ -13,6 +13,11 @@
 ++  build  ::  GET
   |=  [args=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
+  =/  is-authed=bean
+    =+  peers=.^((map ship ?(%alien %known)) /ax/(scot %p our.bowl)//(scot %da now.bowl)/peers)
+    ?|  !=((clan:title src.bowl) %pawn)
+        (~(has by peers) src.bowl)
+    ==
   :-  %page
   %^  render:tw  q.byk.bowl  "%fund"
   :~  ;div(class "flex-grow")
@@ -25,6 +30,14 @@
               ==
             ==
             ;div(class "flex gap-x-2 mx-2")
+              ::  FIXME: Opening login page in a new tab because opening it
+              ::  in the current tab causes issues with further redirects
+              ::  (e.g. to the ship login page for eAuth)
+              ;button(id "login-urbit", class "text-nowrap px-2 py-1 border-2 border-black rounded-md {?:(is-authed "" "duration-300 hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 active:bg-yellow-500 active:border-yellow-500")}")
+                ;+  ?.  is-authed
+                    ;a(href "/~/login?redirect=/apps/fund", target "_blank"): urbit login
+                  ;p: {<src.bowl>}
+              ==
               ;button(id "connect-wallet", class "cursor-pointer text-nowrap px-2 py-1 border-2 duration-300 border-black bg-black text-white hover:text-black rounded-md hover:rounded-lg hover:bg-white hover:border-gray-800 active:bg-gray-800 active:border-black active:text-white");
             ==
           ==

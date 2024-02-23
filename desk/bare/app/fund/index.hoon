@@ -19,10 +19,9 @@
         ;nav(class "lg:mx-4 mt-1.5 mb-2")
           ;ul(class "py-2 flex justify-between border-black border-b-2")
             ;div(class "mx-2")
-              ;div(class "text-xl border-2 rounded-sm border-white ease-in-out hover:text-yellow-500 duration-300 font-medium")
-                ;a(href "/apps/fund/")
-                  ; %fund
-                ==
+              ;div(class "flex items-center gap-x-2 text-xl border-2 rounded-sm border-white ease-in-out hover:text-yellow-500 duration-300 font-medium")
+                ::  ;img(type "image/svg+xml", src "/apps/fund/assets/favicon", class "h-10 rounded-full border-4");
+                ;a(href "/apps/fund/"): %fund
               ==
             ==
             ;div(class "flex gap-x-2 mx-2")

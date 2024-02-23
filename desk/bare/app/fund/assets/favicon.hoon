@@ -20,7 +20,7 @@
 '''
 <?xml version="1.0" encoding="utf-8"?>
 <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <ellipse style="stroke: rgb(0, 0, 0); fill: rgb(255, 255, 255); paint-order: fill; stroke-width: 1px;" cx="512" cy="512" rx="512" ry="512" transform="matrix(1, 0, 0, 1, 1.1368683772161603e-13, 0)"/>
+  <ellipse style="stroke: rgb(0, 0, 0); fill: rgb(255, 255, 255); paint-order: fill; stroke-width: 0px;" cx="512" cy="512" rx="512" ry="512" transform="matrix(1, 0, 0, 1, 1.1368683772161603e-13, 0)"/>
   <g transform="matrix(3.4322540760040283, 0, 0, 3.4322540760040283, 66.40146636962902, 292.3357238769531)" style="">
     <path d="M0.0541 0C70.7217 0.0292317 128 57.3256 128 128C57.3177 128 0.0164917 70.7089 7.62806e-06 0.0305091C7.62851e-06 0.0203397 -4.44317e-10 0.01017 0 0H0.0541Z" fill="#000000"/>
     <line x1="128" y1="96" x2="-8.87604e-09" y2="96" stroke="#ffffff" fill="none" stroke-width="3.653571367382254px" stroke-linecap="square"/>

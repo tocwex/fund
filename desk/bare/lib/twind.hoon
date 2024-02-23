@@ -20,8 +20,11 @@
           ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
           ;title: {title}
           ;link(rel "icon", href "/apps/fund/assets/favicon", type "image/svg+xml");
-          ;link(rel "stylesheet", href "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-          ;link(rel "stylesheet", href "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/themes/dark.css");
+          ;link(rel "preconnect", href "https://fonts.googleapis.com");
+          ;link(rel "preconnect", href "https://fonts.gstatic.com", crossorigin "");
+          ;link(rel "stylesheet preload", as "style", href "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap", crossorigin "");
+          ;link(rel "stylesheet preload", as "style", href "https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@300..700&display=swap", crossorigin "");
+          ;link(rel "stylesheet", href "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/themes/light.css");
           ;script(type "module", src "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/shoelace-autoloader.js");
           ;script(type "module"): {script-boot}
           ;script(src "/session.js");  ::  debug-only
@@ -30,7 +33,7 @@
         ;+  %:  mx
               %body
               'max-w-screen-2xl mx-auto text-base font-serif'
-              ~[[%x-data "twind"]]
+              ~[[%x-data "twind"] [%style "visibility: hidden;"]]
               %+  snoc  body
               ;script(type "module"): {script-mark}
             ==
@@ -50,11 +53,19 @@
     import { http, createConfig, injected, getAccount } from 'https://esm.sh/@wagmi/core@2.x';
     import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
 
+    // FIXME: Use a small timeout to avoid seeing css animation pop-in
+    // TODO: Would love to use a slightly more principled solution (one not
+    // dependent on a static max timeout length), e.g.:
+    // https://stackoverflow.com/a/38296629
+    window.onload = () => setTimeout(() => {
+      document.body.style["visibility"] = "visible";
+    }, 300);
+
     setup({
       theme: {
         fontFamily: {
-          serif: ['Poppins', 'serif'],
-          sans: 'sans-serif',
+          serif: ['Poppins', 'Noto Emoji', 'serif'],
+          sans: ['Noto Emoji', 'sans-serif'],
         },
         extend: {
           colors,
@@ -128,10 +139,10 @@
       (state) => state,
       ({connections, current, status}) => {
         const connection = connections.get(current);
-        const walletButton = document.querySelector("#wallet-button");
+        const walletButton = document.querySelector("#connect-wallet");
 
         if (status === "disconnected") {
-          walletButton.innerHTML = "connect wallet";
+          walletButton.innerHTML = "connect 💰";
         } else if (status === "reconnecting") {
           walletButton.innerHTML = "…loading…";
         } else if (status === "connected") {
@@ -154,7 +165,7 @@
       getAccount,
     } from 'https://esm.sh/@wagmi/core@2.x';
 
-    const walletButton = document.querySelector("#wallet-button");
+    const walletButton = document.querySelector("#connect-wallet");
 
     // NOTE: This enables auto-reconnect on page refresh when a valid existing
     // Ethereum wallet connection exists.

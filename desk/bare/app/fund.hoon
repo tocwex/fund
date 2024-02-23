@@ -5,6 +5,7 @@
 /~  aset-pagz  pag-now:f  /app/fund/assets
 /~  dash-pagz  pag-now:f  /app/fund/dashboards
 ::  TODO: Start remove
+/~  mods-pagz  pag-now:f  /app/fund/modals
 /~  pro1-pagz  pag-now:f  /app/fund/projects/project-1
 /~  pro2-pagz  pag-now:f  /app/fund/projects/project-2
 /~  pro3-pagz  pag-now:f  /app/fund/projects/project-3
@@ -24,6 +25,7 @@
         [aset-pagz "assets/"]
         [dash-pagz "dashboards/"]
         ::  TODO: Start remove
+        [mods-pagz "modals/"]
         [pro1-pagz "projects/project-1/"]
         [pro2-pagz "projects/project-2/"]
         [pro3-pagz "projects/project-3/"]

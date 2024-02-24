@@ -6,18 +6,23 @@
 
 ```
 :fund &fund-poke [[our %test] %init-proj ~]
-:fund &fund-poke [[our %test] %edit-proj `'test' `'desc' `'https://picsum.photos/200' `[~nec .0.01]]
+:fund &fund-poke [[our %test] %edit-proj `'test' `'desc' `'https://picsum.photos/200' `[our .0.01]]
 :fund &fund-poke [[our %test] %edit-mile 0 `'m2' `'d2' `'https://picsum.photos/200' `.200 `0]
 :fund &fund-poke [[our %test] %init-mile 0]
 :fund &fund-poke [[our %test] %edit-mile 0 `'m1' `'d1' `'https://picsum.photos/200' `.100 `0]
 :fund &fund-poke [[our %test] %init-mile 2]
 :fund &fund-poke [[our %test] %drop-mile 2]
-:fund &fund-poke [[our %test] %bump-proj %lock `[0 0x0 0x0 0x0]]
+:fund &fund-poke [[our %test] %bump-proj %prop ~]
+:fund &fund-poke [[our %test] %bump-proj %born ~]
+:fund &fund-poke [[our %test] %bump-proj %prop ~]
+:fund &fund-poke [[our %test] %bump-proj %lock `[1 0x0 0x0 0x0]]
 :fund &fund-poke [[our %test] %bump-proj %work ~]
 :fund &fund-poke [[our %test] %bump-proj %sess ~]
 :fund &fund-poke [[our %test] %bump-proj %done ~]
 :fund &fund-poke [[our %test] %bump-proj %work ~]
-:fund &fund-poke [[our %test] %mula-proj %plej our .10 0 (scot %p our)]
+:fund &fund-poke [[our %test] %mula-proj %plej our .10 0 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %mula-proj %cont `our .10 [1 0x0 0x0] (crip "{<our>} cont")]
+:fund &fund-poke [[our %test] %mula-proj %plej our .20 0 (crip "{<our>} plej")]
 ```
 
 ### Deletion Tests ###
@@ -33,12 +38,15 @@ Only run these commands after running all of the basic test commands.
 Only run these commands after running all of the basic test commands.
 
 ```
+:fund &fund-poke [[our %test] %mula-proj %plej our .30 0 (crip "{<our>} bad plej")]
+:fund &fund-poke [[our %test] %mula-proj %cont `our .10 [1 0x0 0x0] (crip "{<our>} bad cont")]
 :fund &fund-poke [[our %test] %init-proj ~]
 :fund &fund-poke [[our %test] %edit-proj ~ `'desc-2' ~ ~]
 :fund &fund-poke [[our %test] %init-mile 0]
 :fund &fund-poke [[our %test] %edit-mile 0 ~ `'d1-2' ~ ~ ~]
 :fund &fund-poke [[our %test] %drop-mile 0]
 :fund &fund-poke [[our %test] %bump-proj %born ~]
+:fund &fund-poke [[our %test] %bump-proj %prop ~]
 :fund &fund-poke [[our %test] %bump-proj %lock `[0 0x0 0x0 0x0]]
 :fund &fund-poke [[our %test] %join-proj ~]
 :fund &fund-poke [[our %test] %exit-proj ~]

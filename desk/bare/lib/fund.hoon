@@ -28,8 +28,8 @@
     =*  miz  `(list mile)`milestones.pro
     =/  sat=stat  (roll miz |=([n=mile a=stat] ?.(=(%born a) a status.n)))
     =>  |%
-        ++  repl-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
-        ++  repl-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
+        ++  edit-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
+        ++  edit-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
         --
     ?+    -.jol  pro
         %init-proj
@@ -50,7 +50,7 @@
       ==
     ::
         %mula-proj
-      ?<  =(%born sat)
+      ?<  |(=(%born sat) =(%prop sat))
       ?-    +<.jol
           %plej
         ::  TODO: Poke the host ship with the following messages:
@@ -60,13 +60,20 @@
         ::  TODO: Add verification logic that this pledge is actually
         ::  from the src.bowl ship (what do we do in the case of eAuth?
         ::  does an extra signature need to take place here?)
-        %_(pro pledges [+>.jol pledges.pro])
+        =/  pold=(unit plej)  (~(get by pledges.pro) ship.jol)
+        ?>  ?=(@ pold)
+        %_(pro pledges (~(put by pledges.pro) ship.jol +>.jol))
       ::
           %cont
         ::  TODO: Add logic to split up a contribution between multiple
         ::  different milestones if it fills over the caps for
         ::  milestones in the middle of the project
-        =-  %+  repl-mile  pin
+        =-  =/  pold=(unit plej)  ?~(ship.jol ~ (~(get by pledges.pro) (need ship.jol)))
+            =?  pledges.pro  ?=(^ pold)
+              ::  TODO: Is this okay or should we require direct equality?
+              ?>  (equ:rs cash.u.pold cash.jol)
+              (~(del by pledges.pro) (need ship.jol))
+            %+  edit-mile  pin
             mil(contribs `(list cont)`[+>.jol contribs.mil])
         ^-  [pin=@ mil=mile]
         =<  +>  %^  spin  miz  `[? @ mile]`[| 0 *mile]
@@ -83,22 +90,27 @@
       ::  TODO: Place src.bowl permissions logic in here?
       =/  [pin=@ mil=mile]  [0 (snag 0 miz)]
       ?:  ?=(%born status.mil)
-        ?>  ?=(%lock sat.jol)
-        ?>  ?=(^ bil.jol)
+        ?>  ?=(%prop sat.jol)
+        (edit-milz |=(m=mile m(status %prop)))
+      ?:  ?=(%prop status.mil)
+        ::  TODO: Restrict this action to worker and assessor
+        ?>  ?|  &(?=(%born sat.jol) ?=(@ bil.jol))
+                &(?=(%lock sat.jol) ?=(^ bil.jol))
+            ==
         =.  contract.pro  bil.jol
-        (repl-milz |=(m=mile m(status %lock)))
+        (edit-milz |=(m=mile m(status sat.jol)))
       =/  [pin=@ mil=mile]  ::  NOTE: Earliest active milestone (+ index)
         %+  snag  0
         %+  skim  `(list [@ mile])`=<(- (spin miz 0 |=([n=mile a=@] [[a n] +(a)])))
         |=([a=@ n=mile] ?=(?(%born %lock %work %sess) status.n))
       ?:  ?=(%lock status.mil)
         ?>  ?=(%work sat.jol)
-        (repl-mile pin mil(status sat.jol))
+        (edit-mile pin mil(status sat.jol))
       ?:  ?=(?(%work %sess) status.mil)
         ?:  ?=(?(%work %sess %done) sat.jol)
-          (repl-mile pin mil(status sat.jol))
+          (edit-mile pin mil(status sat.jol))
         ?:  ?=(%dead sat.jol)
-          (repl-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
+          (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
         !!  ::  ?(%work %sess %done %dead) => ?(%born %lock) is impossible
       !!  ::  ?(%done %dead) => status is impossible
     ::
@@ -113,7 +125,7 @@
         %edit-mile
       ?>  =(%born sat)
       =/  mil=mile  (snag mid.jol miz)
-      %+  repl-mile  mid.jol
+      %+  edit-mile  mid.jol
       %_  mil
         title     (fall nam.jol title.mil)
         summary   (fall sum.jol summary.mil)

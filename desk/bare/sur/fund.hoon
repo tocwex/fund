@@ -120,7 +120,7 @@
         assessment=sess
         milestones=(lest mile)
         contract=(unit bill)
-        pledges=(list plej)
+        pledges=(map ship plej)
         ::  status=stat  ::  reduction of `milestones`
         ::  fill=@rs  ::  reduction over `milestones`
     ==
@@ -153,7 +153,7 @@
           ::  woz=(unit (set @p))
           ses=(unit sess)
       ==
-      [%mula-proj mul=mula]
+      [%mula-proj mula]
       ::  NOTE: `nex=%lock` status requires non-null `bil`
       [%bump-proj sat=stat bil=(unit bill)]
       [%init-mile mid=@ud]

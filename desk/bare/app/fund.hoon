@@ -95,10 +95,10 @@
   --
 |_  [=bowl:gall cards=(list card)]
 ::
-+*  da-proz  =/  da  (da proj-lake:sss:f path:proj:f)
-             (da subs bowl -:!>(*result:da) -:!>(*from:da) -:!>(*fail:da))
-    du-proz  =/  du  (du proj-lake:sss:f path:proj:f)
-             (du pubs bowl -:!>(*result:du))
++*  da-proz  (proz-subs:sss:f bowl subs)
+    du-proz  (proz-pubs:sss:f bowl pubs)
+    my-prez  (prez-mine:sss:f bowl +.state)
+    us-prez  (prez-ours:sss:f bowl +.state)
 ::
 ++  abet  [(flop cards) state]
 ++  cor   .
@@ -230,20 +230,6 @@
   |=  [path=(pole knot) sign=sign-arvo]
   ^+  cor
   cor
-::
-++  my-prez
-  ^-  prez:f
-  %-  ~(run by proz)
-  |=(=proj:f `prej:f`[proj &])
-::
-++  us-prez
-  ^-  prez:f
-  %-  ~(uni by my-prez)
-  =<  -
-  %+  ~(rib by read:da-proz)  *prez:f
-  |=  [[k=[ship dude p=path:proj:f] v=[s=? f=? p=proj:f]] a=prez:f]
-  :_  [k v]
-  (~(put by a) (proj-flag:sss:f p.k) p.v &(!s.v !f.v))
 ::
 ++  po-core
   |_  [=flag:f =proj:f gone=_|]

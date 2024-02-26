@@ -62,6 +62,34 @@
     +$  wave  wave:proj
     ++  wash  proj-wash
     --
+  ::  +proz-subs: state of sss-managed subscriptions
+  ::
+  ++  proz-subs
+    |=  [=bowl:gall subs=_(mk-subs:^sss *lake:proj path:proj)]
+    =/  da  (da:^sss proj-lake path:proj)
+    (da subs bowl -:!>(*result:da) -:!>(*from:da) -:!>(*fail:da))
+  ::  +proz-pubs: state of sss-managed publications
+  ::
+  ++  proz-pubs
+    |=  [=bowl:gall pubs=_(mk-pubs:^sss *lake:proj path:proj)]
+    =/  du  (du:^sss proj-lake path:proj)
+    (du pubs bowl -:!>(*result:du))
+  ::  +prez-mine: the local-hosted $prez ($proz w/ connection data)
+  ::
+  ++  prez-mine
+    |=  [=bowl:gall data=dat-now]
+    ^-  prez
+    %-  ~(run by proz.data)
+    |=(=proj `prej`[proj &])
+  ::  +prez-ours: local and remote $prez ($proz w/ connection data)
+  ::
+  ++  prez-ours
+    |=  [=bowl:gall data=dat-now]
+    ^-  prez
+    %-  ~(uni by (prez-mine bowl data))
+    =<  -  %+  ~(rib by read:(proz-subs bowl subs.data))  *prez
+    |=  [[k=[ship dude:gall p=path:proj] v=[s=? f=? p=proj]] a=prez]
+    [(~(put by a) (proj-flag p.k) p.v &(!s.v !f.v)) k v]
   ::  +proj-wash: update function for project peer state deltas
   ::
   ++  proj-wash
@@ -122,7 +150,7 @@
     ::
         %bump-proj
       ::  TODO: Place src.bowl permissions logic in here?
-      =/  [pin=@ mil=mile]  [0 (snag 0 miz)]
+      =/  [pin=@ mil=mile]  ~(next-stat pj pro)
       ?:  ?=(%born status.mil)
         ?>  ?=(%prop sat.pod)
         (edit-milz |=(m=mile m(status %prop)))
@@ -133,10 +161,6 @@
             ==
         =.  contract.pro  bil.pod
         (edit-milz |=(m=mile m(status sat.pod)))
-      =/  [pin=@ mil=mile]  ::  NOTE: Earliest active milestone (+ index)
-        %+  snag  0
-        %+  skim  `(list [@ mile])`=<(- (spin miz 0 |=([n=mile a=@] [[a n] +(a)])))
-        |=([a=@ n=mile] ?=(?(%born %lock %work %sess) status.n))
       ?:  ?=(%lock status.mil)
         ?>  ?=(%work sat.pod)
         (edit-mile pin mil(status sat.pod))

@@ -1,3 +1,5 @@
+::  /lib/libeth/hoon: ethereum helper functions
+::
 |%
 ::  $bloq: blockchain block height
 ::

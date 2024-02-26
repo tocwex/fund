@@ -21,8 +21,10 @@
 :fund &fund-poke [[our %test] %bump-proj %done ~]
 :fund &fund-poke [[our %test] %bump-proj %work ~]
 :fund &fund-poke [[our %test] %mula-proj %plej our .10 0 (crip "{<our>} plej")]
-:fund &fund-poke [[our %test] %mula-proj %cont `our .10 [1 0x0 0x0] (crip "{<our>} cont")]
+:fund &fund-poke [[our %test] %mula-proj %trib `our .10 [1 0x0 0x0] (crip "{<our>} cont")]
 :fund &fund-poke [[our %test] %mula-proj %plej our .20 0 (crip "{<our>} plej")]
+:fund &fund-poke [[our %tes2] %init-proj ~]
+:fund &fund-poke [[our %tes2] %edit-proj `'test-2' `'desc-2' `'https://picsum.photos/200' `[our .0]]
 ```
 
 ### Deletion Tests ###

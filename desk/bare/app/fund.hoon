@@ -135,19 +135,19 @@
   ?+    mark  ~|(bad-poke/mark !!)
   ::  native pokes  ::
       %fund-poke
-    =+  !<([=flag:f =jolt:f] vase)
+    =+  !<([=flag:f =prod:f] vase)
     =/  has=?  (~(has by us-prez) flag)
     =/  myn=?  =(our.bowl p.flag)
-    ?:  ?=(%join-proj -.jolt)
+    ?:  ?=(%join-proj -.prod)
       ?>  &(!has !myn)
       po-abet:po-join:(po-abed:po-core flag)
-    ?:  ?=(%exit-proj -.jolt)
+    ?:  ?=(%exit-proj -.prod)
       ?>  &(has !myn)
       po-abet:po-exit:(po-abed:po-core flag)
     ?:  =(p.flag our.bowl)
-      ?>  |(has ?=(%init-proj -.jolt))
-      po-abet:(po-push:(po-abed:po-core flag) jolt)
-    po-abet:(po-poxy:(po-abed:po-core flag) jolt)
+      ?>  |(has ?=(%init-proj -.prod))
+      po-abet:(po-push:(po-abed:po-core flag) prod)
+    po-abet:(po-poxy:(po-abed:po-core flag) prod)
   ::  sss pokes  ::
       %sss-on-rock
     ?-  msg=!<(from:da-proz (fled vase))
@@ -266,9 +266,9 @@
   ++  po-up-area  |=(p=path `(list path)`[(welp po-area p)]~)
   ++  po-du-path  [%fund %proj (scot %p p.flag) q.flag ~]
   ++  po-da-path  [p.flag dap.bowl %fund %proj (scot %p p.flag) q.flag ~]
-  ++  po-do-read  |=(=jolt:f `bean`%.y)  ::  FIXME: Everything is public
+  ++  po-do-read  |=(=prod:f `bean`%.y)  ::  FIXME: Everything is public
   ++  po-do-writ
-    |=  =jolt:f
+    |=  =prod:f
     ^-  bean
     ::  FIXME: Fairly intuitive yet hilariously obtuse
     =-  (gte have need)
@@ -277,7 +277,7 @@
         ::  ?:  |((~(has in workers.proj) src.bowl) =(p.assessment.proj src.bowl))  %help
         %peon
     ^-  need=perm:f
-    ?+  -.jolt    %peon
+    ?+  -.prod    %peon
       %init-proj  %boss
       %drop-proj  %boss
       %edit-proj  %help
@@ -295,30 +295,30 @@
     po-core(cor (pull ~ (quit:da-proz po-da-path)), gone &)
   ::
   ++  po-poxy
-    |=  =jolt:f
+    |=  =prod:f
     ^+  po-core
     =/  =dock  [p.flag dap.bowl]
-    =/  =cage  fund-poke+!>([flag jolt])
+    =/  =cage  fund-poke+!>([flag prod])
     po-core(cor (emit %pass po-area %agent dock %poke cage))
   ++  po-pull
     |=  res=into:da-proz
     ^+  po-core
-    =/  =jolt:f
+    =/  =prod:f
       ?-  what.res
         %tomb  [%drop-proj ~]
         %wave  q.poke.wave.res
         %rock  [%init-proj ~]
       ==
-    ?:  ?=(%drop-proj -.jolt)  po-exit
+    ?:  ?=(%drop-proj -.prod)  po-exit
     po-core(cor (pull (apply:da-proz res)))
   ++  po-push
-    |=  =jolt:f
+    |=  =prod:f
     ^+  po-core
-    ?>  (po-do-writ jolt)
-    ?:  ?=(%drop-proj -.jolt)
+    ?>  (po-do-writ prod)
+    ?:  ?=(%drop-proj -.prod)
       po-core(cor (push (kill:du-proz [po-du-path]~)), gone &)
-    =.  proj  (proj-wash:sss:f proj bowl flag jolt)
-    =.  cor   (push (give:du-proz po-du-path bowl flag jolt))
+    =.  proj  (proj-wash:sss:f proj bowl flag prod)
+    =.  cor   (push (give:du-proz po-du-path bowl flag prod))
     po-core
   --
 --

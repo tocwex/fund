@@ -37,7 +37,7 @@
       from=addr
       coin=addr
   ==
-::  $perm: permission level (associated with $poke/$jolt)
+::  $perm: permission level (associated with $poke/$prod)
 ::
 +$  perm
   $~  %peon
@@ -77,19 +77,19 @@
       when=bloq
       note=@t
   ==
-::  $cont: actualization of contribution
+::  $trib: actualization of contribution
 ::
-+$  cont
++$  trib
   $:  ship=(unit @p)
       cash=@rs
       when=stub
       note=@t
   ==
-::  $mula: investment via pledge ($plej) or contribution ($cont)
+::  $mula: investment via pledge ($plej) or contribution ($trib)
 ::
 +$  mula
   $%  [%plej plej]
-      [%cont cont]
+      [%trib trib]
   ==
 
 +|  %core
@@ -100,8 +100,8 @@
       summary=@t
       image=(unit @t)
       cost=@rs
-      estimate=bloq  ::  relative block height, e.g. +120 blocks
-      contribs=(list cont)
+      goal=bloq  ::  relative block height, e.g. +120 blocks
+      contribs=(list trib)
       status=stat
       ::  terminate=bloq  ::  undecided feature
       ::  fill=@rs  ::  reduction over `contribs`
@@ -139,9 +139,9 @@
 +$  prez  (map flag prej)
 
 +|  %face
-::  $jolt: raw action identifier
+::  $prod: raw action identifier
 ::
-+$  jolt
++$  prod
   $%  [%init-proj ~]
       [%drop-proj ~]
       [%join-proj ~]
@@ -167,9 +167,9 @@
           tim=(unit bloq)
       ==
   ==
-::  $poke: project-bound action (jolt)
+::  $poke: project-bound action (prod)
 ::
-+$  poke  (pair flag jolt)
++$  poke  (pair flag prod)
 ::  $dat-now: top-level app data; forwarded to rudder-related requests
 ::
 +$  dat-now

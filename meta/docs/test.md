@@ -25,6 +25,8 @@
 :fund &fund-poke [[our %test] %mula-proj %plej our .20 0 (crip "{<our>} plej")]
 :fund &fund-poke [[our %tes2] %init-proj ~]
 :fund &fund-poke [[our %tes2] %edit-proj `'test-2' `'desc-2' `'https://picsum.photos/200' `[our .0]]
+:fund &fund-poke [[our %tes2] %edit-mile 0 `'m1-2' `'d1-2' `'https://picsum.photos/200' `.1e6 `0]
+:fund &fund-poke [[our %tes2] %bump-proj %prop ~]
 ```
 
 ### Deletion Tests ###

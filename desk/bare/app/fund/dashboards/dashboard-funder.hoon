@@ -39,8 +39,8 @@
                   %+  lien  contribs.mile
                   |=(t=trib:f ?~(ship.t | =(our.bowl u.ship.t)))
               ==
-          ;+  %^  prez  "Projects from %pals"  |
-              *(list [flag:f prej:f])
+          ::  ;+  %^  prez  "Projects from %pals"  |
+          ::      *(list [flag:f prej:f])
     ==  ==
   ++  prez
     |=  [nam=tape new=bean poz=(list [flag:f prej:f])]

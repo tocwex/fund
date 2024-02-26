@@ -174,9 +174,24 @@
     %.  [bowl !<(order:rudder vase) +.state]
     %:  (steer:rudder dat-now:f act-now:f)
       my-pagz
+    ::
       (point /apps/[dap.bowl] ~(key by my-pagz))
+    ::
       (fours:rudder +.state)
-      |=(act=act-now:f ~)
+    ::
+      |=  act=act-now:f
+      ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
+      ~&  act
+      :-  ~  ::  message?
+      :_  +.state
+      ::  TODO: eager evaluate the cards?
+      ^-  (list card)
+      %+  turn  `(list poke:f)`act
+      |=  [lag=flag:f pod=prod:f]
+      :*  %pass   /[dap.bowl]/proj/(scot %p p.lag)/[q.lag]
+          %agent  [p.lag dap.bowl]
+          %poke   fund-poke+!>([lag pod])
+      ==
     ==
   ==
 ::

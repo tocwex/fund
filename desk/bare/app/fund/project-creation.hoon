@@ -3,20 +3,36 @@
 ^-  pag-now:f
 |_  [=bowl:gall =order:rudder data=dat-now:f]
 ++  argue  ::  POST reply
-  |=  [headers=header-list:http body=(unit octs)]
+  |=  [head=header-list:http body=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
-  ~
+  =/  arz=(map @t @t)  ?~(body ~ (frisk:rudder q.u.body))
+  ?~  nam=(~(get by arz) 'nam')  ~
+  =+  sum=(~(get by arz) 'sum')
+  =+  pic=(~(get by arz) 'pic')
+  ::  TODO: Parse assessment information into [who mun]
+  ::  =+  ses=(~(get by arz) 'ses')
+  ;;  act-now:f
+  ::  TODO: Termify arbitrary project title
+  ?>  ((sane %tas) (need nam))
+  %-  turn  :_  |=(p=prod:f `poke:f`[[our.bowl `@tas`(need nam)] p])
+  ::  TODO: Only run `%init-proj` if it doesn't already exist
+  ::  =/  my-proz  ~(tap by proz.data)
+  ^-  (list prod:f)
+  :~  [%init-proj ~]
+      [%edit-proj nam sum pic ~]
+  ==
 ++  final  ::  POST render
   |=  [done=? =brief:rudder]
   ^-  reply:rudder
-  [%auth '/']
+  (build ~ `[& 'hey'])
+  ::  [%auth '/']
 ++  build  ::  GET
   |=  [args=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   :-  %page
   %^  render:tw  bowl  "%fund - project creation"
   :~  ;div(id "maincontent", class "mx-auto lg:px-4")
-        ;div(class "")
+        ;form(method "post")
           ;div(class "")
             ;div(class "m-1 pt-2 text-3xl w-full")
               ; Project Overview
@@ -26,13 +42,13 @@
                 ;div(class "m-1 pt-1 border-black font-light")
                   ; project title
                 ==
-                ;input(class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "My Awesome Project");
+                ;input(type "text", name "nam", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "My Awesome Project");
               ==
               ;div(class "m-1 p-1")
                 ;div(class "m-1 pt-1 border-black font-light")
                   ; project description
                 ==
-                ;input(class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "Write a worthy description of your project");
+                ;input(type "text", name "sum", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "Write a worthy description of your project");
               ==
               ;div(class "flex w-full")
                 ;div(class "m-1 p-1 w-full")
@@ -168,7 +184,7 @@
                   ; Please review your proposal in detail and ensure your assessor is in mutual agreement on expectations for review of work and release of funds.
                 ==
                 ;div(class "flex w-full justify-center mx-auto")
-                  ;button(onclick "location.href=''", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
+                  ;button(type "submit", name "save", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
                     ; save draft ~
                   ==
                   ;button(onclick "location.href=''", class "text-nowrap px-2 py-1 border-2 border-red-600 bg-red-600 text-white rounded-md hover:border-red-500 hover:bg-red-500 active:border-red-700 active:bg-red-700")

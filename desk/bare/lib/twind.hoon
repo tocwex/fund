@@ -58,6 +58,8 @@
               ::  FIXME: Opening login page in a new tab because opening it
               ::  in the current tab causes issues with further redirects
               ::  (e.g. to the ship login page for eAuth)
+              ::  FIXME: This should redirect to the current route
+              ::  instead of the base app route
               ;button(id "login-urbit", class "text-nowrap px-2 py-1 border-2 border-black rounded-md {?:(is-authed "" "duration-300 hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 active:bg-yellow-500 active:border-yellow-500")}")
                 ;+  ?.  is-authed
                     ;a(href "/~/login?redirect=/apps/fund", target "_blank"): urbit login

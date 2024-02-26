@@ -180,8 +180,7 @@
   ==
 ::  $act-now: action data forwarded to rudder-related POST requests
 ::
-+$  act-now
-  ~
++$  act-now  (lest poke)
 ::  $page: base data structure for rudder-related page cores
 ::
 +$  pag-now  (page:rudder dat-now act-now)

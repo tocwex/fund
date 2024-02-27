@@ -49,7 +49,7 @@
     :~  ;nav(class "lg:mx-4 mt-1.5 mb-2")
           ;ul(class "py-2 flex justify-between border-black border-b-2")
             ;div(class "mx-2")
-              ;div(onclick "location.href='/apps/fund/'", class "flex items-center gap-x-2 text-xl border-2 rounded-sm border-white ease-in-out hover:text-yellow-500 duration-300 font-medium")
+              ;a(href "/apps/fund/", class "flex items-center gap-x-2 text-xl border-2 rounded-sm border-white ease-in-out hover:text-yellow-500 duration-300 font-medium")
                 ::  ;img(type "image/svg+xml", src "/apps/fund/assets/favicon", class "h-10 rounded-full border-4");
                 ; %fund
               ==
@@ -65,7 +65,9 @@
                     ;a(href "/~/login?redirect=/apps/fund", target "_blank"): urbit login
                   ;p: {<src.bowl>}
               ==
-              ;button(id "connect-wallet", class "cursor-pointer text-nowrap px-2 py-1 border-2 duration-300 border-black bg-black text-white hover:text-black rounded-md hover:rounded-lg hover:bg-white hover:border-gray-800 active:bg-gray-800 active:border-black active:text-white");
+              ;button(id "connect-wallet", class "cursor-pointer text-nowrap px-2 py-1 border-2 duration-300 border-black bg-black text-white hover:text-black rounded-md hover:rounded-lg hover:bg-white hover:border-gray-800 active:bg-gray-800 active:border-black active:text-white")
+                ; connect 💰
+              ==
             ==
           ==
         ==
@@ -117,14 +119,17 @@
     import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
 
     // FIXME: Use a small timeout to avoid seeing css animation pop-in
+    // TODO: Would be better to use the `window.addEventListener('load', ...)`
+    // event, but that does not get fired on page navigation
     // TODO: Would love to use a slightly more principled solution (one not
     // dependent on a static max timeout length), e.g.:
     // https://stackoverflow.com/a/38296629
-    window.addEventListener("load", (event) =>
-      setTimeout(() => {
-        document.body.style["visibility"] = "visible";
-      }, 300)
-    );
+    const hideWindow = (event) => document.body.style["visibility"] = "hidden";
+    const revealWindow = (event) => setTimeout(() => document.body.style["visibility"] = "visible", 300);
+    // window.addEventListener("beforeunload", hideWindow);
+    window.navigation.addEventListener("navigate", hideWindow);
+    window.navigation.addEventListener("navigatesuccess", revealWindow);
+    window.navigation.addEventListener("currententrychange", revealWindow);
 
     setup({
       theme: {

@@ -26,7 +26,7 @@
             ==
             ;div(class "mx-auto")
               ;div(class "text-center")
-                ;button(onclick "location.href='/apps/fund/dashboards/dashboard-funder'", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
+                ;a(href "./dashboards/dashboard-funder", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
                   ; view dashboard →
                 ==
               ==
@@ -40,7 +40,7 @@
               ; create your own proposals, and manage your projects
             ==
             ;div(class "text-center")
-              ;button(onclick "location.href='/apps/fund/dashboards/dashboard-worker'", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
+              ;a(href "./dashboards/dashboard-worker", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
                 ; view dashboard →
               ==
             ==
@@ -53,7 +53,7 @@
               ; get paid as a trusted arbiter for community projects
             ==
             ;div(class "text-center")
-              ;button(onclick "location.href='/apps/fund/dashboards/dashboard-assessor'", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
+              ;a(href "./dashboards/dashboard-assessor", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
                 ; view dashboard →
               ==
             ==

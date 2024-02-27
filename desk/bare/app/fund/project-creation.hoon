@@ -11,8 +11,13 @@
   =+  pic=(~(get by arz) 'pic')
   ::  TODO: Parse assessment information into [who mun]
   ::  =+  ses=(~(get by arz) 'ses')
+  ::  TODO: How will we pass milestone information?
+  ::  =+  miz=(~(get by arz) 'miz')
   ;;  act-now:f
   ::  TODO: Termify arbitrary project title
+  ::  => lowercase all characters
+  ::  => replace all whitespace with - character
+  ::  => replace all non-ascii characters with 0s or -s
   ?>  ((sane %tas) (need nam))
   %-  turn  :_  |=(p=prod:f `poke:f`[[our.bowl `@tas`(need nam)] p])
   ::  TODO: Only run `%init-proj` if it doesn't already exist

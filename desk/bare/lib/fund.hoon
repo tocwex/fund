@@ -1,5 +1,5 @@
 /-  *fund
-/+  leth=libeth, lhex=libhex
+/+  leth=libeth, lhex=libhex, rudder
 |%
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
 ::
@@ -74,14 +74,14 @@
     |=  [=bowl:gall pubs=_(mk-pubs:^sss *lake:proj path:proj)]
     =/  du  (du:^sss proj-lake path:proj)
     (du pubs bowl -:!>(*result:du))
-  ::  +prez-mine: the local-hosted $prez ($proz w/ connection data)
+  ::  +prez-mine: the local-hosted $prez ($proz w/ peer connection data)
   ::
   ++  prez-mine
     |=  [=bowl:gall data=dat-now]
     ^-  prez
     %-  ~(run by proz.data)
     |=(=proj `prej`[proj &])
-  ::  +prez-ours: local and remote $prez ($proz w/ connection data)
+  ::  +prez-ours: local and remote $prez ($proz w/ peer connection data)
   ::
   ++  prez-ours
     |=  [=bowl:gall data=dat-now]
@@ -189,8 +189,34 @@
         summary  (fall sum.pod summary.mil)
         image    (hunt |=(^ %.y) pic.pod image.mil)
         cost     (fall cos.pod cost.mil)
-        goal     (fall tim.pod goal.mil)
+        ::  goal     (fall tim.pod goal.mil)
       ==
     ==
+  --
+::  +web: structures/cores for web handling (html/headers/urls/etc.)
+::
+++  web
+  |%
+  ::  +args: parse POST request parameters considering required arguments
+  ::
+  ::    =+  rex=(malt ~[['required' &] ['optional' |] ...])
+  ::    ?+  arz=(args:web:f body rex)  p.arz  [%| *]
+  ::      ::  ... process `arz` here
+  ::    ==
+  ::
+  ++  args
+    |=  [bod=(unit octs) rex=(map @t bean)]
+    ^-  (each @t (map @t @t))
+    ?~  bod  &+'no http request body provided'
+    =/  hav=(map @t @t)  (frisk:rudder q.u.bod)
+    =-  ?:  =(0 ~(wyt in mis))  |+arz
+        &+(crip "missing required arguments: {<mis>}")
+    ^-  [mis=(set @t) arz=(map @t @t)]
+    =<  -  %+  ~(rib by rex)  [*(set @t) *(map @t @t)]
+    |=  [[arg=@t req=bean] mis=(set @t) arz=(map @t @t)]
+    :_  [arg req]
+    =/  nex=(unit @t)  (~(get by hav) arg)
+    :_  ?~(nex arz (~(put by arz) arg u.nex))
+    ?.(&(req =(~ nex)) mis (~(put in mis) arg))
   --
 --

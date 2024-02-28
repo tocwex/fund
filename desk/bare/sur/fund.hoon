@@ -100,7 +100,7 @@
       summary=@t
       image=(unit @t)
       cost=@rs
-      goal=bloq  ::  relative block height, e.g. +120 blocks
+      ::  goal=bloq  ::  relative block height, e.g. +120 blocks
       contribs=(list trib)
       status=stat
       ::  terminate=bloq  ::  undecided feature
@@ -164,7 +164,7 @@
           sum=(unit @t)
           pic=(unit @t)
           cos=(unit @rs)
-          tim=(unit bloq)
+          ::  tim=(unit bloq)
       ==
   ==
 ::  $poke: project-bound action (prod)

@@ -182,7 +182,7 @@
       |=  act=act-now:f
       ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
       ~&  act
-      :-  ~  ::  message?
+      :-  ~  ::  message? TODO: Make this the path of the action
       :_  +.state
       ::  TODO: eager evaluate the cards?
       ^-  (list card)

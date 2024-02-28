@@ -7,9 +7,9 @@
 ```
 :fund &fund-poke [[our %test] %init-proj ~]
 :fund &fund-poke [[our %test] %edit-proj `'test' `'desc' `'https://picsum.photos/200' `[our .0.01]]
-:fund &fund-poke [[our %test] %edit-mile 0 `'m2' `'d2' `'https://picsum.photos/200' `.200 `0]
+:fund &fund-poke [[our %test] %edit-mile 0 `'m2' `'d2' `'https://picsum.photos/200' `.200]
 :fund &fund-poke [[our %test] %init-mile 0]
-:fund &fund-poke [[our %test] %edit-mile 0 `'m1' `'d1' `'https://picsum.photos/200' `.100 `0]
+:fund &fund-poke [[our %test] %edit-mile 0 `'m1' `'d1' `'https://picsum.photos/200' `.100]
 :fund &fund-poke [[our %test] %init-mile 2]
 :fund &fund-poke [[our %test] %drop-mile 2]
 :fund &fund-poke [[our %test] %bump-proj %prop ~]
@@ -25,7 +25,7 @@
 :fund &fund-poke [[our %test] %mula-proj %plej our .20 0 (crip "{<our>} plej")]
 :fund &fund-poke [[our %tes2] %init-proj ~]
 :fund &fund-poke [[our %tes2] %edit-proj `'test-2' `'desc-2' `'https://picsum.photos/200' `[our .0]]
-:fund &fund-poke [[our %tes2] %edit-mile 0 `'m1-2' `'d1-2' `'https://picsum.photos/200' `.1e6 `0]
+:fund &fund-poke [[our %tes2] %edit-mile 0 `'m1-2' `'d1-2' `'https://picsum.photos/200' `.1e6]
 :fund &fund-poke [[our %tes2] %bump-proj %prop ~]
 ```
 
@@ -47,7 +47,7 @@ Only run these commands after running all of the basic test commands.
 :fund &fund-poke [[our %test] %init-proj ~]
 :fund &fund-poke [[our %test] %edit-proj ~ `'desc-2' ~ ~]
 :fund &fund-poke [[our %test] %init-mile 0]
-:fund &fund-poke [[our %test] %edit-mile 0 ~ `'d1-2' ~ ~ ~]
+:fund &fund-poke [[our %test] %edit-mile 0 ~ `'d1-2' ~ ~]
 :fund &fund-poke [[our %test] %drop-mile 0]
 :fund &fund-poke [[our %test] %bump-proj %born ~]
 :fund &fund-poke [[our %test] %bump-proj %prop ~]

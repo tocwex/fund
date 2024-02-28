@@ -43,6 +43,18 @@
     |=  [a=@ n=mile]
     ?=(?(%born %lock %work %sess) status.n)
   --
+::  ::  +ok: assert correctness of edit type on given $proj
+::  ::
+::  ::    ?>  ~(edit ok [our %test proj])
+::  ::
+::  ++  ok
+::    |_  [=flag proj]
+::    ++  edit
+::      |=  who=@p
+::      ~|  "%fund: {<who>} can't 'edit' for project {<flag>}"
+::      ?>  =(who p.flag)
+::      %.y
+::    --
 ::  +sss: structures/cores for peer-based synchronization (sss)
 ::
 ++  sss

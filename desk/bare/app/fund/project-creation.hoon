@@ -18,7 +18,6 @@
         [%edit-proj (~(get by p.arz) 'nam') (~(get by p.arz) 'sum') (~(get by p.arz) 'pic') ~]
     ==
   ==
-
 ++  final  ::  POST render
   |=  [okay=? =brief:rudder]
   ^-  reply:rudder

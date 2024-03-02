@@ -3,13 +3,88 @@
 A sovereign platform for peer-to-peer economic activity with on-chain
 settlement and trusted identity assessment of work completion.
 
+## Install ##
+
+Within your Urbit ship's command-line interface, enter the following command(s):
+
+```
+|install ~firser-dister-sidnym-ladrut %fund
+```
+
+If you've installed a beta/unreleased version, expect OTAs to regularly break
+backward compatibility. To restore your desk, run the following command(s):
+
+```
+|nuke %fund
+|install ~firser-dister-sidnym-ladrut %fund
+```
+
 ## Build/Develop ##
 
 All commands assume that the current working directory is this repository's
 base directory and use [durploy] to streamline various Urbit development
 workflows.
 
-### Generate Full Desk ###
+### First-time Setup ###
+
+Run the following commands to download [durploy] create a new [fake
+`~zod`][fakezod] with the `%fund` desk.
+
+```bash
+curl -LO https://raw.githubusercontent.com/sidnym-ladrut/durploy/release/durploy
+chmod u+x ./durploy
+./durploy ship zod
+# In a different terminal:
+./durploy desk zod fund ./desk/full/
+```
+
+### Development Workflows ###
+
+#### Back-end Workflows ####
+
+In order to continuously test back-end code changes as they're made, run the
+following commands:
+
+```bash
+./durploy desk -w zod fund ./desk/full/
+```
+
+#### Front-end Workflows ####
+
+To view the front-end, simply open your development ship's web interface
+at the path `/apps/fund`; for a default [fake `~zod`][fakezod], this
+will be:
+
+```
+http://127.0.0.1:8080/apps/fund
+```
+
+In order to continuously test front-end code changes as they're made, set up
+continuous back-end integration (as above) and log into the development ship
+from the web interface  using the output of the `dojo` `+code` command as the
+password. Then, you should be able to edit the web files in
+`./desk/bare/web/fund/page` and see them updated in your browser in real time.
+
+Note that changes to library files (i.e. files outside the
+`./desk/bare/web/fund/page` tree) will require prompting your fake ship to
+reload the dependent page files separately. The following commands can be run
+after library files are changed to achieve this aim, and also to revert the
+associated changes prior to commit:
+
+```bash
+find ./desk/bare/web/fund/page/ -type f -exec sh -c "echo '::  RELOAD' >> {}" \;
+```
+
+```bash
+find ./desk/bare/web/fund/page/ -type f -exec sh -c "sed -i '/^::  RELOAD$/d' {}" \;
+```
+
+### Deployment Workflow ###
+
+#### Back-end Workflows ####
+
+To generate a new full desk from the existing base desk, run all
+of the following commands:
 
 ```bash
 cd ./desk
@@ -33,21 +108,11 @@ cp sss/urbit/lib/sss.hoon full/lib/
 cp sss/urbit/sur/sss.hoon full/sur/
 ```
 
-### Deploy Full Desk ###
-
-```bash
-./durploy desk -w zod fund ./desk/full/
-```
-
-### Toggle Desk Debug Mode ###
-
-To turn *on* debug mode (for local debugging):
+To toggle debug mode (between release mode and local debug mode):
 
 ```bash
 find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)::  (.*::\s*debug-only$)/\1\2/" {} \;
 ```
-
-To turn *off* debug mode (for releases):
 
 ```bash
 find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)(.*::\s*debug-only$)/\1::  \2/" {} \;

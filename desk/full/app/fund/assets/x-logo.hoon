@@ -1,1 +1,0 @@
-../../../../bare/app/fund/assets/x-logo.hoon

@@ -1,1 +1,0 @@
-../../../../bare/app/fund/assets/urbit-logo.hoon

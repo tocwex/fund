@@ -23,7 +23,7 @@ cp urb/pkg/arvo/lib/verb.hoon full/lib/
 cp urb/pkg/arvo/sur/verb.hoon full/sur/
 git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
 cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} full/lib/
-cp yar/desk/mar/{bill*,docket*,hoon*,json*,kelvin*,mime*,noun*,ship*,txt*} full/mar/
+cp yar/desk/mar/{bill*,docket*,hoon*,json*,kelvin*,mime*,noun*,ship*,txt*,png*,svg*,js*} full/mar/
 cp yar/desk/sur/docket* full/sur/
 git clone -b sl/tonic-simplification --depth 1 https://github.com/sidnym-ladrut/gin-tonic.git gat
 cp gat/tonic/lib/tonic.hoon full/lib/

@@ -1,1 +1,0 @@
-../../../../../bare/app/fund/projects/project-3/index.hoon

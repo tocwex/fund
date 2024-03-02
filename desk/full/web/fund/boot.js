@@ -1,0 +1,1 @@
+../../../bare/web/fund/boot.js

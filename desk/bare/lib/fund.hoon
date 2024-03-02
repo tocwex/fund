@@ -1,5 +1,5 @@
 /-  *fund
-/+  leth=libeth, lhex=libhex, rudder
+/+  fx=fund-xtra, rudder
 |%
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
 ::
@@ -25,6 +25,13 @@
     |=  mil=mile
     %+  roll  contribs.mil
     |=([n=trib a=@rs] (add:rs a cash.n))
+  ++  mula  ::  full list of project mula ($plej list, $trib list)
+    ^-  (list ^mula)
+    %+  weld  (turn ~(val by pledges) |=(p=^plej `^mula`[%plej p]))
+    %+  roll  milestonez
+    |=  [mil=mile acc=(list ^mula)]
+    %+  weld  acc
+    (turn contribs.mil |=(t=trib `^mula`[%trib t]))
   ++  next-fill  ::  next milestone that hasn't reached goal
     ^-  [pin=@ mil=mile]
     =<  +>  %^  spin  milestonez  `[? @ mile]`[| 0 *mile]
@@ -39,10 +46,11 @@
     =-  (fall - [0 i.milestones])
     ^-  (unit [@ mile])
     =-  ?~(- ~ (some i.-))
-    %+  skim  (enum:lhex milestonez)
+    %+  skim  (enum:lhex:fx milestonez)
     |=  [a=@ n=mile]
     ?=(?(%born %lock %work %sess) status.n)
   --
+::
 ::  ::  +ok: assert correctness of edit type on given $proj
 ::  ::
 ::  ::    ?>  ~(edit ok [our %test proj])
@@ -55,6 +63,7 @@
 ::      ?>  =(who p.flag)
 ::      %.y
 ::    --
+::
 ::  +sss: structures/cores for peer-based synchronization (sss)
 ::
 ++  sss
@@ -65,6 +74,7 @@
     |=  =path:proj
     ^-  flag
     [`@p`(slav %p ship.path) `@tas`(slav %tas name.path)]
+  ::
   ::  +proj-lake: schema for peer-based project synchronization
   ::
   ++  proj-lake
@@ -74,18 +84,21 @@
     +$  wave  wave:proj
     ++  wash  proj-wash
     --
+  ::
   ::  +proz-subs: state of sss-managed subscriptions
   ::
   ++  proz-subs
     |=  [=bowl:gall subs=_(mk-subs:^sss *lake:proj path:proj)]
     =/  da  (da:^sss proj-lake path:proj)
     (da subs bowl -:!>(*result:da) -:!>(*from:da) -:!>(*fail:da))
+  ::
   ::  +proz-pubs: state of sss-managed publications
   ::
   ++  proz-pubs
     |=  [=bowl:gall pubs=_(mk-pubs:^sss *lake:proj path:proj)]
     =/  du  (du:^sss proj-lake path:proj)
     (du pubs bowl -:!>(*result:du))
+  ::
   ::  +prez-mine: the local-hosted $prez ($proz w/ peer connection data)
   ::
   ++  prez-mine
@@ -93,6 +106,7 @@
     ^-  prez
     %-  ~(run by proz.data)
     |=(=proj `prej`[proj &])
+  ::
   ::  +prez-ours: local and remote $prez ($proz w/ peer connection data)
   ::
   ++  prez-ours
@@ -102,6 +116,7 @@
     =<  -  %+  ~(rib by read:(proz-subs bowl subs.data))  *prez
     |=  [[k=[ship dude:gall p=path:proj] v=[s=? f=? p=proj]] a=prez]
     [(~(put by a) (proj-flag p.k) p.v &(!s.v !f.v)) k v]
+  ::
   ::  +proj-wash: update function for project peer state deltas
   ::
   ++  proj-wash
@@ -204,31 +219,5 @@
         ::  goal     (fall tim.pod goal.mil)
       ==
     ==
-  --
-::  +web: structures/cores for web handling (html/headers/urls/etc.)
-::
-++  web
-  |%
-  ::  +args: parse POST request parameters considering required arguments
-  ::
-  ::    =+  rex=(malt ~[['required' &] ['optional' |] ...])
-  ::    ?+  arz=(args:web:f body rex)  p.arz  [%| *]
-  ::      ::  ... process `arz` here
-  ::    ==
-  ::
-  ++  args
-    |=  [bod=(unit octs) rex=(map @t bean)]
-    ^-  (each @t (map @t @t))
-    ?~  bod  &+'no http request body provided'
-    =/  hav=(map @t @t)  (frisk:rudder q.u.bod)
-    =-  ?:  =(0 ~(wyt in mis))  |+arz
-        &+(crip "missing required arguments: {<mis>}")
-    ^-  [mis=(set @t) arz=(map @t @t)]
-    =<  -  %+  ~(rib by rex)  [*(set @t) *(map @t @t)]
-    |=  [[arg=@t req=bean] mis=(set @t) arz=(map @t @t)]
-    :_  [arg req]
-    =/  nex=(unit @t)  (~(get by hav) arg)
-    :_  ?~(nex arz (~(put by arz) arg u.nex))
-    ?.(&(req =(~ nex)) mis (~(put in mis) arg))
   --
 --

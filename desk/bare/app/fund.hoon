@@ -1,58 +1,10 @@
-/+  f=fund, *sss
+/+  f=fund, h=fund-http, *sss
 /+  default-agent, rudder
 /+  dbug, verb, tonic  ::  debug-only
-/~  base-pagz  pag-now:f  /app/fund
-/~  aset-pagz  pag-now:f  /app/fund/assets
-/~  dash-pagz  pag-now:f  /app/fund/dashboards
-::  TODO: Start remove
-/~  mods-pagz  pag-now:f  /app/fund/modals
-/~  pro1-pagz  pag-now:f  /app/fund/projects/project-1
-/~  pro2-pagz  pag-now:f  /app/fund/projects/project-2
-/~  pro3-pagz  pag-now:f  /app/fund/projects/project-3
-/~  pro4-pagz  pag-now:f  /app/fund/projects/project-4
-/~  pro5-pagz  pag-now:f  /app/fund/projects/project-5
-/~  pro6-pagz  pag-now:f  /app/fund/projects/project-6
-/~  pro7-pagz  pag-now:f  /app/fund/projects/project-7
-/~  pro8-pagz  pag-now:f  /app/fund/projects/project-8
-::  TODO: End remove
+/~  pagz  pag-now:f  /web/fund/page
 |%
 +$  card  card:agent:gall
 +$  state-now  [%0 dat-now:f]
-++  my-pagz  ::  map of pages keyed by full web path
-  ~+
-  =/  paz=(list [page-map=paz-now:f path-prefix=tape])
-    :~  [base-pagz ""]
-        [aset-pagz "assets/"]
-        [dash-pagz "dashboards/"]
-        ::  TODO: Start remove
-        [mods-pagz "modals/"]
-        [pro1-pagz "projects/project-1/"]
-        [pro2-pagz "projects/project-2/"]
-        [pro3-pagz "projects/project-3/"]
-        [pro4-pagz "projects/project-4/"]
-        [pro5-pagz "projects/project-5/"]
-        [pro6-pagz "projects/project-6/"]
-        [pro7-pagz "projects/project-7/"]
-        [pro8-pagz "projects/project-8/"]
-        ::  TODO: End remove
-    ==
-  %+  roll  paz
-  |=  [[nex=paz-now:f pre=tape] fin=paz-now:f]
-  %-  ~(uni by fin)
-  =<  -  %+  ~(rib by nex)  *paz-now:f
-  |=  [[k=knot v=pag-now:f] a=paz-now:f]
-  [(~(put by a) (crip (welp pre (trip k))) v) k v]
-++  point  ::  web address router considering full web path
-  =,  rudder
-  |=  [base=(lest @t) have=(set @tas)]
-  ^-  route
-  |=  trail
-  ^-  (unit place)
-  ?~  site=(decap base site)  ~
-  ?-  spat=(roll u.site |=([n=@t a=@t] ?:(=(a '') n (crip :(welp (trip a) "/" (trip n))))))
-    %$  `[%page | %index]
-    @   ?:((~(has in have) spat) `[%page | spat] ~)
-  ==
 --
 ^-  agent:gall
 =|  state-now
@@ -172,26 +124,20 @@
     =-  cor(cards (welp (flop caz) cards), +.state dat)
     ^-  [caz=(list card) dat=dat-now:f]
     %.  [bowl !<(order:rudder vase) +.state]
-    %:  (steer:rudder dat-now:f act-now:f)
-      my-pagz
-    ::
-      (point /apps/[dap.bowl] ~(key by my-pagz))
-    ::
-      (fours:rudder +.state)
-    ::
-      |=  act=act-now:f
-      ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
-      ~&  act
-      :-  ~  ::  message? TODO: Make this the path of the action
-      :_  +.state
-      ::  TODO: eager evaluate the cards?
-      ^-  (list card)
-      %+  turn  `(list poke:f)`act
-      |=  [lag=flag:f pod=prod:f]
-      :*  %pass   /[dap.bowl]/proj/(scot %p p.lag)/[q.lag]
-          %agent  [p.lag dap.bowl]
-          %poke   fund-poke+!>([lag pod])
-      ==
+    %-  (steer:rudder dat-now:f act-now:f)
+    :^  pagz  route:h  (fours:rudder +.state)
+    |=  act=act-now:f
+    ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
+    ~&  act
+    :-  ~  ::  message? TODO: Make this the path of the action
+    :_  +.state
+    ::  TODO: eager evaluate the cards?
+    ^-  (list card)
+    %+  turn  `(list poke:f)`act
+    |=  [lag=flag:f pod=prod:f]
+    :*  %pass   /[dap.bowl]/proj/(scot %p p.lag)/[q.lag]
+        %agent  [p.lag dap.bowl]
+        %poke   fund-poke+!>([lag pod])
     ==
   ==
 ::

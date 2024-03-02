@@ -1,1 +1,0 @@
-../../../../bare/app/fund/modals/modal-worker-cancel-project.hoon

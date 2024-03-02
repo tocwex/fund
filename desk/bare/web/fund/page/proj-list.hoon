@@ -13,7 +13,7 @@
   =/  dyp=@tas  (rear `(list knot)`pat)
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  "%fund - {<dyp>} dashboard"
+  :^  bol  ord  "{<dyp>} dashboard"
   |^  ?+    dyp  !!
           %worker
         =/  my-prez  ~(tap by (prez-mine:sss:f bol dat))

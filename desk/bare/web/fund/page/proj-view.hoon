@@ -22,7 +22,7 @@
   =/  unf=@rs  =+(u=(sub:rs cos (add:rs fil pej)) ?:((gth:rs u .0) u .0))
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  "%fund - {(trip title.pro)}"
+  :^  bol  ord  "{(trip title.pro)}"
   ;div(id "maincontent", class "mx-auto lg:px-4")
     ;div(id "maincontent", class "mx-auto")
       ;div(class "px-4 text-4xl sm:text-5xl"): {(trip title.pro)}

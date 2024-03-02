@@ -10,7 +10,7 @@
   ::  TODO: Parse assessment information into [who cut]
   ::  TODO: How will we pass milestone information?
   =+  rex=(malt ~[['nam' &] ['sum' |] ['pic' |] ['miz' |] ['ses' |]])
-  ?+  arz=(pargs:fh bod rex)  p.arz  [%| *]
+  ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
     =/  lag=flag:f  [our.bol (asci:fx (~(got by p.arz) 'nam'))]
     ?:  (~(has by proz.dat) lag)  (crip "project already exists: {<lag>}")
     ;;  act-now:f
@@ -34,7 +34,7 @@
   ::  TODO: Need to inspect path and pre-populate forms if a project exists
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  "%fund - project edit"
+  :^  bol  ord  "project edit"
   ;div(id "maincontent", class "mx-auto lg:px-4")
     ;form(method "post", autocomplete "off")
       ;div

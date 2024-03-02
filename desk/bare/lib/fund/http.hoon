@@ -32,14 +32,14 @@
     ==
   ==
 ::
-::  +pargs: parse POST request parameters, considering required arguments
+::  +parz: parse POST request parameters considering required arguments
 ::
 ::    =+  rex=(malt ~[['required' &] ['optional' |] ...])
 ::    ?+  arz=(pargs:web:f body rex)  p.arz  [%| *]
 ::      ::  ... process `arz` here ...
 ::    ==
 ::
-++  pargs
+++  parz
   |=  [bod=(unit octs) rex=(map @t bean)]
   ^-  (each @t (map @t @t))
   ?~  bod  &+'no http request body provided'
@@ -94,52 +94,46 @@
       ;head
         ;meta(charset "UTF-8");
         ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
-        ::  TODO: Auto-add '%fund' to the front, and '%fund - ' if 'tyt'
-        ::  is non-empty
-        ;title: {tyt}
+        ;title: {(weld "%fund - " ?~(tyt "home" tyt))}
         ;link/"{(aurl /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
         ;link/"{go-base}"(rel "preconnect");
         ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
         ::  FIXME: Make this line legible somehow
         ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
         ;link(rel "stylesheet", href "{sl-base}/themes/light.css");
+        ::  NOTE: We have a local script that sets '.block' to hide elements so
+        ::  that the document is hidden before 'twind' loads and applies styles
+        ::  to the document (which will override '.block' to do the opposite).
+        ;style: {".block \{ display: none; }"}
         ;script(type "module", src "{sl-base}/shoelace-autoloader.js");
         ;script(src "/session.js");  ::  debug-only
         ;+  (inject:tonic q.byk.bol)  ::  debug-only
       ==
-      ;body(class "text-base font-serif", style "visibility: hidden;")
+      ;body(class "text-base font-serif block")
         ;+  (header bol ord)
         ;+  bod
         ;+  (footer bol ord)
       ==
       ;+  ;script(type "module"): {^~((trip boot-js))}
-      ::  ;+  %:  mx
-      ::        %body
-      ::        'max-w-screen-2xl mx-auto text-base font-serif'
-      ::        ~[[%x-data "twind"] [%style "visibility: hidden;"]]
-      ::        :(welp head body foot)
-      ::      ==
     ==
   ++  header
     |=  [bol=bowl:gall ord=order:rudder]
     ^-  manx
     =/  [pat=(pole knot) *]  (durl url.request.ord)
-    ;nav(class "lg:mx-4 mt-1.5 mb-2")
-      ;ul(class "py-2 flex justify-between border-black border-b-2")
-        ;div(class "mx-2")
-          ;+  ?-    pat
-                  ?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~])
-                ;a/"{(aurl (snip `(list knot)`pat))}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-                  ; ← back
-                ==
-              ::
-                  *
-                ;a/"{(aurl /)}"(class "flex items-center gap-x-2 text-xl border-2 rounded-sm border-white ease-in-out hover:text-yellow-500 duration-300 font-medium")
-                  ; %fund
-                ==
+    ;nav
+      ;div(class "flex justify-between p-2 lg:px-4 border-black border-b-2")
+        ;+  ?-    pat
+                ?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~])
+              ;a/"{(aurl (snip `(list knot)`pat))}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
+                ; ← back
               ==
-        ==
-        ;div(class "flex gap-x-2 mx-2")
+            ::
+                *
+              ;a/"{(aurl /)}"(class "flex items-center gap-x-2 text-xl border-2 rounded-sm border-white ease-in-out hover:text-yellow-500 duration-300 font-medium")
+                ; %fund
+              ==
+            ==
+        ;div(class "flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with further redirects
           ::  (e.g. to the ship login page for eAuth)
@@ -151,7 +145,7 @@
                 ==
           ==
           ;button(id "connect-wallet", class "cursor-pointer text-nowrap px-2 py-1 border-2 duration-300 border-black bg-black text-white hover:text-black rounded-md hover:rounded-lg hover:bg-white hover:border-gray-800 active:bg-gray-800 active:border-black active:text-white")
-            ; connect 💰
+            ; …loading…
           ==
         ==
       ==
@@ -159,8 +153,8 @@
   ++  footer
     |=  [bol=bowl:gall ord=order:rudder]
     ^-  manx
-    ;footer(class "lg:mx-4")
-      ;div(class "justify-center border-t-2 border-black pt-2 pb-1 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
+    ;footer
+      ;div(class "justify-center border-t-2 p-2 lg:px-4 border-black lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
         ;div(class "flex justify-center grow lg:grow-0 lg:justify-end lg:p-2")
           ;div(class "px-10 lg:px-2")
             ;a(href "https://tlon.network/lure/~tocwex/syndicate-public", target "_blank")

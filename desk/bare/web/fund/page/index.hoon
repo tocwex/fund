@@ -11,7 +11,7 @@
   ^-  reply:rudder
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  "%fund"
+  :^  bol  ord  ~
   |^  ;div(id "maincontent", class "mx-auto lg:px-4")
         ;+  %^  dash-well  %funder
               "funding contributor"

@@ -46,7 +46,7 @@
     =-  (fall - [0 i.milestones])
     ^-  (unit [@ mile])
     =-  ?~(- ~ (some i.-))
-    %+  skim  (enum:lhex:fx milestonez)
+    %+  skim  (enum:fx milestonez)
     |=  [a=@ n=mile]
     ?=(?(%born %lock %work %sess) status.n)
   --

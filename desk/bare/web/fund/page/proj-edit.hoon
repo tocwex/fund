@@ -11,7 +11,7 @@
   ::  TODO: How will we pass milestone information?
   =+  rex=(malt ~[['nam' &] ['sum' |] ['pic' |] ['miz' |] ['ses' |]])
   ?+  arz=(pargs:fh bod rex)  p.arz  [%| *]
-    =/  lag=flag:f  [our.bol (asci:lhex:fx (~(got by p.arz) 'nam'))]
+    =/  lag=flag:f  [our.bol (asci:fx (~(got by p.arz) 'nam'))]
     ?:  (~(has by proz.dat) lag)  (crip "project already exists: {<lag>}")
     ;;  act-now:f
     %-  turn  :_  |=(p=prod:f `poke:f`[lag p])
@@ -24,10 +24,10 @@
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
   ::  TODO: Redirect to the actual project page page when it's ready
-  ::  TODO: Redirect to original page if there was an error (and render
-  ::  with error message)
+  ::  (given that we forward cards, how do we determine this? perhaps we
+  ::  need to eargerly apply these cards?)
   ?.  gud  [%code 422 txt]
-  [%next (spat (aurl:fh /dashboard/worker)) '']
+  [%next (crip (aurl:fh /dashboard/worker)) '']
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder

@@ -59,7 +59,7 @@
 ++  durl
   |=  cor=cord  ~+
   ^-  [=path query=(map @t @t)]
-  =/  [pre=tape suf=tape]  (chop:lhex:fx (trip cor) '?')
+  =/  [pre=tape suf=tape]  (chop:fx (trip cor) '?')
   :-  (need (decap:rudder /apps/fund (stab (crip pre))))
   ?:(=(~ suf) ~ (frisk:rudder (crip suf)))
 ::
@@ -84,7 +84,7 @@
 ::
 ++  htmx
   |%
-  ++  style  |=(bol=bowl:gall (read-file:larv:fx bol /web/fund/style/css))
+  ++  style  |=(bol=bowl:gall (read-file:fx bol /web/fund/style/css))
   ++  render
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx

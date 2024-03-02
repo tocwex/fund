@@ -157,7 +157,7 @@
       ;div(class "px-4")
         ;div(class "text-3xl pt-2"): Milestone Overview
         ;*  =/  fiz=(list @rs)  ~(film pj:f pro)
-            %+  turn  (enum:lhex:fx `(list mile:f)`milestones.pro)
+            %+  turn  (enum:fx `(list mile:f)`milestones.pro)
             |=  [pin=@ mil=mile:f]
             ^-  manx
             =/  fil=@rs  (snag pin fiz)

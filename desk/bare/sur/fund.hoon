@@ -142,30 +142,12 @@
 ::  $prod: raw action identifier
 ::
 +$  prod
-  $%  [%init-proj ~]
-      [%drop-proj ~]
-      [%join-proj ~]
-      [%exit-proj ~]
-      $:  %edit-proj
-          nam=(unit @t)
-          sum=(unit @t)
-          pic=(unit @t)
-          ::  woz=(unit (set @p))
-          ses=(unit sess)
-      ==
-      [%mula-proj mula]
-      ::  NOTE: `nex=%lock` status requires non-null `bil`
-      [%bump-proj sat=stat bil=(unit bill)]
-      [%init-mile mid=@ud]
-      [%drop-mile mid=@ud]
-      $:  %edit-mile
-          mid=@ud
-          nam=(unit @t)
-          sum=(unit @t)
-          pic=(unit @t)
-          cos=(unit @rs)
-          ::  tim=(unit bloq)
-      ==
+  $%  [%init pro=(unit proj)]
+      [%drop ~]
+      [%bump sat=stat bil=(unit bill)]
+      [%join ~]
+      [%exit ~]
+      [%mula mula]
   ==
 ::  $poke: project-bound action (prod)
 ::

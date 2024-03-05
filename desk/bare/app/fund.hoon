@@ -90,14 +90,14 @@
     =+  !<([=flag:f =prod:f] vase)
     =/  has=?  (~(has by us-prez) flag)
     =/  myn=?  =(our.bowl p.flag)
-    ?:  ?=(%join-proj -.prod)
+    ?:  ?=(%join -.prod)
       ?>  &(!has !myn)
       po-abet:po-join:(po-abed:po-core flag)
-    ?:  ?=(%exit-proj -.prod)
+    ?:  ?=(%exit -.prod)
       ?>  &(has !myn)
       po-abet:po-exit:(po-abed:po-core flag)
     ?:  =(p.flag our.bowl)
-      ?>  |(has ?=(%init-proj -.prod))
+      ?>  |(has ?=(%init -.prod))
       po-abet:(po-push:(po-abed:po-core flag) prod)
     po-abet:(po-poxy:(po-abed:po-core flag) prod)
   ::  sss pokes  ::
@@ -225,13 +225,9 @@
         %peon
     ^-  need=perm:f
     ?+  -.prod    %peon
-      %init-proj  %boss
-      %drop-proj  %boss
-      %edit-proj  %help
-      %bump-proj  %help
-      %init-mile  %help
-      %drop-mile  %help
-      %edit-mile  %help
+      %init  %boss
+      %drop  %boss
+      %bump  %help
     ==
   ::
   ++  po-init
@@ -252,17 +248,17 @@
     ^+  po-core
     =/  =prod:f
       ?-  what.res
-        %tomb  [%drop-proj ~]
+        %tomb  [%drop ~]
         %wave  q.poke.wave.res
-        %rock  [%init-proj ~]
+        %rock  [%init ~]
       ==
-    ?:  ?=(%drop-proj -.prod)  po-exit
+    ?:  ?=(%drop -.prod)  po-exit
     po-core(cor (pull (apply:da-proz res)))
   ++  po-push
     |=  =prod:f
     ^+  po-core
     ?>  (po-do-writ prod)
-    ?:  ?=(%drop-proj -.prod)
+    ?:  ?=(%drop -.prod)
       po-core(cor (push (kill:du-proz [po-du-path]~)), gone &)
     =.  proj  (proj-wash:sss:f proj bowl flag prod)
     =.  cor   (push (give:du-proz po-du-path bowl flag prod))

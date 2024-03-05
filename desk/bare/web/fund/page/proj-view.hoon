@@ -20,15 +20,15 @@
   =/  fil=@rs  ~(fill pj:f pro)
   =/  pej=@rs  ~(plej pj:f pro)
   =/  unf=@rs  =+(u=(sub:rs cos (add:rs fil pej)) ?:((gth:rs u .0) u .0))
+  =/  sat=stat:f  ~(stat pj:f pro)
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "{(trip title.pro)}"
   ;div(id "maincontent", class "mx-auto lg:px-4")
     ;div(id "maincontent", class "mx-auto")
-      ;div(class "px-4 text-4xl sm:text-5xl"): {(trip title.pro)}
-      ;div(class "px-4 flex items-center text-nowrap")
-        ;div(class "my-1 py-1 text-xl"): Project Status:
-        ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
+      ;div(class "flex flex-wrap items-center justify-between")
+        ;div(class "px-4 text-4xl sm:text-5xl"): {(trip title.pro)}
+        ;+  (stat-pill:htmx:fh sat)
       ==
       ;+  ?~  image.pro  ;div;
           ;img@"{(trip u.image.pro)}"(class "mx-auto w-full my-2 sm:px-4");

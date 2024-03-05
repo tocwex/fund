@@ -5,28 +5,25 @@
 ### Basic Tests ###
 
 ```
-:fund &fund-poke [[our %test] %init-proj ~]
-:fund &fund-poke [[our %test] %edit-proj `'test' `'desc' `'https://picsum.photos/200' `[our .0.01]]
-:fund &fund-poke [[our %test] %edit-mile 0 `'m2' `'d2' `'https://picsum.photos/200' `.200]
-:fund &fund-poke [[our %test] %init-mile 0]
-:fund &fund-poke [[our %test] %edit-mile 0 `'m1' `'d1' `'https://picsum.photos/200' `.100]
-:fund &fund-poke [[our %test] %init-mile 2]
-:fund &fund-poke [[our %test] %drop-mile 2]
-:fund &fund-poke [[our %test] %bump-proj %prop ~]
-:fund &fund-poke [[our %test] %bump-proj %born ~]
-:fund &fund-poke [[our %test] %bump-proj %prop ~]
-:fund &fund-poke [[our %test] %bump-proj %lock `[1 0x0 0x0 0x0]]
-:fund &fund-poke [[our %test] %bump-proj %work ~]
-:fund &fund-poke [[our %test] %bump-proj %sess ~]
-:fund &fund-poke [[our %test] %bump-proj %done ~]
-:fund &fund-poke [[our %test] %bump-proj %work ~]
-:fund &fund-poke [[our %test] %mula-proj %plej our .10 0 (crip "{<our>} plej")]
-:fund &fund-poke [[our %test] %mula-proj %trib `our .10 [1 0x0 0x0] (crip "{<our>} cont")]
-:fund &fund-poke [[our %test] %mula-proj %plej our .20 0 (crip "{<our>} plej")]
-:fund &fund-poke [[our %tes2] %init-proj ~]
-:fund &fund-poke [[our %tes2] %edit-proj `'test-2' `'desc-2' `'https://picsum.photos/200' `[our .0]]
-:fund &fund-poke [[our %tes2] %edit-mile 0 `'m1-2' `'d1-2' `'https://picsum.photos/200' `.1e6]
-:fund &fund-poke [[our %tes2] %bump-proj %prop ~]
+=f -build-file /=fund=/sur/fund/hoon
+=p *proj:f
+=m *mile:f
+:fund &fund-poke [[our %test] %init ~]
+:fund &fund-poke [[our %test] %init `p(title 'test', summary 'desc', assessment [our .0], milestones ~[m(title 'm1', summary 'd1', cost .100) m(title 'm2', summary 'd2', cost .200)])]
+:fund &fund-poke [[our %test] %bump %prop ~]
+:fund &fund-poke [[our %test] %bump %born ~]
+:fund &fund-poke [[our %test] %bump %prop ~]
+:fund &fund-poke [[our %test] %bump %lock `[1 0x0 0x0 0x0]]
+:fund &fund-poke [[our %test] %bump %work ~]
+:fund &fund-poke [[our %test] %bump %sess ~]
+:fund &fund-poke [[our %test] %bump %done ~]
+:fund &fund-poke [[our %test] %bump %work ~]
+:fund &fund-poke [[our %test] %mula %plej our .10 0 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %mula %trib `our .10 [1 0x0 0x0] (crip "{<our>} cont")]
+:fund &fund-poke [[our %test] %mula %plej our .20 0 (crip "{<our>} plej")]
+:fund &fund-poke [[our %tes2] %init ~]
+:fund &fund-poke [[our %tes2] %init `p(title 'test-2', summary 'desc-2', image `'https://picsum.photos/200', assessment [our .0], milestones ~[m(title 'm1-2', summary 'd1-2', cost .1e6)])]
+:fund &fund-poke [[our %tes2] %bump %prop ~]
 ```
 
 ### Deletion Tests ###
@@ -34,7 +31,7 @@
 Only run these commands after running all of the basic test commands.
 
 ```
-:fund &fund-poke [[our %test] %drop-proj ~]
+:fund &fund-poke [[our %test] %drop ~]
 ```
 
 ### Error Tests ###
@@ -42,18 +39,14 @@ Only run these commands after running all of the basic test commands.
 Only run these commands after running all of the basic test commands.
 
 ```
-:fund &fund-poke [[our %test] %mula-proj %plej our .30 0 (crip "{<our>} bad plej")]
-:fund &fund-poke [[our %test] %mula-proj %cont `our .10 [1 0x0 0x0] (crip "{<our>} bad cont")]
-:fund &fund-poke [[our %test] %init-proj ~]
-:fund &fund-poke [[our %test] %edit-proj ~ `'desc-2' ~ ~]
-:fund &fund-poke [[our %test] %init-mile 0]
-:fund &fund-poke [[our %test] %edit-mile 0 ~ `'d1-2' ~ ~]
-:fund &fund-poke [[our %test] %drop-mile 0]
-:fund &fund-poke [[our %test] %bump-proj %born ~]
-:fund &fund-poke [[our %test] %bump-proj %prop ~]
-:fund &fund-poke [[our %test] %bump-proj %lock `[0 0x0 0x0 0x0]]
-:fund &fund-poke [[our %test] %join-proj ~]
-:fund &fund-poke [[our %test] %exit-proj ~]
+:fund &fund-poke [[our %test] %mula %plej our .30 0 (crip "{<our>} bad plej")]
+:fund &fund-poke [[our %test] %mula %trib `our .10 [1 0x0 0x0] (crip "{<our>} bad cont")]
+:fund &fund-poke [[our %test] %init ~]
+:fund &fund-poke [[our %test] %bump %born ~]
+:fund &fund-poke [[our %test] %bump %prop ~]
+:fund &fund-poke [[our %test] %bump %lock `[0 0x0 0x0 0x0]]
+:fund &fund-poke [[our %test] %join ~]
+:fund &fund-poke [[our %test] %exit ~]
 ```
 
 ### Permissions Tests ###
@@ -113,8 +106,8 @@ a different ship:
 ## Poke Tests ##
 
 ```
-:fund &fund-poke [[~zod %test] %join-proj ~]
-:fund &fund-poke [[~zod %test] %exit-proj ~]
+:fund &fund-poke [[~zod %test] %join ~]
+:fund &fund-poke [[~zod %test] %exit ~]
 ```
 
 ## eAuth Tests ##

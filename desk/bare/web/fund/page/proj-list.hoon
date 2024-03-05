@@ -69,7 +69,7 @@
         ==
       ==
   ++  prez-welz
-    |=  [tyt=tape new=bean poz=(list [flag:f prej:f])]
+    |=  [tyt=tape new=bean pez=(list [flag:f prej:f])]
     ^-  manx
     ;div
       ;div(class "flex justify-between")
@@ -81,11 +81,11 @@
               ==
             ==
       ==
-      ;*  ?~  poz
+      ;*  ?~  pez
             :~  ;div(class "italics mx-4 text-gray-600")
                   ; No projects found.
             ==  ==
-          %+  turn  poz
+          %+  turn  pez
           |=  [[sip=@p nam=@tas] pro=proj:f liv=?]
           ^-  manx
           =/  cos=@rs  ~(cost pj:f pro)
@@ -118,10 +118,14 @@
               ==
             ==
             ;div(class "py-1"): {(trip summary.pro)}
-            ;div(class "")
+            ;div(class "flex gap-x-4")
               ;a/"{(aurl:fh /project/(scot %p sip)/[nam])}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
                 ; view project →
               ==
+              ;*  ?.  =(our.bol sip)  ~
+                :~  ;a/"{(aurl:fh /project/(scot %p sip)/[nam]/edit)}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
+                      ; edit project →
+                ==  ==
             ==
           ==
     ==

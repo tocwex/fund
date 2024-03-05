@@ -27,6 +27,8 @@
       ~                                   `[%away (snip syt)]
       [%project ~]                        `[%page | %proj-edit]
     ==
+    ::  TODO: Verify valid @p and @tas flag here to keep excessive error
+    ::  handling from the `proj-edit.hoon` page
     [%project @ @ suf=*]  ?+  suf.pat     ~
       ~                                   `[%page | %proj-view]
       [%edit ~]                           `[%page | %proj-edit]
@@ -55,6 +57,13 @@
   :_  ?~(nex arz (~(put by arz) arg u.nex))
   ?.(&(req =(~ nex)) mis (~(put in mis) arg))
 ::
+::  +aurl: a(pp) url - produce a path relative to the site's base url
+::
+++  aurl
+  |=  pat=path  ~+
+  ^-  tape
+  (spud (weld /apps/fund pat))
+::
 ::  +durl: d(ecode) url - extracts path and query arguments from raw url
 ::
 ++  durl
@@ -64,12 +73,15 @@
   :-  (need (decap:rudder /apps/fund (stab (crip pre))))
   ?:(=(~ suf) ~ (frisk:rudder (crip suf)))
 ::
-::  +aurl: a(pp) url - produce a path relative to the site's base url
+::  +furl: f(lag) url - extracts the ship path from the url (if it exists)
 ::
-++  aurl
-  |=  pat=path  ~+
-  ^-  tape
-  (spud (weld /apps/fund pat))
+++  furl
+  |=  cor=cord  ~+
+  ^-  (unit flag:f)
+  =/  [pat=(pole knot) *]  (durl cor)
+  ?+  pat  ~
+    [%project sip=@ nam=@ *]  (both (slaw %p sip.pat) (slaw %tas nam.pat))
+  ==
 ::
 ::  +authed: is `src.bowl` in the given bowl an authenticated user?
 ::

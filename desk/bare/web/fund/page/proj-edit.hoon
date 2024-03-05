@@ -4,6 +4,7 @@
 /+  rudder, s=server
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
++*  pflag  (furl:fh url.request.ord)
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
@@ -12,23 +13,26 @@
   ::  - Change `parz:fh` to allow regex arguments, e.g. ['m\dn' |]
   ::  - Generalize logic to handle arbitrary min/max arg specs based on
   ::    the range on continuous valid POST parameters
+  ::  FIXME: There are a lot of silent errors embedded in this function,
+  ::  which should either be made explicit or at least come with a
+  ::  warning (e.g. "unable to parse 'ses' values; bad @p given...")
   =/  rex=(map @t bean)  %-  malt
     %+  weld  ~[['act' &] ['nam' &] ['sum' |] ['pic' |] ['sea' |] ['seo' |]]
     %+  roll  (gulf 0 9)
     |=  [ind=@ acc=(list [@t bean])]
     %+  weld  acc
-    (turn `(list @t)`~['n' 's' 'c'] |=(suf=@t [(crip "m{<ind>}{(trip suf)}") |]))
+    (turn ~['n' 's' 'c'] |=(suf=@t [(crip "m{<ind>}{(trip suf)}") |]))
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
-    =/  lag=flag:f  [our.bol (asci:fx (~(got by p.arz) 'nam'))]
+    =/  lag=flag:f  (fall pflag [our.bol (asci:fx (~(got by p.arz) 'nam'))])
     =/  ses=(unit sess:f)  %+  both
       (slaw %p (~(gut by p.arz) 'sea' (scot %p our.bol)))
       (rush (~(gut by p.arz) 'seo' '0') royl-rs:so)
     ?+      act=(~(got by p.arz) 'act')
-          (crip "bad act; expected (init|prop), not {(trip act)}")
-        %prop
+          (crip "bad act; expected (init|drop|bump), not {(trip act)}")
+        ?(%drop %bump)
       ?.  (~(has by proz.dat) lag)
-        (crip "bad act=prop; project doesn't exist: {<lag>}")
-      ;;(act-now:f [lag %bump %prop ~]~)
+        (crip "bad act={<act>}; project doesn't exist: {<lag>}")
+      ;;(act-now:f [?:(=(act %drop) [lag %drop ~] [lag %bump %prop ~]) ~])
     ::
         %init
       =-  ;;(act-now:f [lag %init `-]~)
@@ -60,20 +64,16 @@
   ::  TODO: Redirect to the actual project page page when it's ready
   ::  (given that we forward cards, how do we determine this? perhaps we
   ::  need to eargerly apply these cards?)
+  ::  TODO: Need to properly redirect based on the kind of action
+  ::  performed; going to the worker dashboard is fine when we delete a
+  ::  project
   ?.  gud  [%code 422 txt]
   [%next (crip (aurl:fh /dashboard/worker)) '']
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  [pat=(pole knot) *]  (durl:fh url.request.ord)
-  =/  pru=(unit proj:f)
-    ?+    pat  ~
-        [%project sip=@ nam=@ *]
-      %-  bind  :_  |=(p=prej:f -.p)
-      %-  ~(get by (prez-ours:sss:f bol dat))
-      [(slav %p sip.pat) (slav %tas nam.pat)]
-    ==
-  =/  sat=stat:f  ?~(pru %born ~(stat pj:f u.pru))
+  =/  pru=(unit prej:f)  ?~(pflag ~ (~(get by (prez-ours:sss:f bol dat)) (need pflag)))
+  =/  sat=stat:f  ?~(pru %born ~(stat pj:f -.u.pru))
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
@@ -85,7 +85,7 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-xl")
                   ; Funding Goal:
-                  ;span(id "proj-cost"): ${(r-co:co (rlys ?~(pru .0 ~(cost pj:f u.pru))))}
+                  ;span(id "proj-cost"): ${(r-co:co (rlys ?~(pru .0 ~(cost pj:f -.u.pru))))}
                 ==
                 ;+  (stat-pill:htmx:fh sat)
               ==
@@ -182,7 +182,7 @@
                   ; escrow assessor
                 ==
                 ;div(class "flex justify-between")
-                  ;input(type "text", name "sea", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "{(scow %p our.bol)}");
+                  ;input(type "text", name "sea", value "{(trip ?~(pru '' (scot %p p.assessment.u.pru)))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "{(scow %p our.bol)}");
                 ==
               ==
               ;div(class "m-1 p-1 w-full flex items-end")
@@ -191,7 +191,7 @@
                     ; assessor fee offer ($)
                   ==
                   ;div(class "flex")
-                    ;input(type "number", name "seo", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "0");
+                    ;input(type "number", name "seo", value "{?~(pru *tape (r-co:co (rlys q.assessment.u.pru)))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "0");
                   ==
                 ==
               ==
@@ -207,10 +207,10 @@
                 ;button(type "submit", name "act", value "init", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
                   ; save draft ~
                 ==
-                ;button(class "text-nowrap px-2 py-1 border-2 border-red-600 bg-red-600 text-white rounded-md hover:border-red-500 hover:bg-red-500 active:border-red-700 active:bg-red-700")
+                ;button(type "submit", name "act", value "drop", class "text-nowrap px-2 py-1 border-2 border-red-600 bg-red-600 text-white rounded-md hover:border-red-500 hover:bg-red-500 active:border-red-700 active:bg-red-700")
                   ; delete draft ✗
                 ==
-                ;button(tyep "submit", name "act", value "prop", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
+                ;button(tyep "submit", name "act", value "bump", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
                   ; request escrow ✓
                 ==
               ==

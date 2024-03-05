@@ -22,31 +22,58 @@ backward compatibility. To restore your desk, run the following command(s):
 ## Build/Develop ##
 
 All commands assume that the current working directory is this repository's
-base directory and use [durploy] to streamline various Urbit development
-workflows.
+base directory and optionally use [durploy] to streamline various Urbit
+development workflows.
 
 ### First-time Setup ###
 
-Run the following commands to download [durploy] create a new [fake
-`~zod`][fakezod] with the `%fund` desk.
+Run the following commands to create a new [fake `~zod`][fakezod] with the
+`%fund` desk installed:
+
+##### With `durploy` #####
 
 ```bash
 curl -LO https://raw.githubusercontent.com/sidnym-ladrut/durploy/release/durploy
 chmod u+x ./durploy
 ./durploy ship zod
-# In a different terminal:
+# in a different terminal
 ./durploy desk zod fund ./desk/full/
+```
+
+##### Without `durploy` #####
+
+```bash
+urbit -F zod
+|new-desk %fund
+|mount %fund
+|exit
+rm -rI ./zod/fund/*
+cp -RL ./desk/full/* ./zod/fund/
+urbit ./zod
+|commit %fund
+|install our %fund
 ```
 
 ### Development Workflows ###
 
 #### Back-end Workflows ####
 
-In order to continuously test back-end code changes as they're made, run the
+In order to continuously test back-end code changes as they're made, make sure
+you have your [fake `~zod`][fakezod] running in the background and execute the
 following commands:
+
+##### With `durploy` #####
 
 ```bash
 ./durploy desk -w zod fund ./desk/full/
+```
+
+##### Without `durploy` #####
+
+```bash
+cp -fRL ./desk/full/ ./zod/fund/
+# in the fakezod terminal
+|commit %fund
 ```
 
 #### Front-end Workflows ####

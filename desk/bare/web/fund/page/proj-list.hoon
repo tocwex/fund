@@ -88,10 +88,6 @@
           %+  turn  pez
           |=  [[sip=@p nam=@tas] pro=proj:f liv=?]
           ^-  manx
-          =/  cos=@rs  ~(cost pj:f pro)
-          =/  fil=@rs  ~(fill pj:f pro)
-          =/  pej=@rs  ~(plej pj:f pro)
-          =/  unf=@rs  =+(u=(sub:rs cos (add:rs fil pej)) ?:((gth:rs u .0) u .0))
           ;div(class "m-1 p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap items-center justify-between")
               ;div(class "flex flex-wrap items-center")
@@ -99,24 +95,7 @@
               ==
               ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
             ==
-            ;div(class "flex flex-wrap justify-between items-center")
-              ;div(class "px-2")
-                ;span(class "underline"): ${(r-co:co (rlys cos))}
-                ; target
-              ==
-              ;div(class "px-2")
-                ;span(class "underline"): ${(r-co:co (rlys fil))}
-                ; fulfilled
-              ==
-              ;div(class "px-2")
-                ;span(class "underline"): ${(r-co:co (rlys pej))}
-                ; pledged
-              ==
-              ;div(class "px-2")
-                ;span(class "underline"): ${(r-co:co (rlys unf))}
-                ; unfunded
-              ==
-            ==
+            ;+  (mula-ther:htmx:fh ~(cost pj:f pro) ~(fill pj:f pro) ~(plej pj:f pro))
             ;div(class "py-1"): {(trip summary.pro)}
             ;div(class "flex gap-x-4")
               ;a/"{(aurl:fh /project/(scot %p sip)/[nam])}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
@@ -131,3 +110,5 @@
     ==
   --
 --
+::  RELOAD
+::  RELOAD

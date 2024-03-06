@@ -1,26 +1,33 @@
 /+  sss, rudder
 |%
 +|  %meta
+::
 ::  $epic: interface version number (type)
 ::
 +$  epic  @ud
+::
 ::  $epic-now: interface version number (value)
 ::
 ++  epic-now  `epic`0
 
 +|  %base
+::
 ::  $flag: identifier for a project (ship, id)
 ::
 +$  flag  (pair @p @tas)
+::
 ::  $sess: assessment information (ship, cut)
 ::
 +$  sess  (pair @p @rs)
+::
 ::  $addr: blockchain address
 ::
 +$  addr  @ux  ::  address:ethereum-types
+::
 ::  $bloq: blockchain block height
 ::
 +$  bloq  @ud  ::  event-id:ethereum-types
+::
 ::  $bill: blockchain project bill
 ::
 +$  bill
@@ -30,6 +37,7 @@
       sess=addr
       ::  hash=@ux  ::  TODO: include Urbit side?
   ==
+::
 ::  $stub: blockchain contribution payment stub
 ::
 +$  stub
@@ -37,6 +45,7 @@
       from=addr
       coin=addr
   ==
+::
 ::  $perm: permission level (associated with $poke/$prod)
 ::
 +$  perm
@@ -45,6 +54,7 @@
       %help  ::  worker action
       %peon  ::  viewer action
   ==
+::
 ::  $role: peer role relative to a work unit
 ::
 +$  role
@@ -54,9 +64,11 @@
       %fund  ::  project pledger/contributor
       %look  ::  project follower
   ==
+::
 ::  $rolz: role sets keyed by project id (host/term)
 ::
 +$  rolz  (jug flag role)
+::
 ::  $stat: status of work unit (project, milestone)
 ::
 +$  stat
@@ -69,6 +81,7 @@
       %done  ::  completed successfully
       %dead  ::  completed unsuccessfully
   ==
+::
 ::  $plej: pledge for contribution
 ::
 +$  plej
@@ -77,6 +90,7 @@
       when=bloq
       note=@t
   ==
+::
 ::  $trib: actualization of contribution
 ::
 +$  trib
@@ -85,6 +99,7 @@
       when=stub
       note=@t
   ==
+::
 ::  $mula: investment via pledge ($plej) or contribution ($trib)
 ::
 +$  mula
@@ -93,6 +108,7 @@
   ==
 
 +|  %core
+::
 ::  $mile: segment of work (milestone) within a project
 ::
 +$  mile
@@ -106,6 +122,7 @@
       ::  terminate=bloq  ::  undecided feature
       ::  fill=@rs  ::  reduction over `contribs`
   ==
+::
 ::  $proj: collection of work (milestones) requesting funding
 ::
 ++  proj
@@ -128,17 +145,21 @@
   ++  lake  (lake:sss rock wave)
   +$  path  [%fund %proj ship=@ name=@ ~]
   --
+::
 ::  $proz: collection of projects keyed by id (host/term)
 ::
 +$  proz  (map flag proj)
+::
 ::  $prej: project with peer information
 ::
 +$  prej  [proj live=?]
+::
 ::  $prez: project collection with peer information
 ::
 +$  prez  (map flag prej)
 
 +|  %face
+::
 ::  $prod: raw action identifier
 ::
 +$  prod
@@ -149,9 +170,11 @@
       [%exit ~]
       [%mula mula]
   ==
+::
 ::  $poke: project-bound action (prod)
 ::
 +$  poke  (pair flag prod)
+::
 ::  $dat-now: top-level app data; forwarded to rudder-related requests
 ::
 +$  dat-now
@@ -160,13 +183,16 @@
       subs=_(mk-subs:sss *lake:proj path:proj)
       pubs=_(mk-pubs:sss *lake:proj path:proj)
   ==
+::
 ::  $act-now: action data forwarded to rudder-related POST requests
 ::
 +$  act-now  (lest poke)
-::  $page: base data structure for rudder-related page cores
+::
+::  $pag-now: base data structure for rudder-related page cores
 ::
 +$  pag-now  (page:rudder dat-now act-now)
-::  $pagz: map from page path to rudder page core (for imports with /~)
+::
+::  $paz-now: map from page path to rudder page core (for imports with /~)
 ::
 +$  paz-now  (map knot pag-now)
 --

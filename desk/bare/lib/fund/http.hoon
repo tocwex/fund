@@ -167,7 +167,7 @@
             ;script(src "/session.js");  ::  debug-only
             ;+  (inject:tonic q.byk.bol)  ::  debug-only
           ==
-          ;body(class "text-base font-serif block {cas}")
+          ;body(class "text-base font-serif block max-w-screen-2xl {cas}")
             ;+  head
             ;+  bod
             ;+  foot
@@ -265,11 +265,7 @@
   ++  stat-pill
     |=  sat=stat
     ^-  manx
-    =-  ;div(class "flex items-center {cas}")
-          ;div(class "text-nowrap px-2 py-1 border-2 rounded-full font-medium {kas}")
-            ; {nam}
-          ==
-        ==
+    =-  ;div(class "text-nowrap px-2 py-1 border-2 rounded-full {cas} {kas}"): {nam}
     ^-  [nam=tape kas=tape]
     =-  [(stat:dump sat) "text-{-} border-{-}"]
     ?-  sat

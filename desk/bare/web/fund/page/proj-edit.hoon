@@ -140,8 +140,9 @@
                       ;div(class "m-1 pt-1 border-black font-light")
                         ; milestone cost ($)
                       ==
-                      ::  TODO: Should default to blank if no content, not 0
-                      ;input(id "mile-cost", type "number", name "m{<pin>}c", value "{(mony:dump:fh cost.mil)}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "10000");
+                      ::  FIXME: Absolutely abominable, but needed in order to
+                      ::  allow naive duplication to continue working
+                      ;input(id "mile-cost", type "number", name "m{<pin>}c", onchange "document.querySelector('#proj-cost').innerText = '$' + String(Array.from(document.querySelectorAll('#mile-cost')).reduce((a, n) => a + parseInt(n.value), 0))", value "{?:(=(0 cost.mil) *tape (mony:dump:fh cost.mil))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "10000");
                     ==
                   ==
                   ;div(class "m-1 p-1")
@@ -211,6 +212,12 @@
     ;+  ;script(type "module")
           ;+  ;/  ^~  %-  trip
           '''
+          // document.querySelector("#mile-cost").addEventListener("change", (event) => {
+          //   const totalDiv = document.querySelector("#proj-cost");
+          //   const mileInputs = document.querySelectorAll("#mile-cost");
+          //   const totalAmount = Array.from(mileInputs).reduce((a, n) => a + parseInt(n.value), 0);
+          //   totalDiv.innerText = `\$${totalAmount}`;
+          // });
           document.querySelector("#mile-button").addEventListener("click", (event) => {
             const wellDiv = document.querySelector("#mile-welz");
             const wellClone = document.querySelector("#mile-well").cloneNode(true);
@@ -227,5 +234,3 @@
         ==
   ==
 --
-::  RELOAD
-::  RELOAD

@@ -35,5 +35,3 @@
     [%full (%*(. svg-response:gen:s cache %.y) +.mime)]
   --
 --
-::  RELOAD
-::  RELOAD

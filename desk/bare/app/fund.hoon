@@ -128,7 +128,7 @@
     :^  pagz  route:h  (fours:rudder +.state)
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
-    ~&  act
+    ~&  >  (turn `(list poke:f)`act |=(p=poke:f -.q.p))
     :-  ~  ::  message? TODO: Make this the path of the action
     :_  +.state
     ::  TODO: eager evaluate the cards?

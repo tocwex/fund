@@ -206,7 +206,8 @@
         ; for review of work and release of funds.
         ;div(class "flex w-full justify-center gap-x-2 mx-auto")
           ;*
-          |^  ?+    sat  ~[dead-butt drop-butt]
+          |^  ?+  sat  ~[dead-butt drop-butt]
+                %dead  ~[drop-butt]
                 %born  (weld ?~(pru ~ ~[crow-butt]) ~[init-butt drop-butt])
                 ::  TODO: Exclude 'finalize' button if we have no contract
                 ::  ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butt])

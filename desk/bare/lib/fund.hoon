@@ -149,8 +149,11 @@
         =.  contract.pro  bil.pod
         (edit-milz |=(m=mile m(status sat.pod)))
       ?:  ?=(%lock status.mil)
-        ?>  ?=(%work sat.pod)
-        (edit-mile pin mil(status sat.pod))
+        ?:  ?=(%work sat.pod)
+          (edit-mile pin mil(status sat.pod))
+        ?:  ?=(%dead sat.pod)
+          (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
+        !!  ::  %lock => ?(%born %prop %work %sess) is impossible
       ?:  ?=(?(%work %sess) status.mil)
         ?:  ?=(?(%work %sess %done) sat.pod)
           (edit-mile pin mil(status sat.pod))

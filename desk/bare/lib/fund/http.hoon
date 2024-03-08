@@ -64,6 +64,13 @@
   ^-  tape
   (spud (weld /apps/fund pat))
 ::
+::  +curl: c(hat) url - produce a path to a chat window with a ship
+::
+++  curl
+  |=  sip=@p  ~+
+  ^-  tape
+  (spud /apps/groups/dm/(scot %p sip))
+::
 ::  +durl: d(ecode) url - extracts path and query arguments from raw url
 ::
 ++  durl
@@ -136,6 +143,18 @@
       %done  "completed"
       %dead  "canceled"
     ==
+  --
+::
+::  +claz: poor man's twind class evaluation via @apply
+::
+++  claz
+  |%
+  ++  butt                                       ::  button
+    """
+    text-nowrap px-2 py-1 border-2 duration-300 border-black rounded-md
+    hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400
+    active:bg-yellow-500 active:border-yellow-500
+    """
   --
 ::
 ::  +htmx: html-related helper functions and data, including css, js, components

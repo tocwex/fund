@@ -33,29 +33,25 @@
         ;div(class "")
           ;div(class "mx-auto flex px-4 justify-between sm:justify-normal sm:gap-x-16")
             ;div(class "my-1 py-1 justify-normal items items-center gap-x-4")
-              ;div(class "text-sm font-light underline")
-                ; project worker
-              ==
+              ;div(class "text-sm font-light underline"): project worker
               ;div(class "items-center gap-x-2")
-                ;div(class "mx-1 text-lg font-mono text-nowrap")
-                  ; {(scow %p p.lag)}
+                ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap")
+                  {(scow %p p.lag)}
                 ==
-                ;button(onclick "location.href=''", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-                  ; send message →
-                ==
+                ;+  ?.  =(our.bol p.lag)
+                      ;a/"{(curl:fh p.lag)}"(class butt:claz:fh, target "_blank"): send message →
+                    ;a/"{(aurl:fh (snoc pat %edit))}"(class butt:claz:fh): edit project →
               ==
             ==
             ;div(class "m-1 p-1 justify-normal items items-center gap-x-4")
-              ;div(class "text-sm font-light underline")
-                ; escrow assessor
-              ==
+              ;div(class "text-sm font-light underline"): escrow assessor
               ;div(class "items-center gap-x-2")
-                ;div(class "mx-1 text-lg font-mono text-nowrap")
-                  ; {(scow %p p.assessment.pro)}
+                ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap")
+                  {(scow %p p.assessment.pro)}
                 ==
-                ;button(onclick "location.href=''", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-                  ; send message →
-                ==
+                ;+  ?.  =(our.bol p.assessment.pro)
+                      ;a/"{(curl:fh p.assessment.pro)}"(class butt:claz:fh, target "_blank"): send message →
+                    ;a/"{(aurl:fh (snoc pat %edit))}"(class butt:claz:fh): edit project →
               ==
             ==
           ==

@@ -142,7 +142,7 @@
                       ==
                       ::  FIXME: Absolutely abominable, but needed in order to
                       ::  allow naive duplication to continue working
-                      ;input(id "mile-cost", type "number", name "m{<pin>}c", onchange "document.querySelector('#proj-cost').innerText = '$' + String(Array.from(document.querySelectorAll('#mile-cost')).reduce((a, n) => a + parseInt(n.value), 0))", value "{?:(=(0 cost.mil) *tape (mony:dump:fh cost.mil))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "10000");
+                      ;input(id "mile-cost", type "number", name "m{<pin>}c", onchange "document.querySelector('#proj-cost').innerText = '$' + String(Array.from(document.querySelectorAll('#mile-cost')).reduce((a, n) => a + parseInt(n.value), 0))", value "{?:(=(0 cost.mil) *tape (mony:dump:fh cost.mil))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "0");
                     ==
                   ==
                   ;div(class "m-1 p-1")

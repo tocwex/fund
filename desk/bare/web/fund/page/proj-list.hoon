@@ -101,10 +101,6 @@
               ;a/"{(aurl:fh /project/(scot %p sip)/[nam])}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
                 ; view project →
               ==
-              ;*  ?.  =(our.bol sip)  ~
-                :~  ;a/"{(aurl:fh /project/(scot %p sip)/[nam]/edit)}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-                      ; edit project →
-                ==  ==
             ==
           ==
     ==

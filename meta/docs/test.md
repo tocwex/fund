@@ -45,8 +45,6 @@ Only run these commands after running all of the basic test commands.
 :fund &fund-poke [[our %test] %bump %born ~]
 :fund &fund-poke [[our %test] %bump %prop ~]
 :fund &fund-poke [[our %test] %bump %lock `[0 0x0 0x0 0x0]]
-:fund &fund-poke [[our %test] %join ~]
-:fund &fund-poke [[our %test] %exit ~]
 ```
 
 ### Permissions Tests ###
@@ -108,10 +106,6 @@ a fake `~nec` ship:
 ```
 :fund &fund-poke [[~zod %test] %join ~]
 :fund &fund-poke [[~zod %test] %exit ~]
-```
-
-```
-:fund &fund-poke [[~zod %test] %lure ~nec %sess]
 ```
 
 ## eAuth Tests ##

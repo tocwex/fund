@@ -250,23 +250,21 @@
     |^  ?+    -.pod
         ::  proj prods ::
           ?.  po-is-myn  po-core(cor (emit (po-mk-car p.lag pod)))
-          ?>  (po-do-writ pod)
+          ?>  ~|(bad-writ+[lag pod] (po-do-writ pod))
           ?-    -.pod
               %init
-            ?>  po-is-myn
             ?.  po-is-new  (wash ~)
             po-core(cor (push (public:du-poz [po-du-pat]~)))
           ::
               %drop
-            ?<  po-is-myn
-            ?<  po-is-new
+            ?:  po-is-new  po-core
             po-core(cor (push (kill:du-poz [po-du-pat]~)), gon &)
           ::
               %bump
             =-  (wash -)
             =+  ses=p.assessment.pro
             ?+  sat.pod  ~
-              %prop  ?:(=(our.bol ses) ~ [(po-mk-car ses [%lure ses %sess])]~)
+              %prop  [(po-mk-car ses [%lure ses %sess])]~
               ::  TODO: If this was sent by the user, also send cards to
               ::  close the project path to the retracted assessor
               %born  ?:(=(our.bol ses) ~ ~)
@@ -277,28 +275,28 @@
             =-  (wash -)
             ?.  ?=(%plej +<.pod)  ~
             =+  sip=ship.pod
-            ?:(=(our.bol sip) ~ [(po-mk-car sip [%lure sip %fund])]~)
+            [(po-mk-car sip [%lure sip %fund])]~
           ==
         ::  meta prods ::
             %lure
           ::  FIXME: For a more complete version, maintain a per-ship lure
           ::  list (like group invites from %tlon)
           ?:  =(our.bol who.pod)  $(pod [%join ~])
-          ?<  po-is-new
+          ?.  po-is-new  po-core
           po-core(cor (emit (po-mk-car ?:(po-is-myn who.pod p.lag) pod)))
         ::  meta prods ::
             ?(%join %exit)
           ::  FIXME: Re-add this contraint once an invite mechanism is
           ::  in place (see %lure clause above).
-          ::  ?>  po-is-src
-          ?<  po-is-myn
+          ::  ?>  ~|(bad-meta+[lag pod] po-is-src)
+          ?:  po-is-myn  po-core
           ?-    -.pod
               %join
-            ?>  po-is-new
+            ?.  po-is-new  po-core
             po-core(cor (pull (surf:da-poz po-da-pat)))
           ::
               %exit
-            ?<  po-is-new
+            ?:  po-is-new  po-core
             po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
           ==
         ==

@@ -6,7 +6,7 @@
 ++  pj
   |_  proj
   +*  milestonez  `(list mile)`milestones
-  ++  stat  ::  project status (status fo earliest active milestone)
+  ++  stat  ::  project status (status of earliest active milestone)
     ^-  ^stat
     status:mil:next-stat
   ++  cost  ::  project funding cost (sum of milestone costs)
@@ -136,15 +136,13 @@
       u.pro.pod
     ::
         %bump
-      ::  TODO: Place src.bowl permissions logic in here?
       =/  [pin=@ mil=mile]  ~(next-stat pj pro)
       ?:  ?=(%born status.mil)
         ?>  ?=(%prop sat.pod)
         (edit-milz |=(m=mile m(status %prop)))
       ?:  ?=(%prop status.mil)
-        ::  TODO: Restrict this action to worker and assessor
         ?>  ?|  &(?=(%born sat.pod) ?=(@ bil.pod))
-                &(?=(%lock sat.pod) ?=(^ bil.pod))
+                &(?=(?(%prop %lock) sat.pod) ?=(^ bil.pod))
             ==
         =.  contract.pro  bil.pod
         (edit-milz |=(m=mile m(status sat.pod)))
@@ -166,10 +164,6 @@
       ?<  |(=(%born sat) =(%prop sat))
       ?-    +<.pod
           %plej
-        ::  TODO: Poke the host ship with the following messages:
-        ::  - %chat: poke w/ message saying "you pledged! here's where
-        ::    you can follow up"
-        ::  - %fund: poke to subscribe to this board as pledger
         ::  TODO: Add verification logic that this pledge is actually
         ::  from the src.bowl ship (what do we do in the case of eAuth?
         ::  does an extra signature need to take place here?)

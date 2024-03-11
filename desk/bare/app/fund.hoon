@@ -203,6 +203,13 @@
   ++  po-du-pat  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  po-da-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
   ::
+  ++  po-mk-car
+    |=  [for=@p pod=prod:f]
+    ^-  card
+    :*  %pass   po-pj-pat
+        %agent  [for dap.bol]
+        %poke   fund-poke+!>([lag pod])
+    ==
   ++  po-do-read
     |=  pod=prod:f
     ^-  bean
@@ -242,45 +249,65 @@
     ^+  po-core
     |^  ?+    -.pod
         ::  proj prods ::
-          ?.  po-is-myn  (pass p.lag)
+          ?.  po-is-myn  po-core(cor (emit (po-mk-car p.lag pod)))
           ?>  (po-do-writ pod)
-          ?+    -.pod  wash
+          ?-    -.pod
               %init
             ?>  po-is-myn
-            ?.  po-is-new  wash
+            ?.  po-is-new  (wash ~)
             po-core(cor (push (public:du-poz [po-du-pat]~)))
           ::
               %drop
             ?<  po-is-myn
             ?<  po-is-new
             po-core(cor (push (kill:du-poz [po-du-pat]~)), gon &)
+          ::
+              %bump
+            =-  (wash -)
+            =+  ses=p.assessment.pro
+            ?+  sat.pod  ~
+              %prop  ?:(=(our.bol ses) ~ [(po-mk-car ses [%lure ses %sess])]~)
+              ::  TODO: If this was sent by the user, also send cards to
+              ::  close the project path to the retracted assessor
+              %born  ?:(=(our.bol ses) ~ ~)
+            ==
+              %mula
+            ::  TODO: Add hark notifications and follow-up reminders for
+            ::  pledges
+            =-  (wash -)
+            ?.  ?=(%plej +<.pod)  ~
+            =+  sip=ship.pod
+            ?:(=(our.bol sip) ~ [(po-mk-car sip [%lure sip %fund])]~)
           ==
         ::  meta prods ::
             %lure
           ::  FIXME: For a more complete version, maintain a per-ship lure
           ::  list (like group invites from %tlon)
           ?:  =(our.bol who.pod)  $(pod [%join ~])
-          ?>  !po-is-new
-          (pass ?:(po-is-myn who.pod p.lag))
+          ?<  po-is-new
+          po-core(cor (emit (po-mk-car ?:(po-is-myn who.pod p.lag) pod)))
         ::  meta prods ::
             ?(%join %exit)
-          ?>  po-is-src
-          ?>  po-is-new
+          ::  FIXME: Re-add this contraint once an invite mechanism is
+          ::  in place (see %lure clause above).
+          ::  ?>  po-is-src
           ?<  po-is-myn
-          ?-  -.pod
-            %join  po-core(cor (pull (surf:da-poz po-da-pat)))
-            %exit  po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
+          ?-    -.pod
+              %join
+            ?>  po-is-new
+            po-core(cor (pull (surf:da-poz po-da-pat)))
+          ::
+              %exit
+            ?<  po-is-new
+            po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
           ==
         ==
     ++  wash
-      |-
+      |=  caz=(list card)
       =.  pro  (proj-wash:sss:f pro bol lag pod)
       =.  cor  (push (give:du-poz po-du-pat bol lag pod))
+      =.  cor  (emil caz)
       po-core
-    ++  pass
-      |=  who=@p
-      =-  po-core(cor (emit -))
-      [%pass po-pj-pat %agent [who dap.bol] %poke fund-poke+!>([lag pod])]
     --
   --
 --

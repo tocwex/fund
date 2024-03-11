@@ -163,12 +163,12 @@
 ::  $prod: raw action identifier
 ::
 +$  prod
-  $%  :: proj prods ::
+  $%  ::  proj prods  ::
       [%init pro=(unit proj)]
       [%drop ~]
       [%bump sat=stat bil=(unit bill)]
       [%mula mula]
-      :: meta prods ::
+      ::  meta prods  ::
       [%join ~]
       [%exit ~]
       [%lure who=@p wat=role]

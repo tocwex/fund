@@ -36,12 +36,20 @@
         ?(%bump-born %bump-prop %bump-lock %dead %drop)
       ?.  (~(has by proz.dat) lag)
         (crip "bad act={<act>}; project doesn't exist: {<lag>}")
-      ;;  act-now:f  ^-  (list poke:f)
+      ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
       ?-  act
-        %dead  [lag %bump %dead ~]~
-        %drop  [lag %drop ~]~
-        %bump-lock  [lag %bump %lock `*bill:f]~  ::  TODO: Remove after testing
-        *      [lag %bump ;;(stat:f (rsh [3 5] act)) ~]~
+        %dead  [%bump %dead ~]~
+        %drop  [%drop ~]~
+      ::
+          *
+        ::  TODO: fill in actual `bil` values based on passed POST
+        ::  arguments (forwarded from MetaMask)
+        =+  bil=*bill:f
+        ?+  sat=;;(stat:f (rsh [3 5] act))  !!
+          %born  [%bump %born ~]~                               ::  worker retract/oracle reject
+          %lock  [%bump %lock `bil]~                            ::  worker finalize
+          %prop  [%bump %prop ?:(=(p.lag our.bol) ~ `bil)]~     ::  worker request/oracle accept
+        ==
       ==
     ::
         %init
@@ -192,7 +200,7 @@
                     ; assessor fee offer (%)
                   ==
                   ;div(class "flex")
-                    ;input(type "number", name "seo", min "0", max "100", value "{?~(pru *tape (mony:dump:fh q.assessment.u.pru))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "0");
+                    ;input(type "number", name "seo", min "0", max "100", step "0.01", value "{?~(pru *tape (mony:dump:fh q.assessment.u.pru))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "0");
                   ==
                 ==
               ==
@@ -206,17 +214,21 @@
         ; for review of work and release of funds.
         ;div(class "flex w-full justify-center gap-x-2 mx-auto")
           ;*
+          ::  TODO: Implement/refactor flow for assessment acceptance
+          ::  (should be on `proj-view` page ultimately instead).
+          ::
+          ::  ?.  =(our.bol p.assessment.pro)
           |^  ?+  sat  ~[dead-butt drop-butt]
                 %dead  ~[drop-butt]
                 %born  (weld ?~(pru ~ ~[crow-butt]) ~[init-butt drop-butt])
                 ::  TODO: Exclude 'finalize' button if we have no contract
                 ::  ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butt])
-                %prop  (weld ~[fini-butt] ~[rave-butt drop-butt])
+                %prop  (weld ~[fini-butt] ~[croc-butt drop-butt])
               ==
           ::
           ++  init-butt  (blaq-butt "init" "save draft ~")
           ++  crow-butt  (gren-butt "bump-prop" "request escrow ✓")
-          ++  rave-butt  (blaq-butt "bump-born" "cancel escrow ~")
+          ++  croc-butt  (blaq-butt "bump-born" "cancel escrow ~")
           ++  fini-butt  (gren-butt "bump-lock" "finalize escrow ✓")
           ++  dead-butt  (rhed-butt "dead" "discontinue project ✗")
           ++  drop-butt

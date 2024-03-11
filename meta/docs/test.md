@@ -22,7 +22,7 @@
 :fund &fund-poke [[our %test] %mula %trib `our .10 [1 0x0 0x0] (crip "{<our>} cont")]
 :fund &fund-poke [[our %test] %mula %plej our .20 0 (crip "{<our>} plej")]
 :fund &fund-poke [[our %tes2] %init ~]
-:fund &fund-poke [[our %tes2] %init `p(title 'test-2', summary 'desc-2', image `'https://picsum.photos/200', assessment [our .0], milestones ~[m(title 'm1-2', summary 'd1-2', cost .1e6)])]
+:fund &fund-poke [[our %tes2] %init `p(title 'test-2', summary 'desc-2', image `'https://picsum.photos/200', assessment [~nec .1], milestones ~[m(title 'm1-2', summary 'd1-2', cost .1e6)])]
 :fund &fund-poke [[our %tes2] %bump %prop ~]
 ```
 
@@ -101,7 +101,7 @@ TODO
 # Multiple Ship Testing #
 
 Run the basic test commands on a fake `~zod` ship, then run the following on
-a different ship:
+a fake `~nec` ship:
 
 ## Poke Tests ##
 

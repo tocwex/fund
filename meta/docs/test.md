@@ -110,6 +110,10 @@ a different ship:
 :fund &fund-poke [[~zod %test] %exit ~]
 ```
 
+```
+:fund &fund-poke [[~zod %test] %lure ~nec %sess]
+```
+
 ## eAuth Tests ##
 
 In order to test eAuth, the following test environment preparations/considerations

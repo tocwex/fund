@@ -51,18 +51,18 @@
     ?=(?(%born %lock %work %sess) status.n)
   --
 ::
-::  ::  +ok: assert correctness of edit type on given $proj
-::  ::
-::  ::    ?>  ~(edit ok [our %test proj])
-::  ::
-::  ++  ok
-::    |_  [=flag proj]
-::    ++  edit
-::      |=  who=@p
-::      ~|  "%fund: {<who>} can't 'edit' for project {<flag>}"
-::      ?>  =(who p.flag)
-::      %.y
-::    --
+::  +ok: assert correctness of edit type on given $proj
+::
+::    ?>  ~(edit ok [our %test proj])
+::
+++  ok
+  |_  [=flag proj]
+  ++  edit
+    |=  who=@p
+    ~|  "%fund: {<who>} can't 'edit' for project {<flag>}"
+    ?>  =(who p.flag)
+    %.y
+  --
 ::
 ::  +sss: structures/cores for peer-based synchronization (sss)
 ::
@@ -120,7 +120,7 @@
   ::  +proj-wash: update function for project peer state deltas
   ::
   ++  proj-wash
-    |=  [pro=proj bol=bowl:gall [sip=@p nam=@tas] pod=prod]
+    |=  [pro=proj bol=bowl:gall lag=flag pod=prod]
     ^-  rock:proj
     =*  miz  `(list mile)`milestones.pro
     =>  |%

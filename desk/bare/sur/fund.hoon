@@ -163,13 +163,15 @@
 ::  $prod: raw action identifier
 ::
 +$  prod
-  $%  [%init pro=(unit proj)]
+  $%  :: proj prods ::
+      [%init pro=(unit proj)]
       [%drop ~]
       [%bump sat=stat bil=(unit bill)]
+      [%mula mula]
+      :: meta prods ::
       [%join ~]
       [%exit ~]
       [%lure who=@p wat=role]
-      [%mula mula]
   ==
 ::
 ::  $poke: project-bound action (prod)
@@ -181,7 +183,6 @@
 +$  dat-now
   $:  =proz
       =rolz
-      lurz=(map flag role)
       subs=_(mk-subs:sss *lake:proj path:proj)
       pubs=_(mk-pubs:sss *lake:proj path:proj)
   ==

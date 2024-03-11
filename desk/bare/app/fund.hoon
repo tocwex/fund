@@ -47,10 +47,10 @@
   --
 |_  [bol=bowl:gall caz=(list card)]
 ::
-+*  da-proz  (proz-subs:sss:f bol subs)
-    du-proz  (proz-pubs:sss:f bol pubs)
-    my-prez  (prez-mine:sss:f bol +.state)
-    us-prez  (prez-ours:sss:f bol +.state)
++*  da-poz  (proz-subs:sss:f bol subs)
+    du-poz  (proz-pubs:sss:f bol pubs)
+    my-pez  (prez-mine:sss:f bol +.state)
+    us-pez  (prez-ours:sss:f bol +.state)
 ::
 ++  abet  [(flop caz) state]
 ++  cor   .
@@ -88,39 +88,25 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([lag=flag:f pod=prod:f] vas)
-    =/  myn=?  =(our.bol p.lag)        ::  is my project?
-    =/  has=?  (~(has by us-prez) lag)  ::  is project downloaded?
-    ?:  ?=(%join -.pod)
-      ?>  &(!has !myn)
-      po-abet:po-join:(po-abed:po-core lag)
-    ?:  ?=(%exit -.pod)
-      ?>  &(has !myn)
-      po-abet:po-exit:(po-abed:po-core lag)
-    ::  ?:  ?=(%lure -.pod)
-    ::    ?>  has
-    ::    po-abet:(po-poxy:(po-abed:po-core lag) pod)
-    ?:  myn
-      ?>  |(has ?=(%init -.pod))
-      po-abet:(po-push:(po-abed:po-core lag) pod)
-    po-abet:(po-poxy:(po-abed:po-core lag) pod)
+    po-abet:(po-push:(po-abed:po-core lag) pod)
   ::  sss pokes  ::
       %sss-on-rock
-    ?-  msg=!<(from:da-proz (fled vas))
+    ?-  msg=!<(from:da-poz (fled vas))
       [[%fund *] *]  cor
     ==
   ::
       %sss-fake-on-rock
-    ?-  msg=!<(from:da-proz (fled vas))
-      [[%fund *] *]  (emil (handle-fake-on-rock:da-proz msg))
+    ?-  msg=!<(from:da-poz (fled vas))
+      [[%fund *] *]  (emil (handle-fake-on-rock:da-poz msg))
     ==
   ::
       %sss-to-pub
-    ?-  msg=!<(into:du-proz (fled vas))
-      [[%fund *] *]  (push (apply:du-proz msg))
+    ?-  msg=!<(into:du-poz (fled vas))
+      [[%fund *] *]  (push (apply:du-poz msg))
     ==
   ::
       %sss-proj
-    =/  res  !<(into:da-proz (fled vas))
+    =/  res  !<(into:da-poz (fled vas))
     po-abet:(po-pull:(po-abed:po-core (proj-flag:sss:f path.res)) res)
   ::  http pokes  ::
       %handle-http-request
@@ -159,12 +145,12 @@
       [%x %proj sip=@ nam=@ ~]
     =/  sip=@p    (slav %p sip.pat)
     =/  nam=@tas  (slav %tas nam.pat)
-    ``noun+!>((bind (~(get by us-prez) sip nam) |=(p=prej:f `proj:f`-.p)))
+    ``noun+!>((bind (~(get by us-pez) sip nam) |=(p=prej:f `proj:f`-.p)))
   ::
       [%u %proj sip=@ nam=@ ~]
     =/  sip=@p    (slav %p sip.pat)
     =/  nam=@tas  (slav %tas nam.pat)
-    ``loob+!>((~(has by us-prez) sip nam))
+    ``loob+!>((~(has by us-pez) sip nam))
   ==
 ::
 ++  agent
@@ -173,13 +159,13 @@
   ?+    pat  cor
   :: sss responses ::
       [~ %sss %on-rock @ @ @ %fund %proj @ @ ~]
-    (pull ~ (chit:da-proz |3:pat syn))
+    (pull ~ (chit:da-poz |3:pat syn))
   ::
       [~ %sss %scry-request @ @ @ %fund %proj @ @ ~]
-    (pull (tell:da-proz |3:pat syn))
+    (pull (tell:da-poz |3:pat syn))
   ::
       [~ %sss %scry-response @ @ @ %fund %proj @ @ ~]
-    (push (tell:du-proz |3:pat syn))
+    (push (tell:du-poz |3:pat syn))
   :: proxy response ::
       [%fund %proj sip=@ nam=@ ~]
     ?>  ?=(%poke-ack -.syn)
@@ -199,77 +185,102 @@
   |_  [lag=flag:f pro=proj:f gon=_|]
   ++  po-core  .
   ++  po-abet
-    ?.  =(p.lag our.bol)
-      cor
-    %_    cor
-        proz
-      ?:(gon (~(del by proz) lag) (~(put by proz) lag pro))
+    ?.  po-is-myn  cor
+    %_  cor
+      proz  ?:(gon (~(del by proz) lag) (~(put by proz) lag pro))
     ==
   ++  po-abed
     |=  lag=flag:f
     %=  po-core
       lag  lag
-      pro  -:(~(gut by us-prez) lag *prej:f)
+      pro  -:(~(gut by us-pez) lag *prej:f)
     ==
   ::
-  ++  po-area     `path`/[dap.bol]/proj/(scot %p p.lag)/[q.lag]
-  ++  po-up-area  |=(p=path `(list path)`[(welp po-area p)]~)
-  ++  po-du-path  [%fund %proj (scot %p p.lag) q.lag ~]
-  ++  po-da-path  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
-  ++  po-do-read  |=(p=prod:f `bean`%.y)  ::  FIXME: Everything is public
+  ++  po-is-myn  =(our.bol p.lag)
+  ++  po-is-src  =(our.bol src.bol)
+  ++  po-is-new  !(~(has by us-pez) lag)
+  ++  po-pj-pat  `path`/fund/proj/(scot %p p.lag)/[q.lag]
+  ++  po-du-pat  [%fund %proj (scot %p p.lag) q.lag ~]
+  ++  po-da-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
+  ::
+  ++  po-do-read
+    |=  pod=prod:f
+    ^-  bean
+    ::  FIXME: Everything is public
+    %.y
   ++  po-do-writ
     |=  pod=prod:f
     ^-  bean
     ::  FIXME: Fairly intuitive yet hilariously obtuse
-    =-  (gte have need)
-    :-  ^-  have=perm:f
+    =-  (gte hav ned)
+    :-  ^-  hav=perm:f
         ?:  =(p.lag src.bol)  %boss
         ?:  =(p.assessment.pro src.bol)  %help
         %peon
-    ^-  need=perm:f
+    ^-  ned=perm:f
     ?+  -.pod    %peon
       %init  %boss
       %drop  %boss
-      %join  %boss
-      %exit  %boss
       %bump  %help
     ==
   ::
-  ++  po-init
-    ?>  (po-do-writ [%init `pro])
-    po-core(cor (push (public:du-proz [po-du-path]~)))
-  ++  po-join
-    ?>  (po-do-writ [%join ~])
-    po-core(cor (pull (surf:da-proz po-da-path)))
-  ++  po-exit
-    ?>  (po-do-writ [%exit ~])
-    po-core(cor (pull ~ (quit:da-proz po-da-path)), gon &)
-  ::
-  ++  po-poxy
-    |=  pod=prod:f
-    ^+  po-core
-    =/  =dock  [p.lag dap.bol]
-    =/  =cage  fund-poke+!>([lag pod])
-    po-core(cor (emit %pass po-area %agent dock %poke cage))
   ++  po-pull
-    |=  res=into:da-proz
+    |=  res=into:da-poz
     ^+  po-core
+    ?<  po-is-myn
     =/  pod=prod:f
       ?-  what.res
-        %tomb  [%drop ~]
-        %wave  q.poke.wave.res
         %rock  [%init ~]
+        %tomb  [%exit ~]
+        %wave  q.poke.wave.res
       ==
-    ?:  ?=(%drop -.pod)  po-exit
-    po-core(cor (pull (apply:da-proz res)))
+    ?:  ?=(%exit -.pod)
+      po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
+    po-core(cor (pull (apply:da-poz res)))
   ++  po-push
     |=  pod=prod:f
     ^+  po-core
-    ?>  (po-do-writ pod)
-    ?:  ?=(%drop -.pod)
-      po-core(cor (push (kill:du-proz [po-du-path]~)), gon &)
-    =.  pro  (proj-wash:sss:f pro bol lag pod)
-    =.  cor  (push (give:du-proz po-du-path bol lag pod))
-    po-core
+    |^  ?+    -.pod
+        ::  proj prods ::
+          ?.  po-is-myn  (pass p.lag)
+          ?>  (po-do-writ pod)
+          ?+    -.pod  wash
+              %init
+            ?>  po-is-myn
+            ?.  po-is-new  wash
+            po-core(cor (push (public:du-poz [po-du-pat]~)))
+          ::
+              %drop
+            ?<  po-is-myn
+            ?<  po-is-new
+            po-core(cor (push (kill:du-poz [po-du-pat]~)), gon &)
+          ==
+        ::  meta prods ::
+            %lure
+          ::  FIXME: For a more complete version, maintain a per-ship lure
+          ::  list (like group invites from %tlon)
+          ?:  =(our.bol who.pod)  $(pod [%join ~])
+          ?>  !po-is-new
+          (pass ?:(po-is-myn who.pod p.lag))
+        ::  meta prods ::
+            ?(%join %exit)
+          ?>  po-is-src
+          ?>  po-is-new
+          ?<  po-is-myn
+          ?-  -.pod
+            %join  po-core(cor (pull (surf:da-poz po-da-pat)))
+            %exit  po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
+          ==
+        ==
+    ++  wash
+      |-
+      =.  pro  (proj-wash:sss:f pro bol lag pod)
+      =.  cor  (push (give:du-poz po-du-pat bol lag pod))
+      po-core
+    ++  pass
+      |=  who=@p
+      =-  po-core(cor (emit -))
+      [%pass po-pj-pat %agent [who dap.bol] %poke fund-poke+!>([lag pod])]
+    --
   --
 --

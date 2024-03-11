@@ -71,9 +71,9 @@
   ::  +proj-flag: sss project path to project id flag
   ::
   ++  proj-flag
-    |=  =path:proj
+    |=  pat=path:proj
     ^-  flag
-    [`@p`(slav %p ship.path) `@tas`(slav %tas name.path)]
+    [`@p`(slav %p sip.pat) `@tas`(slav %tas nam.pat)]
   ::
   ::  +proj-lake: schema for peer-based project synchronization
   ::

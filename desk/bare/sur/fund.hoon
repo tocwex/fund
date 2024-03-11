@@ -143,7 +143,7 @@
     ==
   +$  wave  [=bowl:gall =poke]
   ++  lake  (lake:sss rock wave)
-  +$  path  [%fund %proj ship=@ name=@ ~]
+  +$  path  [%fund %proj sip=@ nam=@ ~]
   --
 ::
 ::  $proz: collection of projects keyed by id (host/term)
@@ -152,7 +152,7 @@
 ::
 ::  $prej: project with peer information
 ::
-+$  prej  [proj live=?]
++$  prej  [proj live=_|]
 ::
 ::  $prez: project collection with peer information
 ::
@@ -168,6 +168,7 @@
       [%bump sat=stat bil=(unit bill)]
       [%join ~]
       [%exit ~]
+      [%lure who=@p wat=role]
       [%mula mula]
   ==
 ::
@@ -180,6 +181,7 @@
 +$  dat-now
   $:  =proz
       =rolz
+      lurz=(map flag role)
       subs=_(mk-subs:sss *lake:proj path:proj)
       pubs=_(mk-pubs:sss *lake:proj path:proj)
   ==

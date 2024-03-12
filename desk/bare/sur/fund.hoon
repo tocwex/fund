@@ -178,6 +178,10 @@
 ::
 +$  poke  (pair flag prod)
 ::
+::  $mess: (error) mess(age) (used internally)
+::
++$  mess  [who=@p wer=flag wat=prod]
+::
 ::  $dat-now: top-level app data; forwarded to rudder-related requests
 ::
 +$  dat-now

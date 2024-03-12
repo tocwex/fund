@@ -247,10 +247,11 @@
   ++  po-push
     |=  pod=prod:f
     ^+  po-core
+    =*  mes  `mess:f`[src.bol lag pod]
     |^  ?+    -.pod
         ::  proj prods ::
           ?.  po-is-myn  po-core(cor (emit (po-mk-car p.lag pod)))
-          ?>  ~|(bad-writ+[lag pod] (po-do-writ pod))
+          ?>  ~|(bad-writ+mes (po-do-writ pod))
           ?-    -.pod
               %init
             ?.  po-is-new  (wash ~)
@@ -288,7 +289,7 @@
             ?(%join %exit)
           ::  FIXME: Re-add this contraint once an invite mechanism is
           ::  in place (see %lure clause above).
-          ::  ?>  ~|(bad-meta+[lag pod] po-is-src)
+          ::  ?>  ~|(bad-meta+mes po-is-src)
           ?:  po-is-myn  po-core
           ?-    -.pod
               %join

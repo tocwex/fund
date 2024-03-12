@@ -122,14 +122,18 @@
   ++  proj-wash
     |=  [pro=proj bol=bowl:gall lag=flag pod=prod]
     ^-  rock:proj
+    =*  mes  `mess`[src.bol lag pod]
     =*  miz  `(list mile)`milestones.pro
     =>  |%
         ++  edit-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
         ++  edit-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
+        ++  aver-work  |-(~|(bad-wash+mes ?>(=(our.bol src.bol) %.y)))
+        ++  aver-sess  |-(~|(bad-wash+mes ?>(=(p.assessment.pro src.bol) %.y)))
         --
     =/  sat=stat  ~(stat pj pro)
     ?+    -.pod  pro
         %init
+      ?>  aver-work
       ?>  =(%born sat)
       ?~  pro.pod  pro
       ?>  =(%born ~(stat pj u.pro.pod))
@@ -138,27 +142,33 @@
         %bump
       =/  [pin=@ mil=mile]  ~(next-stat pj pro)
       ?:  ?=(%born status.mil)
-        ?>  ?=(%prop sat.pod)
+        ?>  &(?=(%prop sat.pod) ?=(@ bil.pod))
+        ?>  aver-work  ::  born=>prop:worker
         (edit-milz |=(m=mile m(status %prop)))
       ?:  ?=(%prop status.mil)
         ?>  ?|  &(?=(%born sat.pod) ?=(@ bil.pod))
                 &(?=(?(%prop %lock) sat.pod) ?=(^ bil.pod))
             ==
+        ?>  |(?=(?(%born %prop) sat.pod) aver-work)  ::  prop=>lock:worker
+        ?>  |(?=(?(%born %lock) sat.pod) aver-sess)  ::  prop=>prop:oracle
         =.  contract.pro  bil.pod
         (edit-milz |=(m=mile m(status sat.pod)))
       ?:  ?=(%lock status.mil)
         ?:  ?=(%work sat.pod)
+          ?>  aver-work  ::  lock=>work:worker
           (edit-mile pin mil(status sat.pod))
         ?:  ?=(%dead sat.pod)
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
-        !!  ::  %lock => ?(%born %prop %work %sess) is impossible
+        ~|(bad-wash+mes !!)  ::  %lock =X=> ?(%born %prop %sess %done)
       ?:  ?=(?(%work %sess) status.mil)
         ?:  ?=(?(%work %sess %done) sat.pod)
+          ?>  |(?=(?(%work %sess) sat.pod) aver-sess)  ::  work/sess=>done:oracle
+          ?>  |(?=(?(%work %done) sat.pod) aver-work)  ::  work/sess=>sess:worker
           (edit-mile pin mil(status sat.pod))
         ?:  ?=(%dead sat.pod)
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
-        !!  ::  ?(%work %sess %done %dead) => ?(%born %lock) is impossible
-      !!  ::  ?(%done %dead) => status is impossible
+        ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)
+      ~|(bad-wash+mes !!)  ::  ?(%done %dead) =X=> status
     ::
         %mula
       ?<  |(=(%born sat) =(%prop sat))

@@ -117,16 +117,11 @@
     :^  pagz  route:h  (fours:rudder +.state)
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
-    ~&  >  (turn `(list poke:f)`act |=(p=poke:f -.q.p))
-    :-  ~  ::  message? TODO: Make this the path of the action
-    :_  +.state
-    ::  TODO: eager evaluate the cards?
-    ^-  (list card)
-    %+  turn  `(list poke:f)`act
-    |=  [lag=flag:f pod=prod:f]
-    :*  %pass   /[dap.bol]/proj/(scot %p p.lag)/[q.lag]
-        %agent  [p.lag dap.bol]
-        %poke   fund-poke+!>([lag pod])
+    =-  [bre kaz dat]
+    ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
+    :*  ~                              ::  TODO: Make this the redirect path
+        +.state                        ::  TODO: eager evaluate the cards?
+        (turn act |=([f=flag:f p=prod:f] (po-mk-car:(po-abed:po-core f) p.f p)))
     ==
   ==
 ::
@@ -251,39 +246,43 @@
     |^  ?+    -.pod
         ::  proj prods ::
           ?.  po-is-myn  po-core(cor (emit (po-mk-car p.lag pod)))
-          ?>  ~|(bad-writ+mes (po-do-writ pod))
+          ?>  ~|(bad-push+mes (po-do-writ pod))
           ?-    -.pod
               %init
-            ?.  po-is-new  (wash ~)
-            po-core(cor (push (public:du-poz [po-du-pat]~)))
+            =?  cor  po-is-new  (push (public:du-poz [po-du-pat]~))
+            (wash ~)
           ::
               %drop
-            ?:  po-is-new  po-core
-            po-core(cor (push (kill:du-poz [po-du-pat]~)), gon &)
+            =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
+            po-core(gon &)
           ::
-              %bump
+              ?(%bump %mula)
+            ?<  ~|(bad-push+mes po-is-new)
             =-  (wash -)
-            =+  ses=p.assessment.pro
-            ?+  sat.pod  ~
-              %prop  [(po-mk-car ses [%lure ses %sess])]~
-              ::  TODO: If this was sent by the user, also send cards to
-              ::  close the project path to the retracted assessor
-              %born  ?:(=(our.bol ses) ~ ~)
+            ?-    -.pod
+                %bump
+              =+  ses=p.assessment.pro
+              ?+  sat.pod  ~
+                %prop  [(po-mk-car ses [%lure ses %sess])]~
+                ::  TODO: If this was sent by the user, also send cards to
+                ::  close the project path to the retracted assessor
+                %born  ?:(=(our.bol ses) ~ ~)
+              ==
+            ::
+                %mula
+              ::  TODO: Add hark notifications and follow-up reminders for
+              ::  pledges
+              ?.  ?=(%plej +<.pod)  ~
+              =+  sip=ship.pod
+              [(po-mk-car sip [%lure sip %fund])]~
             ==
-              %mula
-            ::  TODO: Add hark notifications and follow-up reminders for
-            ::  pledges
-            =-  (wash -)
-            ?.  ?=(%plej +<.pod)  ~
-            =+  sip=ship.pod
-            [(po-mk-car sip [%lure sip %fund])]~
           ==
         ::  meta prods ::
             %lure
           ::  FIXME: For a more complete version, maintain a per-ship lure
           ::  list (like group invites from %tlon)
           ?:  =(our.bol who.pod)  $(pod [%join ~])
-          ?.  po-is-new  po-core
+          ?<  ~|(bad-push+mes po-is-new)
           po-core(cor (emit (po-mk-car ?:(po-is-myn who.pod p.lag) pod)))
         ::  meta prods ::
             ?(%join %exit)

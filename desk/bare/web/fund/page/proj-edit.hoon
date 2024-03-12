@@ -33,23 +33,28 @@
       (rush (~(gut by p.arz) 'seo' '0') royl-rs:so)
     ?+      act=(~(got by p.arz) 'act')
           (crip "bad act; expected (init|bump-*|dead|drop), not {(trip act)}")
-        ?(%bump-born %bump-prop %bump-lock %dead %drop)
+        %drop
+      ;;(act-now:f [lag %drop ~]~)
+    ::
+        ?(%dead %bump-born %bump-prop %bump-lock)
+      ::  FIXME: This check is actually a bit redundant b/c it's checked
+      ::  again in `po-push:po-core`, but we keep it here b/c:
+      ::  - `act`s are forwarded cards, which means they're evaluated
+      ::    after a successful POST request
+      ::  - Even if not all `act`s were forwarded cards, we'd need to
+      ::    use poke responses and watch wires when forwarding pokes to
+      ::    a remote ship (e.g. assessor poking project on worker ship)
       ?.  (~(has by proz.dat) lag)
         (crip "bad act={<act>}; project doesn't exist: {<lag>}")
       ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
-      ?-  act
-        %dead  [%bump %dead ~]~
-        %drop  [%drop ~]~
-      ::
-          *
-        ::  TODO: fill in actual `bil` values based on passed POST
-        ::  arguments (forwarded from MetaMask)
-        =+  bil=*bill:f
-        ?+  sat=;;(stat:f (rsh [3 5] act))  !!
-          %born  [%bump %born ~]~                               ::  worker retract/oracle reject
-          %lock  [%bump %lock `bil]~                            ::  worker finalize
-          %prop  [%bump %prop ?:(=(p.lag our.bol) ~ `bil)]~     ::  worker request/oracle accept
-        ==
+      ?:  ?=(%dead act)  [%bump %dead ~]~
+      ::  TODO: fill in actual `bil` values based on passed POST
+      ::  arguments (forwarded from MetaMask)
+      =+  bil=*bill:f
+      ?+  sat=;;(stat:f (rsh [3 5] act))  !!
+        %born  [%bump %born ~]~                               ::  worker retract/oracle reject
+        %lock  [%bump %lock `bil]~                            ::  worker finalize
+        %prop  [%bump %prop ?:(=(p.lag our.bol) ~ `bil)]~     ::  worker request/oracle accept
       ==
     ::
         %init
@@ -115,13 +120,13 @@
                   ;div(class "m-1 pt-1 border-black font-light")
                     ; project title
                   ==
-                  ;input(type "text", name "nam", value "{(trip ?~(pru '' title.u.pru))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "My Awesome Project");
+                  ;input(type "text", name "nam", value (trip ?~(pru '' title.u.pru)), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "My Awesome Project");
                 ==
                 ;div(class "m-1 p-1 w-full")
                   ;div(class "m-1 pt-1 border-black font-light")
                     ; project image
                   ==
-                  ;input(type "text", name "pic", value "{(trip (fall ?~(pru ~ image.u.pru) ''))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "https://example.com/example.png");
+                  ;input(type "text", name "pic", value (trip (fall ?~(pru ~ image.u.pru) '')), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "https://example.com/example.png");
                 ==
               ==
               ;div(class "m-1 p-1")
@@ -129,7 +134,7 @@
                   ; project description
                 ==
                 ;div(class "grow-wrap")
-                  ;textarea(name "sum", rows "3", value "{(trip ?~(pru '' summary.u.pru))}", oninput "this.parentNode.dataset.replicatedValue = this.value", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "Write a worthy description of your project")
+                  ;textarea(name "sum", rows "3", value (trip ?~(pru '' summary.u.pru)), oninput "this.parentNode.dataset.replicatedValue = this.value", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "Write a worthy description of your project")
                     ; {(trip ?~(pru '' summary.u.pru))}
                   ==
                 ==
@@ -153,7 +158,7 @@
                           ;div(class "m-1 pt-1 border-black font-light")
                             ; milestone title
                           ==
-                          ;input(id "mile-name", type "text", name "m{<pin>}n", value "{(trip title.mil)}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "Give your milestone a title");
+                          ;input(id "mile-name", type "text", name "m{<pin>}n", value (trip title.mil), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "Give your milestone a title");
                         ==
                         ;div(class "m-1 p-1 w-full")
                           ;div(class "m-1 pt-1 border-black font-light")
@@ -167,7 +172,7 @@
                           ; milestone description
                         ==
                         ;div(class "grow-wrap")
-                          ;textarea(id "mile-summ", name "m{<pin>}s", rows "3", value "{(trip summary.mil)}", oninput "this.parentNode.dataset.replicatedValue = this.value", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "describe your milestone in detail, such that both project funders and your assessor can understand the work you are doing—and everyone can reasonably agree when it is completed.")
+                          ;textarea(id "mile-summ", name "m{<pin>}s", rows "3", value (trip summary.mil), oninput "this.parentNode.dataset.replicatedValue = this.value", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "describe your milestone in detail, such that both project funders and your assessor can understand the work you are doing—and everyone can reasonably agree when it is completed.")
                             ; {(trip summary.mil)}
                           ==
                         ==
@@ -191,7 +196,7 @@
                   ; escrow assessor
                 ==
                 ;div(class "flex justify-between")
-                  ;input(type "text", name "sea", value "{(trip ?~(pru '' (scot %p p.assessment.u.pru)))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "{(scow %p our.bol)}");
+                  ;input(type "text", name "sea", value (trip ?~(pru '' (scot %p p.assessment.u.pru))), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "{(scow %p our.bol)}");
                 ==
               ==
               ;div(class "m-1 p-1 w-full flex items-end")

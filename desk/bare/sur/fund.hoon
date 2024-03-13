@@ -79,6 +79,7 @@
       %work  ::  underway (on-chain, work started)
       %sess  ::  under assessment (on-chain, work reviewed)
       %done  ::  completed successfully
+      ::  %paid  ::  funds claimed for completed work
       %dead  ::  completed unsuccessfully
   ==
 ::

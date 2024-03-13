@@ -243,6 +243,7 @@
     |=  pod=prod:f
     ^+  po-core
     =*  mes  `mess:f`[src.bol lag pod]
+    ?<  ~|(bad-push+mes =(%$ q.lag))
     |^  ?+    -.pod
         ::  proj prods ::
           ?.  po-is-myn  po-core(cor (emit (po-mk-car p.lag pod)))

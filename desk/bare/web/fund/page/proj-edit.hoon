@@ -52,9 +52,9 @@
       ::  arguments (forwarded from MetaMask)
       =+  bil=*bill:f
       ?+  sat=;;(stat:f (rsh [3 5] act))  !!
-        %born  [%bump %born ~]~                               ::  worker retract/oracle reject
-        %lock  [%bump %lock `bil]~                            ::  worker finalize
-        %prop  [%bump %prop ?:(=(p.lag our.bol) ~ `bil)]~     ::  worker request/oracle accept
+        %born  [%bump %born ~]~              ::  worker retract/oracle reject
+        %prop  [%bump %prop ~]~              ::  worker request
+        %lock  [%bump %lock `bil]~           ::  worker finalize
       ==
     ::
         %init
@@ -100,9 +100,9 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
-  ;div(id "maincontent", class "mx-auto lg:px-4")
-    ;form(method "post", autocomplete "off")
-      ;+  :-  [%fieldset ?:(=(%born sat) ~ ['disabled' ~]~)]
+  ;div
+    ;form(id "maincontent", method "post", autocomplete "off", class "mx-auto lg:px-4")
+      ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
       :~  ;div
             ;div(class "flex flex-wrap items-center justify-between")
               ;div(class "m-1 pt-2 text-3xl"): Project Overview
@@ -219,16 +219,13 @@
         ; for review of work and release of funds.
         ;div(class "flex w-full justify-center gap-x-2 mx-auto")
           ;*
-          ::  TODO: Implement/refactor flow for assessment acceptance
-          ::  (should be on `proj-view` page ultimately instead).
-          ::
-          ::  ?.  =(our.bol p.assessment.pro)
           |^  ?+  sat  ~[dead-butt drop-butt]
                 %dead  ~[drop-butt]
                 %born  (weld ?~(pru ~ ~[crow-butt]) ~[init-butt drop-butt])
-                ::  TODO: Exclude 'finalize' button if we have no contract
-                ::  ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butt])
-                %prop  (weld ~[fini-butt] ~[croc-butt drop-butt])
+              ::
+                  %prop
+                %-  weld  :_  ~[croc-butt drop-butt]
+                ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butt])
               ==
           ::
           ++  init-butt  (blaq-butt "init" "save draft ~")

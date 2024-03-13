@@ -6,7 +6,7 @@
 ++  pj
   |_  proj
   +*  milestonez  `(list mile)`milestones
-  ++  stat  ::  project status (status of earliest active milestone)
+  ++  stat  ::  project $stat (status of earliest active milestone)
     ^-  ^stat
     status:mil:next-stat
   ++  cost  ::  project funding cost (sum of milestone costs)
@@ -25,13 +25,28 @@
     |=  mil=mile
     %+  roll  contribs.mil
     |=([n=trib a=@rs] (add:rs a cash.n))
-  ++  mula  ::  full list of project mula ($plej list, $trib list)
+  ++  mula  ::  full list of project $mula ($plej list, $trib list)
     ^-  (list ^mula)
     %+  weld  (turn ~(val by pledges) |=(p=^plej `^mula`[%plej p]))
     %+  roll  milestonez
     |=  [mil=mile acc=(list ^mula)]
     %+  weld  acc
     (turn contribs.mil |=(t=trib `^mula`[%trib t]))
+  ++  rols  ::  $role set for a given $ship
+    ::  FIXME: This function signature will be simplified once a project
+    ::  is allowed to have different workers than its host
+    |=  [wox=@p who=@p]
+    ^-  (set role)
+    %-  silt
+    ;:  welp
+        ?.(=(wox who) ~ [%work]~)
+        ?.(=(p.assessment who) ~ [%sess]~)
+        ?.  ?|  (~(has by pledges) who)
+                (lien milestonez |=(m=mile (lien contribs.m |=(t=trib ?~(ship.t | =(u.ship.t who))))))
+            ==
+          ~
+        [%fund]~
+    ==
   ++  next-fill  ::  next milestone that hasn't reached goal
     ^-  [pin=@ mil=mile]
     =<  +>  %^  spin  milestonez  `[? @ mile]`[| 0 *mile]

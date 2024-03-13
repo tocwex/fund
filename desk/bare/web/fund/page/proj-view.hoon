@@ -5,9 +5,46 @@
 ^-  pag-now:f
 ::
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
-++  argue  |=([header-list:http (unit octs)] !!)
-++  final  (alert:rudder url.request.ord build)
-++  build
+++  argue  ::  POST reply
+  |=  [hed=header-list:http bod=(unit octs)]
+  ^-  $@(brief:rudder act-now:f)
+  =/  [pat=(list knot) *]  (durl:fh url.request.ord)
+  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
+  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['who' |] ['msg' |]])
+  ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
+    =+  act=(~(got by p.arz) 'act')
+    ::  FIXME: This check is actually a bit redundant b/c it's checked
+    ::  again in `po-push:po-core` (see proj-edit.hoon for details).
+    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib) act)
+      (crip "bad act; expected (bump-*|mula), not {(trip act)}")
+    ?.  (~(has by proz.dat) lag)
+      (crip "bad act={<act>}; project doesn't exist: {<lag>}")
+    ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
+    ?-  act
+      %bump-born  [%bump %born ~]~
+      %bump-prop  [%bump %prop `*bill:f]~
+      %bump-work  [%bump %work ~]~
+      %bump-sess  [%bump %sess ~]~
+      %bump-done  [%bump %done ~]~
+      %bump-dead  [%bump %dead ~]~
+    ::
+        *  ::  mula-*
+      =/  who=(unit @p)  (slaw %p (~(got by p.arz) 'who'))
+      =/  sum=@rs  (rash (~(got by p.arz) 'sum') royl-rs:so)
+      =/  msg=@t  (~(got by p.arz) 'msg')
+      ?-  act
+        %mula-plej  [%mula %plej (need who) sum *bloq:f msg]~
+        %mula-trib  [%mula %trib who sum *stub:f msg]~
+      ==
+    ==
+  ==
+++  final  ::  POST render
+  |=  [gud=? txt=brief:rudder]
+  ^-  reply:rudder
+  ?.  gud  [%code 422 txt]
+  ::  Go back to the base project page
+  [%next (crip (aurl:fh /dashboard/worker)) '']
+++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   =/  [pat=(list knot) *]  (durl:fh url.request.ord)
@@ -15,20 +52,27 @@
   ::  TODO: Gate users `!=(our.bol src.bol)` to only my projects?
   ?~  pre=(~(get by (prez-ours:sss:f bol dat)) lag)  [%code 404 '']
   =*  pro  -.u.pre
-  =/  [jin=@ jil=mile:f]  ~(next-fill pj:f pro)
-  =/  cos=@rs  ~(cost pj:f pro)
   =/  sat=stat:f  ~(stat pj:f pro)
+  =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
+  =/  [fin=@ mile:f]  ~(next-fill pj:f pro)
+  =/  [sin=@ mile:f]  ~(next-stat pj:f pro)
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "{(trip title.pro)}"
-  ;div(id "maincontent", class "mx-auto py-4 lg:px-4")
+  ;form(id "maincontent", method "post", autocomplete "off", class "mx-auto py-4 lg:px-4")
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "px-4 text-4xl sm:text-5xl"): {(trip title.pro)}
-      ;+  (stat-pill:htmx:fh sat)
+      ;div(class "flex items-center gap-x-2")
+        ;div(class "text-2xl font-medium")
+          ; Funding Goal:
+          ;span(id "proj-cost"): ${(mony:dump:fh ~(cost pj:f pro))}
+        ==
+        ;+  (stat-pill:htmx:fh sat)
+      ==
     ==
-    ;+  ?~  image.pro  ;div;
+    ;*  ?~  image.pro  ~  :_  ~
         ;img@"{(trip u.image.pro)}"(class "mx-auto w-full my-2 sm:px-4");
-    ;div(class "lg:flex")
+    ;div(class "lg:flex lg:justify-between")
       ;div(class "no-flex sm:gap-x-10")
         ;div(class "")
           ;div(class "mx-auto flex px-4 justify-between sm:justify-normal sm:gap-x-16")
@@ -38,9 +82,13 @@
                 ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap")
                   {(scow %p p.lag)}
                 ==
-                ;+  ?.  =(our.bol p.lag)
+                ;+  ?.  (~(has in roz) %work)
                       ;a/"{(curl:fh p.lag)}"(class butt:claz:fh, target "_blank"): send message →
-                    ;a/"{(aurl:fh (snoc pat %edit))}"(class butt:claz:fh): edit project →
+                    ?:  ?=(?(%born %prop) sat)
+                      ;a/"{(aurl:fh (snoc pat %edit))}"(class butt:claz:fh): edit project →
+                    ?.  ?=(?(%done %dead) sat)
+                      ;button(type "submit", name "act", value "bump-dead", class "text-nowrap px-2 py-1 text-white rounded-md bg-red-600 hover:bg-red-500"): cancel project ✗
+                    ;div;
               ==
             ==
             ;div(class "m-1 p-1 justify-normal items items-center gap-x-4")
@@ -49,9 +97,11 @@
                 ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap")
                   {(scow %p p.assessment.pro)}
                 ==
-                ;+  ?.  =(our.bol p.assessment.pro)
+                ;+  ?.  (~(has in roz) %sess)
                       ;a/"{(curl:fh p.assessment.pro)}"(class butt:claz:fh, target "_blank"): send message →
-                    ;a/"{(aurl:fh (snoc pat %edit))}"(class butt:claz:fh): edit project →
+                    ?.  ?=(?(%done %dead) sat)
+                      ;button(type "submit", name "act", value "bump-dead", class "text-nowrap px-2 py-1 text-white rounded-md bg-red-600 hover:bg-red-500"): cancel project ✗
+                    ;div;
               ==
             ==
           ==
@@ -60,51 +110,89 @@
           ==
         ==
       ==
-      ;div(class "m-2 p-2 justify-end bg-white rounded-lg")
-        ;div(class "flex my-2")
-          ;div(class "text-3xl text-nowrap"): Funding Goal:
-          ;div(class "pl-2 text-3xl font-medium"): ${(mony:dump:fh cos)}
-        ==
-        ;div(class "p-2 border-2 border-black rounded-xl")
-          ;div(id "Contribute", class "p-2 text-3xl w-full"): Contribute
-          ;div(class "")
-            ;div(class "flex gap-2")
-              ;div(class "p-2 w-full")
-                ;div(class "p-1 border-black font-light")
-                  ; amount
+      ;*  ?:  ?=(?(%born %done %dead) sat)  ~  :_  ~
+          ;div(class "m-2 p-2 border-2 border-black rounded-xl lg:min-w-[320px]")
+            ;+  ?-  sat
+                %prop
+              ;div
+                ;div(class "p-2 text-3xl w-full"): Review Request
+                ;div(class "gap-2")
+                  ;div(class "p-2")
+                    ;span(class "font-mono font-medium"): {"{(scow %p p.lag)} "}
+                    ; has requested your services as an escrow assessor for this project.
+                  ==
+                  ;div(class "p-2")
+                    ; For your services,
+                    ;span(class "font-mono font-medium"): {"{(scow %p p.lag)} "}
+                    ; is offering the following compensation:
+                  ==
+                  ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
+                    ;span(class "font-medium"): {"{(mony:dump:fh q.assessment.pro)}% "}
+                    ; of each milestone payout upon completed milestone assessment
+                  ==
+                  ;div(class "p-2")
+                    ; Accepting this review request means that you will have the
+                    ; responsibility to review each project milestone and release
+                    ; funds to the project worker upon successful completion.
+                  ==
+                  ;div(class "p-2")
+                    ; If you pinky promise to assess this project, click the button
+                    ; below to confirm your particpation.
+                  ==
                 ==
-                ;input(class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "$10,000");
-              ==
-              ;div(class "p-2")
-                ;div(class "p-1 border-black font-light")
-                  ; token
+                ;div(class "p-2 flex justify-end gap-x-2")
+                  ;button(type "submit", name "act", value "bump-born", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
+                    ; decline ~
+                  ==
+                  ;button(type "submit", name "act", value "bump-prop", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
+                    ; accept ✓
+                  ==
                 ==
-                ;input(class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "USDC");
               ==
-            ==
-            ;div(class "p-2")
-              ;div(class "p-1 border-black font-light")
-                ; contributor
-              ==
-              ;input(class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "~lagrev-nocfep");
-            ==
-            ;div(class "p-2")
-              ;div(class "p-1 border-black font-light")
-                ; message
-              ==
-              ;input(class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "hello ~zod!");
-            ==
-            ;div(id "contribution-buttons", class "p-2 flex justify-end gap-x-2")
-              ;button(class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
-                ; pledge only ~
-              ==
-              ;button(class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
-                ; send funds ✓
+            ::
+                *
+              ;div
+                ;div(class "p-2 text-3xl w-full"): Contribute
+                ;div(class "flex gap-2")
+                  ;div(class "p-2 w-full")
+                    ;div(class "p-1 border-black font-light"): amount ($)
+                    ;input(type "number", name "sum", min "0.01", step "0.01", class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "5");
+                  ==
+                  ;div(class "p-2 w-full")
+                    ;div(class "p-1 border-black font-light"): token
+                    ;select(name "tok", class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full")
+                      ;option(value "usdc"): USDC
+                      ;option(value "usdt"): USDT
+                      ;option(value "dai"): DAI
+                    ==
+                  ==
+                ==
+                ;div(class "p-2")
+                  ;div(class "p-1 border-black font-light"): contributor
+                  ;+  :_  ~  :-  %input
+                      ;:  welp
+                          ?.((auth:fh bol) ~ ~[[%readonly ~] [%value (scow %p src.bol)]])
+                          [%type "text"]~
+                          [%name "who"]~
+                          [%placeholder "~sampel-palnet"]~
+                          [%class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full read-only:border-gray-400 read-only:bg-gray-400"]~
+                      ==
+                ==
+                ;div(class "p-2")
+                  ;div(class "p-1 border-black font-light"): message
+                  ;input(type "text", name "msg", class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "awesome work!");
+                ==
+                ;div(class "p-2 flex justify-end gap-x-2")
+                  ;button(type "submit", name "act", value "mula-plej", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
+                    ; pledge only ~
+                  ==
+                  ;button(type "submit", name "act", value "mula-trib", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
+                    ; send funds ✓
+                  ==
+                ==
               ==
             ==
           ==
-        ==
-      ==
     ==
     ;div(class "px-4")
       ;div(class "text-3xl pt-2"): Contribution Tracker
@@ -112,14 +200,14 @@
         ;div(class "flex justify-between")
           ;div(class "flex gap-2")
             ::  TODO: Need to fill in actual values here (only say
-            ::  milestone `jin` is done if it has surpassed fulfilled
+            ::  milestone `fin` is done if it has surpassed fulfilled
             ::  (pledged?) funding).
             ; Milestone Progress
-            ;span(class "font-medium"): {<+(jin)>}/{<(lent milestones.pro)>}
+            ;span(class "font-medium"): ?/{<(lent milestones.pro)>}
           ==
           ;div(class "flex gap-2")
             ; Goal
-            ;span(class "font-medium"): ${(mony:dump:fh cos)}
+            ;span(class "font-medium"): ${(mony:dump:fh ~(cost pj:f pro))}
           ==
         ==
         ;+  (mula-ther:htmx:fh .0 ~(fill pj:f pro) ~(plej pj:f pro))
@@ -140,7 +228,36 @@
             ==
             ::  TODO: Fill in pledge amount based on project total
             ;+  (mula-ther:htmx:fh cost.mil (snag pin fiz) .0)
-            ;div(class "pb-2"): {(trip summary.mil)}
+            ; {(trip summary.mil)}
+            ;div(class "flex flex-wrap items-center justify-end pt-2 gap-2")
+              ;*  ;:  welp
+                  ?.  &(|((lth pin sin) =(%done sat)) (~(has in roz) %work))  ~
+                ::  TODO: Make this button do something
+                :~  ;button(class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
+                      ; withdraw funds ✓
+                ==  ==
+              ::
+                  ?.  &(=(pin sin) (~(has in roz) %work) ?=(%lock sat))  ~
+                :~  ;button(type "submit", name "act", value "bump-work", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
+                      ; mark in-progress ~
+                ==  ==
+              ::
+                  ?.  &(=(pin sin) (~(has in roz) %work) ?=(%work sat))  ~
+                :~  ;button(type "submit", name "act", value "bump-sess", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
+                      ; request review ~
+                ==  ==
+              ::
+                  ?.  &(=(pin sin) (~(has in roz) %sess) ?=(%sess sat))  ~
+                :~  ;a/"{(curl:fh p.lag)}"(class butt:claz:fh): message worker →
+                    ;button(type "submit", name "act", value "bump-work", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
+                      ; changes required ~
+                    ==
+                    ;button(type "submit", name "act", value "bump-done", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
+                      ; approve ✓
+                    ==
+                ==
+              ==
+            ==
           ==
     ==
     ;div(class "px-4")

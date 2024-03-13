@@ -176,10 +176,16 @@
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
         ~|(bad-wash+mes !!)  ::  %lock =X=> ?(%born %prop %sess %done)
       ?:  ?=(?(%work %sess) status.mil)
-        ?:  ?=(?(%work %sess %done) sat.pod)
-          ?>  |(?=(?(%work %sess) sat.pod) aver-sess)  ::  work/sess=>done:oracle
-          ?>  |(?=(?(%work %done) sat.pod) aver-work)  ::  work/sess=>sess:worker
+        ?:  ?=(%work sat.pod)
+          ?>  aver-sess  ::  work/sess=>work:oracle
           (edit-mile pin mil(status sat.pod))
+        ?:  ?=(%sess sat.pod)
+          ?>  aver-work  ::  work/sess=>sess:worker
+          (edit-mile pin mil(status sat.pod))
+        ?:  ?=(%done sat.pod)
+          ?>  aver-sess  ::  work/sess=>done:oracle
+          ?>  ?=(^ bil.pod)
+          (edit-mile pin mil(status sat.pod, contract bil.pod))
         ?:  ?=(%dead sat.pod)
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
         ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)

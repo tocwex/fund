@@ -19,13 +19,15 @@
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
     ?.  (~(has by proz.dat) lag)
       (crip "bad act={<act>}; project doesn't exist: {<lag>}")
+    ::  TODO: fill in actual `bil` values based on passed POST
+    ::  arguments (forwarded from MetaMask)
     ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
     ?-  act
       %bump-born  [%bump %born ~]~
       %bump-prop  [%bump %prop `*bill:f]~
       %bump-work  [%bump %work ~]~
       %bump-sess  [%bump %sess ~]~
-      %bump-done  [%bump %done ~]~
+      %bump-done  [%bump %done `*bill:f]~
       %bump-dead  [%bump %dead ~]~
     ::
         *  ::  mula-*
@@ -99,7 +101,7 @@
                 ==
                 ;+  ?.  (~(has in roz) %sess)
                       ;a/"{(curl:fh p.assessment.pro)}"(class butt:claz:fh, target "_blank"): send message →
-                    ?.  ?=(?(%done %dead) sat)
+                    ?.  ?=(?(%born %prop %done %dead) sat)
                       ;button(type "submit", name "act", value "bump-dead", class "text-nowrap px-2 py-1 text-white rounded-md bg-red-600 hover:bg-red-500"): cancel project ✗
                     ;div;
               ==
@@ -111,7 +113,7 @@
         ==
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~  :_  ~
-          ;div(class "m-2 p-2 border-2 border-black rounded-xl lg:min-w-[320px]")
+          ;div(class "m-2 p-2 border-2 border-black rounded-xl lg:w-1/4")
             ;+  ?-  sat
                 %prop
               ;div

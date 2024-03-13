@@ -79,7 +79,6 @@
       %work  ::  underway (on-chain, work started)
       %sess  ::  under assessment (on-chain, work reviewed)
       %done  ::  completed successfully
-      ::  %paid  ::  funds claimed for completed work
       %dead  ::  completed unsuccessfully
   ==
 ::
@@ -118,6 +117,7 @@
       image=(unit @t)
       cost=@rs
       ::  goal=bloq  ::  relative block height, e.g. +120 blocks
+      contract=(unit bill)
       contribs=(list trib)
       status=stat
       ::  terminate=bloq  ::  undecided feature

@@ -145,18 +145,6 @@
     ==
   --
 ::
-::  +claz: poor man's twind class evaluation via @apply
-::
-++  claz
-  |%
-  ++  butt                                       ::  button
-    """
-    text-nowrap px-2 py-1 border-2 duration-300 border-black rounded-md
-    hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400
-    active:bg-yellow-500 active:border-yellow-500
-    """
-  --
-::
 ::  +htmx: html-related helper functions and data, including css, js, components
 ::
 ++  htmx
@@ -166,7 +154,7 @@
     ^-  manx
     =+  go-base="https://fonts.googleapis.com"
     =+  sl-base="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist"
-    |^  ;html
+    |^  ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
@@ -175,18 +163,14 @@
             ;link/"{go-base}"(rel "preconnect");
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ::  FIXME: Make this line legible somehow
-            ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
-            ::  NOTE: We have a local script that sets '.block' to hide elements so
-            ::  that the document is hidden before 'twind' loads and applies styles
-            ::  to the document (which will override '.block' to do the opposite).
-            ;style: {".block \{ display: none; }"}
+            ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;style: {^~((trip fund-cs))}
             ;link(rel "stylesheet", href "{sl-base}/themes/light.css");
             ;script(type "module", src "{sl-base}/shoelace-autoloader.js");
             ;script(src "/session.js");  ::  debug-only
             ;+  (inject:tonic q.byk.bol)  ::  debug-only
           ==
-          ;body(class "text-base font-serif block max-w-screen-2xl {cas}")
+          ;body(class "text-base font-serif max-w-screen-2xl {cas}")
             ;+  head
             ;+  bod
             ;+  foot
@@ -197,52 +181,36 @@
       ^-  manx
       =/  [pat=(pole knot) *]  (durl url.request.ord)
       ;nav
-        ;div(class "flex justify-between p-2 lg:px-4 border-black border-b-2")
-          ;+  ?-    pat
-                  ?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~])
-                ;a/"{(aurl (snip `(list knot)`pat))}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-                  ; ← back
-                ==
-              ::
-                  *
-                ;a/"{(aurl /)}"(class "flex items-center gap-x-2 text-xl border-2 rounded-sm border-white ease-in-out hover:text-yellow-500 duration-300 font-medium")
-                  ; %fund
-                ==
-              ==
+        ;div(class "flex justify-between items-center p-2 lg:px-4 border-black border-b-2")
+          ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
+                ;a/"{(aurl (snip `(list knot)`pat))}"(class "fund-butn-link"): ← back
+              ;a/"{(aurl /)}"(class "text-xl font-medium duration-300 hover:text-yellow-500"): %fund
           ;div(class "flex gap-x-2")
             ::  FIXME: Opening login page in a new tab because opening it
             ::  in the current tab causes issues with further redirects
             ::  (e.g. to the ship login page for eAuth)
-            ;button(id "login-urbit", class "text-nowrap px-2 py-1 border-2 border-black rounded-md duration-300 hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 active:bg-yellow-500 active:border-yellow-500")
+            ;button(id "login-urbit", class "fund-butn-link")
               ;+  ?:  (auth bol)
                     ;a/"/~/logout?redirect={(aurl pat)}": {<src.bol>}
                   ;a/"/~/login?redirect={(aurl pat)}"(target "_blank"): login ~
             ==
-            ;button(id "connect-wallet", class "cursor-pointer text-nowrap px-2 py-1 border-2 duration-300 border-black bg-black text-white hover:text-black rounded-md hover:rounded-lg hover:bg-white hover:border-gray-800 active:bg-gray-800 active:border-black active:text-white")
-              ; …loading…
-            ==
+            ;button(id "connect-wallet", class "fund-butn-wallet"):  …loading…
           ==
         ==
       ==
     ++  foot
       ^-  manx
       ;footer
-        ;div(class "justify-center border-t-2 p-2 lg:px-4 border-black lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
-          ;div(class "flex justify-center grow lg:grow-0 lg:justify-end lg:p-2")
-            ;div(class "px-10 lg:px-2")
-              ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
-                ;img@"{(aurl /asset/[~.urbit.svg])}";
-              ==
+        ;div(class "justify-center border-t-2 p-2 border-black lg:px-4 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
+          ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end lg:p-2")
+            ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
+              ;img@"{(aurl /asset/[~.urbit.svg])}";
             ==
-            ;div(class "px-10 lg:px-2")
-              ;a/"https://twitter.com/tocwex"(target "_blank")
-                ;img@"{(aurl /asset/[~.x.svg])}";
-              ==
+            ;a/"https://twitter.com/tocwex"(target "_blank")
+              ;img@"{(aurl /asset/[~.x.svg])}";
             ==
-            ;div(class "px-10 lg:px-2")
-              ;a/"https://github.com/tocwex"(target "_blank")
-                ;img@"{(aurl /asset/[~.github.svg])}";
-              ==
+            ;a/"https://github.com/tocwex"(target "_blank")
+              ;img@"{(aurl /asset/[~.github.svg])}";
             ==
           ==
           ;div(class "mb-0 mt-2 text-center text-xs lg:text-base lg:m-0 lg:p-1 lg:pb-2")
@@ -282,7 +250,7 @@
   ++  stat-pill
     |=  sat=stat
     ^-  manx
-    =-  ;div(class "text-nowrap px-2 py-1 border-2 rounded-full {cas} {kas}"): {nam}
+    =-  ;div(class "fund-pill {kas} {cas}"): {nam}
     ^-  [nam=tape kas=tape]
     =-  [(stat:dump sat) "text-{-} border-{-}"]
     ?-  sat
@@ -292,6 +260,14 @@
       %sess  "purple-500"
       %done  "green-500"
       %dead  "red-500"
+    ==
+  ++  prod-butn
+    |=  [pod=@tas clr=?(%red %black %green) txt=tape]
+    ^-  manx
+    ;button  =type  "submit"  =name  "act"
+      =value  (trip pod)
+      =class  "fund-butn-{(trip clr)} {cas}"
+      {txt}
     ==
   --
 --

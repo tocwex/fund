@@ -75,7 +75,7 @@
     ;*  ?~  image.pro  ~  :_  ~
         ;img@"{(trip u.image.pro)}"(class "mx-auto w-full my-2 sm:px-4");
     ;div(class "lg:flex lg:justify-between")
-      ;div(class "no-flex sm:gap-x-10")
+      ;div(class "lg:flex-1 sm:gap-x-10")
         ;div(class "")
           ;div(class "mx-auto flex px-4 justify-between sm:justify-normal sm:gap-x-16")
             ;div(class "my-1 py-1 justify-normal items items-center gap-x-4")
@@ -85,11 +85,11 @@
                   {(scow %p p.lag)}
                 ==
                 ;+  ?.  (~(has in roz) %work)
-                      ;a/"{(curl:fh p.lag)}"(class butt:claz:fh, target "_blank"): send message →
+                      ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): send message →
                     ?:  ?=(?(%born %prop) sat)
-                      ;a/"{(aurl:fh (snoc pat %edit))}"(class butt:claz:fh): edit project →
+                      ;a.fund-butn-link/"{(aurl:fh (snoc pat %edit))}": edit project →
                     ?.  ?=(?(%done %dead) sat)
-                      ;button(type "submit", name "act", value "bump-dead", class "text-nowrap px-2 py-1 text-white rounded-md bg-red-600 hover:bg-red-500"): cancel project ✗
+                      (prod-butn:htmx:fh %bump-dead %red "cancel project ✗")
                     ;div;
               ==
             ==
@@ -100,9 +100,9 @@
                   {(scow %p p.assessment.pro)}
                 ==
                 ;+  ?.  (~(has in roz) %sess)
-                      ;a/"{(curl:fh p.assessment.pro)}"(class butt:claz:fh, target "_blank"): send message →
+                      ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
                     ?.  ?=(?(%born %prop %done %dead) sat)
-                      ;button(type "submit", name "act", value "bump-dead", class "text-nowrap px-2 py-1 text-white rounded-md bg-red-600 hover:bg-red-500"): cancel project ✗
+                      (prod-butn:htmx:fh %bump-dead %red "cancel project ✗")
                     ;div;
               ==
             ==
@@ -120,16 +120,19 @@
                 ;div(class "p-2 text-3xl w-full"): Review Request
                 ;div(class "gap-2")
                   ;div(class "p-2")
-                    ;span(class "font-mono font-medium"): {"{(scow %p p.lag)} "}
+                    ;span(class "font-mono font-medium"): {(scow %p p.lag)}
+                    ;
                     ; has requested your services as an escrow assessor for this project.
                   ==
                   ;div(class "p-2")
                     ; For your services,
-                    ;span(class "font-mono font-medium"): {"{(scow %p p.lag)} "}
+                    ;span(class "font-mono font-medium"): {(scow %p p.lag)}
+                    ;
                     ; is offering the following compensation:
                   ==
                   ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
-                    ;span(class "font-medium"): {"{(mony:dump:fh q.assessment.pro)}% "}
+                    ;span(class "font-medium"): {(mony:dump:fh q.assessment.pro)}%
+                    ;
                     ; of each milestone payout upon completed milestone assessment
                   ==
                   ;div(class "p-2")
@@ -143,12 +146,8 @@
                   ==
                 ==
                 ;div(class "p-2 flex justify-end gap-x-2")
-                  ;button(type "submit", name "act", value "bump-born", class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-                    ; decline ~
-                  ==
-                  ;button(type "submit", name "act", value "bump-prop", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
-                    ; accept ✓
-                  ==
+                  ;+  (prod-butn:htmx:fh %bump-born %black "decline ~")
+                  ;+  (prod-butn:htmx:fh %bump-prop %green "accept ✓")
                 ==
               ==
             ::
@@ -185,12 +184,8 @@
                   ;input(type "text", name "msg", class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "awesome work!");
                 ==
                 ;div(class "p-2 flex justify-end gap-x-2")
-                  ;button(type "submit", name "act", value "mula-plej", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
-                    ; pledge only ~
-                  ==
-                  ;button(type "submit", name "act", value "mula-trib", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
-                    ; send funds ✓
-                  ==
+                  ;+  (prod-butn:htmx:fh %mula-plej %black "pledge only ~")
+                  ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓")
                 ==
               ==
             ==
@@ -235,28 +230,18 @@
               ;*  ;:  welp
                   ?.  &(|((lth pin sin) =(%done sat)) (~(has in roz) %work))  ~
                 ::  TODO: Make this button do something
-                :~  ;button(class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
-                      ; withdraw funds ✓
-                ==  ==
+                :_  ~  ;button.fund-butn-green: withdraw funds ✓
               ::
                   ?.  &(=(pin sin) (~(has in roz) %work) ?=(%lock sat))  ~
-                :~  ;button(type "submit", name "act", value "bump-work", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
-                      ; mark in-progress ~
-                ==  ==
+                :_  ~  (prod-butn:htmx:fh %bump-work %black "mark in-progress ~")
               ::
                   ?.  &(=(pin sin) (~(has in roz) %work) ?=(%work sat))  ~
-                :~  ;button(type "submit", name "act", value "bump-sess", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
-                      ; request review ~
-                ==  ==
+                :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~")
               ::
                   ?.  &(=(pin sin) (~(has in roz) %sess) ?=(%sess sat))  ~
-                :~  ;a/"{(curl:fh p.lag)}"(class butt:claz:fh): message worker →
-                    ;button(type "submit", name "act", value "bump-work", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
-                      ; changes required ~
-                    ==
-                    ;button(type "submit", name "act", value "bump-done", class "text-nowrap px-2 py-1 border-2 border-green-600 rounded-md text-white bg-green-600 hover:border-green-500 hover:bg-green-500 active:border-green-700 active:bg-green-700")
-                      ; approve ✓
-                    ==
+                :~  ;a.fund-butn-link/"{(curl:fh p.lag)}": message worker →
+                    (prod-butn:htmx:fh %bump-work %black "changes required ~")
+                    (prod-butn:htmx:fh %bump-done %green "approve ✓")
                 ==
               ==
             ==

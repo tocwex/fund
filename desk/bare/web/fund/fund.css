@@ -24,7 +24,6 @@
 .grow-wrap::after {
   /* Identical styling required!! */
   padding: 0.25rem;
-  margin: 0.25rem;
   font: inherit;
 
   /* Place on top of each other */

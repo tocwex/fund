@@ -40,12 +40,32 @@ if (!hasLoaded) {
       fontFamily: {
         serif: ['Poppins', 'Noto Emoji', 'serif'],
         sans: ['Noto Emoji', 'sans-serif'],
+        mono: ['Roboto Mono', 'mono'],
       },
-      extend: {
-        colors,
-      },
+      extend: { colors },
     },
-  })
+    // FIXME: This should ultimately be in some sort of CSS file that can be
+    // replaced by the user for custom styling
+    // FIXME: Some of the override styling (e.g. 'p-1' for input/textarea) is
+    // being overridden by twind's *own* preflight; need to disable this somehow
+    preflight: (preflight, {theme}) => ({
+      ...preflight,
+      input: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
+      textarea: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
+      label: apply`text-black font-light py-1`,
+    }),
+    // FIXME: Style embeddings don't seem to work with the shim; may need to
+    // use `tw(...)` directly to refactor beyond 1 level
+    plugins: {
+      'fund-pill': `text-nowrap px-2 py-1 border-2 rounded-full`,
+      'fund-form-group': `flex flex-col w-full p-1 gap-1`,
+      'fund-butn-link': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
+      'fund-butn-wallet': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
+      'fund-butn-red': `text-nowrap px-2 py-1 rounded-md text-white bg-red-600 hover:bg-red-500`,
+      'fund-butn-green': `text-nowrap px-2 py-1 rounded-md text-white bg-green-600 hover:bg-green-500`,
+      'fund-butn-black': `text-nowrap px-2 py-1 rounded-md text-white bg-black hover:bg-gray-800`,
+    },
+  });
 
   window.Alpine = Alpine;
   const tws = (parts) => {

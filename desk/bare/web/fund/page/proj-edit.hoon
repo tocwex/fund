@@ -5,6 +5,7 @@
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 +*  pflag  (furl:fh url.request.ord)
+    mdesc  "Describe your milestone in detail, such that both project funders and your assessor can understand the work you are doing—and everyone can reasonably agree when it is completed."
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
@@ -101,7 +102,7 @@
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
   ;div
-    ;form(id "maincontent", method "post", autocomplete "off", class "mx-auto lg:px-4")
+    ;form#maincontent(method "post", autocomplete "off", class "mx-auto lg:px-4")
       ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
       :~  ;div
             ;div(class "flex flex-wrap items-center justify-between")
@@ -116,25 +117,27 @@
             ==
             ;div
               ;div(class "flex")
-                ;div(class "m-1 p-1 w-full")
-                  ;div(class "m-1 pt-1 border-black font-light")
-                    ; project title
-                  ==
-                  ;input(type "text", name "nam", value (trip ?~(pru '' title.u.pru)), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "My Awesome Project");
+                ;div(class "fund-form-group")
+                  ;label(for "nam"): project title
+                  ;input.p-1  =type  "text"  =name  "nam"
+                    =placeholder  "My Awesome Project"
+                    =value  (trip ?~(pru '' title.u.pru));
                 ==
-                ;div(class "m-1 p-1 w-full")
-                  ;div(class "m-1 pt-1 border-black font-light")
-                    ; project image
-                  ==
-                  ;input(type "text", name "pic", value (trip (fall ?~(pru ~ image.u.pru) '')), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "https://example.com/example.png");
+                ;div(class "fund-form-group")
+                  ;label(for "pic"): project image
+                  ;input.p-1  =type  "url"  =name  "pic"
+                    =placeholder  "https://example.com/example.png"
+                    =value  (trip (fall ?~(pru ~ image.u.pru) ''));
                 ==
               ==
-              ;div(class "m-1 p-1")
-                ;div(class "m-1 pt-1 border-black font-light")
-                  ; project description
-                ==
+              ;div(class "fund-form-group")
+                ;label(for "sum"): project description
                 ;div(class "grow-wrap")
-                  ;textarea(name "sum", rows "3", value (trip ?~(pru '' summary.u.pru)), oninput "this.parentNode.dataset.replicatedValue = this.value", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "Write a worthy description of your project")
+                  ;textarea.p-1  =name  "sum"  =rows  "3"
+                    =placeholder  "Write a worthy description of your project"
+                    =value  (trip ?~(pru '' summary.u.pru))
+                    ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
+                    =oninput  "this.parentNode.dataset.replicatedValue = this.value"
                     ; {(trip ?~(pru '' summary.u.pru))}
                   ==
                 ==
@@ -147,32 +150,35 @@
               ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                   |=  [pin=@ mil=mile:f]
                   ^-  manx
-                  ;div(id "mile-well", class "my-2 p-2 border-2 border-black rounded-xl")
+                  ;div(id "mile-well", class "my-2 p-4 border-2 border-black rounded-xl")
                     ;div(class "flex flex-wrap items-center justify-between")
-                      ;div(id "mile-head", class "m-1 px-2 text-3xl"): Milestone #{<+(pin)>}
+                      ;div(id "mile-head", class "text-3xl"): Milestone #{<+(pin)>}
                       ;+  (stat-pill:htmx:fh status.mil)
                     ==
                     ;div
                       ;div(class "flex")
-                        ;div(class "m-1 p-1 w-full")
-                          ;div(class "m-1 pt-1 border-black font-light")
-                            ; milestone title
-                          ==
-                          ;input(id "mile-name", type "text", name "m{<pin>}n", value (trip title.mil), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "Give your milestone a title");
+                        ;div(class "fund-form-group")
+                          ;label(for "m{<pin>}n"): milestone title
+                          ;input#mile-name.p-1  =type  "text"  =name  "m{<pin>}n"
+                            =placeholder  "Give your milestone a title"
+                            =value  (trip title.mil);
                         ==
-                        ;div(class "m-1 p-1 w-full")
-                          ;div(class "m-1 pt-1 border-black font-light")
-                            ; milestone cost ($)
-                          ==
-                          ;input(id "mile-cost", type "number", name "m{<pin>}c", onchange "updateTotal()", value "{?:(=(0 cost.mil) *tape (mony:dump:fh cost.mil))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "0");
+                        ;div(class "fund-form-group")
+                          ;label(for "m{<pin>}c"): milestone cost ($)
+                          ;input#mile-cost.p-1  =type  "number"  =name  "m{<pin>}c"
+                            =placeholder  "0"
+                            =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
+                            =onchange  "updateTotal()";
                         ==
                       ==
-                      ;div(class "m-1 p-1")
-                        ;div(class "m-1 pt-1 border-black font-light")
-                          ; milestone description
-                        ==
+                      ;div(class "fund-form-group")
+                        ;label(for "m{<pin>}s"): milestone description
                         ;div(class "grow-wrap")
-                          ;textarea(id "mile-summ", name "m{<pin>}s", rows "3", value (trip summary.mil), oninput "this.parentNode.dataset.replicatedValue = this.value", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "describe your milestone in detail, such that both project funders and your assessor can understand the work you are doing—and everyone can reasonably agree when it is completed.")
+                          ;textarea#mile-summ.p-1  =name  "m{<pin>}s"  =rows  "3"
+                            =placeholder  mdesc
+                            =value  (trip summary.mil)
+                            ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
+                            =oninput  "this.parentNode.dataset.replicatedValue = this.value"
                             ; {(trip summary.mil)}
                           ==
                         ==
@@ -181,33 +187,24 @@
                   ==
             ==
             ;div(class "flex justify-center mx-auto")
-              ;button(id "mile-button", type "button", class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
-                ; New Milestone +
-              ==
+              ;button#mile-butn(class "fund-butn-black"): New Milestone +
             ==
           ==
           ;div
-            ;div(class "m-1 pt-2 text-3xl w-full")
-              ; Escrow Assessor
-            ==
+            ;div(class "m-1 pt-2 text-3xl w-full"): Escrow Assessor
             ;div(class "flex")
-              ;div(class "m-1 p-1 w-full")
-                ;div(class "m-1 pt-1 border-black font-light")
-                  ; escrow assessor
-                ==
-                ;div(class "flex justify-between")
-                  ;input(type "text", name "sea", value (trip ?~(pru '' (scot %p p.assessment.u.pru))), class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "{(scow %p our.bol)}");
-                ==
+              ;div(class "fund-form-group")
+                ;label(for "sea"): escrow assessor
+                ;input.p-1  =type  "text"  =name  "sea"
+                  =placeholder  (scow %p our.bol)
+                  =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
               ==
-              ;div(class "m-1 p-1 w-full flex items-end")
-                ;div(class "mr-1 pr-1 w-full")
-                  ;div(class "m-1 pt-1 border-black font-light")
-                    ; assessor fee offer (%)
-                  ==
-                  ;div(class "flex")
-                    ;input(type "number", name "seo", min "0", max "100", step "0.01", value "{?~(pru *tape (mony:dump:fh q.assessment.u.pru))}", class "m-1 p-1 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full disabled:border-gray-400 disabled:bg-gray-400", placeholder "0");
-                  ==
-                ==
+              ;div(class "fund-form-group")
+                ;label(for "seo"): assessor fee offer (%)
+                ;input.p-1  =type  "number"  =name  "seo"
+                  =min  "0"  =max  "100"  =step  "0.01"
+                  =placeholder  "0"
+                  =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));
               ==
             ==
           ==
@@ -219,35 +216,23 @@
         ; for review of work and release of funds.
         ;div(class "flex w-full justify-center gap-x-2 mx-auto")
           ;*
-          |^  ?+  sat  ~[dead-butt drop-butt]
-                %dead  ~[drop-butt]
-                %born  (weld ?~(pru ~ ~[crow-butt]) ~[init-butt drop-butt])
+          |^  ?+  sat  ~[dead-butn drop-butn]
+                %dead  ~[drop-butn]
+                %born  (weld ?~(pru ~ ~[crow-butn]) ~[init-butn drop-butn])
               ::
                   %prop
-                %-  weld  :_  ~[croc-butt drop-butt]
-                ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butt])
+                %-  weld  :_  ~[croc-butn drop-butn]
+                ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butn])
               ==
           ::
-          ++  init-butt  (blaq-butt "init" "save draft ~")
-          ++  crow-butt  (gren-butt "bump-prop" "request escrow ✓")
-          ++  croc-butt  (blaq-butt "bump-born" "cancel escrow ~")
-          ++  fini-butt  (gren-butt "bump-lock" "finalize escrow ✓")
-          ++  dead-butt  (rhed-butt "dead" "discontinue project ✗")
-          ++  drop-butt
+          ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~")
+          ++  crow-butn  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓")
+          ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~")
+          ++  fini-butn  (prod-butn:htmx:fh %bump-lock %green "finalize escrow ✓")
+          ++  dead-butn  (prod-butn:htmx:fh %dead %red "discontinue project ✗")
+          ++  drop-butn
             =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-            (rhed-butt "drop" "delete {obj} ✗")
-          ::
-          ++  rhed-butt  (cury butt-base "bg-red-600 hover:bg-red-500")
-          ++  gren-butt  (cury butt-base "bg-green-600 hover:bg-green-500")
-          ++  blaq-butt  (cury butt-base "bg-black hover:bg-gray-800")
-          ::
-          ++  butt-base
-            |=  [cas=tape act=tape txt=tape]
-            ^-  manx
-            ;button  =type  "submit"  =name  "act"  =value  act
-              =class  "text-nowrap px-2 py-1 text-white rounded-md {cas}"
-              ; {txt}
-            ==
+            (prod-butn:htmx:fh %drop %red "delete {obj} ✗")
           --
         ==
       ==
@@ -265,7 +250,7 @@
     ;script(type "module")
       ;+  ;/  ^~  %-  trip
       '''
-      document.querySelector("#mile-button").addEventListener("click", (event) => {
+      document.querySelector("#mile-butn").addEventListener("click", (event) => {
         const wellDiv = document.querySelector("#mile-welz");
         const wellClone = document.querySelector("#mile-well").cloneNode(true);
         const wellIndex = wellDiv.childElementCount;

@@ -101,140 +101,138 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
-  ;div
-    ;form#maincontent(method "post", autocomplete "off", class "mx-auto lg:px-4")
-      ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
-      :~  ;div
-            ;div(class "flex flex-wrap items-center justify-between")
-              ;div(class "m-1 pt-2 text-3xl"): Project Overview
-              ;div(class "flex items-center gap-x-2")
-                ;div(class "text-xl")
-                  ; Funding Goal:
-                  ;span(id "proj-cost"): ${(mony:dump:fh ?~(pru .0 ~(cost pj:f -.u.pru)))}
-                ==
-                ;+  (stat-pill:htmx:fh sat)
+  ;form#maincontent(method "post", autocomplete "off", class "p-2")
+    ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
+    :~  ;div
+          ;div(class "flex flex-wrap items-center justify-between")
+            ;div(class "text-3xl"): Project Overview
+            ;div(class "flex items-center gap-x-2")
+              ;div(class "text-xl")
+                ; Funding Goal:
+                ;span(id "proj-cost"): ${(mony:dump:fh ?~(pru .0 ~(cost pj:f -.u.pru)))}
               ==
-            ==
-            ;div
-              ;div(class "flex")
-                ;div(class "fund-form-group")
-                  ;label(for "nam"): project title
-                  ;input.p-1  =name  "nam"  =type  "text"
-                    =placeholder  "My Awesome Project"
-                    =value  (trip ?~(pru '' title.u.pru));
-                ==
-                ;div(class "fund-form-group")
-                  ;label(for "pic"): project image
-                  ;input.p-1  =name  "pic"  =type  "url"
-                    =placeholder  "https://example.com/example.png"
-                    =value  (trip (fall ?~(pru ~ image.u.pru) ''));
-                ==
-              ==
-              ;div(class "fund-form-group")
-                ;label(for "sum"): project description
-                ;div(class "grow-wrap")
-                  ;textarea.p-1  =name  "sum"  =rows  "3"
-                    =placeholder  "Write a worthy description of your project"
-                    =value  (trip ?~(pru '' summary.u.pru))
-                    ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
-                    =oninput  "this.parentNode.dataset.replicatedValue = this.value"
-                    ; {(trip ?~(pru '' summary.u.pru))}
-                  ==
-                ==
-              ==
+              ;+  (stat-pill:htmx:fh sat)
             ==
           ==
           ;div
-            ;div(class "text-3xl pt-2"): Milestones
-            ;div(id "mile-welz", class "mx-2")
-              ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
-                  |=  [pin=@ mil=mile:f]
-                  ^-  manx
-                  ;div(id "mile-well", class "my-2 p-4 border-2 border-black rounded-xl")
-                    ;div(class "flex flex-wrap items-center justify-between")
-                      ;div(id "mile-head", class "text-3xl"): Milestone #{<+(pin)>}
-                      ;+  (stat-pill:htmx:fh status.mil)
-                    ==
-                    ;div
-                      ;div(class "flex")
-                        ;div(class "fund-form-group")
-                          ;label(for "m{<pin>}n"): milestone title
-                          ;input#mile-name.p-1  =name  "m{<pin>}n"  =type  "text"
-                            =placeholder  "Give your milestone a title"
-                            =value  (trip title.mil);
-                        ==
-                        ;div(class "fund-form-group")
-                          ;label(for "m{<pin>}c"): milestone cost ($)
-                          ;input#mile-cost.p-1  =name  "m{<pin>}c"  =type  "number"
-                            =placeholder  "0"
-                            =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
-                            =onchange  "updateTotal()";
-                        ==
-                      ==
-                      ;div(class "fund-form-group")
-                        ;label(for "m{<pin>}s"): milestone description
-                        ;div(class "grow-wrap")
-                          ;textarea#mile-summ.p-1  =name  "m{<pin>}s"  =rows  "3"
-                            =placeholder  mdesc
-                            =value  (trip summary.mil)
-                            ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
-                            =oninput  "this.parentNode.dataset.replicatedValue = this.value"
-                            ; {(trip summary.mil)}
-                          ==
-                        ==
-                      ==
-                    ==
-                  ==
-            ==
-            ;div(class "flex justify-center mx-auto")
-              ;button#mile-butn(class "fund-butn-black"): New Milestone +
-            ==
-          ==
-          ;div
-            ;div(class "m-1 pt-2 text-3xl w-full"): Escrow Assessor
             ;div(class "flex")
               ;div(class "fund-form-group")
-                ;label(for "sea"): escrow assessor
-                ;input.p-1  =name  "sea"  =type  "text"
-                  =placeholder  (scow %p our.bol)
-                  =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
+                ;label(for "nam"): project title
+                ;input.p-1  =name  "nam"  =type  "text"
+                  =placeholder  "My Awesome Project"
+                  =value  (trip ?~(pru '' title.u.pru));
               ==
               ;div(class "fund-form-group")
-                ;label(for "seo"): assessor fee offer (%)
-                ;input.p-1  =name  "seo"  =type  "number"
-                  =min  "0"  =max  "100"  =step  "0.01"
-                  =placeholder  "0"
-                  =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));
+                ;label(for "pic"): project image
+                ;input.p-1  =name  "pic"  =type  "url"
+                  =placeholder  "https://example.com/example.png"
+                  =value  (trip (fall ?~(pru ~ image.u.pru) ''));
+              ==
+            ==
+            ;div(class "fund-form-group")
+              ;label(for "sum"): project description
+              ;div(class "grow-wrap")
+                ;textarea.p-1  =name  "sum"  =rows  "3"
+                  =placeholder  "Write a worthy description of your project"
+                  =value  (trip ?~(pru '' summary.u.pru))
+                  ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
+                  =oninput  "this.parentNode.dataset.replicatedValue = this.value"
+                  ; {(trip ?~(pru '' summary.u.pru))}
+                ==
               ==
             ==
           ==
-      ==
-      ;div(class "flex flex-col gap-y-2 m-1")
-        ;div(class "text-3xl w-full"): Confirm & Launch
-        ; Please review your proposal in detail and ensure
-        ; your assessor is in mutual agreement on expectations
-        ; for review of work and release of funds.
-        ;div(class "flex w-full justify-center gap-x-2 mx-auto")
-          ;*
-          |^  ?+  sat  ~[dead-butn drop-butn]
-                %dead  ~[drop-butn]
-                %born  (weld ?~(pru ~ ~[crow-butn]) ~[init-butn drop-butn])
-              ::
-                  %prop
-                %-  weld  :_  ~[croc-butn drop-butn]
-                ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butn])
-              ==
-          ::
-          ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~")
-          ++  crow-butn  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓")
-          ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~")
-          ++  fini-butn  (prod-butn:htmx:fh %bump-lock %green "finalize escrow ✓")
-          ++  dead-butn  (prod-butn:htmx:fh %dead %red "discontinue project ✗")
-          ++  drop-butn
-            =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-            (prod-butn:htmx:fh %drop %red "delete {obj} ✗")
-          --
         ==
+        ;div
+          ;div(class "text-3xl pt-2"): Milestones
+          ;div(id "mile-welz", class "mx-2")
+            ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
+                |=  [pin=@ mil=mile:f]
+                ^-  manx
+                ;div(id "mile-well", class "my-2 p-4 border-2 border-black rounded-xl")
+                  ;div(class "flex flex-wrap items-center justify-between")
+                    ;div(id "mile-head", class "text-3xl"): Milestone #{<+(pin)>}
+                    ;+  (stat-pill:htmx:fh status.mil)
+                  ==
+                  ;div
+                    ;div(class "flex")
+                      ;div(class "fund-form-group")
+                        ;label(for "m{<pin>}n"): milestone title
+                        ;input#mile-name.p-1  =name  "m{<pin>}n"  =type  "text"
+                          =placeholder  "Give your milestone a title"
+                          =value  (trip title.mil);
+                      ==
+                      ;div(class "fund-form-group")
+                        ;label(for "m{<pin>}c"): milestone cost ($)
+                        ;input#mile-cost.p-1  =name  "m{<pin>}c"  =type  "number"
+                          =placeholder  "0"
+                          =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
+                          =onchange  "updateTotal()";
+                      ==
+                    ==
+                    ;div(class "fund-form-group")
+                      ;label(for "m{<pin>}s"): milestone description
+                      ;div(class "grow-wrap")
+                        ;textarea#mile-summ.p-1  =name  "m{<pin>}s"  =rows  "3"
+                          =placeholder  mdesc
+                          =value  (trip summary.mil)
+                          ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
+                          =oninput  "this.parentNode.dataset.replicatedValue = this.value"
+                          ; {(trip summary.mil)}
+                        ==
+                      ==
+                    ==
+                  ==
+                ==
+          ==
+          ;div(class "flex justify-center mx-auto")
+            ;button#mile-butn(class "fund-butn-black"): New Milestone +
+          ==
+        ==
+        ;div
+          ;div(class "m-1 pt-2 text-3xl w-full"): Escrow Assessor
+          ;div(class "flex")
+            ;div(class "fund-form-group")
+              ;label(for "sea"): escrow assessor
+              ;input.p-1  =name  "sea"  =type  "text"
+                =placeholder  (scow %p our.bol)
+                =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
+            ==
+            ;div(class "fund-form-group")
+              ;label(for "seo"): assessor fee offer (%)
+              ;input.p-1  =name  "seo"  =type  "number"
+                =min  "0"  =max  "100"  =step  "0.01"
+                =placeholder  "0"
+                =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));
+            ==
+          ==
+        ==
+    ==
+    ;div(class "flex flex-col gap-y-2 m-1")
+      ;div(class "text-3xl w-full"): Confirm & Launch
+      ; Please review your proposal in detail and ensure
+      ; your assessor is in mutual agreement on expectations
+      ; for review of work and release of funds.
+      ;div(class "flex w-full justify-center gap-x-2 mx-auto")
+        ;*
+        |^  ?+  sat  ~[dead-butn drop-butn]
+              %dead  ~[drop-butn]
+              %born  (weld ?~(pru ~ ~[crow-butn]) ~[init-butn drop-butn])
+            ::
+                %prop
+              %-  weld  :_  ~[croc-butn drop-butn]
+              ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butn])
+            ==
+        ::
+        ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~")
+        ++  crow-butn  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓")
+        ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~")
+        ++  fini-butn  (prod-butn:htmx:fh %bump-lock %green "finalize escrow ✓")
+        ++  dead-butn  (prod-butn:htmx:fh %dead %red "discontinue project ✗")
+        ++  drop-butn
+          =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
+          (prod-butn:htmx:fh %drop %red "delete {obj} ✗")
+        --
       ==
     ==
     ;script

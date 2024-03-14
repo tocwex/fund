@@ -201,8 +201,8 @@
       ==
     ++  foot
       ^-  manx
-      ;footer(class "justify-center border-t-2 p-2 border-black lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
-        ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end lg:p-2")
+      ;footer(class "justify-center border-t-2 p-2 border-black lg:flex lg:p-4 lg:flex-row-reverse lg:items-center lg:justify-between")
+        ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end")
           ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
             ;img@"{(aurl /asset/[~.urbit.svg])}";
           ==

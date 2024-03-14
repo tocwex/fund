@@ -17,7 +17,7 @@
   |^  ?+    dyp  !!
           %worker
         =/  my-prez  ~(tap by (prez-mine:sss:f bol dat))
-        ;div(id "maincontent", class "mx-auto lg:px-4")
+        ;div#maincontent
           ;+  %^  prez-welz  "My Draft Proposals"  &
               %+  skim  my-prez
               |=([* pro=proj:f liv=?] ?=(?(%born %prop) ~(stat pj:f pro)))
@@ -33,7 +33,7 @@
         =/  us-sess
           %+  skim  ~(tap by (prez-ours:sss:f bol dat))
           |=([* pro=proj:f liv=?] =(our.bol p.assessment.pro))
-        ;div(id "maincontent", class "mx-auto lg:px-4")
+        ;div#maincontent
           ;+  %^  prez-welz  "Requests for My Services"  |
               %+  skim  us-sess
               |=([* pro=proj:f liv=?] ?=(%prop ~(stat pj:f pro)))
@@ -47,7 +47,7 @@
       ::
           %funder
         =/  us-prez  ~(tap by (prez-ours:sss:f bol dat))
-        ;div(id "maincontent", class "mx-auto lg:px-4")
+        ;div#maincontent
           ;+  %^  prez-welz  "My Open Pledges"  |
               %+  skim  us-prez
               |=  [[sip=@p *] pro=proj:f liv=?]

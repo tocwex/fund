@@ -61,9 +61,9 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "{(trip title.pro)}"
-  ;form#maincontent(method "post", autocomplete "off", class "mx-auto py-4 lg:px-4")
+  ;form#maincontent(method "post", autocomplete "off", class "p-2")
     ;div(class "flex flex-wrap items-center justify-between")
-      ;div(class "px-4 text-4xl sm:text-5xl"): {(trip title.pro)}
+      ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
           ; Funding Goal:
@@ -73,10 +73,10 @@
       ==
     ==
     ;*  ?~  image.pro  ~  :_  ~
-        ;img@"{(trip u.image.pro)}"(class "mx-auto w-full my-2 sm:px-4");
+        ;img@"{(trip u.image.pro)}"(class "w-full my-2");
     ;div(class "lg:flex lg:justify-between")
       ;div(class "lg:flex-1 sm:gap-x-10")
-        ;div(class "mx-auto flex px-4 justify-between sm:justify-normal sm:gap-x-16")
+        ;div(class "flex justify-between mx-auto sm:justify-normal sm:gap-x-16")
           ;div(class "my-1 py-1 justify-normal items items-center gap-x-4")
             ;div(class "text-sm font-light underline"): project worker
             ;div(class "items-center gap-x-2")
@@ -179,7 +179,7 @@
             ==
           ==
     ==
-    ;div(class "px-4")
+    ;div
       ;div(class "text-3xl pt-2"): Contribution Tracker
       ;div(class "flex flex-col gap-2")
         ;div(class "flex justify-between")
@@ -198,13 +198,13 @@
         ;+  (mula-ther:htmx:fh .0 ~(fill pj:f pro) ~(plej pj:f pro))
       ==
     ==
-    ;div(class "px-4")
+    ;div
       ;div(class "text-3xl pt-2"): Milestone Overview
       ;*  =/  fiz=(list @rs)  ~(film pj:f pro)
           %+  turn  (enum:fx `(list mile:f)`milestones.pro)
           |=  [pin=@ mil=mile:f]
           ^-  manx
-          ;div(class "my-4 p-4 border-2 border-black rounded-xl")
+          ;div(class "my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap justify-between items-center gap-2")
               ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(pin)>}: {(trip title.mil)}
               ;+  (stat-pill:htmx:fh status.mil)
@@ -233,7 +233,7 @@
             ==
           ==
     ==
-    ;div(class "px-4")
+    ;div
       ;div(class "text-3xl pt-2"): Proposal Funders
       ;*  =/  muz=(list mula:f)  ~(mula pj:f pro)
           ?~  muz

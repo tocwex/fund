@@ -12,7 +12,7 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  ~
-  |^  ;div(id "maincontent", class "flex flex-col py-2 gap-2 mx-auto lg:px-4")
+  |^  ;div#maincontent(class "flex flex-col py-2 gap-2 mx-auto")
         ;+  %^  dash-well  %funder
               "funding contributor"
             "fulfill your pledges and follow active projects"

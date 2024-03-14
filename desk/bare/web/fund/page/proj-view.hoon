@@ -53,10 +53,11 @@
   ^-  reply:rudder
   =/  [pat=(list knot) *]  (durl:fh url.request.ord)
   =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  ::  TODO: Gate users `!=(our.bol src.bol)` to only my projects?
   ?~  pre=(~(get by (prez-ours:sss:f bol dat)) lag)  [%code 404 '']
   =*  pro  -.u.pre
   =/  sat=stat:f  ~(stat pj:f pro)
+  ::  NOTE: Gate non-`our` users to my ship's non-draft projects
+  ?:  &(!=(our.bol src.bol) |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
   =/  [fin=@ mile:f]  ~(next-fill pj:f pro)
   =/  [sin=@ mile:f]  ~(next-stat pj:f pro)

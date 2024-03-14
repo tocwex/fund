@@ -9,6 +9,8 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
+  ::  NOTE: Only the ship owner can access non-project pages
+  ?.  =(our.bol src.bol)  [%auth url.request.ord]
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  ~

@@ -102,6 +102,8 @@
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
+  ::  NOTE: Only the ship owner can access non-project pages
+  ?.  =(our.bol src.bol)  [%auth url.request.ord]
   ::  TODO Redirect to base page if this project exists and is in a
   ::  post-%lock status
   =/  pru=(unit prej:f)  ?~(pflag ~ (~(get by (prez-ours:sss:f bol dat)) (need pflag)))

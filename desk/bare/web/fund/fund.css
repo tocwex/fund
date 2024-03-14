@@ -22,10 +22,16 @@
 }
 .grow-wrap > textarea,
 .grow-wrap::after {
-  /* Identical styling required!! */
+  /* NOTE: Identical styling required!! */
   padding: 0.25rem;
   font: inherit;
 
   /* Place on top of each other */
   grid-area: 1 / 1 / 2 / 2;
+}
+
+/* Auto-add indicators for required fields (https://stackoverflow.com/q/49685336) */
+input[required] + label:after {
+  content: '*';
+  color: red;
 }

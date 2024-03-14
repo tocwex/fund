@@ -48,24 +48,25 @@ if (!hasLoaded) {
     // replaced by the user for custom styling
     // FIXME: Some of the override styling (e.g. 'p-1' for input/textarea) is
     // being overridden by twind's *own* preflight; need to disable this somehow
+    // - https://github.com/tw-in-js/twind/issues/221
     preflight: (preflight, {theme}) => ({
       ...preflight,
       input: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
       textarea: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
-      select: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
+      select: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
       label: apply`text-black font-light py-1`,
     }),
-    // FIXME: Style embeddings don't seem to work with the shim; may need to
-    // use `tw(...)` directly to refactor beyond 1 level
+    // FIXME: Recursive style embeddings don't seem to work with the shim; may
+    // need to use `tw(...)` directly to refactor beyond 1 level
     plugins: {
       'fund-pill': `text-nowrap px-2 py-1 border-2 rounded-full`,
       'fund-tytl-link': `text-xl font-medium duration-300 hover:text-yellow-500`,
-      'fund-form-group': `flex flex-col w-full p-1 gap-1`,
+      'fund-form-group': `flex flex-col-reverse w-full p-1 gap-1`,
       'fund-butn-link': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
       'fund-butn-wallet': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
-      'fund-butn-red': `text-nowrap px-2 py-1 rounded-md text-white bg-red-600 hover:bg-red-500`,
-      'fund-butn-green': `text-nowrap px-2 py-1 rounded-md text-white bg-green-600 hover:bg-green-500`,
-      'fund-butn-black': `text-nowrap px-2 py-1 rounded-md text-white bg-black hover:bg-gray-800`,
+      'fund-butn-red': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200`,
+      'fund-butn-green': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-green-600 bg-green-600 hover:bg-green-500 disabled:bg-green-200 disabled:border-green-200`,
+      'fund-butn-black': `text-nowrap px-2 py-1 rounded-md text-white  border-2 border-black bg-black hover:bg-gray-800 disabled:bg-gray-200 disabled:border-gray-200`,
     },
   });
 

@@ -149,7 +149,7 @@
 ::
 ++  htmx
   |_  cas=tape
-  ++  render
+  ++  render                                     ::  render page w/ head/foot/styles/etc.
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =+  go-base="https://fonts.googleapis.com"
@@ -196,7 +196,7 @@
           ;+  ?:  (auth bol)
                 ;a.fund-butn-link/"/~/logout?redirect={(aurl pat)}": {<src.bol>}
               ;a.fund-butn-link/"/~/login?redirect={(aurl pat)}"(target "_blank"): login ~
-          ;button(id "connect-wallet", class "fund-butn-wallet"):  …loading…
+          ;button#connect-wallet.fund-butn-wallet: …loading…
         ==
       ==
     ++  foot
@@ -222,7 +222,7 @@
         ==
       ==
     --
-  ++  mula-ther
+  ++  mula-ther                                  :: funding thermometer element
     |=  [cos=@rs fil=@rs pej=@rs]
     ^-  manx
     =/  unf=@rs  =+(u=(sub:rs cos (add:rs fil pej)) ?:((gth:rs u .0) u .0))
@@ -246,7 +246,7 @@
         ; unfunded
       ==
     ==
-  ++  stat-pill
+  ++  stat-pill                                  :: status pill element
     |=  sat=stat
     ^-  manx
     =-  ;div(class "fund-pill {kas} {cas}"): {nam}
@@ -260,13 +260,18 @@
       %done  "green-500"
       %dead  "red-500"
     ==
-  ++  prod-butn
-    |=  [pod=@tas clr=?(%red %black %green) txt=tape]
+  ++  prod-butn                                  :: prod/poke/action button
+    |=  [pod=@tas clr=?(%red %black %green) txt=tape dis=tape]
     ^-  manx
-    ;button  =type  "submit"  =name  "act"
-      =value  (trip pod)
-      =class  "fund-butn-{(trip clr)} {cas}"
-      {txt}
+    ::  TODO: Use on-click tooltips in order to support disabled error
+    ::  reporting on mobile
+    :_  ; {txt}
+    :-  %button
+    %+  welp  ?~(dis ~ ~[[%disabled ~] [%title dis]])
+    :~  [%type "submit"]
+        [%name "act"]
+        [%value (trip pod)]
+        [%class "fund-butn-{(trip clr)} {cas}"]
     ==
   --
 --

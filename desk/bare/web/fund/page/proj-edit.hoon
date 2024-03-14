@@ -6,6 +6,7 @@
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 +*  pflag  (furl:fh url.request.ord)
     mdesc  "Describe your milestone in detail, such that both project funders and your assessor can understand the work you are doing—and everyone can reasonably agree when it is completed."
+    pregx  (trip '(~(([a-z]{3})|([a-z]{6}(-[a-z]{6}){0,3})|([a-z]{6}(-[a-z]{6}){3})--([a-z]{6}(-[a-z]{6}){3})))?')
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
@@ -45,12 +46,17 @@
       ::  - Even if not all `act`s were forwarded cards, we'd need to
       ::    use poke responses and watch wires when forwarding pokes to
       ::    a remote ship (e.g. assessor poking project on worker ship)
+      ::  NOTE: Use `proz.dat` instead of `prez-ours...` because only
+      ::  the owner should be able to submit edits to the ship
       ?.  (~(has by proz.dat) lag)
         (crip "bad act={<act>}; project doesn't exist: {<lag>}")
       ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
       ?:  ?=(%dead act)  [%bump %dead ~]~
       ::  TODO: fill in actual `bil` values based on passed POST
       ::  arguments (forwarded from MetaMask)
+      ::  TODO: when moving to %prop, we should also %init so that the
+      ::  most recent form changes are saved when the user attempts to
+      ::  send a request
       =+  bil=*bill:f
       ?+  sat=;;(stat:f (rsh [3 5] act))  !!
         %born  [%bump %born ~]~              ::  worker retract/oracle reject
@@ -96,6 +102,8 @@
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
+  ::  TODO Redirect to base page if this project exists and is in a
+  ::  post-%lock status
   =/  pru=(unit prej:f)  ?~(pflag ~ (~(get by (prez-ours:sss:f bol dat)) (need pflag)))
   =/  sat=stat:f  ?~(pru %born ~(stat pj:f -.u.pru))
   :-  %page
@@ -117,20 +125,19 @@
           ;div
             ;div(class "flex")
               ;div(class "fund-form-group")
-                ;label(for "nam"): project title
-                ;input.p-1  =name  "nam"  =type  "text"
+                ;input.p-1  =name  "nam"  =type  "text"  =required  ~
                   =placeholder  "My Awesome Project"
                   =value  (trip ?~(pru '' title.u.pru));
+                ;label(for "nam"): project title
               ==
               ;div(class "fund-form-group")
-                ;label(for "pic"): project image
                 ;input.p-1  =name  "pic"  =type  "url"
                   =placeholder  "https://example.com/example.png"
                   =value  (trip (fall ?~(pru ~ image.u.pru) ''));
+                ;label(for "pic"): project image
               ==
             ==
             ;div(class "fund-form-group")
-              ;label(for "sum"): project description
               ;div(class "grow-wrap")
                 ;textarea.p-1  =name  "sum"  =rows  "3"
                   =placeholder  "Write a worthy description of your project"
@@ -140,6 +147,7 @@
                   ; {(trip ?~(pru '' summary.u.pru))}
                 ==
               ==
+              ;label(for "sum"): project description
             ==
           ==
         ==
@@ -157,21 +165,20 @@
                   ;div
                     ;div(class "flex")
                       ;div(class "fund-form-group")
-                        ;label(for "m{<pin>}n"): milestone title
                         ;input#mile-name.p-1  =name  "m{<pin>}n"  =type  "text"
                           =placeholder  "Give your milestone a title"
                           =value  (trip title.mil);
+                        ;label(for "m{<pin>}n"): milestone title
                       ==
                       ;div(class "fund-form-group")
-                        ;label(for "m{<pin>}c"): milestone cost ($)
                         ;input#mile-cost.p-1  =name  "m{<pin>}c"  =type  "number"
                           =placeholder  "0"
                           =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
                           =onchange  "updateTotal()";
+                        ;label(for "m{<pin>}c"): milestone cost ($)
                       ==
                     ==
                     ;div(class "fund-form-group")
-                      ;label(for "m{<pin>}s"): milestone description
                       ;div(class "grow-wrap")
                         ;textarea#mile-summ.p-1  =name  "m{<pin>}s"  =rows  "3"
                           =placeholder  mdesc
@@ -181,6 +188,7 @@
                           ; {(trip summary.mil)}
                         ==
                       ==
+                      ;label(for "m{<pin>}s"): milestone description
                     ==
                   ==
                 ==
@@ -193,17 +201,18 @@
           ;div(class "m-1 pt-2 text-3xl w-full"): Escrow Assessor
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;label(for "sea"): escrow assessor
               ;input.p-1  =name  "sea"  =type  "text"
+                =pattern  pregx
                 =placeholder  (scow %p our.bol)
                 =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
+              ;label(for "sea"): escrow assessor
             ==
             ;div(class "fund-form-group")
-              ;label(for "seo"): assessor fee offer (%)
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "0"
                 =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));
+              ;label(for "seo"): assessor fee offer (%)
             ==
           ==
         ==
@@ -216,22 +225,21 @@
       ;div(class "flex w-full justify-center gap-x-2 mx-auto")
         ;*
         |^  ?+  sat  ~[dead-butn drop-butn]
-              %dead  ~[drop-butn]
-              %born  (weld ?~(pru ~ ~[crow-butn]) ~[init-butn drop-butn])
-            ::
-                %prop
-              %-  weld  :_  ~[croc-butn drop-butn]
-              ?:(|(?=(~ pru) ?=(~ contract.u.pru)) ~ ~[fini-butn])
+              %born  (murn ~[?~(pru ~ `crow-butn) `init-butn `drop-butn] same)
+              %prop  ~[fini-butn croc-butn drop-butn]
             ==
-        ::
-        ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~")
-        ++  crow-butn  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓")
-        ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~")
-        ++  fini-butn  (prod-butn:htmx:fh %bump-lock %green "finalize escrow ✓")
-        ++  dead-butn  (prod-butn:htmx:fh %dead %red "discontinue project ✗")
+        ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~)
+        ++  crow-butn  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓" ~)
+        ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~" ~)
+        ++  fini-butn
+          %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize escrow ✓"
+          ?:(&(?=(^ pru) ?=(^ contract.u.pru)) ~ "awaiting response from escrow assessor")
+        ++  dead-butn
+          %-  prod-butn:htmx:fh  :^   %dead  %red  "discontinue project ✗"
+          ?.(?=(%dead sat) ~ "project has already been discontinued")
         ++  drop-butn
           =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-          (prod-butn:htmx:fh %drop %red "delete {obj} ✗")
+          (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~)
         --
       ==
     ==

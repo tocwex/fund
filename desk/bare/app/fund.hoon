@@ -117,6 +117,7 @@
     :^  pagz  route:h  (fours:rudder +.state)
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
+    ~&  >>  (turn act |=([f=flag:f p=prod:f] "{(flag:dump:h f)} : {<-.p>}"))
     =-  [bre kaz dat]
     ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
     :*  ~                              ::  TODO: Make this the redirect path

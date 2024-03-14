@@ -123,7 +123,7 @@
   ++  flag                                       ::  [~zod %nam] => "~zod/nam"
     |=  lag=^flag
     ^-  tape
-    :(weld (scow %p p.lag) "/" (trip q.lag))
+    "{<p.lag>}/{(trip q.lag)}"
   ++  mula                                       ::  [%plej ...] => "pledged"
     |=  mul=^mula
     ^-  tape
@@ -170,7 +170,7 @@
             ;script(src "/session.js");  ::  debug-only
             ;+  (inject:tonic q.byk.bol)  ::  debug-only
           ==
-          ;body(class "text-base font-serif max-w-screen-2xl {cas}")
+          ;body(class "text-base font-serif max-w-screen-2xl lg:px-4 {cas}")
             ;+  head
             ;+  bod
             ;+  foot
@@ -185,7 +185,7 @@
     ++  head
       ^-  manx
       =/  [pat=(pole knot) *]  (durl url.request.ord)
-      ;nav(class "flex justify-between items-center p-2 lg:px-4 border-black border-b-2")
+      ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-link/"{(aurl (snip `(list knot)`pat))}": ← back
             ;a.fund-tytl-link/"{(aurl /)}": %fund
@@ -201,7 +201,7 @@
       ==
     ++  foot
       ^-  manx
-      ;footer(class "justify-center border-t-2 p-2 border-black lg:px-4 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
+      ;footer(class "justify-center border-t-2 p-2 border-black lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
         ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end lg:p-2")
           ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
             ;img@"{(aurl /asset/[~.urbit.svg])}";
@@ -213,8 +213,8 @@
             ;img@"{(aurl /asset/[~.github.svg])}";
           ==
         ==
-        ;div(class "mb-0 mt-2 text-center text-xs lg:text-base lg:m-0 lg:p-1 lg:pb-2")
-          ;div(class "mb-2 lg:mb-0 justify-center flex flex-row items-center lg:justify-start lg:px-3 hover:underline")
+        ;div(class "text-center text-xs pt-1 lg:pt-0 lg:text-base")
+          ;div(class "flex justify-center items-center lg:justify-start hover:underline")
             ;a/"https://tocwexsyndicate.com"(target "_blank")
               ; crafted by ~tocwex.syndicate
             ==

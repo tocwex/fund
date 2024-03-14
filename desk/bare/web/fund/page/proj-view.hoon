@@ -61,13 +61,13 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "{(trip title.pro)}"
-  ;form(id "maincontent", method "post", autocomplete "off", class "mx-auto py-4 lg:px-4")
+  ;form#maincontent(method "post", autocomplete "off", class "mx-auto py-4 lg:px-4")
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "px-4 text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
           ; Funding Goal:
-          ;span(id "proj-cost"): ${(mony:dump:fh ~(cost pj:f pro))}
+          ;span#proj-cost: ${(mony:dump:fh ~(cost pj:f pro))}
         ==
         ;+  (stat-pill:htmx:fh sat)
       ==
@@ -76,41 +76,33 @@
         ;img@"{(trip u.image.pro)}"(class "mx-auto w-full my-2 sm:px-4");
     ;div(class "lg:flex lg:justify-between")
       ;div(class "lg:flex-1 sm:gap-x-10")
-        ;div(class "")
-          ;div(class "mx-auto flex px-4 justify-between sm:justify-normal sm:gap-x-16")
-            ;div(class "my-1 py-1 justify-normal items items-center gap-x-4")
-              ;div(class "text-sm font-light underline"): project worker
-              ;div(class "items-center gap-x-2")
-                ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap")
-                  {(scow %p p.lag)}
-                ==
-                ;+  ?.  (~(has in roz) %work)
-                      ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): send message →
-                    ?:  ?=(?(%born %prop) sat)
-                      ;a.fund-butn-link/"{(aurl:fh (snoc pat %edit))}": edit project →
-                    ?.  ?=(?(%done %dead) sat)
-                      (prod-butn:htmx:fh %bump-dead %red "cancel project ✗")
-                    ;div;
-              ==
-            ==
-            ;div(class "m-1 p-1 justify-normal items items-center gap-x-4")
-              ;div(class "text-sm font-light underline"): escrow assessor
-              ;div(class "items-center gap-x-2")
-                ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap")
-                  {(scow %p p.assessment.pro)}
-                ==
-                ;+  ?.  (~(has in roz) %sess)
-                      ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
-                    ?.  ?=(?(%born %prop %done %dead) sat)
-                      (prod-butn:htmx:fh %bump-dead %red "cancel project ✗")
-                    ;div;
-              ==
+        ;div(class "mx-auto flex px-4 justify-between sm:justify-normal sm:gap-x-16")
+          ;div(class "my-1 py-1 justify-normal items items-center gap-x-4")
+            ;div(class "text-sm font-light underline"): project worker
+            ;div(class "items-center gap-x-2")
+              ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
+              ;+  ?.  (~(has in roz) %work)
+                    ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): send message →
+                  ?:  ?=(?(%born %prop) sat)
+                    ;a.fund-butn-link/"{(aurl:fh (snoc pat %edit))}": edit project →
+                  ?.  ?=(?(%done %dead) sat)
+                    (prod-butn:htmx:fh %bump-dead %red "cancel project ✗")
+                  ;div;
             ==
           ==
-          ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg")
-            ; {(trip summary.pro)}
+          ;div(class "m-1 p-1 justify-normal items items-center gap-x-4")
+            ;div(class "text-sm font-light underline"): escrow assessor
+            ;div(class "items-center gap-x-2")
+              ;div(class "mx-1 mb-2 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
+              ;+  ?.  (~(has in roz) %sess)
+                    ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
+                  ?.  ?=(?(%born %prop %done %dead) sat)
+                    (prod-butn:htmx:fh %bump-dead %red "cancel project ✗")
+                  ;div;
+            ==
           ==
         ==
+        ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~  :_  ~
           ;div(class "m-2 p-2 border-2 border-black rounded-xl lg:w-1/4")
@@ -121,19 +113,15 @@
                 ;div(class "gap-2")
                   ;div(class "p-2")
                     ;span(class "font-mono font-medium"): {(scow %p p.lag)}
-                    ;
-                    ; has requested your services as an escrow assessor for this project.
+                    ;span:  has requested your services as an escrow assessor for this project.
                   ==
                   ;div(class "p-2")
-                    ; For your services,
                     ;span(class "font-mono font-medium"): {(scow %p p.lag)}
-                    ;
-                    ; is offering the following compensation:
+                    ;span:  is offering the following compensation for your services:
                   ==
                   ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
                     ;span(class "font-medium"): {(mony:dump:fh q.assessment.pro)}%
-                    ;
-                    ; of each milestone payout upon completed milestone assessment
+                    ;span:  of each milestone payout upon completed assessment
                   ==
                   ;div(class "p-2")
                     ; Accepting this review request means that you will have the
@@ -155,33 +143,33 @@
               ;div
                 ;div(class "p-2 text-3xl w-full"): Contribute
                 ;div(class "flex gap-2")
-                  ;div(class "p-2 w-full")
-                    ;div(class "p-1 border-black font-light"): amount ($)
-                    ;input(type "number", name "sum", min "0.01", step "0.01", class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "5");
+                  ;div(class "fund-form-group")
+                    ;label(for "sum"): amount ($)
+                    ;input.p-2(name "sum", type "number", min ".01", step ".01", placeholder "5");
                   ==
-                  ;div(class "p-2 w-full")
-                    ;div(class "p-1 border-black font-light"): token
-                    ;select(name "tok", class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full")
+                  ;div(class "fund-form-group")
+                    ;label(for "tok"): token
+                    ;select.p-2(name "tok")
                       ;option(value "usdc"): USDC
                       ;option(value "usdt"): USDT
                       ;option(value "dai"): DAI
                     ==
                   ==
                 ==
-                ;div(class "p-2")
-                  ;div(class "p-1 border-black font-light"): contributor
+                ;div(class "fund-form-group")
+                  ;label(for "who"): contributor
                   ;+  :_  ~  :-  %input
                       ;:  welp
                           ?.((auth:fh bol) ~ ~[[%readonly ~] [%value (scow %p src.bol)]])
                           [%type "text"]~
                           [%name "who"]~
                           [%placeholder "~sampel-palnet"]~
-                          [%class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full read-only:border-gray-400 read-only:bg-gray-400"]~
+                          [%class "p-2"]~
                       ==
                 ==
-                ;div(class "p-2")
-                  ;div(class "p-1 border-black font-light"): message
-                  ;input(type "text", name "msg", class "p-2 border-2 border-gray-200 bg-gray-200 placeholder-gray-400 rounded-md w-full", placeholder "awesome work!");
+                ;div(class "fund-form-group")
+                  ;label(for "msg"): message
+                  ;input.p-2(name "msg", type "text", placeholder "awesome work!");
                 ==
                 ;div(class "p-2 flex justify-end gap-x-2")
                   ;+  (prod-butn:htmx:fh %mula-plej %black "pledge only ~")
@@ -218,9 +206,7 @@
           ^-  manx
           ;div(class "my-4 p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap justify-between items-center gap-2")
-              ;div(class "sm:text-nowrap text-2xl")
-                ; Milestone {<+(pin)>}: {(trip title.mil)}
-              ==
+              ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(pin)>}: {(trip title.mil)}
               ;+  (stat-pill:htmx:fh status.mil)
             ==
             ::  TODO: Fill in pledge amount based on project total
@@ -249,12 +235,12 @@
     ==
     ;div(class "px-4")
       ;div(class "text-3xl pt-2"): Proposal Funders
-      ;*  =/  pr-mula=(list mula:f)  ~(mula pj:f pro)
-          ?~  pr-mula
+      ;*  =/  muz=(list mula:f)  ~(mula pj:f pro)
+          ?~  muz
             :~  ;div(class "italics mx-4 text-gray-600")
                   ; No contributors found.
             ==  ==
-          %+  turn  pr-mula
+          %+  turn  muz
           |=  mul=mula:f
           ^-  manx
           =/  [wat=tape who=tape cas=tape]

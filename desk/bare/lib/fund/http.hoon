@@ -175,49 +175,48 @@
             ;+  bod
             ;+  foot
           ==
+          ::  TODO: Import @apply CSS file (i.e. twin-cs), load that
+          ::  into a dict variable, then dump that into the twind
+          ::  bootloader in 'boot.js'
+          ::  - https://stackoverflow.com/a/8988005
+          ::  - https://github.com/SaraVieira/css-to-js/
           ;+  ;script(type "module"): {^~((trip boot-js))}
         ==
     ++  head
       ^-  manx
       =/  [pat=(pole knot) *]  (durl url.request.ord)
-      ;nav
-        ;div(class "flex justify-between items-center p-2 lg:px-4 border-black border-b-2")
-          ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
-                ;a/"{(aurl (snip `(list knot)`pat))}"(class "fund-butn-link"): ← back
-              ;a/"{(aurl /)}"(class "text-xl font-medium duration-300 hover:text-yellow-500"): %fund
-          ;div(class "flex gap-x-2")
-            ::  FIXME: Opening login page in a new tab because opening it
-            ::  in the current tab causes issues with further redirects
-            ::  (e.g. to the ship login page for eAuth)
-            ;button(id "login-urbit", class "fund-butn-link")
-              ;+  ?:  (auth bol)
-                    ;a/"/~/logout?redirect={(aurl pat)}": {<src.bol>}
-                  ;a/"/~/login?redirect={(aurl pat)}"(target "_blank"): login ~
-            ==
-            ;button(id "connect-wallet", class "fund-butn-wallet"):  …loading…
-          ==
+      ;nav(class "flex justify-between items-center p-2 lg:px-4 border-black border-b-2")
+        ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
+              ;a.fund-butn-link/"{(aurl (snip `(list knot)`pat))}": ← back
+            ;a.fund-tytl-link/"{(aurl /)}": %fund
+        ;div(class "flex gap-x-2")
+          ::  FIXME: Opening login page in a new tab because opening it
+          ::  in the current tab causes issues with further redirects
+          ::  (e.g. to the ship login page for eAuth)
+          ;+  ?:  (auth bol)
+                ;a.fund-butn-link/"/~/logout?redirect={(aurl pat)}": {<src.bol>}
+              ;a.fund-butn-link/"/~/login?redirect={(aurl pat)}"(target "_blank"): login ~
+          ;button(id "connect-wallet", class "fund-butn-wallet"):  …loading…
         ==
       ==
     ++  foot
       ^-  manx
-      ;footer
-        ;div(class "justify-center border-t-2 p-2 border-black lg:px-4 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
-          ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end lg:p-2")
-            ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
-              ;img@"{(aurl /asset/[~.urbit.svg])}";
-            ==
-            ;a/"https://twitter.com/tocwex"(target "_blank")
-              ;img@"{(aurl /asset/[~.x.svg])}";
-            ==
-            ;a/"https://github.com/tocwex"(target "_blank")
-              ;img@"{(aurl /asset/[~.github.svg])}";
-            ==
+      ;footer(class "justify-center border-t-2 p-2 border-black lg:px-4 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between")
+        ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end lg:p-2")
+          ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
+            ;img@"{(aurl /asset/[~.urbit.svg])}";
           ==
-          ;div(class "mb-0 mt-2 text-center text-xs lg:text-base lg:m-0 lg:p-1 lg:pb-2")
-            ;div(class "mb-2 lg:mb-0 justify-center flex flex-row items-center lg:justify-start lg:px-3 hover:underline")
-              ;a/"https://tocwexsyndicate.com"(target "_blank")
-                ; crafted by ~tocwex.syndicate
-              ==
+          ;a/"https://twitter.com/tocwex"(target "_blank")
+            ;img@"{(aurl /asset/[~.x.svg])}";
+          ==
+          ;a/"https://github.com/tocwex"(target "_blank")
+            ;img@"{(aurl /asset/[~.github.svg])}";
+          ==
+        ==
+        ;div(class "mb-0 mt-2 text-center text-xs lg:text-base lg:m-0 lg:p-1 lg:pb-2")
+          ;div(class "mb-2 lg:mb-0 justify-center flex flex-row items-center lg:justify-start lg:px-3 hover:underline")
+            ;a/"https://tocwexsyndicate.com"(target "_blank")
+              ; crafted by ~tocwex.syndicate
             ==
           ==
         ==

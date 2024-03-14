@@ -119,13 +119,13 @@
               ;div(class "flex")
                 ;div(class "fund-form-group")
                   ;label(for "nam"): project title
-                  ;input.p-1  =type  "text"  =name  "nam"
+                  ;input.p-1  =name  "nam"  =type  "text"
                     =placeholder  "My Awesome Project"
                     =value  (trip ?~(pru '' title.u.pru));
                 ==
                 ;div(class "fund-form-group")
                   ;label(for "pic"): project image
-                  ;input.p-1  =type  "url"  =name  "pic"
+                  ;input.p-1  =name  "pic"  =type  "url"
                     =placeholder  "https://example.com/example.png"
                     =value  (trip (fall ?~(pru ~ image.u.pru) ''));
                 ==
@@ -159,13 +159,13 @@
                       ;div(class "flex")
                         ;div(class "fund-form-group")
                           ;label(for "m{<pin>}n"): milestone title
-                          ;input#mile-name.p-1  =type  "text"  =name  "m{<pin>}n"
+                          ;input#mile-name.p-1  =name  "m{<pin>}n"  =type  "text"
                             =placeholder  "Give your milestone a title"
                             =value  (trip title.mil);
                         ==
                         ;div(class "fund-form-group")
                           ;label(for "m{<pin>}c"): milestone cost ($)
-                          ;input#mile-cost.p-1  =type  "number"  =name  "m{<pin>}c"
+                          ;input#mile-cost.p-1  =name  "m{<pin>}c"  =type  "number"
                             =placeholder  "0"
                             =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
                             =onchange  "updateTotal()";
@@ -195,13 +195,13 @@
             ;div(class "flex")
               ;div(class "fund-form-group")
                 ;label(for "sea"): escrow assessor
-                ;input.p-1  =type  "text"  =name  "sea"
+                ;input.p-1  =name  "sea"  =type  "text"
                   =placeholder  (scow %p our.bol)
                   =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
               ==
               ;div(class "fund-form-group")
                 ;label(for "seo"): assessor fee offer (%)
-                ;input.p-1  =type  "number"  =name  "seo"
+                ;input.p-1  =name  "seo"  =type  "number"
                   =min  "0"  =max  "100"  =step  "0.01"
                   =placeholder  "0"
                   =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));

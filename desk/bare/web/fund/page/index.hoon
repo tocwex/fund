@@ -31,9 +31,7 @@
       ;div(class "flex flex-col gap-2")
         ;div(class "text-sm text-center"): {sum}
         ;div(class "mx-auto text-center")
-          ;a/"{(aurl:fh /dashboard/[das])}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-            ; view dashboard →
-          ==
+          ;a.fund-butn-link/"{(aurl:fh /dashboard/[das])}": view dashboard →
         ==
       ==
     ==

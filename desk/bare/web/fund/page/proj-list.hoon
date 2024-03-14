@@ -13,7 +13,7 @@
   =/  dyp=@tas  (rear `(list knot)`pat)
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  "{<dyp>} dashboard"
+  :^  bol  ord  "{(trip dyp)} dashboard"
   |^  ?+    dyp  !!
           %worker
         =/  my-prez  ~(tap by (prez-mine:sss:f bol dat))
@@ -74,12 +74,8 @@
     ;div
       ;div(class "flex justify-between")
         ;div(class "text-3xl pt-2"): {tyt}
-        ;+  ?.  new  ;div;
-            ;div(class "px-4 self-center")
-              ;a/"{(aurl:fh /create/project)}"(class "text-nowrap px-2 py-1 border-2 border-black bg-black text-white rounded-md hover:bg-gray-800 hover:border-gray-800 active:bg-white active:border-black active:text-black")
-                ; New Project +
-              ==
-            ==
+        ;*  ?.  new  ~
+            :_  ~  ;a.self-center.fund-butn-black/"{(aurl:fh /create/project)}": New Project +
       ==
       ;*  ?~  pez
             :~  ;div(class "italics mx-4 text-gray-600")
@@ -98,9 +94,7 @@
             ;+  (mula-ther:htmx:fh ~(cost pj:f pro) ~(fill pj:f pro) ~(plej pj:f pro))
             ;div(class "py-1"): {(trip summary.pro)}
             ;div(class "flex gap-x-4")
-              ;a/"{(aurl:fh /project/(scot %p sip)/[nam])}"(class "text-nowrap px-2 py-1 border-2 duration-300 border-black hover:rounded-lg hover:bg-yellow-400 hover:border-yellow-400 rounded-md active:bg-yellow-500 active:border-yellow-500")
-                ; view project →
-              ==
+              ;a.fund-butn-link/"{(aurl:fh /project/(scot %p sip)/[nam])}": view project →
             ==
           ==
     ==

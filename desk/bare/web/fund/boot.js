@@ -50,14 +50,16 @@ if (!hasLoaded) {
     // being overridden by twind's *own* preflight; need to disable this somehow
     preflight: (preflight, {theme}) => ({
       ...preflight,
-      input: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
-      textarea: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
+      input: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
+      textarea: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
+      select: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
       label: apply`text-black font-light py-1`,
     }),
     // FIXME: Style embeddings don't seem to work with the shim; may need to
     // use `tw(...)` directly to refactor beyond 1 level
     plugins: {
       'fund-pill': `text-nowrap px-2 py-1 border-2 rounded-full`,
+      'fund-tytl-link': `text-xl font-medium duration-300 hover:text-yellow-500`,
       'fund-form-group': `flex flex-col w-full p-1 gap-1`,
       'fund-butn-link': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
       'fund-butn-wallet': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,

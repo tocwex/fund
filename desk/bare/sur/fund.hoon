@@ -106,6 +106,15 @@
   $%  [%plej plej]
       [%trib trib]
   ==
+::
+::  $odit: financials associated with a work unit ($proj, $mile)
+::
++$  odit
+  $:  cost=@rs
+      fill=@rs
+      plej=@rs
+      void=(unit @rs)
+  ==
 
 +|  %core
 ::

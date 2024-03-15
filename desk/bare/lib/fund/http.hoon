@@ -222,28 +222,30 @@
         ==
       ==
     --
-  ++  mula-ther                                  :: funding thermometer element
-    |=  [cos=@rs fil=@rs pej=@rs]
+  ++  odit-ther                                  :: funding thermometer element
+    |=  odi=odit
     ^-  manx
-    =/  unf=@rs  =+(u=(sub:rs cos (add:rs fil pej)) ?:((gth:rs u .0) u .0))
-    ::  TODO: Switch out for 'paid' in the case of a project?
-    ::  TODO: Do we even need to keep the 'goal' value for a project?
+    =.  odi  (filo odi)
+    ::  FIXME: Gross hack to get rid of the negative sign when `void` is
+    ::  positive (which indicates a work unit is overfunded)
+    =+  unf=(need void.odi)
+    =+  und=(sig:rs unf)
     ;div(class "flex flex-wrap justify-between items-center {cas}")
       ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(mony:dump cos)}
+        ;span(class "underline"): ${(mony:dump cost.odi)}
         ; target
       ==
       ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(mony:dump fil)}
+        ;span(class "underline"): ${(mony:dump fill.odi)}
         ; fulfilled
       ==
       ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(mony:dump pej)}
+        ;span(class "underline"): ${(mony:dump plej.odi)}
         ; pledged
       ==
       ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(mony:dump unf)}
-        ; unfunded
+        ;span(class "underline"): ${(slag ?:(und 0 1) (mony:dump unf))}
+        ; {?:(und "unfunded" "overfunded")}
       ==
     ==
   ++  stat-pill                                  :: status pill element

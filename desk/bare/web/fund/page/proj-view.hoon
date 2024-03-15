@@ -59,7 +59,8 @@
   ::  NOTE: Gate non-`our` users to my ship's non-draft projects
   ?:  &(!=(our.bol src.bol) |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
-  =/  [fin=@ mile:f]  ~(next-fill pj:f pro)
+  =/  pod=odit:f  ~(odit pj:f pro)
+  =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  [sin=@ mile:f]  ~(next-stat pj:f pro)
   :-  %page
   %-  render:htmx:fh
@@ -70,7 +71,7 @@
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
           ; Funding Goal:
-          ;span#proj-cost: ${(mony:dump:fh ~(cost pj:f pro))}
+          ;span#proj-cost: ${(mony:dump:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
       ==
@@ -104,9 +105,10 @@
         ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~
+          =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"
           ?.  ?=(%prop sat)  ::  contribute aside form
             :_  ~
-            ;form(method "post", autocomplete "off", class "m-2 p-2 border-2 border-black rounded-xl lg:w-1/4")
+            ;form(method "post", autocomplete "off", class cas)
               ;div(class "p-2 text-3xl w-full"): Contribute
               ;div(class "flex gap-2")
                 ;div(class "fund-form-group")
@@ -136,7 +138,7 @@
             ==
           ?:  (~(has in roz) %sess)  ::  assessor acceptance form
             :_  ~
-            ;form(method "post", autocomplete "off", class "m-2 p-2 border-2 border-black rounded-xl lg:w-1/4")
+            ;form(method "post", autocomplete "off", class cas)
               ;div(class "p-2 text-3xl w-full"): Review Request
               ;div(class "gap-2")
                 ;div(class "p-2")
@@ -174,47 +176,42 @@
       ;div(class "flex flex-col gap-2")
         ;div(class "flex justify-between")
           ;div(class "flex gap-2")
-            ::  TODO: Need to fill in actual values here (only say
-            ::  milestone `fin` is done if it has surpassed fulfilled
-            ::  (pledged?) funding).
             ; Milestone Progress
-            ;span(class "font-medium"): ?/{<(lent milestones.pro)>}
+            ;span(class "font-medium"): {<sin>}/{<(lent milestones.pro)>}
           ==
           ;div(class "flex gap-2")
             ; Goal
-            ;span(class "font-medium"): ${(mony:dump:fh ~(cost pj:f pro))}
+            ;span(class "font-medium"): ${(mony:dump:fh cost.pod)}
           ==
         ==
-        ;+  (mula-ther:htmx:fh .0 ~(fill pj:f pro) ~(plej pj:f pro))
+        ;+  (odit-ther:htmx:fh pod)
       ==
     ==
     ;form(method "post", autocomplete "off")
       ;div(class "text-3xl pt-2"): Milestone Overview
-      ;*  =/  fiz=(list @rs)  ~(film pj:f pro)
-          %+  turn  (enum:fx `(list mile:f)`milestones.pro)
-          |=  [pin=@ mil=mile:f]
+      ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
+          |=  [min=@ mil=mile:f]
           ^-  manx
           ;div(class "my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap justify-between items-center gap-2")
-              ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(pin)>}: {(trip title.mil)}
+              ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(min)>}: {(trip title.mil)}
               ;+  (stat-pill:htmx:fh status.mil)
             ==
-            ::  TODO: Fill in pledge amount based on project total
-            ;+  (mula-ther:htmx:fh cost.mil (snag pin fiz) .0)
+            ;+  (odit-ther:htmx:fh (snag min moz))
             ; {(trip summary.mil)}
             ;div(class "flex flex-wrap items-center justify-end pt-2 gap-2")
               ;*  ;:  welp
-                  ?.  &(|((lth pin sin) =(%done sat)) (~(has in roz) %work))  ~
+                  ?.  &((lth min sin) (~(has in roz) %work))  ~
                 ::  TODO: Make this button do something
                 :_  ~  (prod-butn:htmx:fh %todo %green "withdraw funds ✓" ~)
               ::
-                  ?.  &(=(pin sin) (~(has in roz) %work) ?=(%lock sat))  ~
+                  ?.  &(=(min sin) (~(has in roz) %work) ?=(%lock sat))  ~
                 :_  ~  (prod-butn:htmx:fh %bump-work %black "mark in-progress ~" ~)
               ::
-                  ?.  &(=(pin sin) (~(has in roz) %work) ?=(%work sat))  ~
+                  ?.  &(=(min sin) (~(has in roz) %work) ?=(%work sat))  ~
                 :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~)
               ::
-                  ?.  &(=(pin sin) (~(has in roz) %sess) ?=(%sess sat))  ~
+                  ?.  &(=(min sin) (~(has in roz) %sess) ?=(%sess sat))  ~
                 :~  ;a.fund-butn-link/"{(curl:fh p.lag)}": message worker →
                     (prod-butn:htmx:fh %bump-work %black "changes required ~" ~)
                     (prod-butn:htmx:fh %bump-done %green "approve ✓" ~)

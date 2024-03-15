@@ -1,38 +1,67 @@
 /-  *fund
 /+  fx=fund-xtra, rudder
 |%
+::
+::  +filo: fill in an $odit by calculating `=need` (if required)
+::
+++  filo
+  |=  odi=odit
+  ^-  odit
+  %_    odi
+      void
+    ?^  void.odi  void.odi
+    `(sub:rs cost.odi (add:rs fill.odi plej.odi))
+  ==
+::
+::  +film: the fill of a $mile, or the total sum of its contributions
+::
+++  film
+  |=  mil=mile
+  ^-  @rs
+  (roll (turn contribs.mil |=(t=trib cash.t)) add:rs)
+::
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
 ::
 ++  pj
   |_  proj
   +*  milestonez  `(list mile)`milestones
-  ++  stat  ::  project $stat (status of earliest active milestone)
+  ++  stat                                       ::  project-wide status
     ^-  ^stat
     status:mil:next-stat
-  ++  cost  ::  project funding cost (sum of milestone costs)
+  ++  cost                                       ::  summed milestone costs
     ^-  @rs
     (roll (turn milestonez |=(n=mile cost.n)) add:rs)
-  ++  plej  ::  project pledge amount
+  ++  plej                                       ::  summed pledge amounts
     ^-  @rs
     %+  roll  ~(val by pledges)
     |=([n=^plej a=@rs] (add:rs a cash.n))
-  ++  fill  ::  project funding fill (sum of milestone fills)
+  ++  fill                                       ::  project-wide cost fill
     ^-  @rs
-    (roll film add:rs)
-  ++  film  ::  project funding per milestone fills
-    ^-  (list @rs)
-    %+  turn  milestonez
-    |=  mil=mile
-    %+  roll  contribs.mil
-    |=([n=trib a=@rs] (add:rs a cash.n))
-  ++  mula  ::  full list of project $mula ($plej list, $trib list)
+    (roll (turn milestonez film) add:rs)
+  ++  odit                                       ::  project-wide audit
+    ^-  ^odit
+    (filo [cost fill plej ~])
+  ++  odim                                       ::  per-milestone audit
+    ^-  (list ^odit)
+    =/  [pre=@rs fin=@ mile]  [plej next-fill]
+    %+  turn  (enum:fx milestonez)
+    |=  [min=@ mil=mile]
+    =+  mio=(filo [cost.mil (film mil) .0 ~])
+    ?:  |((lth min fin) (lte:rs pre .0))  mio
+    ::  FIXME: There are some cases related to the final milestone that
+    ::  aren't properly being accounted for here
+    ::  TODO: There is some smarter way to do this math
+    =.  plej.mio  ?:((lte:rs pre (need void.mio)) pre (sub:rs pre (need void.mio)))
+    =.  pre  (sub:rs pre plej.mio)
+    (filo mio(void ~))
+  ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     %+  weld  (turn ~(val by pledges) |=(p=^plej `^mula`[%plej p]))
     %+  roll  milestonez
     |=  [mil=mile acc=(list ^mula)]
     %+  weld  acc
     (turn contribs.mil |=(t=trib `^mula`[%trib t]))
-  ++  rols  ::  $role set for a given $ship
+  ++  rols                                       ::  project $role(s) of user
     ::  FIXME: This function signature will be simplified once a project
     ::  is allowed to have different workers than its host
     |=  [wox=@p who=@p]
@@ -47,36 +76,22 @@
           ~
         [%fund]~
     ==
-  ++  next-fill  ::  next milestone that hasn't reached goal
-    ^-  [pin=@ mil=mile]
-    =<  +>  %^  spin  milestonez  `[? @ mile]`[| 0 *mile]
-    =/  len  (lent milestones)
-    |=  [nex=mile dun=? pin=@ mile]
-    :-  nex
-    ?:  |(dun =(len +(pin)))  +<+
-    =-  ?:((lth:rs - cost.nex) [& pin nex] [| +(pin) nex])
-    (roll contribs.nex |=([n=trib a=@rs] (add:rs a cash.n)))
-  ++  next-stat  ::  earliest active milestone
-    ^-  [pin=@ mil=mile]
-    =-  (fall - [0 i.milestones])
-    ^-  (unit [@ mile])
-    =-  ?~(- ~ (some i.-))
-    %+  skim  (enum:fx milestonez)
-    |=  [a=@ n=mile]
-    ?=(?(%born %lock %work %sess) status.n)
-  --
-::
-::  +ok: assert correctness of edit type on given $proj
-::
-::    ?>  ~(edit ok [our %test proj])
-::
-++  ok
-  |_  [=flag proj]
-  ++  edit
-    |=  who=@p
-    ~|  "%fund: {<who>} can't 'edit' for project {<flag>}"
-    ?>  =(who p.flag)
-    %.y
+  ++  next-fill                                  ::  next milestone to fill
+    ^-  [min=@ mil=mile]
+    ::  TODO: If we end up signing bucket extraction transactions, then
+    ::  we'll need to stop at %done cases that haven't reached their
+    ::  cost limit if they've been unclaimed by the worker
+    ::
+    ::  NOTE: Provide index of last milestone when all filled
+    =-  ?^(- i.- [(dec (lent milestonez)) (rear milestonez)])
+    %+  skip  (enum:fx milestonez)
+    |=([@ n=mile] |(?=(?(%done %dead) status.n) (lte:rs cost.n (film n))))
+  ++  next-stat                                  ::  next active milestone
+    ^-  [min=@ mil=mile]
+    ::  NOTE: Provide index past last milestone when all are completed
+    =-  ?^(- i.- [(lent milestonez) (rear milestonez)])
+    %+  skip  (enum:fx milestonez)
+    |=([@ n=mile] ?=(?(%done %dead) status.n))
   --
 ::
 ::  +sss: structures/cores for peer-based synchronization (sss)
@@ -155,7 +170,7 @@
       u.pro.pod
     ::
         %bump
-      =/  [pin=@ mil=mile]  ~(next-stat pj pro)
+      =/  [min=@ mil=mile]  ~(next-stat pj pro)
       ?:  ?=(%born status.mil)
         ?>  &(?=(%prop sat.pod) ?=(@ bil.pod))
         ?>  aver-work  ::  born=>prop:worker
@@ -171,21 +186,21 @@
       ?:  ?=(%lock status.mil)
         ?:  ?=(%work sat.pod)
           ?>  aver-work  ::  lock=>work:worker
-          (edit-mile pin mil(status sat.pod))
+          (edit-mile min mil(status sat.pod))
         ?:  ?=(%dead sat.pod)
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
         ~|(bad-wash+mes !!)  ::  %lock =X=> ?(%born %prop %sess %done)
       ?:  ?=(?(%work %sess) status.mil)
         ?:  ?=(%work sat.pod)
           ?>  aver-sess  ::  work/sess=>work:oracle
-          (edit-mile pin mil(status sat.pod))
+          (edit-mile min mil(status sat.pod))
         ?:  ?=(%sess sat.pod)
           ?>  aver-work  ::  work/sess=>sess:worker
-          (edit-mile pin mil(status sat.pod))
+          (edit-mile min mil(status sat.pod))
         ?:  ?=(%done sat.pod)
           ?>  aver-sess  ::  work/sess=>done:oracle
           ?>  ?=(^ bil.pod)
-          (edit-mile pin mil(status sat.pod, contract bil.pod))
+          (edit-mile min mil(status sat.pod, contract bil.pod))
         ?:  ?=(%dead sat.pod)
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
         ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)
@@ -195,11 +210,11 @@
       ?<  |(=(%born sat) =(%prop sat))
       ?-    +<.pod
           %plej
-        ::  TODO: Add verification logic that this pledge is actually
-        ::  from the src.bowl ship (what do we do in the case of eAuth?
-        ::  does an extra signature need to take place here?)
-        =/  pol=(unit plej)  (~(get by pledges.pro) ship.pod)
-        ?>  ?=(@ pol)
+        ::  NOTE: This is a sufficient check because we only allow the
+        ::  host of a project to accept donations on the projects behalf
+        ::  (so src.bol must always be the %plej attestor; no forwarding!)
+        ?>  =(src.bol ship.pod)
+        ?<  (~(has by pledges.pro) ship.pod)
         %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod))
       ::
           %trib
@@ -212,7 +227,7 @@
           ::  TODO: Is this okay or should we require direct equality?
           ?>  (equ:rs cash.u.pol cash.pod)
           (~(del by pledges.pro) (need ship.pod))
-        %+  edit-mile  pin.nex
+        %+  edit-mile  min.nex
         mil.nex(contribs `(list trib)`[+>.pod contribs.mil.nex])
       ==
     ==

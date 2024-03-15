@@ -157,32 +157,32 @@
           ;div(class "text-3xl pt-2"): Milestones
           ;div(id "mile-welz", class "mx-2")
             ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
-                |=  [pin=@ mil=mile:f]
+                |=  [min=@ mil=mile:f]
                 ^-  manx
                 ;div(id "mile-well", class "my-2 p-4 border-2 border-black rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
-                    ;div(id "mile-head", class "text-3xl"): Milestone #{<+(pin)>}
+                    ;div(id "mile-head", class "text-3xl"): Milestone #{<+(min)>}
                     ;+  (stat-pill:htmx:fh status.mil)
                   ==
                   ;div
                     ;div(class "flex")
                       ;div(class "fund-form-group")
-                        ;input#mile-name.p-1  =name  "m{<pin>}n"  =type  "text"
+                        ;input#mile-name.p-1  =name  "m{<min>}n"  =type  "text"
                           =placeholder  "Give your milestone a title"
                           =value  (trip title.mil);
-                        ;label(for "m{<pin>}n"): milestone title
+                        ;label(for "m{<min>}n"): milestone title
                       ==
                       ;div(class "fund-form-group")
-                        ;input#mile-cost.p-1  =name  "m{<pin>}c"  =type  "number"
+                        ;input#mile-cost.p-1  =name  "m{<min>}c"  =type  "number"
                           =placeholder  "0"
                           =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
                           =onchange  "updateTotal()";
-                        ;label(for "m{<pin>}c"): milestone cost ($)
+                        ;label(for "m{<min>}c"): milestone cost ($)
                       ==
                     ==
                     ;div(class "fund-form-group")
                       ;div(class "grow-wrap")
-                        ;textarea#mile-summ.p-1  =name  "m{<pin>}s"  =rows  "3"
+                        ;textarea#mile-summ.p-1  =name  "m{<min>}s"  =rows  "3"
                           =placeholder  mdesc
                           =value  (trip summary.mil)
                           ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
@@ -190,7 +190,7 @@
                           ; {(trip summary.mil)}
                         ==
                       ==
-                      ;label(for "m{<pin>}s"): milestone description
+                      ;label(for "m{<min>}s"): milestone description
                     ==
                   ==
                 ==

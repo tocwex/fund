@@ -42,11 +42,12 @@
 ++  final  ::  POST render
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  ?.  gud  [%code 422 txt]
+  ?.  gud  [%code 500 txt]
   ::  FIXME: This is a hack to force the page to reload. We can't just
   ::  call `+build` because edits are lazily evaluated via cards (this
   ::  is always true if `!=(our.bol src.bol)`)
-  [%next (crip (aurl:fh -:(durl:fh url.request.ord))) '']
+  :+  %next  (crip (aurl:fh -:(durl:fh url.request.ord)))
+  ?~(txt 'invalid edit to project (see dojo for details)' txt)
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -75,6 +76,8 @@
         ;+  (stat-pill:htmx:fh sat)
       ==
     ==
+    ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
+    ::      :_  ~  ;div(class "text-red-500 text-center"): {(trip txt.u.msg)}
     ;*  ?~  image.pro  ~
         :_  ~  ;img@"{(trip u.image.pro)}"(class "w-full my-2");
     ;div(class "lg:flex lg:justify-between")

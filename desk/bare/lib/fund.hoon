@@ -212,7 +212,9 @@
         ::  NOTE: This is a sufficient check because we only allow the
         ::  host of a project to accept donations on the projects behalf
         ::  (so src.bol must always be the %plej attestor; no forwarding!)
-        ?>  =(src.bol ship.pod)
+        ::  NOTE: Reinstate this check once POST requests directly apply
+        ::  cards locally instead of forwarding them
+        ::  ?>  =(src.bol ship.pod)
         ?<  (~(has by pledges.pro) ship.pod)
         %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod))
       ::

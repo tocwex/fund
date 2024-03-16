@@ -274,9 +274,10 @@
                 %mula
               ::  TODO: Add hark notifications and follow-up reminders for
               ::  pledges
-              ?.  ?=(%plej +<.pod)  ~
-              =+  sip=ship.pod
-              [(po-mk-car sip [%lure sip %fund])]~
+              ?-  +<.pod
+                %plej  [(po-mk-car ship.pod [%lure ship.pod %fund])]~
+                %trib  ?~(ship.pod ~ [(po-mk-car u.ship.pod [%lure u.ship.pod %fund])]~)
+              ==
             ==
           ==
         ::  meta prods ::

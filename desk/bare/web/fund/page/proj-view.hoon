@@ -114,9 +114,21 @@
               ;div(class "p-2 text-3xl w-full"): Contribute
               ;div(class "flex gap-2")
                 ;div(class "fund-form-group")
-                  ;input.p-2  =name  "sum"  =type  "number"  =required  ~
-                    =min  "0.01"  =step  "0.01"
-                    =placeholder  "10";
+                  ::  ;input.p-2  =name  "sum"  =type  "number"  =required  ~
+                  ::    =min  "0.01"  =step  "0.01"
+                  ::    =placeholder  "10";
+                  ;+  :_  ~  :-  %input
+                      ;:  welp
+                          [%name "sum"]~
+                          [%type "number"]~
+                          [%required ~]~
+                          [%min "0.01"]~
+                          [%step "0.01"]~
+                          [%placeholder "10"]~
+                          [%class "p-2"]~
+                          ?~  pej=(~(get by pledges.pro) src.bol)  ~
+                          ~[[%readonly ~] [%value (mony:dump:fh cash.u.pej)]]
+                      ==
                   ;label(for "sum"): amount ($)
                 ==
                 ;div(class "fund-form-group")
@@ -134,7 +146,9 @@
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
                 ;+  %-  prod-butn:htmx:fh  :^  %mula-plej  %black  "pledge only ~"
-                    ?:((auth:fh bol) ~ "pledges only available to authenticated ships")
+                    ?.  (auth:fh bol)  "pledges only available to authenticated ships"
+                    ?:  (~(has by pledges.pro) src.bol)  "you must fulfill your outstanding pledge"
+                    ~
                 ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)
               ==
             ==

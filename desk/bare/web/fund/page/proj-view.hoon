@@ -3,7 +3,6 @@
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder, s=server
 ^-  pag-now:f
-::
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]

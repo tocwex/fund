@@ -43,17 +43,14 @@
     (filo [cost fill plej ~])
   ++  odim                                       ::  per-milestone audit
     ^-  (list ^odit)
-    =/  [pre=@rs fin=@ mile]  [plej next-fill]
-    %+  turn  (enum:fx milestonez)
-    |=  [min=@ mil=mile]
+    =/  [lin=@ fin=@ *]  [(dec (lent milestonez)) next-fill]
+    =<  -  %^  spin  milestonez  [0 plej]
+    |=  [mil=mile min=@ pre=@rs]
     =+  mio=(filo [cost.mil (film mil) .0 ~])
-    ?:  |((lth min fin) (lte:rs pre .0))  mio
-    ::  FIXME: There are some cases related to the final milestone that
-    ::  aren't properly being accounted for here
-    ::  TODO: There is some smarter way to do this math
-    =.  plej.mio  ?:((lte:rs pre (need void.mio)) pre (sub:rs pre (need void.mio)))
-    =.  pre  (sub:rs pre plej.mio)
-    (filo mio(void ~))
+    ?:  |((lth min fin) (lte:rs pre .0))  [mio +(min) pre]
+    =+  ned=?:(=(min lin) pre (need void.mio))
+    =+  tip=?:((lte:rs pre ned) pre ned)
+    [(filo mio(plej tip, void ~)) +(min) (sub:rs pre tip)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     %+  weld  (turn ~(val by pledges) |=(p=^plej `^mula`[%plej p]))
@@ -150,6 +147,7 @@
   ::  +proj-wash: update function for project peer state deltas
   ::
   ++  proj-wash
+    ::  TODO: Add useful error messages to all the various error cases
     |=  [pro=proj bol=bowl:gall lag=flag pod=prod]
     ^-  rock:proj
     =*  mes  `mess`[src.bol lag pod]
@@ -208,6 +206,7 @@
     ::
         %mula
       ?<  |(=(%born sat) =(%prop sat))
+      ?>  (gth:rs cash.pod .0)
       ?-    +<.pod
           %plej
         ::  NOTE: This is a sufficient check because we only allow the
@@ -218,17 +217,23 @@
         %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod))
       ::
           %trib
-        ::  TODO: Add logic to split up a contribution between multiple
-        ::  different milestones if it fills over the caps for
-        ::  milestones in the middle of the project
         =/  nex  ~(next-fill pj pro)
         =/  pol=(unit plej)  ?~(ship.pod ~ (~(get by pledges.pro) (need ship.pod)))
         =?  pledges.pro  ?=(^ pol)
           ::  TODO: Is this okay or should we require direct equality?
           ?>  (equ:rs cash.u.pol cash.pod)
           (~(del by pledges.pro) (need ship.pod))
-        %+  edit-mile  min.nex
-        mil.nex(contribs `(list trib)`[+>.pod contribs.mil.nex])
+        %_    pro
+            milestones
+          ;;  (lest mile)
+          =/  lin=@  (dec (lent miz))
+          =<  -  %^  spin  miz  [0 cash.pod]
+          |=  [mil=mile min=@ tre=@rs]
+          ?:  |((lth min min.nex) (lte:rs tre .0))  [mil +(min) tre]
+          =+  ned=?:(=(min lin) tre (need void:(filo [cost.mil (film mil) .0 ~])))
+          =+  tip=?:((lte:rs tre ned) tre ned)
+          [mil(contribs [+>.pod(cash tip) contribs.mil]) +(min) (sub:rs tre tip)]
+        ==
       ==
     ==
   --

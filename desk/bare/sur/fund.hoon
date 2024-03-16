@@ -191,6 +191,7 @@
 ::  $mess: (error) mess(age) (used internally)
 ::
 +$  mess  [who=@p wer=flag wat=prod]
+::  +$  mess  [wer=flag wat=prod who=@p why=(unit @t)]
 ::
 ::  $dat-now: top-level app data; forwarded to rudder-related requests
 ::

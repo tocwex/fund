@@ -9,7 +9,8 @@
 =p *proj:f
 =m *mile:f
 :fund &fund-poke [[our %test] %init ~]
-:fund &fund-poke [[our %test] %init `p(title 'test', summary 'desc', assessment [our .0], milestones ~[m(title 'm1', summary 'd1', cost .100) m(title 'm2', summary 'd2', cost .200)])]
+=miz ~[m(title 'm1', summary 'd1', cost .100) m(title 'm2', summary 'd2', cost .200) m(title 'm3', summary 'd3', cost .300) m(title 'm4', summary 'd4', cost .400)]
+:fund &fund-poke [[our %test] %init `p(title 'test', summary 'desc', assessment [our .0], milestones miz)]
 :fund &fund-poke [[our %test] %bump %prop ~]
 :fund &fund-poke [[our %test] %bump %born ~]
 :fund &fund-poke [[our %test] %bump %prop ~]
@@ -21,7 +22,8 @@
 :fund &fund-poke [[our %test] %bump %done `[1 0x0 0x0 0x0]]
 :fund &fund-poke [[our %test] %bump %work ~]
 :fund &fund-poke [[our %test] %mula %trib `our .20 [1 0x0 0x0] (crip "{<our>} trib")]
-:fund &fund-poke [[our %test] %mula %plej our .50 0 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %mula %trib ~ .200 [1 0x0 0x0] (crip "anon trib")]
+:fund &fund-poke [[our %test] %mula %plej our .500 0 (crip "{<our>} plej")]
 :fund &fund-poke [[our %tes2] %init ~]
 :fund &fund-poke [[our %tes2] %init `p(title 'test-2', summary 'desc-2', image `'https://picsum.photos/200', assessment [~nec .1], milestones ~[m(title 'm1-2', summary 'd1-2', cost .1e6)])]
 :fund &fund-poke [[our %tes2] %bump %prop ~]

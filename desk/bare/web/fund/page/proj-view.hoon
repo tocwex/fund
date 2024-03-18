@@ -228,7 +228,7 @@
                 :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~)
               ::
                   ?.  &(=(min sin) (~(has in roz) %sess) ?=(%sess sat))  ~
-                :~  ;a.fund-butn-link/"{(curl:fh p.lag)}": message worker →
+                :~  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): message worker →
                     (prod-butn:htmx:fh %bump-work %black "changes required ~" ~)
                     (prod-butn:htmx:fh %bump-done %green "approve ✓" ~)
                 ==

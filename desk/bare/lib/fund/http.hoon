@@ -170,7 +170,7 @@
             ;script(src "/session.js");  ::  debug-only
             ;+  (inject:tonic q.byk.bol)  ::  debug-only
           ==
-          ;body(class "text-base font-serif max-w-screen-2xl lg:px-4 {cas}")
+          ;body(class "text-base font-serif max-w-screen-2xl mx-auto lg:px-4 {cas}")
             ;+  head
             ;+  bod
             ;+  foot

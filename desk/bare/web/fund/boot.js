@@ -6,10 +6,36 @@ import * as colors from 'https://cdn.skypack.dev/twind/colors';
 import { css } from 'https://cdn.skypack.dev/twind/css';
 import 'https://cdn.skypack.dev/twind/shim';
 import {
-  http, createConfig, injected, getAccount,
+  http, createConfig, injected, getAccount, getClient,
   connect, disconnect, reconnect,
 } from 'https://esm.sh/@wagmi/core@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
+import { ethers, FallbackProvider, JsonRpcProvider } from 'https://cdn.jsdelivr.net/npm/ethers@6.11.1/+esm';
+// import { EthersAdapter } from 'https://cdn.jsdelivr.net/npm/@safe-global/protocol-kit@3.0.1/+esm';
+// import safeGlobalapiKit from 'https://cdn.jsdelivr.net/npm/@safe-global/api-kit@2.2.0/+esm';
+
+function clientToProvider(client) {
+  const { chain, transport } = client
+  const network = {
+    chainId: chain.id,
+    name: chain.name,
+    ensAddress: chain.contracts?.ensRegistry?.address,
+  }
+  if (transport.type === 'fallback') {
+    const providers = (transport.transports).map(
+      ({ value }) => new JsonRpcProvider(value?.url, network),
+    )
+    if (providers.length === 1) return providers[0]
+    return new FallbackProvider(providers)
+  }
+  return new JsonRpcProvider(transport.url, network)
+}
+
+/** Action to convert a viem Client to an ethers.js Provider. */
+function getEthersProvider(config, {chainId}) {
+  const client = getClient(config, {chainId})
+  return clientToProvider(client)
+}
 
 /// Constants/Helpers ///
 
@@ -136,14 +162,12 @@ if (!hasLoaded) {
     (state) => state,
     (state) => setWalletButton(state),
   );
-  // FIXME: If I don't add a timeout, the button's inner html gets overridden
-  // by the base page's button value
-  window.navigation.addEventListener("navigatesuccess", (event) => {
-    setTimeout(() => setWalletButton(window.Wagmi.state), 300);
+  // https://turbo.hotwired.dev/reference/events#turbo%3Arender
+  document.addEventListener("turbo:render", (event) => {
+    setWalletButton(window.Wagmi.state);
   });
-  window.navigation.addEventListener("currententrychange", (event) => {
-    setTimeout(() => setWalletButton(window.Wagmi.state), 300);
-  });
+
+  // console.log(getEthersProvider(window.Wagmi, {chainId: sepolia.id}));
 
   Alpine.start();
 }

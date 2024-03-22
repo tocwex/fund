@@ -218,13 +218,13 @@
     =-  (gte hav ned)
     :-  ^-  hav=perm:f
         ?:  =(p.lag src.bol)  %boss
-        ?:  =(p.assessment.pro src.bol)  %help
+        ?:  =(p.assessment.pro src.bol)  %peer
         %peon
     ^-  ned=perm:f
     ?+  -.pod    %peon
       %init  %boss
       %drop  %boss
-      %bump  %help
+      %bump  %peer
     ==
   ::
   ++  po-pull
@@ -265,9 +265,9 @@
                 %bump
               =+  ses=p.assessment.pro
               ?+  sat.pod  ~
-                %prop  [(po-mk-car ses [%lure ses %sess])]~
+                %prop  [(po-mk-car ses [%lure ses %orac])]~
                 ::  TODO: If this was sent by the user, also send cards to
-                ::  close the project path to the retracted assessor
+                ::  close the project path to the retracted oracle
                 %born  ?:(=(our.bol ses) ~ ~)
               ==
             ::

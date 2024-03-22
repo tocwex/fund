@@ -31,10 +31,11 @@
               |=([* pro=proj:f liv=?] ?=(?(%dead %done) ~(stat pj:f pro)))
         ==
       ::
-          %assessor
+          %oracle
         =/  us-sess
           %+  skim  ~(tap by (prez-ours:sss:f bol dat))
-          |=([* pro=proj:f liv=?] =(our.bol p.assessment.pro))
+          |=  [[sip=@p *] pro=proj:f liv=?]
+          (~(has in (~(rols pj:f pro) sip our.bol)) %orac)
         ;div#maincontent
           ;+  %^  prez-welz  "Requests for My Services"  |
               %+  skim  us-sess
@@ -48,24 +49,17 @@
         ==
       ::
           %funder
-        =/  us-prez  ~(tap by (prez-ours:sss:f bol dat))
+        =/  us-fund
+          %+  skim  ~(tap by (prez-ours:sss:f bol dat))
+          |=  [[sip=@p *] pro=proj:f liv=?]
+          (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
         ;div#maincontent
           ;+  %^  prez-welz  "My Open Pledges"  |
-              %+  skim  us-prez
-              |=  [[sip=@p *] pro=proj:f liv=?]
-              ?&  &  ::  !=(our.bol sip)
-                  (~(has by pledges.pro) our.bol)
-              ==
+              %+  skim  us-fund
+              |=([* pro=proj:f liv=?] (~(has by pledges.pro) our.bol))
           ;+  %^  prez-welz  "Projects I Funded"  |
-              %+  skim  us-prez
-              |=  [[sip=@p *] pro=proj:f liv=?]
-              ?&  &  ::  !=(our.bol sip)
-                  ::  =(%fund (~(gut by rolz.dat) our.bol %look))
-                  %+  lien  `(list mile:f)`milestones.pro
-                  |=  =mile:f
-                  %+  lien  contribs.mile
-                  |=(t=trib:f ?~(ship.t | =(our.bol u.ship.t)))
-              ==
+              %+  skim  us-fund
+              |=([* pro=proj:f liv=?] (lien contribs.pro |=(t=trib:f ?~(ship.t | =(our.bol u.ship.t)))))
           ::  ;+  %^  prez-welz  "Projects from %pals"  |
           ::      *(list [flag:f prej:f])
         ==

@@ -21,7 +21,7 @@
     [%asset *]                            `[%page | %asset]
     [%dashboard suf=*]    ?+  suf.pat     ~
       ~                                   `[%away (snip syt)]
-      [?(%worker %funder %assessor) ~]    `[%page | %proj-list]
+      [?(%worker %oracle %funder) ~]      `[%page | %proj-list]
     ==
     [%create suf=*]       ?+  suf.pat     ~
       ~                                   `[%away (snip syt)]

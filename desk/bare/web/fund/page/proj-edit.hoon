@@ -52,16 +52,16 @@
         (crip "bad act={<act>}; project doesn't exist: {<lag>}")
       ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
       ?:  ?=(%dead act)  [%bump %dead ~]~
-      ::  TODO: fill in actual `bil` values based on passed POST
+      ::  TODO: fill in actual `oat` values based on passed POST
       ::  arguments (forwarded from MetaMask)
       ::  TODO: when moving to %prop, we should also %init so that the
       ::  most recent form changes are saved when the user attempts to
       ::  send a request
-      =+  bil=*bill:f
+      =+  oat=*oath:f
       ?+  sat=;;(stat:f (rsh [3 5] act))  !!
         %born  [%bump %born ~]~              ::  worker retract/oracle reject
         %prop  [%bump %prop ~]~              ::  worker request
-        %lock  [%bump %lock `bil]~           ::  worker finalize
+        %lock  [%bump %lock `oat]~           ::  worker finalize
       ==
     ::
         %init

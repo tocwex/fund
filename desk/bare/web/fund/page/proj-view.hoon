@@ -18,15 +18,15 @@
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
     ?.  (~(has by (prez-ours:sss:f bol dat)) lag)
       (crip "bad act={<act>}; project doesn't exist: {<lag>}")
-    ::  TODO: fill in actual `bil` values based on passed POST
+    ::  TODO: fill in actual `oat` values based on passed POST
     ::  arguments (forwarded from MetaMask)
     ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
     ?-  act
       %bump-born  [%bump %born ~]~
-      %bump-prop  [%bump %prop `*bill:f]~
+      %bump-prop  [%bump %prop `*oath:f]~
       %bump-work  [%bump %work ~]~
       %bump-sess  [%bump %sess ~]~
-      %bump-done  [%bump %done `*bill:f]~
+      %bump-done  [%bump %done `*oath:f]~
       %bump-dead  [%bump %dead ~]~
     ::
         *  ::  mula-*
@@ -61,7 +61,7 @@
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
   =/  pod=odit:f  ~(odit pj:f pro)
   =/  moz=(list odit:f)  ~(odim pj:f pro)
-  =/  [sin=@ mile:f]  ~(next-stat pj:f pro)
+  =/  [nin=@ mile:f]  ~(next pj:f pro)
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "{(trip title.pro)}"
@@ -97,7 +97,7 @@
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
             ;div(class "text-sm font-light underline"): escrow assessor
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
-            ;+  ?.  (~(has in roz) %sess)
+            ;+  ?.  (~(has in roz) %orac)
                   ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
                 ?.  ?=(?(%born %prop %done %dead) sat)
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
@@ -152,7 +152,7 @@
                 ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)
               ==
             ==
-          ?:  (~(has in roz) %sess)  ::  assessor acceptance form
+          ?:  (~(has in roz) %orac)  ::  oracle acceptance form
             :_  ~
             ;form(method "post", autocomplete "off", class cas)
               ;div(class "p-2 text-3xl w-full"): Review Request
@@ -193,7 +193,7 @@
         ;div(class "flex justify-between")
           ;div(class "flex gap-2")
             ; Milestone Progress
-            ;span(class "font-medium"): {<sin>}/{<(lent milestones.pro)>}
+            ;span(class "font-medium"): {<nin>}/{<(lent milestones.pro)>}
           ==
           ;div(class "flex gap-2")
             ; Goal
@@ -217,17 +217,17 @@
             ; {(trip summary.mil)}
             ;div(class "flex flex-wrap items-center justify-end pt-2 gap-2")
               ;*  ;:  welp
-                  ?.  &((lth min sin) (~(has in roz) %work))  ~
+                  ?.  &((lth min nin) (~(has in roz) %work))  ~
                 ::  TODO: Make this button do something
                 :_  ~  (prod-butn:htmx:fh %todo %green "withdraw funds ✓" ~)
               ::
-                  ?.  &(=(min sin) (~(has in roz) %work) ?=(%lock sat))  ~
+                  ?.  &(=(min nin) (~(has in roz) %work) ?=(%lock sat))  ~
                 :_  ~  (prod-butn:htmx:fh %bump-work %black "mark in-progress ~" ~)
               ::
-                  ?.  &(=(min sin) (~(has in roz) %work) ?=(%work sat))  ~
+                  ?.  &(=(min nin) (~(has in roz) %work) ?=(%work sat))  ~
                 :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~)
               ::
-                  ?.  &(=(min sin) (~(has in roz) %sess) ?=(%sess sat))  ~
+                  ?.  &(=(min nin) (~(has in roz) %orac) ?=(%sess sat))  ~
                 :~  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): message worker →
                     (prod-butn:htmx:fh %bump-work %black "changes required ~" ~)
                     (prod-butn:htmx:fh %bump-done %green "approve ✓" ~)
@@ -246,7 +246,7 @@
           %+  turn  muz
           |=  mul=mula:f
           ^-  manx
-          =/  [wat=tape who=tape cas=tape]
+          =/  [wut=tape who=tape cas=tape]
             ?:  ?=(%plej -.mul)
               ["pledged" (scow %p ship.mul) "border-yellow-500 text-yellow-500"]
             :-  "fulfilled"  :_  "border-green-500 text-green-500"
@@ -259,7 +259,7 @@
             ;div(class "flex flex-wrap sm:flex-nowrap items-center")
               ;div(class "mx-auto p-1 font-semibold"): ${(mony:dump:fh cash.mul)}
               ;div(class "mx-auto p-1 flex")
-                ;div(class "text-nowrap py-1 px-2 border-2 rounded-full font-medium {cas}"): {wat}
+                ;div(class "text-nowrap py-1 px-2 border-2 rounded-full font-medium {cas}"): {wut}
               ==
             ==
           ==

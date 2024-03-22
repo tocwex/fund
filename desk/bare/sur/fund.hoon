@@ -24,26 +24,37 @@
 ::
 +$  addr  @ux  ::  address:ethereum-types
 ::
+::  $sign: blockchain signature
+::
++$  sign  @ux
+::
 ::  $bloq: blockchain block height
 ::
 +$  bloq  @ud  ::  event-id:ethereum-types
 ::
-::  $bill: blockchain project bill
+::  $xact: blockchain transaction data
 ::
-+$  bill
-  $:  =bloq
-      oath=addr
++$  xact  (pair bloq addr)
+::
+::  $sigm: blockchain message signature
+::
++$  sigm  (trel sign addr @t)
+::
+::  $oath: blockchain project agreement receipt
+::
++$  oath
+  $:  =xact
+      =sigm
       work=addr
-      sess=addr
-      ::  hash=@ux  ::  TODO: include Urbit side?
+      orac=addr
+      safe=addr
   ==
 ::
-::  $stub: blockchain contribution payment stub
+::  $stub: blockchain contribution payment receipt
 ::
 +$  stub
-  $:  =bloq
+  $:  =xact
       from=addr
-      coin=addr
   ==
 ::
 ::  $perm: permission level (associated with $poke/$prod)
@@ -51,18 +62,16 @@
 +$  perm
   $~  %peon
   $?  %boss  ::  admin action
-      %help  ::  worker action
+      %peer  ::  worker action
       %peon  ::  viewer action
   ==
 ::
 ::  $role: peer role relative to a work unit
 ::
 +$  role
-  $~  %look
   $?  %work  ::  project worker
-      %sess  ::  project assessor
-      %fund  ::  project pledger/contributor
-      %look  ::  project follower
+      %orac  ::  project oracle
+      %fund  ::  project funder
   ==
 ::
 ::  $rolz: role sets keyed by project id (host/term)
@@ -74,7 +83,7 @@
 +$  stat
   $~  %born
   $?  %born  ::  just created, draft mode (off-chain)
-      %prop  ::  created, proposed to assessor (off-chain)
+      %prop  ::  created, proposed to oracle (off-chain)
       %lock  ::  locked in (on-chain, scope locked, launched)
       %work  ::  underway (on-chain, work started)
       %sess  ::  under assessment (on-chain, work reviewed)
@@ -82,7 +91,7 @@
       %dead  ::  completed unsuccessfully
   ==
 ::
-::  $plej: pledge for contribution
+::  $plej: promise for contribution
 ::
 +$  plej
   $:  ship=@p
@@ -125,12 +134,8 @@
       summary=@t
       image=(unit @t)
       cost=@rs
-      ::  goal=bloq  ::  relative block height, e.g. +120 blocks
-      contract=(unit bill)
-      contribs=(list trib)
       status=stat
-      ::  terminate=bloq  ::  undecided feature
-      ::  fill=@rs  ::  reduction over `contribs`
+      approval=(unit (pair sigm @rs))
   ==
 ::
 ::  $proj: collection of work (milestones) requesting funding
@@ -142,14 +147,11 @@
     $:  title=@t
         summary=@t
         image=(unit @t)
-        ::  cost=@rs  ::  reduction over `milestones`
-        ::  workers=(set @p)  ::  TODO: Future feature
         assessment=sess
         milestones=(lest mile)
-        contract=(unit bill)
         pledges=(map ship plej)
-        ::  status=stat  ::  reduction of `milestones`
-        ::  fill=@rs  ::  reduction over `milestones`
+        contribs=(list trib)
+        contract=(unit oath)
     ==
   +$  wave  [=bowl:gall =poke]
   ++  lake  (lake:sss rock wave)
@@ -176,12 +178,12 @@
   $%  ::  proj prods  ::
       [%init pro=(unit proj)]
       [%drop ~]
-      [%bump sat=stat bil=(unit bill)]
+      [%bump sat=stat oat=(unit oath)]
       [%mula mula]
       ::  meta prods  ::
       [%join ~]
       [%exit ~]
-      [%lure who=@p wat=role]
+      [%lure who=@p wut=role]
   ==
 ::
 ::  $poke: project-bound action (prod)
@@ -190,8 +192,8 @@
 ::
 ::  $mess: (error) mess(age) (used internally)
 ::
-+$  mess  [who=@p wer=flag wat=prod]
-::  +$  mess  [wer=flag wat=prod who=@p why=(unit @t)]
++$  mess  [who=@p wer=flag wut=prod]
+::  +$  mess  [wer=flag wut=prod who=@p why=(unit @t)]
 ::
 ::  $dat-now: top-level app data; forwarded to rudder-related requests
 ::

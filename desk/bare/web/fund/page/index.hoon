@@ -21,8 +21,8 @@
         ;+  %^  dash-well  %worker
               "project worker"
             "create your own proposals, and manage your projects"
-        ;+  %^  dash-well  %assessor
-              "escrow assessor"
+        ;+  %^  dash-well  %oracle
+              "trusted oracle"
             "get paid as a trusted arbiter for community projects"
       ==
   ++  dash-well

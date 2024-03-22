@@ -49,19 +49,13 @@
     =/  lin=@  (dec (lent milestonez))
     =<  -  %^  spin  milestonez  [0 fill plej]
     |=  [mil=mile min=@ fre=@rs pre=@rs]
-    ::  NOTE: Take no fre nor pre
+    ::  FIXME: Could use some refactoring
     ?^  approval.mil
-      [(filo [cost.mil q.u.approval.mil .0 ~]) +(min) fre pre]
-    ::  NOTE: Take all fre and pre
-    ?:  =(min lin)
-      [(filo [cost.mil fre pre ~]) +(min) .0 .0]
-    ::  NOTE: Take no fre nor pre
-    ?:  ?=(?(%done %dead) status.mil)
-      [(filo [cost.mil .0 .0 ~]) +(min) fre pre]
+      [(filo [cost.mil q.u.approval.mil .0 ~]) +(min) (sub:rs fre q.u.approval.mil) pre]
     =+  co1=cost.mil
-    =+  ad1=?:((lte:rs fre co1) fre co1)
+    =+  ad1=?:(|(=(min lin) (lte:rs fre co1)) fre co1)
     =+  co2=(sub:rs co1 ad1)
-    =+  ad2=?:((lte:rs pre co2) pre co2)
+    =+  ad2=?:(|(=(min lin) (lte:rs pre co2)) pre co2)
     [(filo [cost.mil ad1 ad2 ~]) +(min) (sub:rs fre ad1) (sub:rs pre ad2)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)

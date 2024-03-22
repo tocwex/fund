@@ -195,7 +195,7 @@
           ::  (e.g. to the ship login page for eAuth)
           ;+  ?:  (auth bol)
                 ;a.fund-butn-link/"/~/logout?redirect={(aurl pat)}": {<src.bol>}
-              ;a.fund-butn-link/"/~/login?redirect={(aurl pat)}"(target "_blank"): login ~
+              ;a.fund-butn-link/"/~/login?eauth&redirect={(aurl pat)}"(target "_blank"): login ~
           ;button#connect-wallet.fund-butn-wallet: …loading…
         ==
       ==

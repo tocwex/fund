@@ -174,6 +174,7 @@
                       ==
                       ;div(class "fund-form-group")
                         ;input#mile-cost.p-1  =name  "m{<min>}c"  =type  "number"
+                          =min  "0"  =max  "100000000"  =step  "0.01"
                           =placeholder  "0"
                           =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
                           =onchange  "updateTotal()";
@@ -196,7 +197,7 @@
                 ==
           ==
           ;div(class "flex justify-center mx-auto")
-            ;button#mile-butn(class "fund-butn-black"): New Milestone +
+            ;button#mile-butn(type "button", class "fund-butn-black"): New Milestone +
           ==
         ==
         ;div
@@ -250,7 +251,10 @@
       '''
       const updateTotal = (event) => {
         const costDivs = document.querySelectorAll("#mile-cost");
-        const totalAmount = Array.from(costDivs).reduce((a, n) => a + parseInt(n.value), 0);
+        const totalAmount = Array.from(costDivs).reduce((a, n) => {
+          const i = parseInt(n.value);
+          return a + (Number.isNaN(i) ? 0 : i);
+        }, 0);
         document.querySelector("#proj-cost").innerText = `\$${totalAmount}`;
       };
       '''

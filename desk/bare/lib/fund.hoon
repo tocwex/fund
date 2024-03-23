@@ -49,14 +49,11 @@
     =/  lin=@  (dec (lent milestonez))
     =<  -  %^  spin  milestonez  [0 fill plej]
     |=  [mil=mile min=@ fre=@rs pre=@rs]
-    ::  FIXME: Could use some refactoring
-    ?^  approval.mil
-      [(filo [cost.mil q.u.approval.mil .0 ~]) +(min) (sub:rs fre q.u.approval.mil) pre]
-    =+  co1=cost.mil
-    =+  ad1=?:(|(=(min lin) (lte:rs fre co1)) fre co1)
-    =+  co2=(sub:rs co1 ad1)
-    =+  ad2=?:(|(=(min lin) (lte:rs pre co2)) pre co2)
-    [(filo [cost.mil ad1 ad2 ~]) +(min) (sub:rs fre ad1) (sub:rs pre ad2)]
+    =+  fos=?~(approval.mil cost.mil q.u.approval.mil)
+    =+  fil=?:(|(=(min lin) (lte:rs fre fos)) fre fos)
+    =+  pos=?~(approval.mil (sub:rs fos fil) .0)
+    =+  pej=?:(|(=(min lin) (lte:rs pre pos)) pre pos)
+    [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))

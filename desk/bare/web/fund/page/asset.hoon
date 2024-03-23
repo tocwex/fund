@@ -6,6 +6,7 @@
 ::  /~  asez  mime  /web/fund/asset
 ::  TODO: Could use %clay .^((list path) %ct %/app/landscape) for something
 ::  more programmatic, but that loses caching behavior when used naively
+::  TODO: Should include css and js files in here for better code splitting
 /*  urbit-logo   %mime  /web/fund/asset/urbit/svg
 /*  tocwex-logo  %mime  /web/fund/asset/tocwex/svg
 /*  x-logo       %mime  /web/fund/asset/x/svg

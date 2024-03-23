@@ -114,15 +114,13 @@
               ;div(class "p-2 text-3xl w-full"): Contribute
               ;div(class "flex gap-2")
                 ;div(class "fund-form-group")
-                  ::  ;input.p-2  =name  "sum"  =type  "number"  =required  ~
-                  ::    =min  "0.01"  =step  "0.01"
-                  ::    =placeholder  "10";
                   ;+  :_  ~  :-  %input
                       ;:  welp
                           [%name "sum"]~
                           [%type "number"]~
                           [%required ~]~
                           [%min "0.01"]~
+                          [%max "100000000"]~
                           [%step "0.01"]~
                           [%placeholder "10"]~
                           [%class "p-2"]~

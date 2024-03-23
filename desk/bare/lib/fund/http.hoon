@@ -270,7 +270,8 @@
     :_  ; {txt}
     :-  %button
     %+  welp  ?~(dis ~ ~[[%disabled ~] [%title dis]])
-    :~  [%type "submit"]
+    :~  [%id "prod-butn-{(trip pod)}"]
+        [%type "submit"]
         [%name "act"]
         [%value (trip pod)]
         [%class "fund-butn-{(trip clr)} {cas}"]

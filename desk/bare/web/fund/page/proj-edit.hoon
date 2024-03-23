@@ -31,7 +31,7 @@
       ::  by another project (add random number suffix)
       [our.bol (asci:fx (~(got by p.arz) 'nam'))]
     =/  ses=(unit sess:f)  %+  both
-      (slaw %p (~(gut by p.arz) 'sea' (scot %p our.bol)))
+      (slaw %p (~(gut by p.arz) 'sea' (scot %p ~tocwex)))
       (rush (~(gut by p.arz) 'seo' '0') royl-rs:so)
     ?+      act=(~(got by p.arz) 'act')
           (crip "bad act; expected (init|bump-*|dead|drop), not {(trip act)}")
@@ -69,7 +69,7 @@
       =+  pro=*proj:f  %_  pro
         title       (~(got by p.arz) 'nam')
         summary     (~(gut by p.arz) 'sum' '')
-        assessment  (fall ses [our.bol .0])
+        assessment  (fall ses [~tocwex .0])
       ::
           image
         =+  pic=(~(gut by p.arz) 'pic' '')
@@ -206,7 +206,7 @@
             ;div(class "fund-form-group")
               ;input.p-1  =name  "sea"  =type  "text"
                 =pattern  pregx
-                =placeholder  (scow %p our.bol)
+                =placeholder  (scow %p ~tocwex)
                 =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
               ;label(for "sea"): escrow assessor
             ==

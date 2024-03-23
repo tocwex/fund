@@ -217,11 +217,20 @@
       ::
           %trib
         =/  pol=(unit plej)  ?~(ship.pod ~ (~(get by pledges.pro) (need ship.pod)))
-        =?  pledges.pro  ?=(^ pol)
-          ::  TODO: Is this okay or should we require direct equality?
-          ?>  (equ:rs cash.u.pol cash.pod)
+        ::  TODO: Is this okay or should we require direct equality?
+        ?>  |(?=(~ pol) (equ:rs cash.u.pol cash.pod))
+        %_    pro
+            pledges
+          ?~  pol  pledges.pro
           (~(del by pledges.pro) (need ship.pod))
-        %_(pro contribs [+>.pod contribs.pro])
+        ::
+            contribs
+          :_  contribs.pro
+          %=  +>.pod  note
+            ?.  =('' note.pod)  note.pod
+            (fall (bind pol |=(p=plej note.p)) '')
+          ==
+        ==
       ==
     ==
   --

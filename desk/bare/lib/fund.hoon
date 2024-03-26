@@ -54,6 +54,25 @@
     =+  pos=?~(approval.mil (sub:rs fos fil) .0)
     =+  pej=?:(|(=(min lin) (lte:rs pre pos)) pre pos)
     [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
+  ++  sear                                       ::  se(a)r(ialize) project
+    ^-  tape
+    %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
+    %+  weld
+      ^-  (list tape)
+      :~  "title: {(trip title)}"
+          "oracle: {<p.assessment>} (for {(r-co:co (rlys q.assessment))}%)"
+          "summary: {(trip summary)}"
+      ==
+    %+  turn  (enum:fx milestonez)
+    |=  [min=@ mil=mile]
+    ^-  tape
+    %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a\09" n)))
+    ^-  (list tape)
+    :~  "milestone #{<+(min)>}:"
+        "title: {(trip title.mil)}"
+        "cost: {(r-co:co (rlys cost.mil))}"
+        "summary: {(trip summary.mil)}"
+    ==
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))

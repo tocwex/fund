@@ -9,25 +9,36 @@
   ^-  $@(brief:rudder act-now:f)
   =/  [pat=(list knot) *]  (durl:fh url.request.ord)
   =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |]])
+  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |]])
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
     =+  act=(~(got by p.arz) 'act')
     ::  FIXME: This check is actually a bit redundant b/c it's checked
     ::  again in `po-push:po-core` (see proj-edit.hoon for details).
     ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib) act)
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
-    ?.  (~(has by (prez-ours:sss:f bol dat)) lag)
+    ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
       (crip "bad act={<act>}; project doesn't exist: {<lag>}")
-    ::  TODO: fill in actual `oat` values based on passed POST
-    ::  arguments (forwarded from MetaMask)
     ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
     ?-  act
       %bump-born  [%bump %born ~]~
-      %bump-prop  [%bump %prop `*oath:f]~
       %bump-work  [%bump %work ~]~
       %bump-sess  [%bump %sess ~]~
-      %bump-done  [%bump %done `*oath:f]~
       %bump-dead  [%bump %dead ~]~
+    ::
+        %bump-done
+      ::  TODO: fill in actual `oat` values based on passed POST
+      ::  arguments (forwarded from MetaMask)
+      [%bump %done `*oath:f]~
+    ::
+        %bump-prop
+      :_  ~  :+  %bump  %prop
+      :-  ~  =+  oat=*oath:f  %_  oat
+          sigm
+        :*  (rash (~(got by p.arz) 'oas') ;~(pfix (jest '0x') hex))
+            (rash (~(got by p.arz) 'oaa') ;~(pfix (jest '0x') hex))
+            (crip (~(oath pj:f -.u.pro) p.lag))
+        ==
+      ==
     ::
         *  ::  mula-*
       =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
@@ -182,6 +193,9 @@
                 ;+  %-  prod-butn:htmx:fh  :^  %bump-prop  %green  "accept ✓"
                     ?~(contract.pro ~ "awaiting confirmation from project worker")
               ==
+              ;data#fund-proj.hidden(value (~(oath pj:f pro) p.lag));
+              ;input#fund-oath-sign.hidden(name "oas", type "text");
+              ;input#fund-oath-addr.hidden(name "oaa", type "text");
             ==
           ~  ::  no aside form
     ==
@@ -261,6 +275,23 @@
               ==
             ==
           ==
+    ==
+    ;script(type "module")
+      ;+  ;/  ^~  %-  trip
+      '''
+      import { safeSign } from '/apps/fund/asset/safe.js';
+      const signButton = document.querySelector("#prod-butn-bump-prop");
+      signButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        safeSign({
+          projectContent: document.querySelector("#fund-proj").value,
+        }).then(([address, signature]) => {
+          document.querySelector("#fund-oath-addr").value = address;
+          document.querySelector("#fund-oath-sign").value = signature;
+          event.target.form.requestSubmit(event.target);
+        });
+      });
+      '''
     ==
   ==
 --

@@ -54,8 +54,41 @@
     =+  pos=?~(approval.mil (sub:rs fos fil) .0)
     =+  pej=?:(|(=(min lin) (lte:rs pre pos)) pre pos)
     [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
-  ++  sear                                       ::  se(a)r(ialize) project
+  ++  mula                                       ::  project-wide $mula list
+    ^-  (list ^mula)
+    =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))
+    %+  welp  (turn contribs |=(t=trib `^mula`[%trib t]))
+    (turn ~(val by pledges) |=(p=^plej `^mula`[%plej p]))
+  ++  next                                       ::  next active milestone
+    ^-  [min=@ mil=mile]
+    ::  NOTE: Provide index past last milestone when all are completed
+    =-  ?^(- i.- [(lent milestonez) (rear milestonez)])
+    %+  skip  (enum:fx milestonez)
+    |=([@ n=mile] ?=(?(%done %dead) status.n))
+  ++  rols                                       ::  project $role(s) of user
+    ::  FIXME: This function signature will be simplified once a project
+    ::  is allowed to have different workers than its host
+    |=  [wox=@p who=@p]
+    ^-  (set role)
+    %-  silt
+    ;:  welp
+        ?.(=(wox who) ~ [%work]~)
+        ?.(=(p.assessment who) ~ [%orac]~)
+        ?.  ?|  (~(has by pledges) who)
+                (lien contribs |=(t=trib ?~(ship.t | =(u.ship.t who))))
+            ==
+          ~
+        [%fund]~
+    ==
+  ++  oath                                       ::  text of assessment contract
+    ::  FIXME: This function signature will be simplified once a project
+    ::  is allowed to have different workers than its host
+    |=  wox=@p
     ^-  tape
+    =-  ;:  welp
+            "I, {<p.assessment>}, hereby agree to assess the following project "
+            "proposed by {<wox>}:\0a\0a{-}"
+        ==
     %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
     %+  weld
       ^-  (list tape)
@@ -73,32 +106,6 @@
         "cost: {(r-co:co (rlys cost.mil))}"
         "summary: {(trip summary.mil)}"
     ==
-  ++  mula                                       ::  project-wide $mula list
-    ^-  (list ^mula)
-    =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))
-    %+  welp  (turn contribs |=(t=trib `^mula`[%trib t]))
-    (turn ~(val by pledges) |=(p=^plej `^mula`[%plej p]))
-  ++  rols                                       ::  project $role(s) of user
-    ::  FIXME: This function signature will be simplified once a project
-    ::  is allowed to have different workers than its host
-    |=  [wox=@p who=@p]
-    ^-  (set role)
-    %-  silt
-    ;:  welp
-        ?.(=(wox who) ~ [%work]~)
-        ?.(=(p.assessment who) ~ [%orac]~)
-        ?.  ?|  (~(has by pledges) who)
-                (lien contribs |=(t=trib ?~(ship.t | =(u.ship.t who))))
-            ==
-          ~
-        [%fund]~
-    ==
-  ++  next                                       ::  next active milestone
-    ^-  [min=@ mil=mile]
-    ::  NOTE: Provide index past last milestone when all are completed
-    =-  ?^(- i.- [(lent milestonez) (rear milestonez)])
-    %+  skip  (enum:fx milestonez)
-    |=([@ n=mile] ?=(?(%done %dead) status.n))
   --
 ::
 ::  +sss: structures/cores for peer-based synchronization (sss)

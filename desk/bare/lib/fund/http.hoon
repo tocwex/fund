@@ -2,8 +2,6 @@
 ::
 /+  *fund, fx=fund-xtra
 /+  rudder, tonic
-/*  boot-js  %js   /web/fund/boot/js
-/*  fund-cs  %css  /web/fund/fund/css
 |%
 ::
 ::  +route: rudder-related transformer of url ($trail) into (potential)
@@ -164,7 +162,7 @@
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ::  FIXME: Make this line legible somehow
             ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
-            ;style: {^~((trip fund-cs))}
+            ;link/"{(aurl /asset/[~.fund.css])}"(rel "stylesheet");
             ;link(rel "stylesheet", href "{sl-base}/themes/light.css");
             ;script(type "module", src "{sl-base}/shoelace-autoloader.js");
             ;script(src "/session.js");  ::  debug-only
@@ -175,12 +173,7 @@
             ;+  bod
             ;+  foot
           ==
-          ::  TODO: Import @apply CSS file (i.e. twin-cs), load that
-          ::  into a dict variable, then dump that into the twind
-          ::  bootloader in 'boot.js'
-          ::  - https://stackoverflow.com/a/8988005
-          ::  - https://github.com/SaraVieira/css-to-js/
-          ;+  ;script(type "module"): {^~((trip boot-js))}
+          ;script(type "module", src "{(aurl /asset/[~.boot.js])}");
         ==
     ++  head
       ^-  manx
@@ -196,7 +189,7 @@
           ;+  ?:  (auth bol)
                 ;a.fund-butn-link/"/~/logout?redirect={(aurl pat)}": {<src.bol>}
               ;a.fund-butn-link/"/~/login?eauth&redirect={(aurl pat)}"(target "_blank"): login ~
-          ;button#connect-wallet.fund-butn-wallet: …loading…
+          ;button#fund-butn-wallet.fund-butn-wallet: …loading…
         ==
       ==
     ++  foot
@@ -267,8 +260,8 @@
   ++  prod-butn                                  :: prod/poke/action button
     |=  [pod=@tas clr=?(%red %black %green) txt=tape dis=tape]
     ^-  manx
-    ::  TODO: Use on-click tooltips in order to support disabled error
-    ::  reporting on mobile
+    ::  TODO: Use on-click tooltips in order to allow disabled buttons
+    ::  to perform error reporting on mobile
     :_  ; {txt}
     :-  %button
     %+  welp  ?~(dis ~ ~[[%disabled ~] [%title dis]])

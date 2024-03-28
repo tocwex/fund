@@ -64,7 +64,7 @@
           %lock
         :_  ~  :+  %bump  %lock  :-  ~
         :*  :-  (rash (~(got by p.arz) 'sxb') dem)
-                (rash (~(got by p.arz) 'sxa') ;~(pfix (jest '0x') hex))
+              (rash (~(got by p.arz) 'sxa') ;~(pfix (jest '0x') hex))
             sigm:(need contract.u.pro)
             (rash (~(got by p.arz) 'swa') ;~(pfix (jest '0x') hex))
             (rash (~(got by p.arz) 'soa') ;~(pfix (jest '0x') hex))

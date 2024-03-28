@@ -39,6 +39,8 @@
 ::
 ++  pj
   |_  proj
+  ::  FIXME: All the `wox=@p` function signatures will be simplified
+  ::  once a project stores/supports multiple different workers
   +*  milestonez  `(list mile)`milestones
   ++  stat                                       ::  project-wide status
     ^-  ^stat
@@ -78,8 +80,6 @@
     %+  skip  (enum:fx milestonez)
     |=([@ n=mile] ?=(?(%done %dead) status.n))
   ++  rols                                       ::  project $role(s) of user
-    ::  FIXME: This function signature will be simplified once a project
-    ::  is allowed to have different workers than its host
     |=  [wox=@p who=@p]
     ^-  (set role)
     %-  silt
@@ -93,8 +93,6 @@
         [%fund]~
     ==
   ++  oath                                       ::  text of assessment contract
-    ::  FIXME: This function signature will be simplified once a project
-    ::  is allowed to have different workers than its host
     |=  wox=@p
     ^-  tape
     =-  ;:  welp

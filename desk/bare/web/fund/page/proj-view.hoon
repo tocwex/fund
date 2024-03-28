@@ -9,7 +9,7 @@
   ^-  $@(brief:rudder act-now:f)
   =/  [pat=(list knot) *]  (durl:fh url.request.ord)
   =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |]])
+  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['mxb' |] ['mxa' |] ['mad' |]])
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
     =+  act=(~(got by p.arz) 'act')
     ::  FIXME: This check is actually a bit redundant b/c it's checked
@@ -28,7 +28,11 @@
         %bump-done
       ::  TODO: fill in actual `oat` values based on passed POST
       ::  arguments (forwarded from MetaMask)
-      [%bump %done `*oath:f]~
+      :_  ~  :+  %bump  %done
+      :-  ~  =+  oat=*oath:f  %_  oat
+          sigm
+        *sigm:f
+      ==
     ::
         %bump-prop
       :_  ~  :+  %bump  %prop
@@ -42,11 +46,19 @@
     ::
         *  ::  mula-*
       =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
+      =/  wen=@ud  (rash (~(got by p.arz) 'mxb') dem)
       =/  sum=@rs  (rash (~(got by p.arz) 'sum') royl-rs:so)
       =/  msg=@t  (~(got by p.arz) 'msg')
       ?-  act
-        %mula-plej  [%mula %plej (need who) sum *bloq:f msg]~
-        %mula-trib  [%mula %trib who sum *stub:f msg]~
+        %mula-plej  [%mula %plej (need who) sum wen msg]~
+      ::
+          %mula-trib
+        :_  ~
+        :*  %mula  %trib  who  sum
+            :-  [wen (rash (~(got by p.arz) 'mxa') ;~(pfix (jest '0x') hex))]
+              (rash (~(got by p.arz) 'mad') ;~(pfix (jest '0x') hex))
+            msg
+        ==
       ==
     ==
   ==
@@ -160,6 +172,12 @@
                     ~
                 ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)
               ==
+              ;div.hidden
+                ;data#fund-mula-safe(value (weld "0x" ((x-co:co 40) safe:(need contract.pro))));
+                ;input#fund-mula-addr(name "mad", type "text");
+                ;input#fund-mula-xboq(name "mxb", type "text");
+                ;input#fund-mula-xadr(name "mxa", type "text");
+              ==
             ==
           ?:  (~(has in roz) %orac)  ::  oracle acceptance form
             :_  ~
@@ -193,9 +211,11 @@
                 ;+  %-  prod-butn:htmx:fh  :^  %bump-prop  %green  "accept ✓"
                     ?~(contract.pro ~ "awaiting confirmation from project worker")
               ==
-              ;data#fund-proj.hidden(value (~(oath pj:f pro) p.lag));
-              ;input#fund-oath-sign.hidden(name "oas", type "text");
-              ;input#fund-oath-addr.hidden(name "oaa", type "text");
+              ;div.hidden
+                ;data#fund-oath-proj(value (~(oath pj:f pro) p.lag));
+                ;input#fund-oath-sign(name "oas", type "text");
+                ;input#fund-oath-addr(name "oaa", type "text");
+              ==
             ==
           ~  ::  no aside form
     ==
@@ -279,15 +299,39 @@
     ;script(type "module")
       ;+  ;/  ^~  %-  trip
       '''
-      import { safeSign } from '/apps/fund/asset/safe.js';
-      const signButton = document.querySelector("#prod-butn-bump-prop");
-      signButton?.addEventListener("click", (event) => {
+      import {
+        txnGetURL, safeGetBlock, safeSign, safeSendFunds,
+        safeApproveWithdrawal, safeExecuteWithdrawal,
+      } from '/apps/fund/asset/safe.js';
+      document.querySelector("#prod-butn-bump-prop")?.addEventListener("click", (event) => {
         event.preventDefault();
         safeSign({
-          projectContent: document.querySelector("#fund-proj").value,
+          projectContent: document.querySelector("#fund-oath-proj").value,
         }).then(([address, signature]) => {
           document.querySelector("#fund-oath-addr").value = address;
           document.querySelector("#fund-oath-sign").value = signature;
+          event.target.form.requestSubmit(event.target);
+        });
+      });
+      document.querySelector("#prod-butn-mula-plej")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        safeGetBlock().then((block) => {
+          document.querySelector("#fund-mula-xboq").value = block;
+          event.target.form.requestSubmit(event.target);
+        });
+      });
+      document.querySelector("#prod-butn-mula-trib")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        safeSendFunds({
+          fundAmount: event.target.form.querySelector("input[name=sum]").value,
+          fundToken: event.target.form.querySelector("select[name=tok]").value,
+          safeAddress: document.querySelector("#fund-mula-safe").value,
+        }).then(([address, xblock, xhash]) => {
+          // FIXME: This takes longer than creating a safe on testnet... why?
+          console.log(`contribution successful; view at: ${txnGetURL(xhash)}`);
+          document.querySelector("#fund-mula-addr").value = address;
+          document.querySelector("#fund-mula-xboq").value = xblock;
+          document.querySelector("#fund-mula-xadr").value = xhash;
           event.target.form.requestSubmit(event.target);
         });
       });

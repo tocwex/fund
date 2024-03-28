@@ -1,5 +1,5 @@
 import {
-  getAccount, signMessage,
+  getAccount, getBlockNumber, signMessage,
   readContract, writeContract, waitForTransactionReceipt,
 } from 'https://esm.sh/@wagmi/core@2.x';
 import {
@@ -13,9 +13,18 @@ import { DEBUG_MODE, ADDRESS, CONTRACT } from './const.js';
 // Module Functions //
 //////////////////////
 
+export const txnGetURL = (address) => (
+  `https://${!DEBUG_MODE ? "" : "sepolia."}etherscan.io/tx/${address}`
+);
+
 export const safeGetURL = (address) => (
   `https://app.safe.global/home?safe=${!DEBUG_MODE ? "" : "sep:"}${address}`
 );
+
+export const safeGetBlock = async () => {
+  const block = await getBlockNumber(window.Wagmi);
+  return block.toString();
+};
 
 export const safeSign = async ({projectContent}) => {
   const { address } = getAccount(window.Wagmi);
@@ -58,34 +67,37 @@ export const safeDeploy = async ({oracleAddress}) => {
   return [
     deployReceipt.blockNumber.toString(),
     deployReceipt.transactionHash,
-    workerAddress, oracleAddress, safeAddress
+    workerAddress,
+    oracleAddress,
+    safeAddress,
   ];
 };
 
-// TODO: Bind this function call to the "donate" button
-export const safeSendFunds = async () => {
+export const safeSendFunds = async ({fundAmount, fundToken, safeAddress}) => {
+  const { address: funderAddress } = getAccount(window.Wagmi);
+  // TODO: Swap out the appropriate ERC-20 address based on user input
   const currencyDecimals = await readContract(window.Wagmi, {
-    abi: ERC20_CONTRACT.ABI,
-    // TODO: Swap out the appropriate ERC-20 address based on user input
-    address: ERC20_CONTRACT.ADDRESS,
+    abi: CONTRACT.USDC.ABI,
+    address: CONTRACT.USDC.ADDRESS,
     functionName: "decimals",
   });
   const sendTransaction = await writeContract(window.Wagmi, {
-    abi: ERC20_CONTRACT.ABI,
-    // TODO: Swap out the appropriate ERC-20 address based on user input
-    address: ERC20_CONTRACT.ADDRESS,
+    abi: CONTRACT.USDC.ABI,
+    address: CONTRACT.USDC.ADDRESS,
     functionName: "transfer",
     args: [
-      // TODO: Get the safe address from the web page (hidden info)
-      "0x0902CFF41a98411a924f08AD9D8efEC22dFE0AC9",
-      // TODO: Get the token amount based on user input
-      parseUnits("1", currencyDecimals),
+      safeAddress,
+      parseUnits(fundAmount, currencyDecimals),
     ],
   });
   const sendReceipt = await waitForTransactionReceipt(window.Wagmi, {
     hash: sendTransaction,
   });
-  return sendReceipt;
+  return [
+    funderAddress,
+    sendReceipt.blockNumber.toString(),
+    sendReceipt.transactionHash,
+  ];
 };
 
 // TODO: Bind this function call to the "approve milestone" button

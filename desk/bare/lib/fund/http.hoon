@@ -118,6 +118,14 @@
         [(sum:si sci --1) --0]
       (weld rep (ed-co:co e f))
     ==
+  ++  addr                                       ::  0xabcd.ef... => "0xabcdef..."
+    |=  adr=^addr
+    ^-  tape
+    (weld "0x" ((x-co:co 40) adr))
+  ++  sign                                       ::  0xabcd.ef... => "0xabcdef..."
+    |=  sig=^sign
+    ^-  tape
+    (weld "0x" ((x-co:co 130) sig))
   ++  flag                                       ::  [~zod %nam] => "~zod/nam"
     |=  lag=^flag
     ^-  tape
@@ -141,6 +149,28 @@
       %done  "completed"
       %dead  "canceled"
     ==
+  --
+::
+::  +take: parsing functions for text received in htmx elements
+::
+++  take
+  |%
+  ++  mony                                       ::  "12.34" => .1.2345e1
+    |=  mon=@t
+    ^-  @rs
+    (rash mon royl-rs:so)
+  ++  bloq                                       ::  "123456..." => 1234.56...
+    |=  boq=@t
+    ^-  ^bloq
+    (rash boq dem)
+  ++  addr                                       ::  "0xabcdef..." => 0xabcd.ef...
+    |=  adr=@t
+    ^-  ^addr
+    (rash adr ;~(pfix (jest '0x') hex))
+  ++  sign                                       ::  "0xabcdef..." => 0xabcd.ef...
+    |=  sig=@t
+    ^-  ^sign
+    (rash sig ;~(pfix (jest '0x') hex))
   --
 ::
 ::  +htmx: html-related helper functions and data, including css, js, components

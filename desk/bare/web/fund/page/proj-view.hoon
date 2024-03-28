@@ -38,16 +38,16 @@
       :_  ~  :+  %bump  %prop
       :-  ~  =+  oat=*oath:f  %_  oat
           sigm
-        :*  (rash (~(got by p.arz) 'oas') ;~(pfix (jest '0x') hex))
-            (rash (~(got by p.arz) 'oaa') ;~(pfix (jest '0x') hex))
+        :*  (sign:take:fh (~(got by p.arz) 'oas'))
+            (addr:take:fh (~(got by p.arz) 'oaa'))
             (crip (~(oath pj:f -.u.pro) p.lag))
         ==
       ==
     ::
         *  ::  mula-*
       =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
-      =/  wen=@ud  (rash (~(got by p.arz) 'mxb') dem)
-      =/  sum=@rs  (rash (~(got by p.arz) 'sum') royl-rs:so)
+      =/  wen=@ud  (bloq:take:fh (~(got by p.arz) 'mxb'))
+      =/  sum=@rs  (mony:take:fh (~(got by p.arz) 'sum'))
       =/  msg=@t  (~(got by p.arz) 'msg')
       ?-  act
         %mula-plej  [%mula %plej (need who) sum wen msg]~
@@ -55,8 +55,8 @@
           %mula-trib
         :_  ~
         :*  %mula  %trib  who  sum
-            :-  [wen (rash (~(got by p.arz) 'mxa') ;~(pfix (jest '0x') hex))]
-              (rash (~(got by p.arz) 'mad') ;~(pfix (jest '0x') hex))
+            :-  [wen (addr:take:fh (~(got by p.arz) 'mxa'))]
+              (addr:take:fh (~(got by p.arz) 'mad'))
             msg
         ==
       ==
@@ -173,7 +173,7 @@
                 ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)
               ==
               ;div.hidden
-                ;data#fund-mula-safe(value (weld "0x" ((x-co:co 40) safe:(need contract.pro))));
+                ;data#fund-mula-safe(value (addr:dump:fh safe:(need contract.pro)));
                 ;input#fund-mula-addr(name "mad", type "text");
                 ;input#fund-mula-xboq(name "mxb", type "text");
                 ;input#fund-mula-xadr(name "mxa", type "text");

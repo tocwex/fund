@@ -63,12 +63,12 @@
       ::
           %lock
         :_  ~  :+  %bump  %lock  :-  ~
-        :*  :-  (rash (~(got by p.arz) 'sxb') dem)
-              (rash (~(got by p.arz) 'sxa') ;~(pfix (jest '0x') hex))
+        :*  :-  (bloq:take:fh (~(got by p.arz) 'sxb'))
+              (addr:take:fh (~(got by p.arz) 'sxa'))
             sigm:(need contract.u.pro)
-            (rash (~(got by p.arz) 'swa') ;~(pfix (jest '0x') hex))
-            (rash (~(got by p.arz) 'soa') ;~(pfix (jest '0x') hex))
-            (rash (~(got by p.arz) 'ssa') ;~(pfix (jest '0x') hex))
+            (addr:take:fh (~(got by p.arz) 'swa'))
+            (addr:take:fh (~(got by p.arz) 'soa'))
+            (addr:take:fh (~(got by p.arz) 'ssa'))
         ==
       ==
     ::
@@ -229,7 +229,7 @@
         ==
     ==
     ;div(class "hidden")
-      ;data#fund-orac-addr(value ?~(pru ~ ?~(contract.u.pru ~ (weld "0x" ((x-co:co 40) q.sigm.u.contract.u.pru)))));
+      ;data#fund-orac-addr(value ?~(pru ~ ?~(contract.u.pru ~ (addr:dump:fh q.sigm.u.contract.u.pru))));
       ;input#fund-safe-xboq(name "sxb", type "text");
       ;input#fund-safe-xadr(name "sxa", type "text");
       ;input#fund-safe-wadr(name "swa", type "text");

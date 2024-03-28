@@ -7,11 +7,15 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress,
 } from 'https://esm.sh/viem@2.x';
-import { ADDRESS, CONTRACT } from './const.js';
+import { DEBUG_MODE, ADDRESS, CONTRACT } from './const.js';
 
 //////////////////////
 // Module Functions //
 //////////////////////
+
+export const safeGetURL = (address) => (
+  `https://app.safe.global/home?safe=${!DEBUG_MODE ? "" : "sep:"}${address}`
+);
 
 export const safeSign = async ({projectContent}) => {
   const { address } = getAccount(window.Wagmi);
@@ -22,27 +26,24 @@ export const safeSign = async ({projectContent}) => {
   return [address, signature];
 };
 
-// TODO: Bind this function call to the "finalize escrow" button
-export const safeDeploy = async () => {
+export const safeDeploy = async ({oracleAddress}) => {
   const { address: workerAddress } = getAccount(window.Wagmi);
-  // TODO: The oracle's address will be provided by the on-form data
-  const oracleAddress = "0x6E3dB180aD7DEA4508f7766A5c05c406cD6c9dcf";
   const deployTransaction = await writeContract(window.Wagmi, {
-    abi: PROXY_FACTORY_CONTRACT.ABI,
-    address: PROXY_FACTORY_CONTRACT.ADDRESS,
+    abi: CONTRACT.SAFE_PROXYFACTORY.ABI,
+    address: CONTRACT.SAFE_PROXYFACTORY.ADDRESS,
     functionName: "createProxyWithNonce",
     args: [
-      SAFE_TEMPLATE_CONTRACT.ADDRESS,
+      CONTRACT.SAFE_TEMPLATE.ADDRESS,
       encodeFunctionData({
-        abi: SAFE_TEMPLATE_CONTRACT.ABI,
+        abi: CONTRACT.SAFE_TEMPLATE.ABI,
         functionName: "setup",
         args: [
           [workerAddress, oracleAddress], 2n,
           // TODO: Module setup info (module address, payload) needs to go here
-          NULL_ADDRESS, "",
-          SAFE_FALLBACK_CONTRACT.ADDRESS,
+          ADDRESS.NULL, "",
+          CONTRACT.SAFE_FALLBACK.ADDRESS,
           // TODO: Payment info (token, value receiver) (?) needs to go here
-          NULL_ADDRESS, 0n, NULL_ADDRESS,
+          ADDRESS.NULL, 0n, ADDRESS.NULL,
         ],
       }),
       safeNextSaltNonce(),
@@ -54,7 +55,11 @@ export const safeDeploy = async () => {
   const safeAddress = deployReceipt.logs.find(
     ({topics}) => topics.length > 1
   ).address;
-  return safeAddress;
+  return [
+    deployReceipt.blockNumber.toString(),
+    deployReceipt.transactionHash,
+    workerAddress, oracleAddress, safeAddress
+  ];
 };
 
 // TODO: Bind this function call to the "donate" button
@@ -135,7 +140,7 @@ export const safeExecuteWithdrawal = async () => {
         .map(intAddress => signerAddresses.find(a => a.toLowerCase() === toHex(intAddress)))
         .map(address => (address === oracleAddress)
           ? oracleSignature
-          : encodePacked(["uint256", "uint256", "uint8"], [address, NULL_ADDRESS, 1])
+          : encodePacked(["uint256", "uint256", "uint8"], [address, ADDRESS.NULL, 1])
         ).reduce((a, n) => concat([a, n]), "")
     ]),
   });
@@ -169,7 +174,7 @@ const safeGetWithdrawalArgs = async ({safe, worker, amount}) => (
     // https://sepolia.etherscan.io/address/0xfb1bffC9d739B8D520DaF37dF666da4C687191EA#code#F12#L7
     0,
     // NOTE: safeTxGas, baseGas, gasPrice, gasToken, refundReceiver
-    0n, 0n, 0n, NULL_ADDRESS, NULL_ADDRESS,
+    0n, 0n, 0n, ADDRESS.NULL, ADDRESS.NULL,
     safeNonce,
   ]))
 );

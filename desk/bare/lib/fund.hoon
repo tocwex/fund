@@ -1,5 +1,5 @@
 /-  *fund
-/+  fx=fund-xtra, rudder
+/+  fx=fund-xtra, tx=naive-transactions
 |%
 ::
 ::  +filo: fill in an $odit by calculating `=need` (if required)
@@ -22,6 +22,18 @@
     %plej  when.mul
     %trib  p.xact.when.mul
   ==
+::
+::  +csig: c(heck) (Ethereum EIP-191) sig(nature)
+::
+++  csig
+  |=  sig=sigm
+  ^-  bean
+  =-  ?~(- | =(u.- q.sig))
+  ^-  (unit @ux)
+  =/  rox=octs  (as-octs:mimes:html r.sig)
+  =/  syn=tape  "\19Ethereum Signed Message:\0a{(a-co:co p.rox)}{(trip r.sig)}"
+  =/  sox=octs  (as-octs:mimes:html (crip syn))
+  (verify-sig:tx p.sig sox)
 ::
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
 ::
@@ -200,7 +212,13 @@
           ?+  sat.pod  !!
             %born  ~
             %lock  `(need oat.pod)
-            %prop  `=+(o=?~(contract.pro *oath u.contract.pro) o(sigm sigm:(need oat.pod)))
+          ::
+              %prop
+            =+  sig=sigm:(need oat.pod)
+            ::  TODO: Add proper error notifications here
+            ?>  =((trip r.sig) (~(oath pj pro) our.bol))
+            ?>  (csig sig)
+            =+(o=*oath `o(sigm sig))
           ==
         (edit-milz |=(m=mile m(status sat.pod)))
       ?:  ?=(%lock status.mil)

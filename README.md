@@ -121,7 +121,7 @@ mkdir -p full/lib/ full/mar full/sur
 ln -sr ../LICENSE.txt full/license.txt
 # git clone --depth 1 https://github.com/urbit/yard yar
 git clone -b 412k-rc2 --depth 1 https://github.com/urbit/urbit.git urb
-cp urb/pkg/arvo/lib/verb.hoon full/lib/
+cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*} full/lib/
 cp urb/pkg/arvo/sur/verb.hoon full/sur/
 git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
 cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} full/lib/

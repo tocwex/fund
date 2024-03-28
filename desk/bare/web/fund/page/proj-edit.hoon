@@ -19,7 +19,7 @@
   ::  which should either be made explicit or at least come with a
   ::  warning (e.g. "unable to parse 'ses' values; bad @p given...")
   =/  rex=(map @t bean)  %-  malt
-    %+  weld  ~[['act' &] ['nam' |] ['sum' |] ['pic' |] ['sea' |] ['seo' |]]
+    %+  weld  ~[['act' &] ['nam' |] ['sum' |] ['pic' |] ['sea' |] ['seo' |] ['sxb' |] ['sxa' |] ['swa' |] ['soa' |] ['ssa' |]]
     %+  roll  (gulf 0 9)
     |=  [ind=@ acc=(list [@t bean])]
     %+  weld  acc
@@ -30,6 +30,8 @@
       ::  FIXME: Go to next available name if this path is already taken
       ::  by another project (add random number suffix)
       [our.bol (asci:fx (~(got by p.arz) 'nam'))]
+    ::  NOTE: This only accepts an assessment as legitimate if *both*
+    ::  fields are populated
     =/  ses=(unit sess:f)  %+  both
       (slaw %p (~(gut by p.arz) 'sea' (scot %p ~tocwex)))
       (rush (~(gut by p.arz) 'seo' '0') royl-rs:so)
@@ -48,20 +50,26 @@
       ::    a remote ship (e.g. assessor poking project on worker ship)
       ::  NOTE: Use `proz.dat` instead of `prez-ours...` because only
       ::  the owner should be able to submit edits to the ship
-      ?.  (~(has by proz.dat) lag)
+      ?~  pro=(~(get by proz.dat) lag)
         (crip "bad act={<act>}; project doesn't exist: {<lag>}")
       ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
       ?:  ?=(%dead act)  [%bump %dead ~]~
-      ::  TODO: fill in actual `oat` values based on passed POST
-      ::  arguments (forwarded from MetaMask)
       ::  TODO: when moving to %prop, we should also %init so that the
       ::  most recent form changes are saved when the user attempts to
       ::  send a request
-      =+  oat=*oath:f
       ?+  sat=;;(stat:f (rsh [3 5] act))  !!
         %born  [%bump %born ~]~              ::  worker retract/oracle reject
         %prop  [%bump %prop ~]~              ::  worker request
-        %lock  [%bump %lock `oat]~           ::  worker finalize
+      ::
+          %lock
+        :_  ~  :+  %bump  %lock  :-  ~
+        :*  :-  (rash (~(got by p.arz) 'sxb') dem)
+                (rash (~(got by p.arz) 'sxa') ;~(pfix (jest '0x') hex))
+            sigm:(need contract.u.pro)
+            (rash (~(got by p.arz) 'swa') ;~(pfix (jest '0x') hex))
+            (rash (~(got by p.arz) 'soa') ;~(pfix (jest '0x') hex))
+            (rash (~(got by p.arz) 'ssa') ;~(pfix (jest '0x') hex))
+        ==
       ==
     ::
         %init
@@ -220,6 +228,14 @@
           ==
         ==
     ==
+    ;div(class "hidden")
+      ;data#fund-orac-addr(value ?~(pru ~ ?~(contract.u.pru ~ (weld "0x" ((x-co:co 40) q.sigm.u.contract.u.pru)))));
+      ;input#fund-safe-xboq(name "sxb", type "text");
+      ;input#fund-safe-xadr(name "sxa", type "text");
+      ;input#fund-safe-wadr(name "swa", type "text");
+      ;input#fund-safe-oadr(name "soa", type "text");
+      ;input#fund-safe-sadr(name "ssa", type "text");
+    ==
     ;div(class "flex flex-col gap-y-2 m-1")
       ;div(class "text-3xl w-full"): Confirm & Launch
       ; Please review your proposal in detail and ensure
@@ -262,6 +278,7 @@
     ;script(type "module")
       ;+  ;/  ^~  %-  trip
       '''
+      import { safeDeploy, safeGetURL } from '/apps/fund/asset/safe.js';
       document.querySelector("#mile-butn").addEventListener("click", (event) => {
         const wellDiv = document.querySelector("#mile-welz");
         const wellClone = document.querySelector("#mile-well").cloneNode(true);
@@ -273,6 +290,20 @@
           fieldElem.value = "";
         });
         wellDiv.appendChild(wellClone);
+      });
+      document.querySelector("#prod-butn-bump-lock")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        safeDeploy({
+          oracleAddress: document.querySelector("#fund-orac-addr").value,
+        }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
+          console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
+          document.querySelector("#fund-safe-xboq").value = xblock;
+          document.querySelector("#fund-safe-xadr").value = xhash;
+          document.querySelector("#fund-safe-wadr").value = workerAddress;
+          document.querySelector("#fund-safe-oadr").value = oracleAddress;
+          document.querySelector("#fund-safe-sadr").value = safeAddress;
+          event.target.form.requestSubmit(event.target);
+        });
       });
       document.querySelectorAll("textarea").forEach(textarea => {
         textarea.parentNode.dataset.replicatedValue = textarea.value;

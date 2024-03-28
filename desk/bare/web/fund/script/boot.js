@@ -140,28 +140,25 @@ if (!hasLoaded) {
   // https://turbo.hotwired.dev/reference/events#turbo%3Arender
   document.addEventListener("turbo:render", (event) => {
     setWalletButton(window.Wagmi.state);
+    document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {
+      const { status, current, connections } = window.Wagmi.state;
+      const connection = connections.get(current);
+
+      if (status === "disconnected") {
+        if (connection) {
+          reconnect(window.Wagmi, {connector: connection.connector});
+        } else {
+          connect(window.Wagmi, {connector: Wagmi.connectors[0]});
+        }
+      } else if (status === "connected") {
+        // FIXME: Actually calling disconnects tells MetaMask to stop giving
+        // this site permission to the associated wallets. Is there any way to
+        // soft disconnect the wallet, i.e. set its status to disconnected without
+        // removing it?
+        disconnect(window.Wagmi, {connector: connection.connector});
+      }
+    });
   });
 
   Alpine.start();
 }
-
-/// Per-page Setup ///
-
-document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {
-  const { status, current, connections } = window.Wagmi.state;
-  const connection = connections.get(current);
-
-  if (status === "disconnected") {
-    if (connection) {
-      reconnect(window.Wagmi, {connector: connection.connector});
-    } else {
-      connect(window.Wagmi, {connector: Wagmi.connectors[0]});
-    }
-  } else if (status === "connected") {
-    // FIXME: Actually calling disconnects tells MetaMask to stop giving
-    // this site permission to the associated wallets. Is there any way to
-    // soft disconnect the wallet, i.e. set its status to disconnected without
-    // removing it?
-    disconnect(window.Wagmi, {connector: connection.connector});
-  }
-});

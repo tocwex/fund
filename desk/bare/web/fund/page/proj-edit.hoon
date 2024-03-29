@@ -229,7 +229,7 @@
         ==
     ==
     ;div(class "hidden")
-      ;data#fund-orac-addr(value ?~(pru ~ ?~(contract.u.pru ~ (addr:dump:fh q.sigm.u.contract.u.pru))));
+      ;data#fund-orac-addr(value ?~(pru ~ ?~(contract.u.pru ~ (addr:dump:fh from.sigm.u.contract.u.pru))));
       ;input#fund-safe-xboq(name "sxb", type "text");
       ;input#fund-safe-xadr(name "sxa", type "text");
       ;input#fund-safe-wadr(name "swa", type "text");

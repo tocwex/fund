@@ -5,7 +5,7 @@ import {
 import {
   encodeFunctionData, encodePacked, keccak256,
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
-  recoverAddress, recoverMessageAddress,
+  recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
 import { DEBUG_MODE, ADDRESS, CONTRACT } from './const.js';
 
@@ -76,7 +76,7 @@ export const safeDeploy = async ({oracleAddress}) => {
 export const safeSendFunds = async ({fundAmount, fundToken, safeAddress}) => {
   const { address: funderAddress } = getAccount(window.Wagmi);
   // TODO: Swap out the appropriate ERC-20 address based on user input
-  const currencyDecimals = await readContract(window.Wagmi, {
+  const tokenDecimals = await readContract(window.Wagmi, {
     abi: CONTRACT.USDC.ABI,
     address: CONTRACT.USDC.ADDRESS,
     functionName: "decimals",
@@ -87,7 +87,7 @@ export const safeSendFunds = async ({fundAmount, fundToken, safeAddress}) => {
     functionName: "transfer",
     args: [
       safeAddress,
-      parseUnits(fundAmount, currencyDecimals),
+      parseUnits(fundAmount, tokenDecimals),
     ],
   });
   const sendReceipt = await waitForTransactionReceipt(window.Wagmi, {
@@ -100,18 +100,15 @@ export const safeSendFunds = async ({fundAmount, fundToken, safeAddress}) => {
   ];
 };
 
-// TODO: Bind this function call to the "approve milestone" button
-export const safeApproveWithdrawal = async () => {
+export const safeApproveWithdrawal = async ({fundAmount, workerAddress, safeAddress}) => {
   const { address: oracleAddress } = getAccount(window.Wagmi);
-  // TODO: Get the safe address from the web page (hidden info)
-  const safeAddress = "0x0902CFF41a98411a924f08AD9D8efEC22dFE0AC9";
   const withdrawalArgs = await safeGetWithdrawalArgs({
     safe: safeAddress,
-    worker: "0x1be6260E5Eb950D580A700196A5Bc7f12f4CE3b9",
-    amount: 1000n,
+    worker: workerAddress,
+    amount: fundAmount,
   });
   const approvalPayload = await readContract(window.Wagmi, {
-    abi: SAFE_TEMPLATE_CONTRACT.ABI,
+    abi: CONTRACT.SAFE_TEMPLATE.ABI,
     address: safeAddress,
     functionName: "getTransactionHash",
     args: withdrawalArgs,
@@ -120,29 +117,19 @@ export const safeApproveWithdrawal = async () => {
     account: oracleAddress,
     message: { raw: approvalPayload },
   });
-  // NOTE: https://sepolia.etherscan.io/address/0xfb1bffC9d739B8D520DaF37dF666da4C687191EA#code#F24#L295
-  return toHex(fromHex(oracleSignature, "bigint") + 4n);
+  return [oracleAddress, oracleSignature, approvalPayload];
 };
 
-// // TODO: Bind this function call to the "withdraw funds" button
-export const safeExecuteWithdrawal = async () => {
-  // TODO: As a worker, execute an extraction of a specific amount
-  // from a safe
+export const safeExecuteWithdrawal = async ({fundAmount, oracleSignature, oracleAddress, safeAddress}) => {
   const { address: workerAddress } = getAccount(window.Wagmi);
-  // TODO: Get the safe address from the web page (hidden info)
-  const safeAddress = "0x0902CFF41a98411a924f08AD9D8efEC22dFE0AC9";
-  // TODO: Grab the signature from the host ship (should be embedded on
-  // the page, maybe? same with the address)
-  const oracleSignature = "TODO: run 'approveWithdrawal' while using 0x6E3 and put result here";
-  const oracleAddress = "0x6E3dB180aD7DEA4508f7766A5c05c406cD6c9dcf";
   const signerAddresses = [workerAddress, oracleAddress];
   const withdrawalArgs = await safeGetWithdrawalArgs({
     safe: safeAddress,
-    worker: "0x1be6260E5Eb950D580A700196A5Bc7f12f4CE3b9",
-    amount: 1000n,
+    worker: workerAddress,
+    amount: fundAmount,
   });
   const withdrawTransaction = await writeContract(window.Wagmi, {
-    abi: SAFE_TEMPLATE_CONTRACT.ABI,
+    abi: CONTRACT.SAFE_TEMPLATE.ABI,
     address: safeAddress,
     functionName: "execTransaction",
     // NOTE: In "execTransaction", we exchange the nonce for the signatures
@@ -151,12 +138,16 @@ export const safeExecuteWithdrawal = async () => {
         .map(hexAddress => fromHex(hexAddress, "bigint")).sort()
         .map(intAddress => signerAddresses.find(a => a.toLowerCase() === toHex(intAddress)))
         .map(address => (address === oracleAddress)
-          ? oracleSignature
+          // https://sepolia.etherscan.io/address/0xfb1bffC9d739B8D520DaF37dF666da4C687191EA#code#F24#L295
+          ? toHex(fromHex(oracleSignature, "bigint") + 4n)
           : encodePacked(["uint256", "uint256", "uint8"], [address, ADDRESS.NULL, 1])
         ).reduce((a, n) => concat([a, n]), "")
     ]),
   });
-  return 0;
+  const withdrawReceipt = await waitForTransactionReceipt(window.Wagmi, {
+    hash: withdrawTransaction,
+  });
+  return [withdrawReceipt.blockNumber.toString(), withdrawReceipt.transactionHash];
 };
 
 //////////////////////
@@ -168,21 +159,39 @@ const safeNextSaltNonce = () => (
 );
 
 const safeGetWithdrawalArgs = async ({safe, worker, amount}) => (
-  readContract(window.Wagmi, {
-    abi: SAFE_TEMPLATE_CONTRACT.ABI,
-    address: safe,
-    functionName: "nonce",
-  }).then(safeNonce => ([
-    // TODO: Swap out the appropriate ERC-20 address based on user input
-    ERC20_CONTRACT.ADDRESS,
+  // TODO: Add support for extracting multiple different kinds of
+  // coins in a single transaction
+  // TODO: Figure out the best method for extracting heterogeneous
+  // funds (by type, by percentage of pool, by time, etc.)
+  // TODO: Figure out if we want to support extracting funds in
+  // an arbitrary order by milestone... as it is, this always uses
+  // the latest nonce for a safe and thus the extractions must be
+  // sequential and occur before the subsequent milestone evaluation
+  // - NOTE: Best method is probably to allow arbitrary extraction, but
+  //   to revoke an approval when using the signature doesn't work (e.g.
+  //   if the user brings their own safe and has transactions in the
+  //   meantime, or if the extractions occur out of order).
+  Promise.all([
+    readContract(window.Wagmi, {
+      abi: CONTRACT.USDC.ABI,
+      address: CONTRACT.USDC.ADDRESS,
+      functionName: "decimals",
+    }),
+    readContract(window.Wagmi, {
+      abi: CONTRACT.SAFE_TEMPLATE.ABI,
+      address: safe,
+      functionName: "nonce",
+    }),
+  ]).then(([tokenDecimals, safeNonce]) => ([
+    CONTRACT.USDC.ADDRESS,
     0n, // NOTE: 0n is amount of ETH, which isn't supported
     encodeFunctionData({
-      abi: ERC20_CONTRACT.ABI,
+      abi: CONTRACT.USDC.ABI,
       functionName: "transfer",
-      args: [worker, amount],
+      args: [worker, parseUnits(amount, tokenDecimals)],
     }),
     // enum Operation {Call, DelegateCall}
-    // 0 when transferring one currency, 1 when transferring multiple
+    // 0 when transferring one token, 1 when transferring multiple
     // https://sepolia.etherscan.io/address/0xfb1bffC9d739B8D520DaF37dF666da4C687191EA#code#F12#L7
     0,
     // NOTE: safeTxGas, baseGas, gasPrice, gasToken, refundReceiver

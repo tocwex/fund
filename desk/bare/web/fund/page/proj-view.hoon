@@ -9,12 +9,12 @@
   ^-  $@(brief:rudder act-now:f)
   =/  [pat=(list knot) *]  (durl:fh url.request.ord)
   =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['mxb' |] ['mxa' |] ['mad' |]])
+  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['mxb' |] ['mxa' |] ['mad' |] ['mis' |] ['mia' |] ['mit' |] ['mib' |] ['mih' |] ['mii' |]])
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
     =+  act=(~(got by p.arz) 'act')
     ::  FIXME: This check is actually a bit redundant b/c it's checked
     ::  again in `po-push:po-core` (see proj-edit.hoon for details).
-    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib) act)
+    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dunn %bump-dead %mula-plej %mula-trib) act)
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
     ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
       (crip "bad act={<act>}; project doesn't exist: {<lag>}")
@@ -25,13 +25,28 @@
       %bump-sess  [%bump %sess ~]~
       %bump-dead  [%bump %dead ~]~
     ::
+        %bump-dunn
+      :_  ~  :+  %bump  %done
+      :-  ~  =+  oat=*oath:f  %_  oat
+          xact
+        :*  (bloq:take:fh (~(got by p.arz) 'mib'))
+            (addr:take:fh (~(got by p.arz) 'mih'))
+        ==
+      ::
+          safe
+        ::  FIXME: This is a hack used to include the milestone index
+        ::  when claiming funds.
+        `@ux`(bloq:take:fh (~(got by p.arz) 'mii'))
+      ==
+    ::
         %bump-done
-      ::  TODO: fill in actual `oat` values based on passed POST
-      ::  arguments (forwarded from MetaMask)
       :_  ~  :+  %bump  %done
       :-  ~  =+  oat=*oath:f  %_  oat
           sigm
-        *sigm:f
+        :*  (sign:take:fh (~(got by p.arz) 'mis'))
+            (addr:take:fh (~(got by p.arz) 'mia'))
+            [%| (addr:take:fh (~(got by p.arz) 'mit'))]
+        ==
       ==
     ::
         %bump-prop
@@ -40,7 +55,7 @@
           sigm
         :*  (sign:take:fh (~(got by p.arz) 'oas'))
             (addr:take:fh (~(got by p.arz) 'oaa'))
-            (crip (~(oath pj:f -.u.pro) p.lag))
+            [%& (crip (~(oath pj:f -.u.pro) p.lag))]
         ==
       ==
     ::
@@ -97,6 +112,11 @@
           ;span#proj-cost: ${(mony:dump:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
+      ==
+      ;div.hidden
+        ;data#fund-safe-addr(value (addr:dump:fh ?~(contract.pro 0x0 safe.u.contract.pro)));
+        ;data#fund-safe-work(value (addr:dump:fh ?~(contract.pro 0x0 work.u.contract.pro)));
+        ;data#fund-safe-orac(value (addr:dump:fh ?~(contract.pro 0x0 orac.u.contract.pro)));
       ==
     ==
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
@@ -173,7 +193,6 @@
                 ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)
               ==
               ;div.hidden
-                ;data#fund-mula-safe(value (addr:dump:fh safe:(need contract.pro)));
                 ;input#fund-mula-addr(name "mad", type "text");
                 ;input#fund-mula-xboq(name "mxb", type "text");
                 ;input#fund-mula-xadr(name "mxa", type "text");
@@ -240,18 +259,20 @@
       ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
           |=  [min=@ mil=mile:f]
           ^-  manx
+          =/  oil=odit:f  (snag min moz)
           ;div(class "my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap justify-between items-center gap-2")
               ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(min)>}: {(trip title.mil)}
               ;+  (stat-pill:htmx:fh status.mil)
             ==
-            ;+  (odit-ther:htmx:fh (snag min moz))
+            ;+  (odit-ther:htmx:fh oil)
             ; {(trip summary.mil)}
             ;div(class "flex flex-wrap items-center justify-end pt-2 gap-2")
               ;*  ;:  welp
                   ?.  &((lth min nin) (~(has in roz) %work))  ~
-                ::  TODO: Make this button do something
-                :_  ~  (prod-butn:htmx:fh %todo %green "withdraw funds ✓" ~)
+                :_  ~
+                %-  prod-butn:htmx:fh  :^  %bump-dunn  %green  "withdraw funds ✓"
+                ?~(withdrawal.mil ~ "funds have already been withdrawn")
               ::
                   ?.  &(=(min nin) (~(has in roz) %work) ?=(%lock sat))  ~
                 :_  ~  (prod-butn:htmx:fh %bump-work %black "mark in-progress ~" ~)
@@ -266,7 +287,21 @@
                 ==
               ==
             ==
+            ;div.hidden
+              ;data#fund-mile-cost(value (mony:dump:fh fill.oil));
+              ;data#fund-mile-asig(value (sign:dump:fh ?~(approval.mil *@ux sign.p.u.approval.mil)));
+              ;data#fund-mile-atak(value (mony:dump:fh ?~(approval.mil *@rs q.u.approval.mil)));
+              ;data#fund-mile-idex(value "{<min>}");
+            ==
           ==
+      ;div.hidden
+        ;input#fund-mile-sign(name "mis", type "text");
+        ;input#fund-mile-addr(name "mia", type "text");
+        ;input#fund-mile-text(name "mit", type "text");
+        ;input#fund-mile-bloq(name "mib", type "text");
+        ;input#fund-mile-hash(name "mih", type "text");
+        ;input#fund-mile-amin(name "mii", type "text");
+      ==
     ==
     ;div
       ;div(class "text-3xl pt-2"): Proposal Funders
@@ -325,13 +360,49 @@
         safeSendFunds({
           fundAmount: event.target.form.querySelector("input[name=sum]").value,
           fundToken: event.target.form.querySelector("select[name=tok]").value,
-          safeAddress: document.querySelector("#fund-mula-safe").value,
+          safeAddress: document.querySelector("#fund-safe-addr").value,
         }).then(([address, xblock, xhash]) => {
-          // FIXME: This takes longer than creating a safe on testnet... why?
           console.log(`contribution successful; view at: ${txnGetURL(xhash)}`);
           document.querySelector("#fund-mula-addr").value = address;
           document.querySelector("#fund-mula-xboq").value = xblock;
           document.querySelector("#fund-mula-xadr").value = xhash;
+          event.target.form.requestSubmit(event.target);
+        });
+      });
+      document.querySelector("#prod-butn-bump-done")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        // FIXME: Assert that (1) we have a wallet connected and (2) that wallet
+        // is exactly the oracle wallet for this project
+        safeApproveWithdrawal({
+          // FIXME: Will small fractions cause problems with the signature and
+          // exact matching extraction amounts?
+          fundAmount: event.target.form.querySelector("#fund-mile-cost").value,
+          workerAddress: document.querySelector("#fund-safe-work").value,
+          safeAddress: document.querySelector("#fund-safe-addr").value,
+        }).then(([address, signature, payload]) => {
+          document.querySelector("#fund-mile-sign").value = signature;
+          document.querySelector("#fund-mile-addr").value = address;
+          document.querySelector("#fund-mile-text").value = payload;
+          event.target.form.requestSubmit(event.target);
+        });
+      });
+      document.querySelector("#prod-butn-bump-dunn")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        // FIXME: Assert that (1) we have a wallet connected and (2) that wallet
+        // is exactly the worker wallet for this project
+        safeExecuteWithdrawal({
+          // FIXME: Will small fractions cause problems with the signature and
+          // exact matching extraction amounts?
+          fundAmount: event.target.form.querySelector("#fund-mile-atak").value,
+          oracleSignature: event.target.form.querySelector("#fund-mile-asig").value,
+          oracleAddress: document.querySelector("#fund-safe-orac").value,
+          safeAddress: document.querySelector("#fund-safe-addr").value,
+        }).then(([xblock, xhash]) => {
+          console.log(`withdrawal successful; view at: ${txnGetURL(xhash)}`);
+          document.querySelector("#fund-mile-bloq").value = xblock;
+          document.querySelector("#fund-mile-hash").value = xhash;
+          document.querySelector("#fund-mile-amin").value =
+            event.target.form.querySelector("#fund-mile-idex").value;
           event.target.form.requestSubmit(event.target);
         });
       });

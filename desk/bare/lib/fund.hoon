@@ -28,12 +28,12 @@
 ++  csig
   |=  sig=sigm
   ^-  bean
-  =-  ?~(- | =(u.- q.sig))
+  =-  ?~(- | =(u.- from.sig))
   ^-  (unit @ux)
-  =/  rox=octs  (as-octs:mimes:html r.sig)
-  =/  syn=tape  "\19Ethereum Signed Message:\0a{(a-co:co p.rox)}{(trip r.sig)}"
-  =/  sox=octs  (as-octs:mimes:html (crip syn))
-  (verify-sig:tx p.sig sox)
+  =/  dat=tape  =+(t=(trip `@t`p.mesg.sig) ?-(-.mesg.sig %& t, %| (flop t)))
+  =/  msg=tape  "\19Ethereum Signed Message:\0a{(a-co:co (met 3 p.mesg.sig))}{dat}"
+  =/  syg=octs  (as-octs:mimes:html (crip msg))
+  (verify-sig:tx sign.sig syg)
 ::
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
 ::
@@ -214,7 +214,7 @@
               %prop
             =+  sig=sigm:(need oat.pod)
             ::  TODO: Add proper error notifications here
-            ?>  =((trip r.sig) (~(oath pj pro) our.bol))
+            ?>  =((trip `@t`p.mesg.sig) (~(oath pj pro) our.bol))
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))
           ==
@@ -236,12 +236,26 @@
         ?:  ?=(%done sat.pod)
           ?>  aver-sess  ::  work/sess=>done:oracle
           ?>  ?=(^ oat.pod)
+          ?>  =(orac:(need contract.pro) from.sigm.u.oat.pod)
+          ?>  (csig sigm.u.oat.pod)
           =/  mod=odit  (snag min ~(odim pj pro))
           (edit-mile min mil(status sat.pod, approval `[sigm.u.oat.pod fill.mod]))
         ?:  ?=(%dead sat.pod)
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
         ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)
-      ~|(bad-wash+mes !!)  ::  ?(%done %dead) =X=> status
+      ?:  ?=(%done status.mil)
+        ?>  ?=(%done sat.pod)
+        ?>  aver-work  ::  done=>done:worker
+        ?>  ?=(^ oat.pod)
+        ::  TODO: Properly verify transaction content (is this actually
+        ::  an xact for withdrawal from this safe?)
+        ?<  =(0 q.xact.u.oat.pod)
+        ::  FIXME: This is a horrible hack to allow arbitrary fund
+        ::  extraction in milestones
+        =+  i=`@`safe.u.oat.pod
+        =+  m=(snag i miz)
+        (edit-mile i m(withdrawal `xact.u.oat.pod))
+      ~|(bad-wash+mes !!)  ::  %dead =X=> status
     ::
         %mula
       ?<  ?=(?(%born %prop %done %dead) sat)

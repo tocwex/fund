@@ -129,6 +129,9 @@ if (!hasLoaded) {
     chains: [mainnet, sepolia],
     connectors: [injected()],
     transports: {
+      // TODO: Use custom endpoints here to avoid rate limiting
+      // TODO: Is there any way to include these in the distributed desk
+      // but not in the code published to the clearweb?
       [mainnet.id]: http(),
       [sepolia.id]: http(),
     },

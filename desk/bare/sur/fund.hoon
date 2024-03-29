@@ -20,6 +20,10 @@
 ::
 +$  sess  (pair @p @rs)
 ::
+::  $mesg: blockchain signed message information (message or raw hex)
+::
++$  mesg  (each @t @ux)
+::
 ::  $addr: blockchain address
 ::
 +$  addr  @ux  ::  address:ethereum-types
@@ -38,7 +42,11 @@
 ::
 ::  $sigm: blockchain message signature
 ::
-+$  sigm  (trel sign addr @t)
++$  sigm
+  $:  =sign
+      from=addr
+      =mesg
+  ==
 ::
 ::  $oath: blockchain project agreement receipt
 ::
@@ -136,6 +144,7 @@
       cost=@rs
       status=stat
       approval=(unit (pair sigm @rs))
+      withdrawal=(unit xact)
   ==
 ::
 ::  $proj: collection of work (milestones) requesting funding

@@ -186,6 +186,8 @@
         ++  aver-sess  |-(~|(bad-wash+mes ?>(=(p.assessment.pro src.bol) %.y)))
         --
     =/  sat=stat  ~(stat pj pro)
+    ::  TODO: Properly verify transaction content for oath-related
+    ::  operations (e.g. is this actually a withdrawal from this safe?)
     ?+    -.pod  pro
         %init
       ?>  aver-work
@@ -209,7 +211,6 @@
         =.  contract.pro
           ?+  sat.pod  !!
             %born  ~
-            %lock  `(need oat.pod)
           ::
               %prop
             =+  sig=sigm:(need oat.pod)
@@ -217,6 +218,13 @@
             ?>  =((trip `@t`p.mesg.sig) (~(oath pj pro) our.bol))
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))
+          ::
+              %lock
+            =+  our-oat=(need contract.pro)
+            =+  pod-oat=(need oat.pod)
+            ?>  =(sigm.our-oat sigm.pod-oat)
+            ?>  =(orac.pod-oat from.sigm.pod-oat)
+            `pod-oat
           ==
         (edit-milz |=(m=mile m(status sat.pod)))
       ?:  ?=(%lock status.mil)
@@ -237,24 +245,15 @@
           ?>  aver-sess  ::  work/sess=>done:oracle
           ?>  ?=(^ oat.pod)
           ?>  =(orac:(need contract.pro) from.sigm.u.oat.pod)
+          ::  TODO: Verify that this is a real signature for extracting
+          ::  funds from the associated safe (how do we construct this
+          ::  Urbit side?)
           ?>  (csig sigm.u.oat.pod)
           =/  mod=odit  (snag min ~(odim pj pro))
           (edit-mile min mil(status sat.pod, approval `[sigm.u.oat.pod fill.mod]))
         ?:  ?=(%dead sat.pod)
           (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
         ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)
-      ?:  ?=(%done status.mil)
-        ?>  ?=(%done sat.pod)
-        ?>  aver-work  ::  done=>done:worker
-        ?>  ?=(^ oat.pod)
-        ::  TODO: Properly verify transaction content (is this actually
-        ::  an xact for withdrawal from this safe?)
-        ?<  =(0 q.xact.u.oat.pod)
-        ::  FIXME: This is a horrible hack to allow arbitrary fund
-        ::  extraction in milestones
-        =+  i=`@`safe.u.oat.pod
-        =+  m=(snag i miz)
-        (edit-mile i m(withdrawal `xact.u.oat.pod))
       ~|(bad-wash+mes !!)  ::  %dead =X=> status
     ::
         %mula
@@ -288,6 +287,12 @@
           ==
         ==
       ==
+    ::
+        %take
+      =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
+      ?>  ?=(%done status.mil)
+      ?>  ?=(^ approval.mil)
+      (edit-mile min mil(withdrawal `act.pod))
     ==
   --
 --

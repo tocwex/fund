@@ -5,30 +5,38 @@
 ### Basic Tests ###
 
 ```
-=f -build-file /=fund=/sur/fund/hoon
+=f -build-file /=fund=/lib/fund/hoon
 =p *proj:f
 =m *mile:f
 =s *stub:f
+=o *oath:f
+=ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
+=ad2 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf
+=miz ~[m(title '1', summary '!', cost .10) m(title '2', summary '@', cost .20) m(title '3', summary '#', cost .30) m(title '4', summary '$', cost .40)]
+=po1 p(title 't', summary 'd', assessment [our .0], milestones miz)
+=sig 0x50.e8f5.4d20.8151.83ac.c95f.3e15.92e8.8110.f09b.1a16.a529.6374.7e80.97e2.3591.130e.72d2.c822.e831.2223.d6ee.aa13.3f8a.60cd.fd62.754f.0218.bd9f.c060.a3ee.2b9e.ae1c
+=si1 `sigm:f`[sig ad1 [%& (crip (~(oath pj:f po1) our))]]
 :fund &fund-poke [[our %test] %init ~]
-=miz ~[m(title 'm1', summary 'd1', cost .100) m(title 'm2', summary 'd2', cost .200) m(title 'm3', summary 'd3', cost .300) m(title 'm4', summary 'd4', cost .400)]
-:fund &fund-poke [[our %test] %init `p(title 'test', summary 'desc', assessment [our .0], milestones miz)]
+:fund &fund-poke [[our %test] %init `po1]
 :fund &fund-poke [[our %test] %bump %prop ~]
 :fund &fund-poke [[our %test] %bump %born ~]
 :fund &fund-poke [[our %test] %bump %prop ~]
-:fund &fund-poke [[our %test] %bump %lock `*oath:f]
-:fund &fund-poke [[our %test] %mula %plej our .90 0 (crip "{<our>} plej")]
-:fund &fund-poke [[our %test] %mula %trib `our .90 s(xact [1 0x0]) (crip "{<our>} fill")]
+:fund &fund-poke [[our %test] %bump %prop `o(sigm si1)]
+:fund &fund-poke [[our %test] %bump %lock `o(sigm si1, xact [0 0x0], work ad2, orac ad1, safe 0x0)]
+:fund &fund-poke [[our %test] %mula %plej our .9 0 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %mula %trib `our .9 s(xact [1 0x0]) (crip "{<our>} fill")]
 :fund &fund-poke [[our %test] %bump %work ~]
 :fund &fund-poke [[our %test] %bump %sess ~]
-:fund &fund-poke [[our %test] %bump %done `*oath:f]
+:fund &fund-poke [[our %test] %bump %done `o(sigm si1)]
 :fund &fund-poke [[our %test] %bump %work ~]
-:fund &fund-poke [[our %test] %mula %trib `our .20 s(xact [2 0x0]) (crip "{<our>} trib")]
-:fund &fund-poke [[our %test] %mula %trib ~ .200 s(xact [3 0x0]) (crip "anon trib")]
-:fund &fund-poke [[our %test] %mula %plej our .10 4 (crip "{<our>} pass")]
-:fund &fund-poke [[our %test] %mula %trib `our .10 s(xact [5 0x0]) '']
-:fund &fund-poke [[our %test] %mula %plej our .500 6 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %mula %trib `our .2 s(xact [2 0x0]) (crip "{<our>} trib")]
+:fund &fund-poke [[our %test] %mula %trib ~ .20 s(xact [3 0x0]) (crip "anon trib")]
+:fund &fund-poke [[our %test] %mula %plej our .1 4 (crip "{<our>} pass")]
+:fund &fund-poke [[our %test] %mula %trib `our .1 s(xact [5 0x0]) '']
+:fund &fund-poke [[our %test] %mula %plej our .50 6 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %take 0 [7 0x0]]
 :fund &fund-poke [[our %tes2] %init ~]
-:fund &fund-poke [[our %tes2] %init `p(title 'test-2', summary 'desc-2', image `'https://picsum.photos/200', assessment [~nec .1], milestones ~[m(title 'm1-2', summary 'd1-2', cost .1e6)])]
+:fund &fund-poke [[our %tes2] %init `p(title '5', summary '%', image `'https://picsum.photos/200', assessment [~nec .1], milestones ~[m(title '6', summary '^', cost .1e6)])]
 :fund &fund-poke [[our %tes2] %bump %prop ~]
 ```
 
@@ -134,3 +142,13 @@ need to be accounted for:
   ```
   It's good to test this endpoint as a first step when debugging issues with
   eAuth on a particular ship.
+
+# Ethereum Testing #
+
+```
+=rpc 'https://eth.drpc.org'
+=rpc 'https://sepolia.drpc.org'
+=bloq .^(@udblocknumber %gx /=eth-watcher=/block/azimuth/noun)
+=addr …
+:eth-watcher &eth-watcher-poke [%watch path=/fund/xact/[addr] config=[rpc ~m1 ~m5 bloq ~ [addr]~ ~ ~]]
+```

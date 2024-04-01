@@ -189,6 +189,7 @@
       [%drop ~]
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
+      [%take min=@ act=xact]
       ::  meta prods  ::
       [%join ~]
       [%exit ~]

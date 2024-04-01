@@ -224,6 +224,7 @@
     ?+  -.pod    %peon
       %init  %boss
       %drop  %boss
+      %take  %boss
       %bump  %peer
     ==
   ::
@@ -258,10 +259,12 @@
             =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
             po-core(gon &)
           ::
-              ?(%bump %mula)
+              ?(%bump %mula %take)
             ?<  ~|(bad-push+mes po-is-new)
             =-  (wash -)
             ?-    -.pod
+              %take  ~
+            ::
                 %bump
               =+  ses=p.assessment.pro
               ?+  sat.pod  ~

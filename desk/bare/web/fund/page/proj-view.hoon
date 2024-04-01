@@ -14,7 +14,7 @@
     =+  act=(~(got by p.arz) 'act')
     ::  FIXME: This check is actually a bit redundant b/c it's checked
     ::  again in `po-push:po-core` (see proj-edit.hoon for details).
-    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dunn %bump-dead %mula-plej %mula-trib) act)
+    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib %take-done) act)
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
     ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
       (crip "bad act={<act>}; project doesn't exist: {<lag>}")
@@ -25,18 +25,14 @@
       %bump-sess  [%bump %sess ~]~
       %bump-dead  [%bump %dead ~]~
     ::
-        %bump-dunn
-      :_  ~  :+  %bump  %done
+        %bump-prop
+      :_  ~  :+  %bump  %prop
       :-  ~  =+  oat=*oath:f  %_  oat
-          xact
-        :*  (bloq:take:fh (~(got by p.arz) 'mib'))
-            (addr:take:fh (~(got by p.arz) 'mih'))
+          sigm
+        :*  (sign:take:fh (~(got by p.arz) 'oas'))
+            (addr:take:fh (~(got by p.arz) 'oaa'))
+            [%& (crip (~(oath pj:f -.u.pro) p.lag))]
         ==
-      ::
-          safe
-        ::  FIXME: This is a hack used to include the milestone index
-        ::  when claiming funds.
-        `@ux`(bloq:take:fh (~(got by p.arz) 'mii'))
       ==
     ::
         %bump-done
@@ -49,15 +45,11 @@
         ==
       ==
     ::
-        %bump-prop
-      :_  ~  :+  %bump  %prop
-      :-  ~  =+  oat=*oath:f  %_  oat
-          sigm
-        :*  (sign:take:fh (~(got by p.arz) 'oas'))
-            (addr:take:fh (~(got by p.arz) 'oaa'))
-            [%& (crip (~(oath pj:f -.u.pro) p.lag))]
-        ==
-      ==
+        %take-done
+      :_  ~  :^  %take
+          (bloq:take:fh (~(got by p.arz) 'mii'))
+        (bloq:take:fh (~(got by p.arz) 'mib'))
+      (addr:take:fh (~(got by p.arz) 'mih'))
     ::
         *  ::  mula-*
       =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
@@ -271,7 +263,7 @@
               ;*  ;:  welp
                   ?.  &((lth min nin) (~(has in roz) %work))  ~
                 :_  ~
-                %-  prod-butn:htmx:fh  :^  %bump-dunn  %green  "withdraw funds ✓"
+                %-  prod-butn:htmx:fh  :^  %take-done  %green  "withdraw funds ✓"
                 ?~(withdrawal.mil ~ "funds have already been withdrawn")
               ::
                   ?.  &(=(min nin) (~(has in roz) %work) ?=(%lock sat))  ~
@@ -386,7 +378,7 @@
           event.target.form.requestSubmit(event.target);
         });
       });
-      document.querySelector("#prod-butn-bump-dunn")?.addEventListener("click", (event) => {
+      document.querySelector("#prod-butn-take-done")?.addEventListener("click", (event) => {
         event.preventDefault();
         // FIXME: Assert that (1) we have a wallet connected and (2) that wallet
         // is exactly the worker wallet for this project

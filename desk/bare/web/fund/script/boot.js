@@ -11,6 +11,7 @@ import {
   getAccount,
 } from 'https://esm.sh/@wagmi/core@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
+import { RPC } from './const.js';
 
 /// Constants/Helpers ///
 
@@ -129,11 +130,8 @@ if (!hasLoaded) {
     chains: [mainnet, sepolia],
     connectors: [injected()],
     transports: {
-      // TODO: Use custom endpoints here to avoid rate limiting
-      // TODO: Is there any way to include these in the distributed desk
-      // but not in the code published to the clearweb?
-      [mainnet.id]: http(),
-      [sepolia.id]: http(),
+      [mainnet.id]: http(RPC.MAINNET),
+      [sepolia.id]: http(RPC.SEPOLIA),
     },
   });
   window.Wagmi.subscribe(

@@ -76,18 +76,18 @@ export const safeDeploy = async ({oracleAddress}) => {
 export const safeSendFunds = async ({fundAmount, fundToken, safeAddress}) => {
   const { address: funderAddress } = getAccount(window.Wagmi);
   // TODO: Swap out the appropriate ERC-20 address based on user input
-  const tokenDecimals = await readContract(window.Wagmi, {
-    abi: CONTRACT.USDC.ABI,
-    address: CONTRACT.USDC.ADDRESS,
-    functionName: "decimals",
-  });
+  // const tokenDecimals = await readContract(window.Wagmi, {
+  //   abi: CONTRACT.USDC.ABI,
+  //   address: CONTRACT.USDC.ADDRESS,
+  //   functionName: "decimals",
+  // });
   const sendTransaction = await writeContract(window.Wagmi, {
     abi: CONTRACT.USDC.ABI,
     address: CONTRACT.USDC.ADDRESS,
     functionName: "transfer",
     args: [
       safeAddress,
-      parseUnits(fundAmount, tokenDecimals),
+      parseUnits(fundAmount, CONTRACT.USDC.DECIMALS),
     ],
   });
   const sendReceipt = await waitForTransactionReceipt(window.Wagmi, {
@@ -138,6 +138,7 @@ export const safeExecuteWithdrawal = async ({fundAmount, oracleSignature, oracle
         .map(hexAddress => fromHex(hexAddress, "bigint")).sort()
         .map(intAddress => signerAddresses.find(a => a.toLowerCase() === toHex(intAddress)))
         .map(address => (address === oracleAddress)
+          // https://github.com/safe-global/safe-smart-account/blob/main/docs/signatures.md
           // https://sepolia.etherscan.io/address/0xfb1bffC9d739B8D520DaF37dF666da4C687191EA#code#F24#L295
           ? toHex(fromHex(oracleSignature, "bigint") + 4n)
           : encodePacked(["uint256", "uint256", "uint8"], [address, ADDRESS.NULL, 1])
@@ -171,24 +172,17 @@ const safeGetWithdrawalArgs = async ({safe, worker, amount}) => (
   //   to revoke an approval when using the signature doesn't work (e.g.
   //   if the user brings their own safe and has transactions in the
   //   meantime, or if the extractions occur out of order).
-  Promise.all([
-    readContract(window.Wagmi, {
-      abi: CONTRACT.USDC.ABI,
-      address: CONTRACT.USDC.ADDRESS,
-      functionName: "decimals",
-    }),
-    readContract(window.Wagmi, {
-      abi: CONTRACT.SAFE_TEMPLATE.ABI,
-      address: safe,
-      functionName: "nonce",
-    }),
-  ]).then(([tokenDecimals, safeNonce]) => ([
+  readContract(window.Wagmi, {
+    abi: CONTRACT.SAFE_TEMPLATE.ABI,
+    address: safe,
+    functionName: "nonce",
+  }).then(safeNonce => ([
     CONTRACT.USDC.ADDRESS,
     0n, // NOTE: 0n is amount of ETH, which isn't supported
     encodeFunctionData({
       abi: CONTRACT.USDC.ABI,
       functionName: "transfer",
-      args: [worker, parseUnits(amount, tokenDecimals)],
+      args: [worker, parseUnits(amount, CONTRACT.USDC.DECIMALS)],
     }),
     // enum Operation {Call, DelegateCall}
     // 0 when transferring one token, 1 when transferring multiple
@@ -199,3 +193,30 @@ const safeGetWithdrawalArgs = async ({safe, worker, amount}) => (
     safeNonce,
   ]))
 );
+
+const safeGetMultisendArgs = async () => {
+  // TODO: Fill this in with parameter values instead of constant test values
+  const transactions = [
+    {id: "dai", amt: "2000", to: "0xcbBD2aAB5Ee509e8531AB407D48fC93CDc25e1aD"},
+    {id: "usdc", amt: "3000", to: "0xcbBD2aAB5Ee509e8531AB407D48fC93CDc25e1aD"},
+  ];
+  const transactionCalls = transactions.map(({id, amt, to}) => {
+    const TOKEN = CONTRACT[id.toUpperCase()];
+    const transferCall = encodeFunctionData({
+      abi: TOKEN.ABI,
+      functionName: "transfer",
+      args: [to, parseUnits(amt, TOKEN.DECIMALS)],
+    });
+    const transferCode = encodePacked(
+      ["uint8", "address", "uint256", "uint256", "bytes"],
+      [0, TOKEN.ADDRESS, 0n, (transferCall.length - 2) / 2, transferCall],
+    );
+    return transferCode;
+  });
+
+  return encodeFunctionData({
+    abi: CONTRACT.SAFE_MULTICALL.ABI,
+    functionName: "multiSend",
+    args: [encodePacked(["bytes[]"], [transactionCalls])],
+  });
+};

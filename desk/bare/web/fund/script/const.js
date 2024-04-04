@@ -2,33 +2,66 @@ export const DEBUG_MODE = true;
 
 export const ADDRESS = Object.freeze({
   NULL: "0x0000000000000000000000000000000000000000",
+  // TODO: Fill this in with real addresses
+  TOCWEX: DEBUG_MODE
+    ? "0xcbBD2aAB5Ee509e8531AB407D48fC93CDc25e1aD"
+    : "0x0000000000000000000000000000000000000000",
   NETWORK: DEBUG_MODE
-    ? "0x1"        // Ethereum Mainnet: 1
-    : "0xaa36a7",  // Sepolia Testnet: 11155111
+    ? "0x00000000000000000000000000000000000000001"   // Ethereum Mainnet: 1
+    : "0x00000000000000000000000000000000000aa36a7",  // Sepolia Testnet: 11155111
+});
+
+export const RPC = Object.freeze({
+  // NOTE: Make it at least nontrivial to sniff out and steal these API keys
+  MAINNET:
+    ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
+     "-", "m", "a", "i", "n", "n", "e", "t", ".", "g", ".",
+     "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
+     "/", "v", "2", "/", "3", "E", "1", "u", "G", "l", "C",
+     "j", "i", "F", "W", "V", "n", "L", "r", "1", "3", "b",
+     "b", "n", "J", "B", "F", "F", "W", "c", "-", "4", "W",
+     "B", "2", "2"].join(""),
+  SEPOLIA:
+    ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
+     "-", "s", "e", "p", "o", "l", "i", "a", ".", "g", ".",
+     "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
+     "/", "v", "2", "/", "2", "R", "E", "E", "E", "A", "S",
+     "1", "y", "b", "f", "y", "f", "H", "R", "3", "4", "w",
+     "B", "D", "F", "C", "I", "H", "C", "S", "X", "J", "t",
+     "d", "f", "E"].join(""),
 });
 
 export const CONTRACT = Object.freeze({
   // https://developers.circle.com/stablecoins/docs/usdc-on-main-networks
-  // https://developers.circle.com/stablecoins/docs/usdc-on-test-networks
   USDC: Object.freeze({
     ADDRESS: DEBUG_MODE
-      ? "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"
+      ? "0xB962E45F33814833744b8a102C7C626a98B32e38"
       : "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    DECIMALS: 6,
     ABI: [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}],
   }),
   // https://tether.to/en/supported-protocols/
   USDT: Object.freeze({
     ADDRESS: DEBUG_MODE
-      ? ADDRESS.NULL
+      ? "0x51Fd26b59C33f9A59a71B9498849FEE4Eb582bcF"
       : "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    DECIMALS: 6,
     ABI: [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}],
   }),
   // https://chainlog.makerdao.com/ (search for MCD_DAI)
   DAI: Object.freeze({
     ADDRESS: DEBUG_MODE
-      ? ADDRESS.NULL
+      ? "0x1db7b12aba16F10c1dEA0BFe300A548e04Add93B"
       : "0x6b175474e89094c44da98b954eedeac495271d0f",
+    DECIMALS: 18,
     ABI: [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}],
+  }),
+  // https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/multi_send_call_only.json
+  SAFE_MULTICALL: Object.freeze({
+    ADDRESS: DEBUG_MODE
+      ? "0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B"
+      : "0x40A2aCCbd92BCA938b02010E17A5b8929b49130D",
+    ABI: [{"inputs":[{"internalType":"bytes","name":"transactions","type":"bytes"}],"name":"multiSend","outputs":[],"stateMutability":"payable","type":"function"}]
   }),
   // https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/proxy_factory.json
   SAFE_PROXYFACTORY: Object.freeze({

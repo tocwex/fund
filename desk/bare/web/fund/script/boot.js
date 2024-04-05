@@ -138,8 +138,8 @@ if (!hasLoaded) {
     (state) => state,
     (state) => setWalletButton(state),
   );
-  // https://turbo.hotwired.dev/reference/events#turbo%3Arender
-  document.addEventListener("turbo:render", (event) => {
+  // https://turbo.hotwired.dev/reference/events#turbo%3Aload
+  document.addEventListener("turbo:load", (event) => {
     setWalletButton(window.Wagmi.state);
     document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {
       const { status, current, connections } = window.Wagmi.state;

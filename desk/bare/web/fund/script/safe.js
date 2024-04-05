@@ -48,7 +48,7 @@ export const safeDeploy = async ({oracleAddress}) => {
         functionName: "setup",
         args: [
           [workerAddress, oracleAddress], 2n,
-          // TODO: Module setup info (module address, payload) needs to go here
+          // TODO: Post-setup logic (contract address, call params) needs to go here
           ADDRESS.NULL, "",
           CONTRACT.SAFE_FALLBACK.ADDRESS,
           // TODO: Payment info (token, value receiver) (?) needs to go here

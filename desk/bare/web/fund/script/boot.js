@@ -13,30 +13,7 @@ import {
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
 import { RPC } from './const.js';
 
-/// Constants/Helpers ///
-
-const setWalletButton = ({connections, current, status}) => {
-  const walletButton = document.querySelector("#fund-butn-wallet");
-  const connection = connections.get(current);
-
-  if (status === "disconnected") {
-    if (!connection) {
-      walletButton.innerHTML = "connect 💰";
-    } else {
-      reconnect(window.Wagmi, {connector: connection.connector});
-    }
-  } else if (status === "reconnecting") {
-    walletButton.innerHTML = "…loading…";
-  } else if (status === "connected") {
-    const { address } = getAccount(window.Wagmi);
-    walletButton.innerHTML = `${address.slice(0, 5)}…${address.slice(-4)}`;
-  }
-};
-
-/// First-time Setup ///
-
-const hasLoaded = window.Alpine !== undefined;
-if (!hasLoaded) {
+if (window.Alpine === undefined) {
   setup({
     theme: {
       fontFamily: {
@@ -160,6 +137,24 @@ if (!hasLoaded) {
       }
     });
   });
+
+  const setWalletButton = ({connections, current, status}) => {
+    const walletButton = document.querySelector("#fund-butn-wallet");
+    const connection = connections.get(current);
+
+    if (status === "disconnected") {
+      if (!connection) {
+        walletButton.innerHTML = "connect 💰";
+      } else {
+        reconnect(window.Wagmi, {connector: connection.connector});
+      }
+    } else if (status === "reconnecting") {
+      walletButton.innerHTML = "…loading…";
+    } else if (status === "connected") {
+      const { address } = getAccount(window.Wagmi);
+      walletButton.innerHTML = `${address.slice(0, 5)}…${address.slice(-4)}`;
+    }
+  };
 
   Alpine.start();
 }

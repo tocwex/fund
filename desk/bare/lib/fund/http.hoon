@@ -250,25 +250,30 @@
   ++  odit-ther                                  ::  funding thermometer element
     |=  odi=odit
     ^-  manx
-    ::  TODO: Add support for overfunding indicators
-    |^  =+  odz=`(list @rs)`~[fill.odi plej.odi (need void:(filo odi))]
-        =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" "bg-gray-500"]
-        =+  cez=(turn odz rcen)
+    ::  TODO: Clean up the overage handling code in here.
+    |^  =+  ovr=(need void:(filo odi))
+        =+  udr=(sig:rs ovr)
+        =?  ovr  !udr  (mul:rs .-1 ovr)
+        =+  odz=`(list @rs)`~[?:(udr fill.odi cost.odi) plej.odi ovr]
+        =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
+        =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
+        =+  cez=(turn odz (rcen (add:rs cost.odi ?:(udr .0 ovr))))
         =+  dez=(iron (turn cez cend))
         ;div(class "fund-odit-ther {cas}")
-          ;*  %+  murn  :(izip:fx odz caz cez dez)
-              |=  [dol=@rs kas=tape cen=@rs den=@ud]
+          ;*  %+  murn  :(izip:fx odz naz caz cez dez)
+              |=  [dol=@rs nam=tape kas=tape cen=@rs den=@ud]
               ^-  (unit manx)
               ?:  =(0 den)  ~
               :-  ~
-              ;div(title "{(mony:dump cen)}%", class "fund-odit-sect w-[{<den>}%] {kas}")
+              ;div(title "{(mony:dump cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
                 ; ${(mony:dump dol)}
               ==
         ==
     ++  rcen                                     ::  odit segment to percentage
+      |=  tot=@rs
       |=  val=@rs
       ^-  @rs
-      (mul:rs .100 (div:rs val cost.odi))
+      (mul:rs .100 (div:rs val tot))
     ++  cend                                     ::  odit percentage to decimal
       |=  val=@rs
       ^-  @ud

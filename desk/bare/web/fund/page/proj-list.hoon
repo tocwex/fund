@@ -80,12 +80,16 @@
           %+  turn  pez
           |=  [[sip=@p nam=@tas] pro=proj:f liv=?]
           ^-  manx
-          ;div(class "m-1 p-4 border-2 border-black rounded-xl")
+          ;div(class "flex flex-col gap-y-2 m-1 p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap items-center justify-between")
-              ;div(class "flex flex-wrap items-center")
-                ;div(class "text-2xl pr-4"): {(trip title.pro)}
+              ;div(class "text-2xl pr-4"): {(trip title.pro)}
+              ;div(class "flex items-center gap-x-2")
+                ;div(class "text-lg")
+                  ; Goal
+                  ;span#proj-cost: ${(mony:dump:fh ~(cost pj:f pro))}
+                ==
+                ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
               ==
-              ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
             ==
             ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
             ;div(class "py-1"): {(trip summary.pro)}

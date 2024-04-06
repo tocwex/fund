@@ -40,6 +40,14 @@
 :fund &fund-poke [[our %tes2] %bump %prop ~]
 ```
 
+After running the above, run the following to test overage behavior:
+
+```
+=s *stub:f
+:fund &fund-poke [[our %test] %mula %trib `our .50 s(xact [8 0x0]) '']
+:fund &fund-poke [[our %test] %mula %trib ~ .100 s(xact [9 0x0]) '']
+```
+
 ### Deletion Tests ###
 
 Only run these commands after running all of the basic test commands.

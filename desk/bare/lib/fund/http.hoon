@@ -261,7 +261,7 @@
               ^-  (unit manx)
               ?:  =(0 den)  ~
               :-  ~
-              ;div(title "{(mony:dump cen)}%", class "h-full {kas} w-[{<den>}%]")
+              ;div(title "{(mony:dump cen)}%", class "fund-odit-sect w-[{<den>}%] {kas}")
                 ; ${(mony:dump dol)}
               ==
         ==

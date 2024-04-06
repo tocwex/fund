@@ -100,7 +100,7 @@
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
-          ; Funding Goal:
+          ; Funding Goal
           ;span#proj-cost: ${(mony:dump:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
@@ -252,14 +252,20 @@
           |=  [min=@ mil=mile:f]
           ^-  manx
           =/  oil=odit:f  (snag min moz)
-          ;div(class "my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
+          ;div(class "flex flex-col gap-y-2 my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap justify-between items-center gap-2")
               ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(min)>}: {(trip title.mil)}
-              ;+  (stat-pill:htmx:fh status.mil)
+              ;div(class "flex items-center gap-x-2")
+                ;div(class "text-lg")
+                  ; Goal
+                  ;span#proj-cost: ${(mony:dump:fh cost.mil)}
+                ==
+                ;+  (stat-pill:htmx:fh status.mil)
+              ==
             ==
             ;+  (odit-ther:htmx:fh oil)
             ; {(trip summary.mil)}
-            ;div(class "flex flex-wrap items-center justify-end pt-2 gap-2")
+            ;div(class "flex flex-wrap items-center justify-end gap-2")
               ;*  ;:  welp
                   ?.  &((lth min nin) (~(has in roz) %work))  ~
                 :_  ~

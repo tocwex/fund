@@ -7,11 +7,20 @@
 ::  [[0 l1], …, [N-1 lN]]
 ::
 ++  enum
-  |*  lis=(list)
-  =>  .(lis (homo lis))
-  ^-  (list _?>(?=(^ lis) [0 i.lis]))
+  |*  a=(list)
+  =>  .(a (homo a))
+  ^-  (list _?>(?=(^ a) [0 i.a]))
   =/  ind=@  0
-  |-  ?~(lis ~ [[ind i.lis] $(lis t.lis, ind +(ind))])
+  |-  ?~(a ~ [[ind i.a] $(a t.a, ind +(ind))])
+::
+::  +izip: given lists [l1, …, lN] and [m1, …, mM], return an
+::  inner-zipped list [[l1, m1], …, [l(min N M) m(min N M)]]
+::
+++  izip
+  |*  [a=(list *) b=(list *)]
+  ?~  a  ~
+  ?~  b  ~
+  [[i.a i.b] $(a t.a, b t.b)]
 ::
 ::  +asci: transform arbitrary @t into nearest equivalent @tas
 ::

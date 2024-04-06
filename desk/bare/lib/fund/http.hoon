@@ -247,9 +247,55 @@
         ==
       ==
     --
-  ++  odit-ther                                  :: funding thermometer element
+  ++  odit-ther                                  ::  funding thermometer element
     |=  odi=odit
     ^-  manx
+    ::  TODO: Add support for overfunding indicators
+    |^  =+  odz=`(list @rs)`~[fill.odi plej.odi (need void:(filo odi))]
+        =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" "bg-gray-500"]
+        =+  cez=(turn odz rcen)
+        =+  dez=(iron (turn cez cend))
+        ;div(class "fund-odit-ther {cas}")
+          ;*  %+  murn  :(izip:fx odz caz cez dez)
+              |=  [dol=@rs kas=tape cen=@rs den=@ud]
+              ^-  (unit manx)
+              ?:  =(0 den)  ~
+              :-  ~
+              ;div(title "{(mony:dump cen)}%", class "h-full {kas} w-[{<den>}%]")
+                ; ${(mony:dump dol)}
+              ==
+        ==
+    ++  rcen                                     ::  odit segment to percentage
+      |=  val=@rs
+      ^-  @rs
+      (mul:rs .100 (div:rs val cost.odi))
+    ++  cend                                     ::  odit percentage to decimal
+      |=  val=@rs
+      ^-  @ud
+      ?:  (equ:rs val .0)  0
+      ?:  (lth:rs val .1)  1
+      (abs:si (need (~(toi rs %n) val)))
+    ++  iron                                     ::  odit decimals ironed to sum 100
+      |=  lis=(list @ud)
+      ^-  (list @ud)
+      =+  sum=(roll lis add)
+      =+  dif=(dif:si (sun:si sum) --100)
+      ?+  cmp=(cmp:si dif --0)  lis
+          %-1   ::  sum < 100; give lacking to lowest value
+        =-  (snap lis -(+ (add -> (abs:si dif))))
+        %+  roll  (enum:fx lis)
+        |:([n=[0 0] a=[0 200]] ?:(&(!=(0 +.n) (lth +.n +.a)) n a))
+      ::
+          %--1  ::  sum > 100; take excess from highest value
+        =-  (snap lis -(+ (sub -> (abs:si dif))))
+        %+  roll  (enum:fx lis)
+        |:([n=[0 0] a=[0 1]] ?:(&(!=(100 +.n) (gth +.n +.a)) n a))
+      ==
+    --
+  ++  odit-told                                  ::  funding thermometer element (old)
+    |=  odi=odit
+    ^-  manx
+    ::  TODO: Remove after vetting/testing are complete
     =.  odi  (filo odi)
     ::  FIXME: Gross hack to get rid of the negative sign when `void` is
     ::  positive (which indicates a work unit is overfunded)
@@ -273,7 +319,7 @@
         ; {?:(und "unfunded" "overfunded")}
       ==
     ==
-  ++  stat-pill                                  :: status pill element
+  ++  stat-pill                                  ::  status pill element
     |=  sat=stat
     ^-  manx
     =-  ;div(class "fund-pill {kas} {cas}"): {nam}
@@ -287,7 +333,7 @@
       %done  "green-500"
       %dead  "red-500"
     ==
-  ++  prod-butn                                  :: prod/poke/action button
+  ++  prod-butn                                  ::  prod/poke/action button
     |=  [pod=@tas clr=?(%red %black %green) txt=tape dis=tape]
     ^-  manx
     ::  TODO: Use on-click tooltips in order to allow disabled buttons

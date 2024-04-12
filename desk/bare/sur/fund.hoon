@@ -48,16 +48,6 @@
       =mesg
   ==
 ::
-::  $oath: blockchain project agreement receipt
-::
-+$  oath
-  $:  =xact
-      =sigm
-      work=addr
-      orac=addr
-      safe=addr
-  ==
-::
 ::  $stub: blockchain contribution payment receipt
 ::
 +$  stub
@@ -132,6 +122,24 @@
       plej=@rs
       void=(unit @rs)
   ==
+::
+::  $oath: blockchain project agreement receipt
+::
++$  oath
+  $:  =xact
+      =sigm
+      work=addr
+      orac=addr
+      safe=addr
+  ==
+::
+::  $with: blockchain project withdrawal receipt
+::
++$  with
+  $:  xact=(unit xact)
+      =sigm
+      cash=@rs
+  ==
 
 +|  %core
 ::
@@ -143,8 +151,7 @@
       image=(unit @t)
       cost=@rs
       status=stat
-      approval=(unit (pair sigm @rs))
-      withdrawal=(unit xact)
+      withdrawal=(unit with)
   ==
 ::
 ::  $proj: collection of work (milestones) requesting funding
@@ -189,7 +196,8 @@
       [%drop ~]
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
-      [%take min=@ act=xact]
+      [%draw min=@ act=xact]
+      [%wipe min=@ sig=(unit sigm)]
       ::  meta prods  ::
       [%join ~]
       [%exit ~]

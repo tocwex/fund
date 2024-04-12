@@ -6,6 +6,7 @@
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 +*  pflag  (furl:fh url.request.ord)
     mdesc  "Describe your milestone in detail, such that both project funders and your assessor can understand the work you are doing—and everyone can reasonably agree when it is completed."
+    sregx  (trip '(~(([a-z]{3})|([a-z]{6})))?')
     pregx  (trip '(~(([a-z]{3})|([a-z]{6}(-[a-z]{6}){0,3})|([a-z]{6}(-[a-z]{6}){3})--([a-z]{6}(-[a-z]{6}){3})))?')
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
@@ -77,7 +78,7 @@
       =+  pro=*proj:f  %_  pro
         title       (~(got by p.arz) 'nam')
         summary     (~(gut by p.arz) 'sum' '')
-        assessment  (fall ses [~tocwex .0])
+        assessment  (fall ses [~tocwex .1])
       ::
           image
         =+  pic=(~(gut by p.arz) 'pic' '')
@@ -209,21 +210,21 @@
           ==
         ==
         ;div
-          ;div(class "m-1 pt-2 text-3xl w-full"): Escrow Assessor
+          ;div(class "m-1 pt-2 text-3xl w-full"): Trusted Oracle
           ;div(class "flex")
             ;div(class "fund-form-group")
               ;input.p-1  =name  "sea"  =type  "text"
-                =pattern  pregx
+                =pattern  sregx
                 =placeholder  (scow %p ~tocwex)
                 =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
-              ;label(for "sea"): escrow assessor
+              ;label(for "sea"): oracle identity (star or galaxy)
             ==
             ;div(class "fund-form-group")
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "0"
                 =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));
-              ;label(for "seo"): assessor fee offer (%)
+              ;label(for "seo"): fee offer (%)
             ==
           ==
         ==
@@ -239,7 +240,7 @@
     ;div(class "flex flex-col gap-y-2 m-1")
       ;div(class "text-3xl w-full"): Confirm & Launch
       ; Please review your proposal in detail and ensure
-      ; your assessor is in mutual agreement on expectations
+      ; your trusted oracle is in mutual agreement on expectations
       ; for review of work and release of funds.
       ;div(class "flex w-full justify-center gap-x-2 mx-auto")
         ;*
@@ -293,17 +294,19 @@
       });
       document.querySelector("#prod-butn-bump-lock")?.addEventListener("click", (event) => {
         event.preventDefault();
-        safeDeploy({
-          oracleAddress: document.querySelector("#fund-orac-addr").value,
-        }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
-          console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
-          document.querySelector("#fund-safe-xboq").value = xblock;
-          document.querySelector("#fund-safe-xadr").value = xhash;
-          document.querySelector("#fund-safe-wadr").value = workerAddress;
-          document.querySelector("#fund-safe-oadr").value = oracleAddress;
-          document.querySelector("#fund-safe-sadr").value = safeAddress;
-          event.target.form.requestSubmit(event.target);
-        });
+        if (event.target.form.reportValidity()) {
+          safeDeploy({
+            oracleAddress: document.querySelector("#fund-orac-addr").value,
+          }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
+            console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
+            document.querySelector("#fund-safe-xboq").value = xblock;
+            document.querySelector("#fund-safe-xadr").value = xhash;
+            document.querySelector("#fund-safe-wadr").value = workerAddress;
+            document.querySelector("#fund-safe-oadr").value = oracleAddress;
+            document.querySelector("#fund-safe-sadr").value = safeAddress;
+            event.target.form.requestSubmit(event.target);
+          });
+        }
       });
       document.querySelectorAll("textarea").forEach(textarea => {
         textarea.parentNode.dataset.replicatedValue = textarea.value;

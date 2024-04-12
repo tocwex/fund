@@ -2,6 +2,12 @@
 /+  fx=fund-xtra, tx=naive-transactions
 |%
 ::
+::  +twex-sadr: the t(oc)wex (sign) addr(ess)
+::
+++  twex-addr
+  ?:  &  0xcbbd.2aab.5ee5.09e8.531a.b407.d48f.c93c.dc25.e1ad  ::  debug-only
+  0x0
+::
 ::  +filo: fill in an $odit by calculating `=need` (if required)
 ::
 ++  filo
@@ -55,6 +61,12 @@
   ++  fill                                       ::  project-wide cost fill
     ^-  @rs
     (roll (turn contribs |=(t=trib cash.t)) add:rs)
+  ++  take                                       ::  project-wide claimed funds
+    ^-  @rs
+    %-  roll  :_  add:rs
+    %-  turn  :_  |=(n=mile cost.n)
+    %+  skim  milestonez
+    |=(n=mile &(?=(%done status.n) ?=(^ withdrawal.n) ?=(^ xact.u.withdrawal.n)))
   ++  odit                                       ::  project-wide audit
     ^-  ^odit
     (filo [cost fill plej ~])
@@ -63,10 +75,12 @@
     =/  lin=@  (dec (lent milestonez))
     =<  -  %^  spin  milestonez  [0 fill plej]
     |=  [mil=mile min=@ fre=@rs pre=@rs]
-    =+  fos=?~(approval.mil cost.mil q.u.approval.mil)
-    =+  fil=?:(|(=(min lin) (lte:rs fre fos)) fre fos)
-    =+  pos=?~(approval.mil (sub:rs fos fil) .0)
-    =+  pej=?:(|(=(min lin) (lte:rs pre pos)) pre pos)
+    =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil))
+    =+  end==(min lin)
+    =+  fos=?:(!dun cost.mil cash:(need withdrawal.mil))
+    =+  fil=?:(|(end (lte:rs fre fos)) fre fos)
+    =+  pos=?~(!dun (sub:rs fos fil) .0)
+    =+  pej=?:(|(end (lte:rs pre pos)) pre pos)
     [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
@@ -180,20 +194,35 @@
     =*  mes  `mess`[src.bol lag pod]
     =*  miz  `(list mile)`milestones.pro
     =>  |%
+        ++  aver-work  |-(~|(bad-wash+mes ?>(=(our.bol src.bol) %.y)))
+        ++  aver-orac  |-(~|(bad-wash+mes ?>(=(p.assessment.pro src.bol) %.y)))
         ++  edit-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
         ++  edit-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
-        ++  aver-work  |-(~|(bad-wash+mes ?>(=(our.bol src.bol) %.y)))
-        ++  aver-sess  |-(~|(bad-wash+mes ?>(=(p.assessment.pro src.bol) %.y)))
+        ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig s)))
+        ++  orac-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy [orac.-]~))))
+        ++  team-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.-]))))
+        ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- twex-addr]))))
+        ++  dead-milz
+          |=  oat=oath
+          ?>  (team-sigm sigm.oat)
+          %_    pro
+              milestones
+            ;;  (lest mile)
+            =+  niz=(turn miz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
+            %+  snoc  (snip niz)
+            =+  mil=(rear niz)
+            mil(withdrawal `[~ sigm.oat (sub:rs ~(fill pj pro) ~(take pj pro))])
+          ==
         --
     =/  sat=stat  ~(stat pj pro)
-    ::  TODO: Properly verify transaction content for oath-related
-    ::  operations (e.g. is this actually a withdrawal from this safe?)
     ?+    -.pod  pro
         %init
       ?>  aver-work
       ?>  =(%born sat)
       ?~  pro.pod  pro
       ?>  =(%born ~(stat pj u.pro.pod))
+      ::  NOTE: For now, stars and galaxies only
+      ?>  (gte 2 (met 3 p.assessment.u.pro.pod))
       u.pro.pod
     ::
         %bump
@@ -207,14 +236,14 @@
                 &(?=(?(%prop %lock) sat.pod) ?=(^ oat.pod))
             ==
         ?>  |(?=(?(%born %prop) sat.pod) aver-work)  ::  prop=>lock:worker
-        ?>  |(?=(?(%born %lock) sat.pod) aver-sess)  ::  prop=>prop:oracle
+        ?>  |(?=(?(%born %lock) sat.pod) aver-orac)  ::  prop=>prop:oracle
         =.  contract.pro
           ?+  sat.pod  !!
-            %born  ~
+              %born
+            ~
           ::
               %prop
             =+  sig=sigm:(need oat.pod)
-            ::  TODO: Add proper error notifications here
             ?>  =((trip `@t`p.mesg.sig) (~(oath pj pro) our.bol))
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))
@@ -232,27 +261,23 @@
           ?>  aver-work  ::  lock=>work:worker
           (edit-mile min mil(status sat.pod))
         ?:  ?=(%dead sat.pod)
-          (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
+          (dead-milz (need oat.pod))
         ~|(bad-wash+mes !!)  ::  %lock =X=> ?(%born %prop %sess %done)
       ?:  ?=(?(%work %sess) status.mil)
         ?:  ?=(%work sat.pod)
-          ?>  aver-sess  ::  work/sess=>work:oracle
+          ?>  aver-orac  ::  work/sess=>work:oracle
           (edit-mile min mil(status sat.pod))
         ?:  ?=(%sess sat.pod)
           ?>  aver-work  ::  work/sess=>sess:worker
           (edit-mile min mil(status sat.pod))
         ?:  ?=(%done sat.pod)
-          ?>  aver-sess  ::  work/sess=>done:oracle
-          ?>  ?=(^ oat.pod)
-          ?>  =(orac:(need contract.pro) from.sigm.u.oat.pod)
-          ::  TODO: Verify that this is a real signature for extracting
-          ::  funds from the associated safe (how do we construct this
-          ::  Urbit side?)
-          ?>  (csig sigm.u.oat.pod)
+          ?>  aver-orac  ::  work/sess=>done:oracle
+          =/  sig=sigm  sigm:(need oat.pod)
           =/  mod=odit  (snag min ~(odim pj pro))
-          (edit-mile min mil(status sat.pod, approval `[sigm.u.oat.pod fill.mod]))
+          ?>  (orac-sigm sig)
+          (edit-mile min mil(status sat.pod, withdrawal `[~ sig fill.mod]))
         ?:  ?=(%dead sat.pod)
-          (edit-milz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
+          (dead-milz (need oat.pod))
         ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)
       ~|(bad-wash+mes !!)  ::  %dead =X=> status
     ::
@@ -288,11 +313,21 @@
         ==
       ==
     ::
-        %take
+        %draw
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
       ?>  ?=(%done status.mil)
-      ?>  ?=(^ approval.mil)
-      (edit-mile min mil(withdrawal `act.pod))
+      ?>  ?=(^ withdrawal.mil)
+      (edit-mile min mil(withdrawal `u.withdrawal.mil(xact `act.pod)))
+    ::
+        %wipe
+      =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
+      ?>  ?=(?(%dead %done) status.mil)
+      ?>  |(?=(%done status.mil) =((lent miz) +(min)))
+      =/  mod=odit  (snag min ~(odim pj pro))
+      ?~  sig.pod  (edit-mile min mil(withdrawal ~))
+      ?>  (peer-sigm u.sig.pod)
+      =+  fil=?:(?=(%done status.mil) fill.mod (sub:rs ~(fill pj pro) ~(take pj pro)))
+      (edit-mile min mil(withdrawal `[~ u.sig.pod fil]))
     ==
   --
 --

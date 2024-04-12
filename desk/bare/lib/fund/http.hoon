@@ -118,6 +118,10 @@
         [(sum:si sci --1) --0]
       (weld rep (ed-co:co e f))
     ==
+  ++  bloq                                       ::  1234.56... => "123456..."
+    |=  boq=^bloq
+    ^-  tape
+    (a-co:co boq)
   ++  addr                                       ::  0xabcd.ef... => "0xabcdef..."
     |=  adr=^addr
     ^-  tape
@@ -257,6 +261,8 @@
         =+  odz=`(list @rs)`~[?:(udr fill.odi cost.odi) plej.odi ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
+        ::  FIXME: Funding percentage calculations aren't right when there
+        ::  are overages (since we renormalize to overage amount).
         =+  cez=(turn odz (rcen (add:rs cost.odi ?:(udr .0 ovr))))
         =+  dez=(iron (turn cez cend))
         ;div(class "fund-odit-ther {cas}")

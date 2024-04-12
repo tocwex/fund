@@ -218,13 +218,16 @@
     =-  (gte hav ned)
     :-  ^-  hav=perm:f
         ?:  =(p.lag src.bol)  %boss
-        ?:  =(p.assessment.pro src.bol)  %peer
+        ::  FIXME: Including ~tocwex here is a hack for the Gnosis Safe arch
+        ::  and should be removed in the next version
+        ?:  |(=(p.assessment.pro src.bol) =(~tocwex src.bol))  %peer
         %peon
     ^-  ned=perm:f
     ?+  -.pod    %peon
       %init  %boss
       %drop  %boss
-      %take  %boss
+      %draw  %peer
+      %wipe  %peer
       %bump  %peer
     ==
   ::
@@ -259,11 +262,12 @@
             =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
             po-core(gon &)
           ::
-              ?(%bump %mula %take)
+              ?(%bump %mula %draw %wipe)
             ?<  ~|(bad-push+mes po-is-new)
             =-  (wash -)
             ?-    -.pod
-              %take  ~
+                ?(%draw %wipe)
+              ~
             ::
                 %bump
               =+  ses=p.assessment.pro

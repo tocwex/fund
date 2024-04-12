@@ -34,7 +34,7 @@
 :fund &fund-poke [[our %test] %mula %plej our .1 4 (crip "{<our>} pass")]
 :fund &fund-poke [[our %test] %mula %trib `our .1 s(xact [5 0x0]) '']
 :fund &fund-poke [[our %test] %mula %plej our .50 6 (crip "{<our>} plej")]
-:fund &fund-poke [[our %test] %take 0 [7 0x0]]
+:fund &fund-poke [[our %test] %draw 0 [7 0x0]]
 :fund &fund-poke [[our %tes2] %init ~]
 :fund &fund-poke [[our %tes2] %init `p(title '5', summary '%', image `'https://picsum.photos/200', assessment [~nec .1], milestones ~[m(title '6', summary '^', cost .1e6)])]
 :fund &fund-poke [[our %tes2] %bump %prop ~]

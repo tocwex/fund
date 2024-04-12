@@ -14,7 +14,7 @@
     =+  act=(~(got by p.arz) 'act')
     ::  FIXME: This check is actually a bit redundant b/c it's checked
     ::  again in `po-push:po-core` (see proj-edit.hoon for details).
-    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %bump-dedd %mula-plej %mula-trib %draw-done %draw-dead %wipe-casi %wipe-cade %wipe-resi %wipe-rede) act)
+    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib %draw-done %draw-dead %wipe-casi %wipe-cade %wipe-resi %wipe-rede) act)
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
     ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
       (crip "bad act={<act>}; project doesn't exist: {<lag>}")
@@ -61,7 +61,7 @@
         ==
       ==
     ::
-        ?(%bump-dead %bump-dedd)
+        %bump-dead
       :_  ~  :+  %bump  %dead
       :-  ~  =+  oat=*oath:f  %_  oat
           sigm
@@ -81,7 +81,7 @@
       :_  ~  :^  %draw
           lin
         (bloq:take:fh (~(got by p.arz) 'mib'))
-      (addr:take:fh (~(got by p.arz) 'meh'))
+      (addr:take:fh (~(got by p.arz) 'mih'))
     ::
         *  ::  mula-*
       =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
@@ -170,8 +170,7 @@
             ;+  ?.  ora
                   ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
                 ?.  ?=(?(%born %prop %done %dead) sat)
-                  ::  FIXME: Some "coding horror"-level horrific stuff going on here
-                  (prod-butn:htmx:fh %bump-dedd %red "cancel project ✗" ~)
+                  (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
                 ;div;
           ==
           ;div.hidden
@@ -288,13 +287,13 @@
         ;+  (odit-ther:htmx:fh pod)
       ==
     ==
-    ;form(method "post", autocomplete "off")
+    ;div
       ;div(class "text-3xl pt-2"): Milestone Overview
       ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
           |=  [min=@ mil=mile:f]
           ^-  manx
           =/  oil=odit:f  (snag min moz)
-          ;div(class "flex flex-col gap-y-2 my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
+          ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap justify-between items-center gap-2")
               ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(min)>}: {(trip title.mil)}
               ;div(class "flex items-center gap-x-2")
@@ -352,19 +351,18 @@
             ;div.hidden
               ;data#fund-mile-cost(value (mony:dump:fh fill.oil));
               ;data#fund-mile-ocut(value (mony:dump:fh q.assessment.pro));
+              ;data#fund-mile-awho(value (addr:dump:fh ?~(withdrawal.mil *@ux from.sigm.u.withdrawal.mil)));
               ;data#fund-mile-asig(value (sign:dump:fh ?~(withdrawal.mil *@ux sign.sigm.u.withdrawal.mil)));
               ;data#fund-mile-atak(value (mony:dump:fh ?~(withdrawal.mil *@rs cash.u.withdrawal.mil)));
               ;data#fund-mile-idex(value "{<min>}");
+              ;input#fund-mile-sign(name "mis", type "text");
+              ;input#fund-mile-addr(name "mia", type "text");
+              ;input#fund-mile-text(name "mit", type "text");
+              ;input#fund-mile-bloq(name "mib", type "text");
+              ;input#fund-mile-hash(name "mih", type "text");
+              ;input#fund-mile-amin(name "mii", type "text");
             ==
           ==
-      ;div.hidden
-        ;input#fund-mile-sign(name "mis", type "text");
-        ;input#fund-mile-addr(name "mia", type "text");
-        ;input#fund-mile-text(name "mit", type "text");
-        ;input#fund-mile-bloq(name "mib", type "text");
-        ;input#fund-mile-hash(name "mih", type "text");
-        ;input#fund-mile-amin(name "mii", type "text");
-      ==
     ==
     ;div
       ;div(class "text-3xl pt-2"): Proposal Funders
@@ -457,14 +455,15 @@
             fundAmount: event.target.form.querySelector("#fund-mile-cost").value,
             oracleCut: event.target.form.querySelector("#fund-mile-ocut").value,
           }).then(([address, signature, payload]) => {
-            document.querySelector("#fund-mile-sign").value = signature;
-            document.querySelector("#fund-mile-addr").value = address;
-            document.querySelector("#fund-mile-text").value = payload;
+            event.target.form.querySelector("#fund-mile-sign").value = signature;
+            event.target.form.querySelector("#fund-mile-addr").value = address;
+            event.target.form.querySelector("#fund-mile-text").value = payload;
             event.target.form.requestSubmit(event.target);
           });
         }
       });
-      document.querySelector("#prod-butn-draw-done")?.addEventListener("click", (event) => {
+      document.querySelectorAll("#prod-butn-draw-done")
+      .forEach(button => button?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           safeExecClaim({
@@ -475,18 +474,16 @@
             oracleCut: event.target.form.querySelector("#fund-mile-ocut").value,
           }).then(([xblock, xhash]) => {
             console.log(`claim successful; view at: ${txnGetURL(xhash)}`);
-            document.querySelector("#fund-mile-bloq").value = xblock;
-            document.querySelector("#fund-mile-hash").value = xhash;
-            document.querySelector("#fund-mile-amin").value =
+            event.target.form.querySelector("#fund-mile-bloq").value = xblock;
+            event.target.form.querySelector("#fund-mile-hash").value = xhash;
+            event.target.form.querySelector("#fund-mile-amin").value =
               event.target.form.querySelector("#fund-mile-idex").value;
             event.target.form.requestSubmit(event.target);
           });
         }
-      });
-      [
-        document.querySelector("#prod-butn-bump-dead"),
-        document.querySelector("#prod-butn-bump-dedd"),
-      ].forEach(button => button?.addEventListener("click", (event) => {
+      }));
+      document.querySelectorAll("#prod-butn-bump-dead")
+      .forEach(button => button?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           safeSignRefund({
@@ -503,21 +500,21 @@
       document.querySelector("#prod-butn-draw-dead")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
-          // TODO: Broken with GS026, which means user ordering is messed up
           safeExecRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
-            oracleAddress: document.querySelector("#fund-safe-orac").value,
+            oracleAddress: event.target.form.querySelector("#fund-mile-awho").value,
             oracleSignature: event.target.form.querySelector("#fund-mile-asig").value,
           }).then(([xblock, xhash]) => {
             console.log(`refund successful; view at: ${txnGetURL(xhash)}`);
-            document.querySelector("#fund-mile-bloq").value = xblock;
-            document.querySelector("#fund-mile-hash").value = xhash;
+            event.target.form.querySelector("#fund-mile-bloq").value = xblock;
+            event.target.form.querySelector("#fund-mile-hash").value = xhash;
             event.target.form.requestSubmit(event.target);
           });
         }
       });
-      document.querySelector("#prod-butn-wipe-casi")?.addEventListener("click", (event) => {
+      document.querySelectorAll("#prod-butn-wipe-casi")
+      .forEach(button => button?.addEventListener("click", (event) => {
         // wipe-casi: wipe to cl(aim) si(gn)
         event.preventDefault();
         if (event.target.form.reportValidity()) {
@@ -527,24 +524,25 @@
             fundAmount: event.target.form.querySelector("#fund-mile-cost").value,
             oracleCut: event.target.form.querySelector("#fund-mile-ocut").value,
           }).then(([address, signature, payload]) => {
-            document.querySelector("#fund-mile-sign").value = signature;
-            document.querySelector("#fund-mile-addr").value = address;
-            document.querySelector("#fund-mile-text").value = payload;
-            document.querySelector("#fund-mile-amin").value =
+            event.target.form.querySelector("#fund-mile-sign").value = signature;
+            event.target.form.querySelector("#fund-mile-addr").value = address;
+            event.target.form.querySelector("#fund-mile-text").value = payload;
+            event.target.form.querySelector("#fund-mile-amin").value =
               event.target.form.querySelector("#fund-mile-idex").value;
             event.target.form.requestSubmit(event.target);
           });
         }
-      });
-      document.querySelector("#prod-butn-wipe-cade")?.addEventListener("click", (event) => {
+      }));
+      document.querySelectorAll("#prod-butn-wipe-cade")
+      .forEach(button => button?.addEventListener("click", (event) => {
         // wipe-cade: wipe to cl(aim) de(lete)
         event.preventDefault();
         if (event.target.form.reportValidity()) {
-          document.querySelector("#fund-mile-amin").value =
+          event.target.form.querySelector("#fund-mile-amin").value =
             event.target.form.querySelector("#fund-mile-idex").value;
           event.target.form.requestSubmit(event.target);
         }
-      });
+      }));
       document.querySelector("#prod-butn-wipe-resi")?.addEventListener("click", (event) => {
         // wipe-resi: wipe to re(fund) si(gn)
         event.preventDefault();
@@ -553,9 +551,9 @@
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
           }).then(([address, signature, payload]) => {
-            document.querySelector("#fund-mile-sign").value = signature;
-            document.querySelector("#fund-mile-addr").value = address;
-            document.querySelector("#fund-mile-text").value = payload;
+            event.target.form.querySelector("#fund-mile-sign").value = signature;
+            event.target.form.querySelector("#fund-mile-addr").value = address;
+            event.target.form.querySelector("#fund-mile-text").value = payload;
             event.target.form.requestSubmit(event.target);
           });
         }

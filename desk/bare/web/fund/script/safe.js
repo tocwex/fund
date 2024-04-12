@@ -77,7 +77,7 @@ export const safeDeploy = async ({oracleAddress}) => {
 
 // TODO: safeDeposit
 export const safeDepositFunds = async ({fundAmount, fundToken, safeAddress}) => {
-  const TOKEN = CONTRACT["USDC"]; // [fundToken.toUpperCase()];
+  const TOKEN = safeTransactionToken();
   const { address: funderAddress } = getAccount(window.Wagmi);
   // const tokenDecimals = await readContract(window.Wagmi, {
   //   abi: TOKEN.ABI,
@@ -146,10 +146,19 @@ export const safeExecRefund = async ({safeAddress, safeInitBlock, oracleSignatur
 // interface Transaction = {id: Token, amt: bigint, to: `0x${string}`};
 
 const safeNextSaltNonce = () => (fromHex(keccak256(toHex(Date.now())), "bigint"));
+const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT["USDC"]); // (CONTRACT[id.toUpperCase()]);
 
 const safeAddressSort = (getAddress = (v) => v) => (a, b) => {
   return (([a, b]) => (a === b) ? 0 : ((a < b) ? -1 : 1))(
     [a, b].map(v => fromHex(getAddress(v), "bigint")));
+};
+
+const safeEncodeTransaction = ({id, amt, to}) => {
+  return encodeFunctionData({
+    abi: safeTransactionToken({id, amt, to}).ABI,
+    functionName: "transfer",
+    args: [to, amt],
+  });
 };
 
 const safeGetClaimTransactions = async ({fundAmount, workerAddress, oracleAddress, oracleCut}) => {
@@ -162,20 +171,21 @@ const safeGetClaimTransactions = async ({fundAmount, workerAddress, oracleAddres
 };
 
 const safeGetRefundTransactions = async ({safeAddress, safeInitBlock}) => {
+  const TOKEN = safeTransactionToken();
   const safeBalance = await getBalance(window.Wagmi, {
     address: safeAddress,
-    token: CONTRACT["USDC"].ADDRESS,
+    token: TOKEN.ADDRESS,
   });
-  const safeCurrTotal = Number(safeBalance.value);
+  const safeCurrTotal = Number(safeBalance.formatted);
   // FIXME: If there are ever projects that exceed ~2k contributions, this will
   // need to be changed to paginate RPC queries.
   const transferLogs = await getPublicClient(window.Wagmi).getContractEvents({
-    address: CONTRACT["USDC"].ADDRESS,
-    abi: CONTRACT["USDC"].ABI,
+    address: TOKEN.ADDRESS,
+    abi: TOKEN.ABI,
     eventName: "Transfer",
     args: {to: safeAddress},
     fromBlock: BigInt(safeInitBlock),
-    toBlock: "safe",
+    // toBlock: "safe",
   });
   const contributors = transferLogs.reduce((acc, {args: {from, value}}) => {
     let cur = acc[from] ?? 0n;
@@ -185,22 +195,42 @@ const safeGetRefundTransactions = async ({safeAddress, safeInitBlock}) => {
   const safeFullTotal = Object.values(contributors).reduce((acc, val) => acc + val, 0n);
   const contribCuts = Object.entries(contributors).map(([from, value]) => ({
     to: from,
-    cut: Number(value / safeFullTotal),
+    // TODO: Can this sort of math ever overload the Number type? Should
+    // these fractions be computed another way to prevent overflows?
+    cut: Number(value) / Number(safeFullTotal),
   }));
   return safeGetTransactions({amount: safeCurrTotal, cuts: contribCuts});
 };
 
 const safeGetTransactions = ({amount, cuts}) => {
-  return cuts
-    .sort(safeAddressSort(v => v.to))
+  // NOTE: "amount" is a "Number" of decimal presentation, which is then
+  // converted to a "BigInt" for fractionalizing
+  const transactionMap = cuts
     .map(({cut, to}) => ({
       to: to,
       id: "usdc",
       // TODO: Will this work for all values? Can this overflow the
       // Number type? Can this also create problems with difficult cut
       // fractions?
-      amt:  BigInt(amount * cut * 10 ** CONTRACT["USDC"].DECIMALS),
-    }))
+      amt:  BigInt(Math.round(amount * cut * 10 ** CONTRACT["USDC"].DECIMALS)),
+    })).reduce((acc, {to, id, amt}) => {
+      const tid = `${id}:${to}`;
+      let cur = acc[tid] ?? {to, id, amt: 0n};
+      acc[tid] = {to, id, amt: cur.amt + amt};
+      return acc;
+    }, {});
+  const transactions = Object.values(transactionMap)
+    .filter(({to, id, amt}) => (amt > 0n))
+    .sort(safeAddressSort(v => v.to));
+
+  // FIXME: Make stronger guarantees about rounding and then remove this check
+  const bigintAmount = BigInt(Math.round(amount * 10 ** CONTRACT["USDC"].DECIMALS));
+  const bigintTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
+  if (bigintAmount !== bigintTotal) {
+    throw new Error(`Mismatch between requested transaction total and refund total: (${bigintAmount}, ${bigintTotal})`);
+  }
+
+  return transactions;
 };
 
 const safeGetWithdrawalArgs = async ({safe, transactions}) => {
@@ -216,35 +246,22 @@ const safeGetWithdrawalArgs = async ({safe, transactions}) => {
   console.log(transactions);
   const isDelegateCall = (transactions.length > 1) ? 1 : 0;
   const transactionContract = !isDelegateCall
-    ? CONTRACT[transactions[0].id.toUpperCase()].ADDRESS
+    ? safeTransactionToken(transactions[0]).ADDRESS
     : CONTRACT.SAFE_MULTICALL.ADDRESS;
   const transactionData = !isDelegateCall
-    ? (({id, amt, to}) => {
-        const TOKEN = CONTRACT[id.toUpperCase()];
-        return encodeFunctionData({
-          abi: TOKEN.ABI,
-          functionName: "transfer",
-          args: [to, amt],
-        });
-      })(transactions[0])
+    ? safeEncodeTransaction(transactions[0])
     : encodeFunctionData({
         abi: CONTRACT.SAFE_MULTICALL.ABI,
         functionName: "multiSend",
         args: [encodePacked(["bytes[]"], [
-          transactions.map(({id, amt, to}) => {
-            // TODO: Add support for extracting multiple different kinds of
-            // coins in a single transaction
-            const TOKEN = CONTRACT[id.toUpperCase()];
-            const transferCall = encodeFunctionData({
-              abi: TOKEN.ABI,
-              functionName: "transfer",
-              args: [to, amt],
-            });
+          transactions.map(transaction => {
+            const TOKEN = safeTransactionToken(transaction);
+            const encodedTransaction = safeEncodeTransaction(transaction);
             return encodePacked(
               // NOTE: 0, toAddress, value (eth), call data length (bytes), call data
               // sepolia.etherscan.io/address/0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b#code#F1#L10
               ["uint8", "address", "uint256", "uint256", "bytes"],
-              [0, TOKEN.ADDRESS, 0n, (transferCall.length - 2) / 2, transferCall],
+              [0, TOKEN.ADDRESS, 0n, (encodedTransaction.length - 2) / 2, encodedTransaction],
             );
           })
         ])],
@@ -300,7 +317,7 @@ const safeExecWithdrawal = async ({transactions, oracleSignature, oracleAddress,
         .map(address => (address === oracleAddress)
           // github.com/safe-global/safe-smart-account/blob/main/docs/signatures.md
           // sepolia.etherscan.io/address/0xfb1bffC9d739B8D520DaF37dF666da4C687191EA#code#F24#L295
-          ? toHex(fromHex(oracleSignature, "bigint") + 4n)
+          ? toHex(fromHex(oracleSignature, "bigint") + 4n, {size: 65})
           : encodePacked(["uint256", "uint256", "uint8"], [address, ADDRESS.NULL, 1])
         ).reduce((a, n) => concat([a, n]), "")
     ]),

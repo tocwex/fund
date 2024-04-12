@@ -315,7 +315,8 @@
     ::
         %draw
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
-      ?>  ?=(%done status.mil)
+      ?>  ?=(?(%dead %done) status.mil)
+      ?>  |(?=(%done status.mil) =((lent miz) +(min)))
       ?>  ?=(^ withdrawal.mil)
       (edit-mile min mil(withdrawal `u.withdrawal.mil(xact `act.pod)))
     ::

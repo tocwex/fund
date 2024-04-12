@@ -222,7 +222,7 @@
             ;div(class "fund-form-group")
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
-                =placeholder  "0"
+                =placeholder  "1"
                 =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));
               ;label(for "seo"): fee offer (%)
             ==
@@ -266,10 +266,12 @@
     ;script
       ;+  ;/  ^~  %-  trip
       '''
+      // FIXME: Uncaught SyntaxError: Identifier 'updateTotal' has already been
+      // declared (caused by global declaration used w/ turbojs)
       const updateTotal = (event) => {
         const costDivs = document.querySelectorAll("#mile-cost");
         const totalAmount = Array.from(costDivs).reduce((a, n) => {
-          const i = parseInt(n.value);
+          const i = Number(n.value);
           return a + (Number.isNaN(i) ? 0 : i);
         }, 0);
         document.querySelector("#proj-cost").innerText = `\$${totalAmount}`;

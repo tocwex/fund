@@ -40,7 +40,7 @@
     ?~(rar=(rush tar alp) '-' u.rar)
   --
 ::
-:: +chop: same idea as partition:string but safer and maybe more efficient
+::  +chop: same idea as partition:string but safer and maybe more efficient
 ::
 ++  chop
   |*  [log=(list *) div=*]
@@ -50,6 +50,13 @@
   ?:  =(~ log)      [pre ~]
   ?:  =(div -.log)  [pre +.log]
   $(pre (snoc pre -.log), log +.log)
+::
+::  +star: is the given identity at least as privileged as a star?
+::
+++  star
+  |=  who=@p
+  ^-  bean
+  (gte 2 (met 3 who))
 
 +|  %arvo
 ::

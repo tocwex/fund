@@ -222,7 +222,7 @@
       ?~  pro.pod  pro
       ?>  =(%born ~(stat pj u.pro.pod))
       ::  NOTE: For now, stars and galaxies only
-      ?>  (gte 2 (met 3 p.assessment.u.pro.pod))
+      ?>  (star:fx p.assessment.u.pro.pod)
       u.pro.pod
     ::
         %bump

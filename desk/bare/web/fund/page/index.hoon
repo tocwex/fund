@@ -1,7 +1,7 @@
 ::  /web/fund/page/index/hoon: render base page for %fund
 ::
-/-  f=fund
-/+  rudder, s=server, fh=fund-http
+/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  rudder
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  |=([header-list:http (unit octs)] !!)
@@ -16,12 +16,13 @@
   :^  bol  ord  ~
   |^  ;div#maincontent(class "flex flex-col py-2 gap-2 mx-auto")
         ;+  %^  dash-well  %funder
-              "funding contributor"
+              "project funder"
             "fulfill your pledges and follow active projects"
         ;+  %^  dash-well  %worker
               "project worker"
             "create your own proposals, and manage your projects"
-        ;+  %^  dash-well  %oracle
+        ;*  ?.  (star:fx src.bol)  ~
+            :_  ~  %^  dash-well  %oracle
               "trusted oracle"
             "get paid as a trusted arbiter for community projects"
       ==

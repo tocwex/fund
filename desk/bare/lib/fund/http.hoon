@@ -203,12 +203,18 @@
             ;+  (inject:tonic q.byk.bol)  ::  debug-only
           ==
           ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}")
+            ;+  hair  ::  debug-only
             ;+  head
             ;+  bod
             ;+  foot
           ==
           ;script(type "module", src "{(aurl /asset/[~.boot.js])}");
         ==
+    ++  hair
+      ^-  manx
+      ;div(class "flex justify-center w-full sticky top-0 bg-yellow-200 py-1 px-2 text-sm font-medium")
+        ; ⚠ TESTNET (SEPOLIA) VERSION ⚠
+      ==
     ++  head
       ^-  manx
       =/  [pat=(pole knot) *]  (durl url.request.ord)
@@ -303,33 +309,6 @@
         |:([n=[0 0] a=[0 1]] ?:(&(!=(100 +.n) (gth +.n +.a)) n a))
       ==
     --
-  ++  odit-told                                  ::  funding thermometer element (old)
-    |=  odi=odit
-    ^-  manx
-    ::  TODO: Remove after vetting/testing are complete
-    =.  odi  (filo odi)
-    ::  FIXME: Gross hack to get rid of the negative sign when `void` is
-    ::  positive (which indicates a work unit is overfunded)
-    =+  unf=(need void.odi)
-    =+  und=(sig:rs unf)
-    ;div(class "flex flex-wrap justify-between items-center {cas}")
-      ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(mony:dump cost.odi)}
-        ; target
-      ==
-      ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(mony:dump fill.odi)}
-        ; fulfilled
-      ==
-      ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(mony:dump plej.odi)}
-        ; pledged
-      ==
-      ;div(class "flex gap-x-1")
-        ;span(class "underline"): ${(slag ?:(und 0 1) (mony:dump unf))}
-        ; {?:(und "unfunded" "overfunded")}
-      ==
-    ==
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat
     ^-  manx

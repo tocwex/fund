@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
-/+  rudder, s=server
+/+  rudder
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
@@ -156,7 +156,8 @@
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
             ;div(class "text-sm font-light underline"): project worker
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
-            ;+  ?.  wok
+            ;+  ?:  !=(our.bol src.bol)  ;div;
+                ?.  wok
                   ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): send message →
                 ?:  ?=(?(%born %prop) sat)
                   ;a.fund-butn-link/"{(aurl:fh (snoc pat %edit))}": edit project →
@@ -167,7 +168,8 @@
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
             ;div(class "text-sm font-light underline"): trusted oracle
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
-            ;+  ?.  ora
+            ;+  ?:  !=(our.bol src.bol)  ;div;
+                ?.  ora
                   ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
                 ?.  ?=(?(%born %prop %done %dead) sat)
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
@@ -408,6 +410,11 @@
       // exact matching extraction amounts?
       // TODO: Consider amending the "safeExec*" commands such that they submit
       // an appropriate %wipe-* command if they fail ()
+
+      // NOTE: Actual form buttons:
+      // - mula-trib: reads amount/token from form
+      // All other buttons are MetaMask queries (with some input data) followed
+      // by POST requests (these do not even need to be forms)
 
       document.querySelector("#prod-butn-bump-prop")?.addEventListener("click", (event) => {
         event.preventDefault();

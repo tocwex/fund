@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-list/hoon: render base page for %fund
 ::
-/+  f=fund, fh=fund-http
-/+  rudder, s=server
+/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  rudder
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  |=([header-list:http (unit octs)] !!)
@@ -13,6 +13,8 @@
   ?.  =(our.bol src.bol)  [%auth url.request.ord]
   =/  [pat=(pole knot) *]  (durl:fh url.request.ord)
   =/  dyp=@tas  (rear `(list knot)`pat)
+  ::  TODO: Only privileged ships can access the oracle listing
+  ?:  &(=(%oracle dyp) !(star:fx src.bol))  [%code 404 '']
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "{(trip dyp)} dashboard"

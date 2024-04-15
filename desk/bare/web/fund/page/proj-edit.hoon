@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base page for %fund
 ::
 /+  f=fund, fx=fund-xtra, fh=fund-http
-/+  rudder, s=server
+/+  rudder
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 +*  pflag  (furl:fh url.request.ord)
@@ -282,6 +282,10 @@
       ;+  ;/  ^~  %-  trip
       '''
       import { safeDeploy, safeGetURL } from '/apps/fund/asset/safe.js';
+
+      // NOTE: %bump-lock button is just a MetaMask query (with simple data
+      // from Urbit) followed by a POST request
+
       document.querySelector("#mile-butn").addEventListener("click", (event) => {
         const wellDiv = document.querySelector("#mile-welz");
         const wellClone = document.querySelector("#mile-well").cloneNode(true);

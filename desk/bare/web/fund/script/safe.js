@@ -247,11 +247,11 @@ const safeGetWithdrawalArgs = async ({safe, transactions}) => {
   const isDelegateCall = (transactions.length > 1) ? 1 : 0;
   const transactionContract = !isDelegateCall
     ? safeTransactionToken(transactions[0]).ADDRESS
-    : CONTRACT.SAFE_MULTICALL.ADDRESS;
+    : CONTRACT.SAFE_MULTISEND.ADDRESS;
   const transactionData = !isDelegateCall
     ? safeEncodeTransaction(transactions[0])
     : encodeFunctionData({
-        abi: CONTRACT.SAFE_MULTICALL.ABI,
+        abi: CONTRACT.SAFE_MULTISEND.ABI,
         functionName: "multiSend",
         args: [encodePacked(["bytes[]"], [
           transactions.map(transaction => {

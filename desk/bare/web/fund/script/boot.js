@@ -42,7 +42,7 @@ if (window.Alpine === undefined) {
       'fund-tytl-link': `text-xl font-medium duration-300 hover:text-yellow-500`,
       'fund-form-group': `flex flex-col-reverse w-full p-1 gap-1`,
       'fund-butn-link': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
-      'fund-butn-wallet': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
+      'fund-butn-effect': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
       'fund-butn-red': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200`,
       'fund-butn-green': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-green-600 bg-green-600 hover:bg-green-500 disabled:bg-green-200 disabled:border-green-200`,
       'fund-butn-black': `text-nowrap px-2 py-1 rounded-md text-white  border-2 border-black bg-black hover:bg-gray-800 disabled:bg-gray-200 disabled:border-gray-200`,
@@ -93,7 +93,7 @@ if (window.Alpine === undefined) {
     document.body.removeChild(textArea);
   }
 
-  function copyTextToClipboard(text) {
+  function copyTextToClipboard(text, sel = "") {
     if (!navigator.clipboard) {
       fallbackCopyTextToClipboard(text);
       return;
@@ -103,6 +103,13 @@ if (window.Alpine === undefined) {
     }, function(err) {
       console.error('Async: Could not copy text: ', err);
     });
+
+    if (sel !== "") {
+      const button = document.querySelector(sel);
+      const oldHTML = button.innerHTML;
+      button.innerHTML = "copied ✔️";
+      setTimeout(() => {button.innerHTML = oldHTML;}, 2000);
+    }
   }
 
   window.Wagmi = createConfig({

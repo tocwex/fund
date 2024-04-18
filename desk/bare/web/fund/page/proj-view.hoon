@@ -134,7 +134,7 @@
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
-          ; Funding Goal
+          ; Goal
           ;span#proj-cost: ${(mony:dump:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
@@ -182,6 +182,15 @@
           ==
         ==
         ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
+        ;+  :_  ; share 🔗
+            :-  %button
+            :~  [%id "fund-butn-share"]
+                [%type "button"]
+                [%title "Copy URL"]
+                [%aria-label "Copy URL"]
+                [%class "fund-butn-effect"]
+                [%'@click' "copy(window.location.toString(), '#fund-butn-share')"]
+            ==
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~
           =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"

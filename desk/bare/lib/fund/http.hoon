@@ -202,7 +202,7 @@
             ;script(src "/session.js");  ::  debug-only
             ;+  (inject:tonic q.byk.bol)  ::  debug-only
           ==
-          ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}")
+          ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "twind")
             ;+  hair  ::  debug-only
             ;+  head
             ;+  bod
@@ -229,7 +229,7 @@
           ;+  ?:  (auth bol)
                 ;a.fund-butn-link/"/~/logout?redirect={(aurl pat)}": {<src.bol>}
               ;a.fund-butn-link/"/~/login?eauth&redirect={(aurl pat)}"(target "_blank"): login ~
-          ;button#fund-butn-wallet.fund-butn-wallet: …loading…
+          ;button#fund-butn-wallet.fund-butn-effect: …loading…
         ==
       ==
     ++  foot

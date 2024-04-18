@@ -241,7 +241,7 @@
           ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
             ;img@"{(aurl /asset/[~.urbit.svg])}";
           ==
-          ;a/"https://twitter.com/tocwex"(target "_blank")
+          ;a/"https://x.com/tocwex"(target "_blank")
             ;img@"{(aurl /asset/[~.x.svg])}";
           ==
           ;a/"https://github.com/tocwex"(target "_blank")

@@ -97,6 +97,9 @@
             ;div(class "py-1"): {(trip summary.pro)}
             ;div(class "flex gap-x-4")
               ;a.fund-butn-link/"{(aurl:fh /project/(scot %p sip)/[nam])}": view project →
+              ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
+                  :_  ~
+                  ;a.fund-butn-link/"{(aurl:fh /project/(scot %p sip)/[nam]/edit)}": edit project →
             ==
           ==
     ==

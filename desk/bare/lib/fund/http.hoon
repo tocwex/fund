@@ -306,7 +306,7 @@
           %--1  ::  sum > 100; take excess from highest value
         =-  (snap lis -(+ (sub -> (abs:si dif))))
         %+  roll  (enum:fx lis)
-        |:([n=[0 0] a=[0 1]] ?:(&(!=(100 +.n) (gth +.n +.a)) n a))
+        |:([n=[0 0] a=[0 1]] ?:((gth +.n +.a) n a))
       ==
     --
   ++  stat-pill                                  ::  status pill element

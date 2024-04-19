@@ -264,12 +264,13 @@
     |^  =+  ovr=(need void:(filo odi))
         =+  udr=(sig:rs ovr)
         =?  ovr  !udr  (mul:rs .-1 ovr)
+        =+  tot=`@rs`(add:rs cost.odi ?:(udr .0 ovr))
         =+  odz=`(list @rs)`~[?:(udr fill.odi cost.odi) plej.odi ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
-        =+  cez=(turn odz (rcen (add:rs cost.odi ?:(udr .0 ovr))))
+        =+  cez=?:((equ:rs .0 tot) `(list @rs)`~[.0 .0 .100] (turn odz (rcen tot)))
         =+  dez=(iron (turn cez cend))
         ;div(class "fund-odit-ther {cas}")
           ;*  %+  murn  :(izip:fx odz naz caz cez dez)

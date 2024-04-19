@@ -261,7 +261,7 @@
                 ;input#fund-mula-xadr(name "mxa", type "text");
               ==
             ==
-          ?:  (~(has in roz) %orac)  ::  oracle acceptance form
+          ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
             :_  ~
             ;form(method "post", autocomplete "off", class cas)
               ;div(class "p-2 text-3xl w-full"): Review Request
@@ -290,8 +290,7 @@
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
                 ;+  (prod-butn:htmx:fh %bump-born %black "decline ~" ~)
-                ;+  %-  prod-butn:htmx:fh  :^  %bump-prop  %green  "accept ✓"
-                    ?~(contract.pro ~ "awaiting confirmation from project worker")
+                ;+  (prod-butn:htmx:fh %bump-prop %green "accept ✓" ~)
               ==
               ;div.hidden
                 ;data#fund-oath-proj(value (~(oath pj:f pro) p.lag));

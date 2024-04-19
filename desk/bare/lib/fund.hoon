@@ -228,15 +228,16 @@
         %bump
       =/  [min=@ mil=mile]  ~(next pj pro)
       ?:  ?=(%born status.mil)
-        ?>  &(?=(%prop sat.pod) ?=(@ oat.pod))
+        ?>  &(?=(%prop sat.pod) ?=(~ oat.pod))
         ?>  aver-work  ::  born=>prop:worker
         (edit-milz |=(m=mile m(status %prop)))
       ?:  ?=(%prop status.mil)
-        ?>  ?|  &(?=(%born sat.pod) ?=(@ oat.pod))
+        ?>  ?|  &(?=(%born sat.pod) ?=(~ oat.pod))
                 &(?=(?(%prop %lock) sat.pod) ?=(^ oat.pod))
             ==
         ?>  |(?=(?(%born %prop) sat.pod) aver-work)  ::  prop=>lock:worker
         ?>  |(?=(?(%born %lock) sat.pod) aver-orac)  ::  prop=>prop:oracle
+        ?>  |(?=(?(%prop %lock) sat.pod) ?=(~ contract.pro) aver-work)  ::  prop=>born:worker(post-orac-accept)
         =.  contract.pro
           ?+  sat.pod  !!
               %born

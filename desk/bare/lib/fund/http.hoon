@@ -264,12 +264,13 @@
     |^  =+  ovr=(need void:(filo odi))
         =+  udr=(sig:rs ovr)
         =?  ovr  !udr  (mul:rs .-1 ovr)
+        =+  tot=`@rs`(add:rs cost.odi ?:(udr .0 ovr))
         =+  odz=`(list @rs)`~[?:(udr fill.odi cost.odi) plej.odi ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
-        =+  cez=(turn odz (rcen (add:rs cost.odi ?:(udr .0 ovr))))
+        =+  cez=?:((equ:rs .0 tot) `(list @rs)`~[.0 .0 .100] (turn odz (rcen tot)))
         =+  dez=(iron (turn cez cend))
         ;div(class "fund-odit-ther {cas}")
           ;*  %+  murn  :(izip:fx odz naz caz cez dez)
@@ -306,7 +307,7 @@
           %--1  ::  sum > 100; take excess from highest value
         =-  (snap lis -(+ (sub -> (abs:si dif))))
         %+  roll  (enum:fx lis)
-        |:([n=[0 0] a=[0 1]] ?:(&(!=(100 +.n) (gth +.n +.a)) n a))
+        |:([n=[0 0] a=[0 1]] ?:((gth +.n +.a) n a))
       ==
     --
   ++  stat-pill                                  ::  status pill element

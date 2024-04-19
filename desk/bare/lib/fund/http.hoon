@@ -31,6 +31,10 @@
       ~                                   `[%page | %proj-view]
       [%edit ~]                           `[%page | %proj-edit]
     ==
+    [%next @ @ suf=*]     ?+  suf.pat     ~
+      ~                                   `[%away (snip syt)]
+      [?(%edit %mula %bump) ~]            `[%page | %redirect]
+    ==
   ==
 ::
 ::  +parz: parse POST request parameters considering required arguments
@@ -134,6 +138,10 @@
     |=  lag=^flag
     ^-  tape
     "{<p.lag>}/{(trip q.lag)}"
+  ++  poke                                       ::  [[~zod %nam] %type ...] => "~zod/name:type"
+    |=  pok=^poke
+    ^-  tape
+    "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(%bump -.q.pok) ~ ['-' (trip +<.q.pok)])}"
   ++  mula                                       ::  [%plej ...] => "pledged"
     |=  mul=^mula
     ^-  tape
@@ -175,6 +183,14 @@
     |=  sig=@t
     ^-  ^sign
     (rash sig ;~(pfix (jest '0x') hex))
+  ++  flag                                       ::  "~zod/nam" => [~zod %nam]
+    |=  lag=@t
+    ^-  ^flag
+    (rash lag ;~((glue fas) ;~(pfix sig fed:ag) sym))
+  ++  poke                                       ::  "~zod/nam:typ" => [p=[~zod %nam] q=%typ]
+    |=  pok=@t
+    ^-  (pair ^flag @tas)
+    (rash pok ;~((glue col) ;~((glue fas) ;~(pfix sig fed:ag) sym) sym))
   --
 ::
 ::  +htmx: html-related helper functions and data, including css, js, components
@@ -323,6 +339,17 @@
       %sess  "purple-500"
       %done  "green-500"
       %dead  "red-500"
+    ==
+  ++  link-butn                                  ::  hyperlink/redirect button
+    |=  [wer=tape tab=bean txt=tape dis=tape]
+    ^-  manx
+    :_  ; {txt}
+    :-  %a
+    ;:  welp
+        ?~(dis ~ ~[[%disabled ~] [%title dis]])
+        ?.(tab ~ ~[[%target "_blank"]])
+        [%href wer]~
+        [%class "fund-butn-link {cas}"]~
     ==
   ++  prod-butn                                  ::  prod/poke/action button
     |=  [pod=@tas clr=?(%red %black %green) txt=tape dis=tape]

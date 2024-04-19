@@ -5,7 +5,7 @@
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 +*  pflag  (furl:fh url.request.ord)
-    mdesc  "Describe your milestone in detail, such that both project funders and your assessor can understand the work you are doing—and everyone can reasonably agree when it is completed."
+    mdesc  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
     sregx  (trip '(~(([a-z]{3})|([a-z]{6})))?')
     pregx  (trip '(~(([a-z]{3})|([a-z]{6}(-[a-z]{6}){0,3})|([a-z]{6}(-[a-z]{6}){3})--([a-z]{6}(-[a-z]{6}){3})))?')
 ++  argue  ::  POST reply
@@ -41,7 +41,7 @@
         %drop
       ;;(act-now:f [lag %drop ~]~)
     ::
-        ?(%dead %bump-born %bump-prop %bump-lock)
+        %bump-born
       ::  FIXME: This check is actually a bit redundant b/c it's checked
       ::  again in `po-push:po-core`, but we keep it here b/c:
       ::  - `act`s are forwarded cards, which means they're evaluated
@@ -54,23 +54,11 @@
       ?~  pro=(~(get by proz.dat) lag)
         (crip "bad act={<act>}; project doesn't exist: {<lag>}")
       ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
-      ?:  ?=(%dead act)  [%bump %dead ~]~
       ::  TODO: when moving to %prop, we should also %init so that the
       ::  most recent form changes are saved when the user attempts to
       ::  send a request
       ?+  sat=;;(stat:f (rsh [3 5] act))  !!
         %born  [%bump %born ~]~              ::  worker retract/oracle reject
-        %prop  [%bump %prop ~]~              ::  worker request
-      ::
-          %lock
-        :_  ~  :+  %bump  %lock  :-  ~
-        :*  :-  (bloq:take:fh (~(got by p.arz) 'sxb'))
-              (addr:take:fh (~(got by p.arz) 'sxa'))
-            sigm:(need contract.u.pro)
-            (addr:take:fh (~(got by p.arz) 'swa'))
-            (addr:take:fh (~(got by p.arz) 'soa'))
-            (addr:take:fh (~(got by p.arz) 'ssa'))
-        ==
       ==
     ::
         %init
@@ -100,23 +88,19 @@
 ++  final  ::  POST render
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  ::  TODO: Redirect to the actual project page page when it's ready
-  ::  (given that we forward cards, how do we determine this? perhaps we
-  ::  need to eargerly apply these cards?)
-  ::  TODO: Need to properly redirect based on the kind of action
-  ::  performed; going to the worker dashboard is fine when we delete a
-  ::  project
-  ?.  gud  [%code 422 txt]
-  [%next (crip (aurl:fh /dashboard/worker)) '']
+  ?.  gud  [%code 500 txt]
+  =/  [lag=flag:f pyp=@tas]  (poke:take:fh ?~(txt '' txt))
+  ?:  =(%drop pyp)  [%next (crip (aurl:fh /dashboard/worker)) '']
+  [%next (crip (aurl:fh /next/(scot %p p.lag)/[q.lag]/edit)) '']
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   ::  NOTE: Only the ship owner can access non-project pages
   ?.  =(our.bol src.bol)  [%auth url.request.ord]
-  ::  TODO Redirect to base page if this project exists and is in a
-  ::  post-%lock status
   =/  pru=(unit prej:f)  ?~(pflag ~ (~(get by (prez-ours:sss:f bol dat)) (need pflag)))
+  ?:  &(?=(^ pflag) ?=(~ pru))  [%code 404 'project does not exist']
   =/  sat=stat:f  ?~(pru %born ~(stat pj:f -.u.pru))
+  ?.  |(?=(~ pru) ?=(?(%born %prop) sat))  [%next (crip (aurl:fh /project/(scot %p p:(need pflag))/[q:(need pflag)])) 'project cannot be edited after locking']
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
@@ -229,38 +213,25 @@
           ==
         ==
     ==
-    ;div(class "hidden")
-      ;data#fund-orac-addr(value ?~(pru ~ ?~(contract.u.pru ~ (addr:dump:fh from.sigm.u.contract.u.pru))));
-      ;input#fund-safe-xboq(name "sxb", type "text");
-      ;input#fund-safe-xadr(name "sxa", type "text");
-      ;input#fund-safe-wadr(name "swa", type "text");
-      ;input#fund-safe-oadr(name "soa", type "text");
-      ;input#fund-safe-sadr(name "ssa", type "text");
-    ==
     ;div(class "flex flex-col gap-y-2 m-1")
       ;div(class "text-3xl w-full"): Confirm & Launch
       ; Please review your proposal in detail and ensure
       ; your trusted oracle is in mutual agreement on expectations
       ; for review of work and release of funds.
       ;div(class "flex w-full justify-center gap-x-2 mx-auto")
-        ;*
-        |^  ?+  sat  ~[dead-butn drop-butn]
-              %born  (murn ~[?~(pru ~ `crow-butn) `init-butn `drop-butn] same)
-              %prop  ~[fini-butn croc-butn drop-butn]
-            ==
-        ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~)
-        ++  crow-butn  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓" ~)
-        ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~" ~)
-        ++  fini-butn
-          %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize escrow ✓"
-          ?:(&(?=(^ pru) ?=(^ contract.u.pru)) ~ "awaiting response from escrow assessor")
-        ++  dead-butn
-          %-  prod-butn:htmx:fh  :^   %dead  %red  "discontinue project ✗"
-          ?.(?=(%dead sat) ~ "project has already been discontinued")
-        ++  drop-butn
-          =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-          (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~)
-        --
+        ;*  |^  ?+  sat  !!  ::  ~[dead-butn drop-butn]
+                  %born  ~[init-butn drop-butn]
+                  %prop  ~[croc-butn drop-butn]
+                ==
+            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~)
+            ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~" ~)
+            ++  drop-butn
+              =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
+              (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~)
+            ::  ++  dead-butn
+            ::    %-  prod-butn:htmx:fh  :^   %dead  %red  "discontinue project ✗"
+            ::    ?.(?=(%dead sat) ~ "project has already been discontinued")
+            --
       ==
     ==
     ;script
@@ -281,11 +252,6 @@
     ;script(type "module")
       ;+  ;/  ^~  %-  trip
       '''
-      import { safeDeploy, safeGetURL } from '/apps/fund/asset/safe.js';
-
-      // NOTE: %bump-lock button is just a MetaMask query (with simple data
-      // from Urbit) followed by a POST request
-
       document.querySelector("#mile-butn").addEventListener("click", (event) => {
         const wellDiv = document.querySelector("#mile-welz");
         const wellClone = document.querySelector("#mile-well").cloneNode(true);
@@ -297,22 +263,6 @@
           fieldElem.value = "";
         });
         wellDiv.appendChild(wellClone);
-      });
-      document.querySelector("#prod-butn-bump-lock")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          safeDeploy({
-            oracleAddress: document.querySelector("#fund-orac-addr").value,
-          }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
-            console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
-            document.querySelector("#fund-safe-xboq").value = xblock;
-            document.querySelector("#fund-safe-xadr").value = xhash;
-            document.querySelector("#fund-safe-wadr").value = workerAddress;
-            document.querySelector("#fund-safe-oadr").value = oracleAddress;
-            document.querySelector("#fund-safe-sadr").value = safeAddress;
-            event.target.form.requestSubmit(event.target);
-          });
-        }
       });
       document.querySelectorAll("textarea").forEach(textarea => {
         textarea.parentNode.dataset.replicatedValue = textarea.value;

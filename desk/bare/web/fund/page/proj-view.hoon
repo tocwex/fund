@@ -9,12 +9,12 @@
   ^-  $@(brief:rudder act-now:f)
   =/  [pat=(list knot) *]  (durl:fh url.request.ord)
   =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['mxb' |] ['mxa' |] ['mad' |] ['mis' |] ['mia' |] ['mit' |] ['des' |] ['dea' |] ['det' |] ['mib' |] ['mih' |] ['mii' |]])
+  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['sxb' |] ['sxa' |] ['swa' |] ['soa' |] ['ssa' |] ['mxb' |] ['mxa' |] ['mad' |] ['mis' |] ['mia' |] ['mit' |] ['des' |] ['dea' |] ['det' |] ['mib' |] ['mih' |] ['mii' |]])
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
     =+  act=(~(got by p.arz) 'act')
     ::  FIXME: This check is actually a bit redundant b/c it's checked
     ::  again in `po-push:po-core` (see proj-edit.hoon for details).
-    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib %draw-done %draw-dead %wipe-casi %wipe-cade %wipe-resi %wipe-rede) act)
+    ?.  ?=(?(%bump-born %bump-prop %bump-lock %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib %draw-done %draw-dead %wipe-casi %wipe-cade %wipe-resi %wipe-rede) act)
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
     ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
       (crip "bad act={<act>}; project doesn't exist: {<lag>}")
@@ -49,6 +49,16 @@
             (addr:take:fh (~(got by p.arz) 'oaa'))
             [%& (crip (~(oath pj:f -.u.pro) p.lag))]
         ==
+      ==
+    ::
+        %bump-lock
+      :_  ~  :+  %bump  %lock  :-  ~
+      :*  :-  (bloq:take:fh (~(got by p.arz) 'sxb'))
+            (addr:take:fh (~(got by p.arz) 'sxa'))
+          sigm:(need contract.u.pro)
+          (addr:take:fh (~(got by p.arz) 'swa'))
+          (addr:take:fh (~(got by p.arz) 'soa'))
+          (addr:take:fh (~(got by p.arz) 'ssa'))
       ==
     ::
         %bump-done
@@ -105,17 +115,16 @@
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
   ?.  gud  [%code 500 txt]
-  ::  FIXME: This is a hack to force the page to reload. We can't just
-  ::  call `+build` because edits are lazily evaluated via cards (this
-  ::  is always true if `!=(our.bol src.bol)`)
-  :+  %next  (crip (aurl:fh -:(durl:fh url.request.ord)))
-  ?~(txt 'invalid edit to project (see dojo for details)' txt)
+  =/  [lag=flag:f pyp=@tas]  (poke:take:fh ?~(txt '' txt))
+  [%next (crip (aurl:fh /next/(scot %p p.lag)/[q.lag]/[?:(=(%mula pyp) %mula %bump)])) '']
+  ::  :+  %next  (crip (aurl:fh -:(durl:fh url.request.ord)))
+  ::  ?~(txt 'invalid edit to project (see dojo for details)' txt)
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   =/  [pat=(list knot) *]  (durl:fh url.request.ord)
   =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  ?~  pre=(~(get by (prez-ours:sss:f bol dat)) lag)  [%code 404 '']
+  ?~  pre=(~(get by (prez-ours:sss:f bol dat)) lag)  [%code 404 'project does not exist']
   =*  pro  -.u.pre
   =/  sat=stat:f  ~(stat pj:f pro)
   ::  NOTE: Gate non-`our` users to my ship's non-draft projects
@@ -143,7 +152,7 @@
         ;data#fund-safe-addr(value (addr:dump:fh ?~(contract.pro 0x0 safe.u.contract.pro)));
         ;data#fund-safe-bloq(value (bloq:dump:fh ?~(contract.pro 0 p.xact.u.contract.pro)));
         ;data#fund-safe-work(value (addr:dump:fh ?~(contract.pro 0x0 work.u.contract.pro)));
-        ;data#fund-safe-orac(value (addr:dump:fh ?~(contract.pro 0x0 orac.u.contract.pro)));
+        ;data#fund-safe-orac(value (addr:dump:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)));
       ==
     ==
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
@@ -169,9 +178,14 @@
             ;div(class "text-sm font-light underline"): trusted oracle
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
-                ?.  ora
-                  ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
-                ?.  ?=(?(%born %prop %done %dead) sat)
+                ?:  &(wok ?=(?(%born %prop) sat))
+                  ?:  &(!ora ?=(%born sat))
+                    ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
+                  ?:  ?=(%prop sat)
+                    %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize escrow ✓"
+                    ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                  ;div;
+                ?:  &(ora ?!(?=(?(%done %dead) sat)))
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
                 ;div;
           ==
@@ -179,15 +193,20 @@
             ;input#fund-dead-sign(name "des", type "text");
             ;input#fund-dead-addr(name "dea", type "text");
             ;input#fund-dead-text(name "det", type "text");
+            ;input#fund-safe-xboq(name "sxb", type "text");
+            ;input#fund-safe-xadr(name "sxa", type "text");
+            ;input#fund-safe-wadr(name "swa", type "text");
+            ;input#fund-safe-oadr(name "soa", type "text");
+            ;input#fund-safe-sadr(name "ssa", type "text");
           ==
         ==
         ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
-        ;+  :_  ; share 🔗
+        ;*  ?:  ?=(?(%born %prop) sat)  ~
+            :_  ~  :_  ; share 🔗
             :-  %button
             :~  [%id "fund-butn-share"]
                 [%type "button"]
-                [%title "Copy URL"]
-                [%aria-label "Copy URL"]
+                [%title "copy url"]
                 [%class "fund-butn-effect"]
                 [%'@click' "copy(window.location.toString(), '#fund-butn-share')"]
             ==
@@ -407,7 +426,8 @@
       ;+  ;/  ^~  %-  trip
       '''
       import {
-        txnGetURL, safeGetBlock, safeSign, safeDepositFunds,
+        txnGetURL, safeGetURL, safeGetBlock,
+        safeSign, safeDeploy, safeDepositFunds,
         safeSignClaim, safeExecClaim, safeSignRefund, safeExecRefund,
       } from '/apps/fund/asset/safe.js';
 
@@ -433,6 +453,22 @@
           }).then(([address, signature]) => {
             document.querySelector("#fund-oath-addr").value = address;
             document.querySelector("#fund-oath-sign").value = signature;
+            event.target.form.requestSubmit(event.target);
+          });
+        }
+      });
+      document.querySelector("#prod-butn-bump-lock")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (event.target.form.reportValidity()) {
+          safeDeploy({
+            oracleAddress: document.querySelector("#fund-safe-orac").value,
+          }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
+            console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
+            document.querySelector("#fund-safe-xboq").value = xblock;
+            document.querySelector("#fund-safe-xadr").value = xhash;
+            document.querySelector("#fund-safe-wadr").value = workerAddress;
+            document.querySelector("#fund-safe-oadr").value = oracleAddress;
+            document.querySelector("#fund-safe-sadr").value = safeAddress;
             event.target.form.requestSubmit(event.target);
           });
         }

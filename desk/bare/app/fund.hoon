@@ -117,11 +117,11 @@
     :^  pagz  route:h  (fours:rudder +.state)
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
-    ~&  >>  (turn act |=([f=flag:f p=prod:f] "{(flag:dump:h f)} : {<-.p>}"))
+    =-  ~&(>> -< -)  ::  debug-only
     =-  [bre kaz dat]
     ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
-    :*  ~                              ::  TODO: Make this the redirect path
-        +.state                        ::  TODO: eager evaluate the cards?
+    :*  (crip (poke:dump:h i.act))         ::  NOTE: Assumes first card is key
+        +.state                            ::  TODO: eager evaluate the cards?
         (turn act |=([f=flag:f p=prod:f] (po-mk-car:(po-abed:po-core f) p.f p)))
     ==
   ==
@@ -200,10 +200,10 @@
   ++  po-da-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
   ::
   ++  po-mk-car
-    |=  [for=@p pod=prod:f]
+    |=  [who=@p pod=prod:f]
     ^-  card
     :*  %pass   po-pj-pat
-        %agent  [for dap.bol]
+        %agent  [who dap.bol]
         %poke   fund-poke+!>([lag pod])
     ==
   ++  po-do-read

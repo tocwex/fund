@@ -206,6 +206,22 @@
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
+            ::  OpenGraph Meta Tags
+            ;meta(property "og:url", content "https://tocwexsyndicate.com");
+            ;meta(property "og:type", content "website");
+            ;meta(property "og:title", content "%fund - sovereign work assessment tools for humans");
+            ;meta(property "og:description", content "%fund: A sovereign webapp built by ~toxwex.syndicate on an integrated blockchain escrow ecosystem for human created, understood, and assessed 'wise contracts'.");
+            ;meta(property "og:image", content "https://avatars.githubusercontent.com/u/96998266");
+            ;meta(property "og:image:width", content "240");
+            ;meta(property "og:image:height", content "240");
+            ::  Twitter/X Meta Tags
+            ;meta(name "twitter:card", content "summary_large_image");
+            ;meta(property "twitter:domain", content "tocwexsyndicate.com");
+            ;meta(property "twitter:url", content "https://tocwexsyndicate.com");
+            ;meta(name "twitter:title", content "%fund - sovereign work assessment tools for humans");
+            ;meta(name "twitter:description", content "%fund: A sovereign webapp built by ~toxwex.syndicate on an integrated blockchain escrow ecosystem for human created, understood, and assessed 'wise contracts'.");
+            ;meta(name "twitter:image", content "https://avatars.githubusercontent.com/u/96998266");
+            ::  Website Meta Data/Libraries
             ;title: {(weld "%fund - " ?~(tyt "home" tyt))}
             ;link/"{(aurl /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
             ;link/"{go-base}"(rel "preconnect");

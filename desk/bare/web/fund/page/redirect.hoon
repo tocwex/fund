@@ -30,37 +30,16 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  ::  TODO: What are the redirect scenarios?
-  ::  - Init/edit project:
-  ::    - Text: Your changes have been saved.
-  ::    - Buttons:
-  ::      - Request Escrow (Prod action)
-  ::      - Continue Editing (Link @ /project/(scot %p our)/[name]/edit)
-  ::      - Go Home (Link @ /)
-  ::  - Pledge/contribute funds:
-  ::    - Text: Thank you for your {pledge/contribution}!
-  ::    - Buttons:
-  ::      - Return to project page (Link @ /project/(scot %p our)/[name]
-  ::      - (If no auth) Learn more about %fund
-  ::  - Accept/decline escrow
-  ::    - Text: Thanks for your submission!
-  ::    - Buttons:
-  ::      - Return to project page (Link @ project)
-  ::      - Return to home page (Link @ /)
-  ::  - Finalize escrow
-  ::    - Text: Your project has been created at {eth address}!
-  ::    - Buttons:
-  ::      - Return to project page (Link @ project)
-  ::      - Return to home page (Link @ /)
-  ::  - All on-page prods:
-  ::    - Text: This project has been advanced to stage {state}!
-  ::      - Return to project page (Link @ project)
-  ::      - Return to home page (Link @ /)
-  ::  - :
-  ::    - Text: Thank you for your {pledge/contribution}!
-  ::    - Buttons:
-  ::      -
   =/  [pat=(pole knot) *]  (durl:fh url.request.ord)
+  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
+  =/  aut=?(%clear %eauth %admin)
+    ?.  (auth:fh bol)   %clear
+    ?:  =(our src):bol  %admin
+    %eauth
+  =/  roz=(list role:f)
+    %-  sort  :_  gth
+    ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)  ~
+    ~(tap in (~(rols pj:f -.u.pro) p.lag src.bol))
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  ~
@@ -77,18 +56,33 @@
             %mula
           %+  next-page
             'Thank you for your contribution!'
-          ;:  welp
-              [(link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)]~
-              ?:((auth:fh bol) ~ [(link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what's %fund?" ~)]~)
-              [(link-butn:htmx:fh (aurl:fh /) %| "return home" ~)]~
+          :-  (link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)
+          ?-    aut
+              %admin
+            :~  (link-butn:htmx:fh (aurl:fh /dashboard/funder) %| "funder dashboard" ~)
+            ==
+          ::
+              %eauth
+            ::  FIXME: Need a real link to download %fund
+            :~  (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what is %fund?" ~)
+                (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "download %fund" ~)
+            ==
+          ::
+              %clear
+              ::  TODO: Change to "get urbit" link via Red Horizon
+            :~  (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what is %fund?" ~)
+                (link-butn:htmx:fh "https://tlon.network/lure/~tocwex/syndicate-public" %& "get urbit" ~)
+            ==
           ==
         ::
             %bump
           %+  next-page
             'Your project action has been submitted.'
-          :~  (link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)
-              (link-butn:htmx:fh (aurl:fh /) %| "return home" ~)
-          ==
+          :-  (link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)
+          %+  turn  (skip roz |=(r=role:f =(%fund r)))
+          |=  rol=role:f
+          =+  roc=(crip (welp (trip rol) ?:(=(%orac rol) "le" "er")))
+          (link-butn:htmx:fh (aurl:fh /dashboard/[roc]) %| "{(trip roc)} dashboard" ~)
         ==
       ==
   ++  next-page

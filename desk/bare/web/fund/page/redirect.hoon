@@ -82,9 +82,8 @@
             ==
           ::
               %clear
-              ::  TODO: Change to "get urbit" link via Red Horizon
             :~  what-butn
-                (link-butn:htmx:fh "https://tlon.network/lure/~tocwex/syndicate-public" %& "get urbit" ~)
+                (link-butn:htmx:fh "https://redhorizon.com/join/217ddb05-07f1-4897-8c6a-d6ef76da7380" %& "get urbit" ~)
             ==
           ==
         ::

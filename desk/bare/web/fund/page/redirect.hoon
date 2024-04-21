@@ -56,7 +56,20 @@
             %mula
           %+  next-page
             'Thank you for your contribution!'
-          :-  (link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)
+          =/  what-butn
+            (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what is %fund?" ~)
+          ::  TODO: Refactor/share w/ `proj-view.hoon` source code
+          =/  share-butn
+            :_  ; share project
+            :-  %button
+            :~  [%id "fund-butn-share"]
+                [%type "button"]
+                [%title "copy url"]
+                [%class "fund-butn-effect"]
+                [%'@click' "copy(window.location.toString().replace(/\\/next\\/([^\\/]+)\\/([^\\/]+)\\/mula/, '/project/$1/$2'), '#fund-butn-share')"]
+            ==
+          :+  share-butn
+            (link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)
           ?-    aut
               %admin
             :~  (link-butn:htmx:fh (aurl:fh /dashboard/funder) %| "funder dashboard" ~)
@@ -64,13 +77,13 @@
           ::
               %eauth
             ::  FIXME: Need a real link to download %fund
-            :~  (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what is %fund?" ~)
+            :~  what-butn
                 (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "download %fund" ~)
             ==
           ::
               %clear
               ::  TODO: Change to "get urbit" link via Red Horizon
-            :~  (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what is %fund?" ~)
+            :~  what-butn
                 (link-butn:htmx:fh "https://tlon.network/lure/~tocwex/syndicate-public" %& "get urbit" ~)
             ==
           ==

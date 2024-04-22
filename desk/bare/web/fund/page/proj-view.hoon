@@ -178,15 +178,13 @@
             ;div(class "text-sm font-light underline"): trusted oracle
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
-                ?:  &(wok ?=(?(%born %prop) sat))
-                  ?:  &(!ora ?=(%born sat))
-                    ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
-                  ?:  ?=(%prop sat)
-                    %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize escrow ✓"
-                    ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
-                  ;div;
-                ?:  &(ora ?!(?=(?(%done %dead) sat)))
+                ?:  &(wok ?=(%prop sat))
+                  %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize escrow ✓"
+                  ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
+                ?:  &(wok !ora)
+                  ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
                 ;div;
           ==
           ;div.hidden

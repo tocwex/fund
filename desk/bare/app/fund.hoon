@@ -88,6 +88,7 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([lag=flag:f pod=prod:f] vas)
+    =-  ~&(> (crip (poke:dump:h lag pod)) -)  ::  debug-only
     po-abet:(po-push:(po-abed:po-core lag) pod)
   ::  sss pokes  ::
       %sss-on-rock

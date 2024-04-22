@@ -1,0 +1,43 @@
+#!/bin/bash
+
+## Constants ##
+
+RELEASE_HELP="usage: release [-h | --help] <version>
+perform a versioned release
+
+Flag arguments:
+  -h, --help: show this help message"
+RELEASE_VERSION_REGEX="([[:digit:]]+)\.([[:digit:]]+)\.([[:digit:]]+)"
+
+## Helper Functions ##
+
+## Arguments ##
+
+while : ; do case ${1} in
+	-h | --help) printf "%s\\n" "$RELEASE_HELP" && exit 1 ;;
+	-*) printf "invalid option: %s\\n" "${1}" && exit 1 ;;
+	*) break ;;
+esac done
+
+if [ "1" != "$#" ]; then
+	printf "%s\\n" "$RELEASE_HELP" && exit 1
+fi
+
+release_version="${1}"
+if ! echo "${release_version}" | grep -qE "${RELEASE_VERSION_REGEX}"; then
+	printf "invalid version string: %s\\n" "${release_version}" && exit 1
+fi
+release__hoonver="${release_version//./ }"
+
+## Processing ##
+
+release__basedir="$(dirname "$(dirname "$(dirname "$(readlink -f "$0")")")")"
+release__docket="${release__basedir}/desk/bare/desk.docket-0"
+release__pagedir="${release__basedir}/desk/bare/web/fund/page/"
+
+# TODO: Verify that these commands succeeded and error out with a helpful
+# message if they did not.
+sed -r "s|([[:space:]]+version\+\[).*(\].*)|\1${release__hoonver}\2|" -i "${release__docket}"
+find "${release__pagedir}" -type f -exec sh -c "sed -i '/^::  RELOAD$/d' {}" \;
+find "${release__pagedir}" -type f -exec sh -c "sed -i '/^::  VERSION: .*$/d' {}" \;
+find "${release__pagedir}" -type f -exec sh -c "echo '::  VERSION: [${release__hoonver}]' >> {}" \;

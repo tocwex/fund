@@ -145,6 +145,12 @@ find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)::  (.*::\s*debug-only$)/\1\2
 find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)(.*::\s*debug-only$)/\1::  \2/" {} \;
 ```
 
+To perform a versioned release:
+
+```bash
+./meta/exec/release X.Y.Z
+```
+
 
 [urbit]: https://urbit.org
 [durploy]: https://github.com/sidnym-ladrut/durploy

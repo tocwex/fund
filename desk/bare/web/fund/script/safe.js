@@ -7,18 +7,23 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
-import { DEBUG_MODE, TOCWEX_CUT, ADDRESS, CONTRACT } from './const.js';
+import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_BANK_ADDR } from '#urbit';
+import { FUND_CUT, ADDRESS, CONTRACT } from './const.js';
 
 //////////////////////
 // Module Functions //
 //////////////////////
 
 export const txnGetURL = (address) => (
-  `https://${!DEBUG_MODE ? "" : "sepolia."}etherscan.io/tx/${address}`
+  `https://${
+    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN}.`
+  }etherscan.io/tx/${address}`
 );
 
 export const safeGetURL = (address) => (
-  `https://app.safe.global/home?safe=${!DEBUG_MODE ? "" : "sep:"}${address}`
+  `https://app.safe.global/home?safe=${
+    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN.substring(0, 3)}:`
+  }${address}`
 );
 
 export const safeGetBlock = async () => {
@@ -49,7 +54,7 @@ export const safeDeploy = async ({oracleAddress}) => {
         abi: CONTRACT.SAFE_TEMPLATE.ABI,
         functionName: "setup",
         args: [
-          [workerAddress, oracleAddress, ADDRESS.TOCWEX_SIGNER], 2n,
+          [workerAddress, oracleAddress, FUND_SIGN_ADDR], 2n,
           // TODO: Post-setup logic (contract address, call params) needs to go here
           ADDRESS.NULL, "",
           CONTRACT.SAFE_FALLBACK.ADDRESS,
@@ -163,9 +168,9 @@ const safeEncodeTransaction = ({id, amt, to}) => {
 
 const safeGetClaimTransactions = async ({fundAmount, workerAddress, oracleAddress, oracleCut}) => {
   const adminCuts = [
-    {to: ADDRESS.TOCWEX_WALLET, cut: TOCWEX_CUT},
+    {to: FUND_BANK_ADDR, cut: FUND_CUT},
     {to: oracleAddress, cut: Number(oracleCut) / 100.0},
-    {to: workerAddress, cut: 1.0 - (TOCWEX_CUT + (Number(oracleCut) / 100.0))},
+    {to: workerAddress, cut: 1.0 - (FUND_CUT + (Number(oracleCut) / 100.0))},
   ];
   return safeGetTransactions({amount: fundAmount, cuts: adminCuts});
 };

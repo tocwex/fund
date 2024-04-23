@@ -1,6 +1,6 @@
-/+  f=fund, h=fund-http, *sss
-/+  default-agent, rudder
-/+  dbug, verb, tonic  ::  debug-only
+/+  f=fund, fh=fund-http
+/+  config, default-agent, rudder, *sss
+/+  dbug, verb, tonic
 /~  pagz  pag-now:f  /web/fund/page
 |%
 +$  card  card:agent:gall
@@ -9,42 +9,41 @@
 ^-  agent:gall
 =|  state-now
 =*  state  -
-=<
-  %+  verb  &  ::  debug-only
-  %-  agent:dbug  ::  debug-only
-  %-  agent:tonic  ::  debug-only
-  |_  bol=bowl:gall
-  +*  tis  .
-      def  ~(. (default-agent tis |) bol)
-      cor  ~(. +> [bol ~])
-  ++  on-init
-    ^-  (quip card _tis)
-    =^(caz state abet:init:cor [caz tis])
-  ++  on-save  !>([state epic-now:f])
-  ++  on-load
-    |=  vas=vase
-    ^-  (quip card _tis)
-    =^(caz state abet:(load:cor vas) [caz tis])
-  ++  on-poke
-    |=  [mar=mark vas=vase]
-    ^-  (quip card _tis)
-    =^(caz state abet:(poke:cor mar vas) [caz tis])
-  ++  on-watch
-    |=  pat=path
-    ^-  (quip card _tis)
-    =^(caz state abet:(watch:cor pat) [caz tis])
-  ++  on-peek   peek:cor
-  ++  on-leave  on-leave:def
-  ++  on-fail   on-fail:def
-  ++  on-agent
-    |=  [wyr=wire syn=sign:agent:gall]
-    ^-  (quip card _tis)
-    =^(caz state abet:(agent:cor wyr syn) [caz tis])
-  ++  on-arvo
-    |=  [wyr=wire syn=sign-arvo]
-    ^-  (quip card _tis)
-    =^(caz state abet:(arvo:cor wyr syn) [caz tis])
-  --
+=<  =-  ?.  !<(bean (slot:config %debug))  -
+        (verb & (agent:dbug (agent:tonic -)))
+    ::  %-  (agent:vita-client & !<(@p (slot:config %point)))
+    |_  bol=bowl:gall
+    +*  tis  .
+        def  ~(. (default-agent tis |) bol)
+        cor  ~(. +> [bol ~])
+    ++  on-init
+      ^-  (quip card _tis)
+      =^(caz state abet:init:cor [caz tis])
+    ++  on-save  !>([state epic-now:f])
+    ++  on-load
+      |=  vas=vase
+      ^-  (quip card _tis)
+      =^(caz state abet:(load:cor vas) [caz tis])
+    ++  on-poke
+      |=  [mar=mark vas=vase]
+      ^-  (quip card _tis)
+      =^(caz state abet:(poke:cor mar vas) [caz tis])
+    ++  on-watch
+      |=  pat=path
+      ^-  (quip card _tis)
+      =^(caz state abet:(watch:cor pat) [caz tis])
+    ++  on-peek   peek:cor
+    ++  on-leave  on-leave:def
+    ++  on-fail   on-fail:def
+    ++  on-agent
+      |=  [wyr=wire syn=sign:agent:gall]
+      ^-  (quip card _tis)
+      =^(caz state abet:(agent:cor wyr syn) [caz tis])
+    ++  on-arvo
+      |=  [wyr=wire syn=sign-arvo]
+      ^-  (quip card _tis)
+      =^(caz state abet:(arvo:cor wyr syn) [caz tis])
+    --
 |_  [bol=bowl:gall caz=(list card)]
 ::
 +*  da-poz  (proz-subs:sss:f bol subs)
@@ -88,7 +87,7 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([lag=flag:f pod=prod:f] vas)
-    =-  ~&(> (crip (poke:dump:h lag pod)) -)  ::  debug-only
+    ~?  !<(bean (slot:config %debug))   (poke:dump:fh lag pod)
     po-abet:(po-push:(po-abed:po-core lag) pod)
   ::  sss pokes  ::
       %sss-on-rock
@@ -115,13 +114,12 @@
     ^-  [kaz=(list card) dat=dat-now:f]
     %.  [bol !<(order:rudder vas) +.state]
     %-  (steer:rudder dat-now:f act-now:f)
-    :^  pagz  route:h  (fours:rudder +.state)
+    :^  pagz  route:fh  (fours:rudder +.state)
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
-    =-  ~&(>> -< -)  ::  debug-only
-    =-  [bre kaz dat]
+    =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
     ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
-    :*  (crip (poke:dump:h i.act))         ::  NOTE: Assumes first card is key
+    :*  (crip (poke:dump:fh i.act))        ::  NOTE: Assumes first card is key
         +.state                            ::  TODO: eager evaluate the cards?
         (turn act |=([f=flag:f p=prod:f] (po-mk-car:(po-abed:po-core f) p.f p)))
     ==

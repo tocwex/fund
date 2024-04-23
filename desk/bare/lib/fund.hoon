@@ -1,12 +1,6 @@
 /-  *fund
-/+  fx=fund-xtra, tx=naive-transactions
+/+  fx=fund-xtra, tx=naive-transactions, config
 |%
-::
-::  +twex-sadr: the t(oc)wex (sign) addr(ess)
-::
-++  twex-addr
-  ?:  &  0xcbbd.2aab.5ee5.09e8.531a.b407.d48f.c93c.dc25.e1ad  ::  debug-only
-  0x0
 ::
 ::  +filo: fill in an $odit by calculating `=need` (if required)
 ::
@@ -38,7 +32,10 @@
   ^-  (unit @ux)
   =/  dat=tape  =+(t=(trip `@t`p.mesg.sig) ?-(-.mesg.sig %& t, %| (flop t)))
   =/  msg=tape  "\19Ethereum Signed Message:\0a{(a-co:co (met 3 p.mesg.sig))}{dat}"
-  =/  syg=octs  (as-octs:mimes:html (crip msg))
+  ::  FIXME: Should use +crip instead of +rep, but can't due to a bug in
+  ::  +crip dealing with tapes containing \00 entries; see:
+  ::  https://github.com/urbit/urbit/pull/6818
+  =/  syg=octs  (as-octs:mimes:html (rep 3 msg))
   (verify-sig:tx sign.sig syg)
 ::
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
@@ -201,7 +198,7 @@
         ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig s)))
         ++  orac-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy [orac.-]~))))
         ++  team-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.-]))))
-        ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- twex-addr]))))
+        ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- !<(addr (slot:config %sign-addr))]))))
         ++  dead-milz
           |=  oat=oath
           ?>  (team-sigm sigm.oat)

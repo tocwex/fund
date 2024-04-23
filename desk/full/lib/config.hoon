@@ -1,0 +1,1 @@
+../../bare/lib/config.hoon

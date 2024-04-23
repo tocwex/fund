@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
 /+  *fund, fx=fund-xtra
-/+  rudder, tonic
+/+  config, rudder, tonic
 |%
 ::
 ::  +route: rudder-related transformer of url ($trail) into (potential)
@@ -230,12 +230,16 @@
             ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;link/"{(aurl /asset/[~.fund.css])}"(rel "stylesheet");
             ;link(rel "stylesheet", href "{sl-base}/themes/light.css");
+            ;script(id "urbit", type "inline-module"): {enjs:config}
+            ;script(src "https://unpkg.com/inline-module/index.js");
             ;script(type "module", src "{sl-base}/shoelace-autoloader.js");
-            ;script(src "/session.js");  ::  debug-only
-            ;+  (inject:tonic q.byk.bol)  ::  debug-only
+            ;*  ?.  !<(bean (slot:config %debug))  ~
+                :~  ;script(src "/session.js");
+                    (inject:tonic q.byk.bol)
+                ==
           ==
           ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "twind")
-            ;+  hair  ::  debug-only
+            ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
             ;+  head
             ;+  bod
             ;+  foot
@@ -244,8 +248,10 @@
         ==
     ++  hair
       ^-  manx
+      =+  !<(can=@tas (slot:config %chain))
+      =+  cat=?:(=(%mainnet can) "mainnet" "testnet ({(cuss (trip can))})")
       ;div(class "flex justify-center w-full sticky top-0 bg-yellow-200 py-1 px-2 text-sm font-medium")
-        ; ⚠ TESTNET (SEPOLIA) VERSION ⚠
+        ; ⚠ {(cuss cat)} VERSION ⚠
       ==
     ++  head
       ^-  manx

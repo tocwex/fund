@@ -7,7 +7,7 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
-import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_BANK_ADDR } from '#urbit';
+import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from '#urbit';
 import { FUND_CUT, ADDRESS, CONTRACT } from './const.js';
 
 //////////////////////
@@ -168,7 +168,7 @@ const safeEncodeTransaction = ({id, amt, to}) => {
 
 const safeGetClaimTransactions = async ({fundAmount, workerAddress, oracleAddress, oracleCut}) => {
   const adminCuts = [
-    {to: FUND_BANK_ADDR, cut: FUND_CUT},
+    {to: FUND_SAFE_ADDR, cut: FUND_CUT},
     {to: oracleAddress, cut: Number(oracleCut) / 100.0},
     {to: workerAddress, cut: 1.0 - (FUND_CUT + (Number(oracleCut) / 100.0))},
   ];

@@ -2,12 +2,10 @@
 ::
 /+  f=fund, fx=fund-xtra, fh=fund-http
 /+  rudder
+%-  dump:preface:fh
+%-  mine:preface:fh  %-  conf:preface:fh  %-  (proj:preface:fh |)
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
-+*  pflag  (furl:fh url.request.ord)
-    mdesc  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
-    sregx  (trip '(~(([a-z]{3})|([a-z]{6})))?')
-    pregx  (trip '(~(([a-z]{3})|([a-z]{6}(-[a-z]{6}){0,3})|([a-z]{6}(-[a-z]{6}){3})--([a-z]{6}(-[a-z]{6}){3})))?')
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
@@ -19,6 +17,7 @@
   ::  FIXME: There are a lot of silent errors embedded in this function,
   ::  which should either be made explicit or at least come with a
   ::  warning (e.g. "unable to parse 'ses' values; bad @p given...")
+  =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh hed)
   =/  rex=(map @t bean)  %-  malt
     %+  weld  ~[['act' &] ['nam' |] ['sum' |] ['pic' |] ['sea' |] ['seo' |] ['sxb' |] ['sxa' |] ['swa' |] ['soa' |] ['ssa' |]]
     %+  roll  (gulf 0 9)
@@ -26,11 +25,9 @@
     %+  weld  acc
     (turn ~['n' 's' 'c'] |=(suf=@t [(crip "m{<ind>}{(trip suf)}") |]))
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
-    =/  lag=flag:f
-      ?^  pflag  (need pflag)
-      ::  FIXME: Go to next available name if this path is already taken
-      ::  by another project (add random number suffix)
-      [our.bol (asci:fx (~(got by p.arz) 'nam'))]
+    ::  FIXME: Go to next available name if this path is already taken
+    ::  by another project (add random number suffix)
+    =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) 'nam'))])
     ::  NOTE: This only accepts an assessment as legitimate if *both*
     ::  fields are populated
     =/  ses=(unit sess:f)  %+  both
@@ -42,24 +39,8 @@
       ;;(act-now:f [lag %drop ~]~)
     ::
         %bump-born
-      ::  FIXME: This check is actually a bit redundant b/c it's checked
-      ::  again in `po-push:po-core`, but we keep it here b/c:
-      ::  - `act`s are forwarded cards, which means they're evaluated
-      ::    after a successful POST request
-      ::  - Even if not all `act`s were forwarded cards, we'd need to
-      ::    use poke responses and watch wires when forwarding pokes to
-      ::    a remote ship (e.g. assessor poking project on worker ship)
-      ::  NOTE: Use `proz.dat` instead of `prez-ours...` because only
-      ::  the owner should be able to submit edits to the ship
-      ?~  pro=(~(get by proz.dat) lag)
-        (crip "bad act={<act>}; project doesn't exist: {<lag>}")
-      ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
-      ::  TODO: when moving to %prop, we should also %init so that the
-      ::  most recent form changes are saved when the user attempts to
-      ::  send a request
-      ?+  sat=;;(stat:f (rsh [3 5] act))  !!
-        %born  [%bump %born ~]~              ::  worker retract/oracle reject
-      ==
+      ?~  pru  'project does not exist'
+      ;;(act-now:f [lag %bump %born ~]~)
     ::
         %init
       =-  ;;(act-now:f [lag %init `-]~)
@@ -88,19 +69,18 @@
 ++  final  ::  POST render
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  ?.  gud  [%code 500 txt]
-  =/  [lag=flag:f pyp=@tas]  (poke:take:fh ?~(txt '' txt))
-  ?:  =(%drop pyp)  [%next (crip (aurl:fh /dashboard/worker)) '']
-  [%next (crip (aurl:fh /next/(scot %p p.lag)/[q.lag]/edit)) '']
+  =/  [lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  ?:  =(%drop pyp)  [%next (desc:enrl:format:fh /dashboard/worker) ~]
+  [%next (desc:enrl:format:fh /next/(scot %p p.lag)/[q.lag]/edit) ~]
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  ::  NOTE: Only the ship owner can access non-project pages
-  ?.  =(our.bol src.bol)  [%auth url.request.ord]
-  =/  pru=(unit prej:f)  ?~(pflag ~ (~(get by (prez-ours:sss:f bol dat)) (need pflag)))
-  ?:  &(?=(^ pflag) ?=(~ pru))  [%code 404 'project does not exist']
+  =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh arz)
   =/  sat=stat:f  ?~(pru %born ~(stat pj:f -.u.pru))
-  ?.  |(?=(~ pru) ?=(?(%born %prop) sat))  [%next (crip (aurl:fh /project/(scot %p p:(need pflag))/[q:(need pflag)])) 'project cannot be edited after locking']
+  ?:  &(?=(^ lau) ?=(~ pru))
+    [%code 404 'project does not exist']
+  ?.  |(?=(~ pru) ?=(?(%born %prop) sat))
+    [%next (flac:enrl:format:fh (need lau)) 'project cannot be edited after locking']
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
@@ -112,7 +92,7 @@
             ;div(class "flex items-center gap-x-2")
               ;div(class "text-xl")
                 ; Funding Goal:
-                ;span(id "proj-cost"): ${(mony:dump:fh ?~(pru .0 ~(cost pj:f -.u.pru)))}
+                ;span(id "proj-cost"): ${(mony:enjs:format:fh ?~(pru .0 ~(cost pj:f -.u.pru)))}
               ==
               ;+  (stat-pill:htmx:fh sat)
             ==
@@ -169,7 +149,7 @@
                         ;input#mile-cost.p-1  =name  "m{<min>}c"  =type  "number"
                           =min  "0"  =max  "100000000"  =step  "0.01"
                           =placeholder  "0"
-                          =value  ?:(=(0 cost.mil) "" (mony:dump:fh cost.mil))
+                          =value  ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))
                           =onchange  "updateTotal()";
                         ;label(for "m{<min>}c"): milestone cost ($)
                       ==
@@ -177,7 +157,7 @@
                     ;div(class "fund-form-group")
                       ;div(class "grow-wrap")
                         ;textarea#mile-summ.p-1  =name  "m{<min>}s"  =rows  "3"
-                          =placeholder  mdesc
+                          =placeholder  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
                           =value  (trip summary.mil)
                           ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
                           =oninput  "this.parentNode.dataset.replicatedValue = this.value"
@@ -198,7 +178,7 @@
           ;div(class "flex")
             ;div(class "fund-form-group")
               ;input.p-1  =name  "sea"  =type  "text"
-                =pattern  sregx
+                =pattern  (trip '(~(([a-z]{3})|([a-z]{6})))?')
                 =placeholder  (scow %p ~tocwex)
                 =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
               ;label(for "sea"): oracle identity (star or galaxy)
@@ -207,7 +187,7 @@
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "1"
-                =value  ?~(pru "" (mony:dump:fh q.assessment.u.pru));
+                =value  ?~(pru "" (mony:enjs:format:fh q.assessment.u.pru));
               ;label(for "seo"): fee offer (%)
             ==
           ==

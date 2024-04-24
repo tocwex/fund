@@ -2,6 +2,7 @@
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
+%-  mine:preface:fh  %-  conf:preface:fh
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  |=([header-list:http (unit octs)] !!)
@@ -9,8 +10,6 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  ::  NOTE: Only the ship owner can access non-project pages
-  ?.  =(our.bol src.bol)  [%auth url.request.ord]
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  ~
@@ -34,7 +33,7 @@
       ;div(class "flex flex-col gap-2")
         ;div(class "text-sm text-center"): {sum}
         ;div(class "mx-auto text-center")
-          ;a.fund-butn-link/"{(aurl:fh /dashboard/[das])}": view dashboard →
+          ;a.fund-butn-link/"{(dest:enrl:format:fh /dashboard/[das])}": view dashboard →
         ==
       ==
     ==

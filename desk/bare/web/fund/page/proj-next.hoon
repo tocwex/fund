@@ -1,45 +1,36 @@
-::  /web/fund/page/redirect/hoon: redirect page for %fund
+::  /web/fund/page/proj-next/hoon: project redirect page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
+%-  dump:preface:fh
+%-  conf:preface:fh  %-  (proj:preface:fh &)
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
-  =/  [pat=(list knot) *]  (durl:fh url.request.ord)
-  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
+  =/  [lag=flag:f *]  (greb:proj:preface:fh hed)
   =/  rex=(map @t bean)  (malt ~[['act' &]])
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
     =+  act=(~(got by p.arz) 'act')
     ?.  ?=(%bump-prop act)
       (crip "bad act; expected (bump-*), not {(trip act)}")
-    ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
-      (crip "bad act={<act>}; project doesn't exist: {<lag>}")
-    ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
-    ?-  act
-      %bump-prop  [%bump %prop ~]~
-    ==
+    ;;(act-now:f [lag %bump %prop ~]~)
   ==
 ++  final
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  ?.  gud  [%code 422 txt]
-  =/  [lag=flag:f pyp=@tas]  (poke:take:fh ?~(txt '' txt))
-  [%next (crip (aurl:fh /project/(scot %p p.lag)/[q.lag])) '']
+  =/  [lag=flag:f *]  (gref:proj:preface:fh txt)
+  [%next (flac:enrl:format:fh lag) ~]
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  [pat=(pole knot) *]  (durl:fh url.request.ord)
-  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
+  =/  pat=(pole knot)  (slag:derl:format:fh url.request.ord)
+  =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh arz)
   =/  aut=?(%clear %eauth %admin)
-    ?.  (auth:fh bol)   %clear
-    ?:  =(our src):bol  %admin
-    %eauth
+    ?.((auth:fh bol) %clear ?:(=(our src):bol %admin %eauth))
   =/  roz=(list role:f)
-    %-  sort  :_  gth
-    ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)  ~
-    ~(tap in (~(rols pj:f -.u.pro) p.lag src.bol))
+    (sort ~(tap in (~(rols pj:f -.pro) p.lag src.bol)) gth)
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  ~
@@ -49,8 +40,8 @@
           %+  next-page
             'Your changes have been saved!'
           :~  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓" ~)
-              (link-butn:htmx:fh (aurl:fh pat(- %project)) %| "continue editing" ~)
-              (link-butn:htmx:fh (aurl:fh /) %| "return home" ~)
+              (link-butn:htmx:fh (dest:enrl:format:fh pat(- %project)) %| "continue editing" ~)
+              (link-butn:htmx:fh (dest:enrl:format:fh /) %| "return home" ~)
           ==
         ::
             %mula
@@ -69,10 +60,10 @@
                 [%'@click' "copy(window.location.toString().replace(/\\/next\\/([^\\/]+)\\/([^\\/]+)\\/mula/, '/project/$1/$2'), '#fund-butn-share')"]
             ==
           :+  share-butn
-            (link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)
+            (link-butn:htmx:fh (dest:enrl:format:fh pat(- %project, +>+ ~)) %| "view project" ~)
           ?-    aut
               %admin
-            :~  (link-butn:htmx:fh (aurl:fh /dashboard/funder) %| "funder dashboard" ~)
+            :~  (link-butn:htmx:fh (dest:enrl:format:fh /dashboard/funder) %| "funder dashboard" ~)
             ==
           ::
               %eauth
@@ -90,11 +81,11 @@
             %bump
           %+  next-page
             'Your project action has been submitted.'
-          :-  (link-butn:htmx:fh (aurl:fh pat(- %project, +>+ ~)) %| "view project" ~)
+          :-  (link-butn:htmx:fh (dest:enrl:format:fh pat(- %project, +>+ ~)) %| "view project" ~)
           %+  turn  (skip roz |=(r=role:f =(%fund r)))
           |=  rol=role:f
           =+  roc=(crip (welp (trip rol) ?:(=(%orac rol) "le" "er")))
-          (link-butn:htmx:fh (aurl:fh /dashboard/[roc]) %| "{(trip roc)} dashboard" ~)
+          (link-butn:htmx:fh (dest:enrl:format:fh /dashboard/[roc]) %| "{(trip roc)} dashboard" ~)
         ==
       ==
   ++  next-page

@@ -8,5 +8,5 @@
     [%chain !>(`@tas`%mainnet)]
     [%point !>(~tocwex)]
     [%sign-addr !>(0x0)]  ::  TODO: Fill this in with real address
-    [%bank-addr !>(0x0)]  ::  TODO: Fill this in with real address
+    [%safe-addr !>(0x0)]  ::  TODO: Fill this in with real address
 ==

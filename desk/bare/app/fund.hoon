@@ -1,6 +1,6 @@
 /+  f=fund, fh=fund-http
 /+  config, default-agent, rudder, *sss
-/+  dbug, verb, tonic
+/+  dbug, verb, tonic, vita-client
 /~  pagz  pag-now:f  /web/fund/page
 |%
 +$  card  card:agent:gall
@@ -11,7 +11,7 @@
 =*  state  -
 =<  =-  ?.  !<(bean (slot:config %debug))  -
         (verb & (agent:dbug (agent:tonic -)))
-    ::  %-  (agent:vita-client & !<(@p (slot:config %point)))
+    %-  (agent:vita-client | !<(@p (slot:config %point)))
     |_  bol=bowl:gall
     +*  tis  .
         def  ~(. (default-agent tis |) bol)
@@ -87,7 +87,15 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([lag=flag:f pod=prod:f] vas)
-    ~?  !<(bean (slot:config %debug))   (poke:dump:fh lag pod)
+    ~?  !<(bean (slot:config %debug))   (poke:enjs:format:fh lag pod)
+    ::  FIXME: This is a hack to support pokes that edit app-global
+    ::  (instead of project-specific) information
+    ?:  =([our.bol %$] lag)
+      %-  emit
+      :*  %pass   /fund/vita
+          %agent  [our.bol dap.bol]
+          %poke   vita-client+!>([%set-enabled ?=(%join -.pod)])
+      ==
     po-abet:(po-push:(po-abed:po-core lag) pod)
   ::  sss pokes  ::
       %sss-on-rock
@@ -110,17 +118,21 @@
     po-abet:(po-pull:(po-abed:po-core (proj-flag:sss:f path.res)) res)
   ::  http pokes  ::
       %handle-http-request
-    =-  cor(caz (welp (flop kaz) caz), +.state dat)
+    =+  !<(ord=order:rudder vas)
+    =/  vaz=(list card)
+      ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
+      [(active:vita-client bol)]~
+    =-  cor(caz (welp (flop (welp kaz vaz)) caz), +.state dat)
     ^-  [kaz=(list card) dat=dat-now:f]
-    %.  [bol !<(order:rudder vas) +.state]
+    %.  [bol ord +.state]
     %-  (steer:rudder dat-now:f act-now:f)
     :^  pagz  route:fh  (fours:rudder +.state)
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
     ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
-    :*  (crip (poke:dump:fh i.act))        ::  NOTE: Assumes first card is key
-        +.state                            ::  TODO: eager evaluate the cards?
+    :*  (crip (poke:enjs:format:fh i.act))  ::  NOTE: Assumes first card is key
+        +.state                             ::  TODO: eager evaluate the cards?
         (turn act |=([f=flag:f p=prod:f] (po-mk-car:(po-abed:po-core f) p.f p)))
     ==
   ==
@@ -152,7 +164,7 @@
   |=  [pat=(pole knot) syn=sign:agent:gall]
   ^+  cor
   ?+    pat  cor
-  :: sss responses ::
+  ::  sss responses  ::
       [~ %sss %on-rock @ @ @ %fund %proj @ @ ~]
     (pull ~ (chit:da-poz |3:pat syn))
   ::
@@ -161,14 +173,18 @@
   ::
       [~ %sss %scry-response @ @ @ %fund %proj @ @ ~]
     (push (tell:du-poz |3:pat syn))
-  :: proxy response ::
+  ::  config responses  ::
+      [%fund %vita ~]
+    ?>  ?=(%poke-ack -.syn)
+    ?~  p.syn  cor(init.state &)
+    ((slog u.p.syn) cor)
+  ::  proxy response  ::
       [%fund %proj sip=@ nam=@ ~]
     ?>  ?=(%poke-ack -.syn)
     =/  sip=@p    (slav %p sip.pat)
-    =/  nam=@tas  (slav %tas nam.pat)
+    =/  nam=@tas  ?:(=(~ nam.pat) %$ (slav %tas nam.pat))
     ?~  p.syn  cor
-    %-  (slog u.p.syn)
-    cor
+    ((slog u.p.syn) cor)
   ==
 ::
 ++  arvo

@@ -217,7 +217,7 @@
 ::
 +$  dat-now
   $:  =proz
-      =rolz
+      init=_|
       subs=_(mk-subs:sss *lake:proj path:proj)
       pubs=_(mk-pubs:sss *lake:proj path:proj)
   ==

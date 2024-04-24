@@ -34,6 +34,7 @@ if (window.Alpine === undefined) {
       textarea: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
       select: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
       label: apply`text-black font-light py-1`,
+      code: apply`font-mono bg-grey-400 text-black rounded-md p-2`,
     }),
     // FIXME: Recursive style embeddings don't seem to work with the shim; may
     // need to use `tw(...)` directly to refactor beyond 1 level

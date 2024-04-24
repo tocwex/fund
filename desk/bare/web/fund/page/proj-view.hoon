@@ -2,72 +2,69 @@
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
+%-  dump:preface:fh
+%-  conf:preface:fh  %-  (proj:preface:fh &)
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
-  =/  [pat=(list knot) *]  (durl:fh url.request.ord)
-  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
+  =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh hed)
   =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['sxb' |] ['sxa' |] ['swa' |] ['soa' |] ['ssa' |] ['mxb' |] ['mxa' |] ['mad' |] ['mis' |] ['mia' |] ['mit' |] ['des' |] ['dea' |] ['det' |] ['mib' |] ['mih' |] ['mii' |]])
   ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
     =+  act=(~(got by p.arz) 'act')
-    ::  FIXME: This check is actually a bit redundant b/c it's checked
-    ::  again in `po-push:po-core` (see proj-edit.hoon for details).
     ?.  ?=(?(%bump-born %bump-prop %bump-lock %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib %draw-done %draw-dead %wipe-casi %wipe-cade %wipe-resi %wipe-rede) act)
       (crip "bad act; expected (bump-*|mula), not {(trip act)}")
-    ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
-      (crip "bad act={<act>}; project doesn't exist: {<lag>}")
-    =+  lin=(dec (lent milestones.u.pro))
+    =+  lin=(dec (lent milestones.pro))
     ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
     ?-  act
       %bump-born  [%bump %born ~]~
       %bump-work  [%bump %work ~]~
       %bump-sess  [%bump %sess ~]~
-      %wipe-cade  [%wipe (bloq:take:fh (~(got by p.arz) 'mii')) ~]~
+      %wipe-cade  [%wipe (bloq:dejs:format:fh (~(got by p.arz) 'mii')) ~]~
       %wipe-rede  [%wipe lin ~]~
     ::
         %wipe-casi
-      :_  ~  :+  %wipe  (bloq:take:fh (~(got by p.arz) 'mii'))
+      :_  ~  :+  %wipe  (bloq:dejs:format:fh (~(got by p.arz) 'mii'))
       :^    ~
-          (sign:take:fh (~(got by p.arz) 'mis'))
-        (addr:take:fh (~(got by p.arz) 'mia'))
-      [%| (addr:take:fh (~(got by p.arz) 'mit'))]
+          (sign:dejs:format:fh (~(got by p.arz) 'mis'))
+        (addr:dejs:format:fh (~(got by p.arz) 'mia'))
+      [%| (addr:dejs:format:fh (~(got by p.arz) 'mit'))]
     ::
         %wipe-resi
       :_  ~  :+  %wipe  lin
       :^    ~
-          (sign:take:fh (~(got by p.arz) 'mis'))
-        (addr:take:fh (~(got by p.arz) 'mia'))
-      [%| (addr:take:fh (~(got by p.arz) 'mit'))]
+          (sign:dejs:format:fh (~(got by p.arz) 'mis'))
+        (addr:dejs:format:fh (~(got by p.arz) 'mia'))
+      [%| (addr:dejs:format:fh (~(got by p.arz) 'mit'))]
     ::
         %bump-prop
       :_  ~  :+  %bump  %prop
       :-  ~  =+  oat=*oath:f  %_  oat
           sigm
-        :*  (sign:take:fh (~(got by p.arz) 'oas'))
-            (addr:take:fh (~(got by p.arz) 'oaa'))
-            [%& (crip (~(oath pj:f -.u.pro) p.lag))]
+        :*  (sign:dejs:format:fh (~(got by p.arz) 'oas'))
+            (addr:dejs:format:fh (~(got by p.arz) 'oaa'))
+            [%& (crip (~(oath pj:f -.pro) p.lag))]
         ==
       ==
     ::
         %bump-lock
       :_  ~  :+  %bump  %lock  :-  ~
-      :*  :-  (bloq:take:fh (~(got by p.arz) 'sxb'))
-            (addr:take:fh (~(got by p.arz) 'sxa'))
-          sigm:(need contract.u.pro)
-          (addr:take:fh (~(got by p.arz) 'swa'))
-          (addr:take:fh (~(got by p.arz) 'soa'))
-          (addr:take:fh (~(got by p.arz) 'ssa'))
+      :*  :-  (bloq:dejs:format:fh (~(got by p.arz) 'sxb'))
+            (addr:dejs:format:fh (~(got by p.arz) 'sxa'))
+          sigm:(need contract.pro)
+          (addr:dejs:format:fh (~(got by p.arz) 'swa'))
+          (addr:dejs:format:fh (~(got by p.arz) 'soa'))
+          (addr:dejs:format:fh (~(got by p.arz) 'ssa'))
       ==
     ::
         %bump-done
       :_  ~  :+  %bump  %done
       :-  ~  =+  oat=*oath:f  %_  oat
           sigm
-        :*  (sign:take:fh (~(got by p.arz) 'mis'))
-            (addr:take:fh (~(got by p.arz) 'mia'))
-            [%| (addr:take:fh (~(got by p.arz) 'mit'))]
+        :*  (sign:dejs:format:fh (~(got by p.arz) 'mis'))
+            (addr:dejs:format:fh (~(got by p.arz) 'mia'))
+            [%| (addr:dejs:format:fh (~(got by p.arz) 'mit'))]
         ==
       ==
     ::
@@ -75,28 +72,28 @@
       :_  ~  :+  %bump  %dead
       :-  ~  =+  oat=*oath:f  %_  oat
           sigm
-        :*  (sign:take:fh (~(got by p.arz) 'des'))
-            (addr:take:fh (~(got by p.arz) 'dea'))
-            [%| (addr:take:fh (~(got by p.arz) 'det'))]
+        :*  (sign:dejs:format:fh (~(got by p.arz) 'des'))
+            (addr:dejs:format:fh (~(got by p.arz) 'dea'))
+            [%| (addr:dejs:format:fh (~(got by p.arz) 'det'))]
         ==
       ==
     ::
         %draw-done
       :_  ~  :^  %draw
-          (bloq:take:fh (~(got by p.arz) 'mii'))
-        (bloq:take:fh (~(got by p.arz) 'mib'))
-      (addr:take:fh (~(got by p.arz) 'mih'))
+          (bloq:dejs:format:fh (~(got by p.arz) 'mii'))
+        (bloq:dejs:format:fh (~(got by p.arz) 'mib'))
+      (addr:dejs:format:fh (~(got by p.arz) 'mih'))
     ::
         %draw-dead
       :_  ~  :^  %draw
           lin
-        (bloq:take:fh (~(got by p.arz) 'mib'))
-      (addr:take:fh (~(got by p.arz) 'mih'))
+        (bloq:dejs:format:fh (~(got by p.arz) 'mib'))
+      (addr:dejs:format:fh (~(got by p.arz) 'mih'))
     ::
         *  ::  mula-*
       =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
-      =/  wen=@ud  (bloq:take:fh (~(got by p.arz) 'mxb'))
-      =/  sum=@rs  (mony:take:fh (~(got by p.arz) 'sum'))
+      =/  wen=@ud  (bloq:dejs:format:fh (~(got by p.arz) 'mxb'))
+      =/  sum=@rs  (mony:dejs:format:fh (~(got by p.arz) 'sum'))
       =/  msg=@t  (~(got by p.arz) 'msg')
       ?-  act
         %mula-plej  [%mula %plej (need who) sum wen msg]~
@@ -104,8 +101,8 @@
           %mula-trib
         :_  ~
         :*  %mula  %trib  who  sum
-            :-  [wen (addr:take:fh (~(got by p.arz) 'mxa'))]
-              (addr:take:fh (~(got by p.arz) 'mad'))
+            :-  [wen (addr:dejs:format:fh (~(got by p.arz) 'mxa'))]
+              (addr:dejs:format:fh (~(got by p.arz) 'mad'))
             msg
         ==
       ==
@@ -114,21 +111,18 @@
 ++  final  ::  POST render
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  ?.  gud  [%code 500 txt]
-  =/  [lag=flag:f pyp=@tas]  (poke:take:fh ?~(txt '' txt))
-  [%next (crip (aurl:fh /next/(scot %p p.lag)/[q.lag]/[?:(=(%mula pyp) %mula %bump)])) '']
-  ::  :+  %next  (crip (aurl:fh -:(durl:fh url.request.ord)))
-  ::  ?~(txt 'invalid edit to project (see dojo for details)' txt)
+  =/  [lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  :-  %next  :_  ~
+  (desc:enrl:format:fh /next/(scot %p p.lag)/[q.lag]/[?:(=(%mula pyp) %mula %bump)])
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  [pat=(list knot) *]  (durl:fh url.request.ord)
-  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  ?~  pre=(~(get by (prez-ours:sss:f bol dat)) lag)  [%code 404 'project does not exist']
-  =*  pro  -.u.pre
+  =/  pat=(list knot)  (slag:derl:format:fh url.request.ord)
+  =/  [lag=flag:f pre=prej:f]  (greb:proj:preface:fh arz)
+  =*  pro  -.pre
   =/  sat=stat:f  ~(stat pj:f pro)
   ::  NOTE: Gate non-`our` users to my ship's non-draft projects
-  ?:  &(!=(our.bol src.bol) |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
+  ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
   =+  [wok=(~(has in roz) %work) ora=(~(has in roz) %orac) tex==(~tocwex src.bol)]
   =+  [tym=|(wok ora) pyr=|(wok ora tex)]
@@ -144,15 +138,15 @@
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
           ; Goal
-          ;span#proj-cost: ${(mony:dump:fh cost.pod)}
+          ;span#proj-cost: ${(mony:enjs:format:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
       ==
       ;div.hidden
-        ;data#fund-safe-addr(value (addr:dump:fh ?~(contract.pro 0x0 safe.u.contract.pro)));
-        ;data#fund-safe-bloq(value (bloq:dump:fh ?~(contract.pro 0 p.xact.u.contract.pro)));
-        ;data#fund-safe-work(value (addr:dump:fh ?~(contract.pro 0x0 work.u.contract.pro)));
-        ;data#fund-safe-orac(value (addr:dump:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)));
+        ;data#fund-safe-addr(value (addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro)));
+        ;data#fund-safe-bloq(value (bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro)));
+        ;data#fund-safe-work(value (addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro)));
+        ;data#fund-safe-orac(value (addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)));
       ==
     ==
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
@@ -167,9 +161,9 @@
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
                 ?.  wok
-                  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): send message →
+                  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): send message →
                 ?:  ?=(?(%born %prop) sat)
-                  ;a.fund-butn-link/"{(aurl:fh (snoc pat %edit))}": edit project →
+                  ;a.fund-butn-link/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
                 ?.  ?=(?(%done %dead) sat)
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
                 ;div;
@@ -184,7 +178,7 @@
                 ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
                 ?:  &(wok !ora)
-                  ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
+                  ;a.fund-butn-link/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
                 ;div;
           ==
           ;div.hidden
@@ -228,7 +222,7 @@
                           [%placeholder "10"]~
                           [%class "p-2"]~
                           ?~  pej=(~(get by pledges.pro) src.bol)  ~
-                          ~[[%readonly ~] [%value (mony:dump:fh cash.u.pej)]]
+                          ~[[%readonly ~] [%value (mony:enjs:format:fh cash.u.pej)]]
                       ==
                   ;label(for "sum"): amount ($)
                 ==
@@ -273,7 +267,7 @@
                   ;span:  is offering the following compensation for your services:
                 ==
                 ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
-                  ;span(class "font-medium"): {(mony:dump:fh q.assessment.pro)}%
+                  ;span(class "font-medium"): {(mony:enjs:format:fh q.assessment.pro)}%
                   ;span:  of each milestone payout upon completed assessment
                 ==
                 ;div(class "p-2")
@@ -308,7 +302,7 @@
           ==
           ;div(class "flex gap-2")
             ; Goal
-            ;span(class "font-medium"): ${(mony:dump:fh cost.pod)}
+            ;span(class "font-medium"): ${(mony:enjs:format:fh cost.pod)}
           ==
         ==
         ;+  (odit-ther:htmx:fh pod)
@@ -326,7 +320,7 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal
-                  ;span#proj-cost: ${(mony:dump:fh cost.mil)}
+                  ;span#proj-cost: ${(mony:enjs:format:fh cost.mil)}
                 ==
                 ;+  (stat-pill:htmx:fh status.mil)
               ==
@@ -343,14 +337,14 @@
                     :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~)
                   ::
                       ?.  &(cur ora ?=(%sess status.mil))  ~
-                    :~  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): message worker →
+                    :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
                         (prod-butn:htmx:fh %bump-work %black "changes required ~" ~)
                         (prod-butn:htmx:fh %bump-done %green "approve ✓" ~)
                     ==
                   ::
                   ::
                       ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
-                    :~  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): message worker →
+                    :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
                         (prod-butn:htmx:fh %wipe-casi %green "reapprove ✓" ~)
                     ==
                   ::
@@ -376,11 +370,11 @@
                   ==
             ==
             ;div.hidden
-              ;data#fund-mile-cost(value (mony:dump:fh fill.oil));
-              ;data#fund-mile-ocut(value (mony:dump:fh q.assessment.pro));
-              ;data#fund-mile-awho(value (addr:dump:fh ?~(withdrawal.mil *@ux from.sigm.u.withdrawal.mil)));
-              ;data#fund-mile-asig(value (sign:dump:fh ?~(withdrawal.mil *@ux sign.sigm.u.withdrawal.mil)));
-              ;data#fund-mile-atak(value (mony:dump:fh ?~(withdrawal.mil *@rs cash.u.withdrawal.mil)));
+              ;data#fund-mile-cost(value (mony:enjs:format:fh fill.oil));
+              ;data#fund-mile-ocut(value (mony:enjs:format:fh q.assessment.pro));
+              ;data#fund-mile-awho(value (addr:enjs:format:fh ?~(withdrawal.mil *@ux from.sigm.u.withdrawal.mil)));
+              ;data#fund-mile-asig(value (sign:enjs:format:fh ?~(withdrawal.mil *@ux sign.sigm.u.withdrawal.mil)));
+              ;data#fund-mile-atak(value (mony:enjs:format:fh ?~(withdrawal.mil *@rs cash.u.withdrawal.mil)));
               ;data#fund-mile-idex(value "{<min>}");
               ;input#fund-mile-sign(name "mis", type "text");
               ;input#fund-mile-addr(name "mia", type "text");
@@ -412,7 +406,7 @@
               ;div(class "p-1"): {(trip note.mul)}
             ==
             ;div(class "flex flex-wrap sm:flex-nowrap items-center")
-              ;div(class "mx-auto p-1 font-semibold"): ${(mony:dump:fh cash.mul)}
+              ;div(class "mx-auto p-1 font-semibold"): ${(mony:enjs:format:fh cash.mul)}
               ;div(class "mx-auto p-1 flex")
                 ;div(class "text-nowrap py-1 px-2 border-2 rounded-full font-medium {cas}"): {wut}
               ==

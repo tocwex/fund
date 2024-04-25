@@ -9,59 +9,47 @@
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
-  ::  FIXME: This whole function assumes a maximum of 10 milestones for
-  ::  the sake of convenience. To fix this:
-  ::  - Change `parz:fh` to allow regex arguments, e.g. ['m\dn' |]
-  ::  - Generalize logic to handle arbitrary min/max arg specs based on
-  ::    the range on continuous valid POST parameters
-  ::  FIXME: There are a lot of silent errors embedded in this function,
-  ::  which should either be made explicit or at least come with a
-  ::  warning (e.g. "unable to parse 'ses' values; bad @p given...")
   =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh hed)
-  =/  rex=(map @t bean)  %-  malt
-    %+  weld  ~[['act' &] ['nam' |] ['sum' |] ['pic' |] ['sea' |] ['seo' |] ['sxb' |] ['sxa' |] ['swa' |] ['soa' |] ['ssa' |]]
-    %+  roll  (gulf 0 9)
-    |=  [ind=@ acc=(list [@t bean])]
-    %+  weld  acc
-    (turn ~['n' 's' 'c'] |=(suf=@t [(crip "m{<ind>}{(trip suf)}") |]))
-  ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
+  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
     ::  FIXME: Go to next available name if this path is already taken
     ::  by another project (add random number suffix)
-    =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) 'nam'))])
+    =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) %nam))])
     ::  NOTE: This only accepts an assessment as legitimate if *both*
-    ::  fields are populated
-    =/  ses=(unit sess:f)  %+  both
-      (slaw %p (~(gut by p.arz) 'sea' (scot %p ~tocwex)))
-      (rush (~(gut by p.arz) 'seo' '0') royl-rs:so)
-    ?+      act=(~(got by p.arz) 'act')
-          (crip "bad act; expected (init|bump-*|dead|drop), not {(trip act)}")
-        %drop
-      ;;(act-now:f [lag %drop ~]~)
-    ::
-        %bump-born
-      ?~  pru  'project does not exist'
-      ;;(act-now:f [lag %bump %born ~]~)
+    ::  assessor and amount are specified
+    =/  ses=(unit sess:f)
+      %+  both  (slaw %p (~(gut by p.arz) %sea (scot %p ~tocwex)))
+      (rush (~(gut by p.arz) %seo %0) royl-rs:so)
+    =-  ?@(- - [lag -])
+    ^-  $@(@t prod:f)
+    ?+    act=(~(got by p.arz) %act)
+        (crip "bad act; expected (init|drop|bump-*), not {(trip act)}")
+      %drop       [%drop ~]
+      %bump-born  ?~(pru 'project does not exist' [%bump %born ~])
     ::
         %init
-      =-  ;;(act-now:f [lag %init `-]~)
-      =+  pro=*proj:f  %_  pro
-        title       (~(got by p.arz) 'nam')
-        summary     (~(gut by p.arz) 'sum' '')
-        assessment  (fall ses [~tocwex .1])
-      ::
-          image
-        =+  pic=(~(gut by p.arz) 'pic' '')
-        ?~((rush pic auri:de-purl:html) ~ `pic)
-      ::
-          milestones
-        ;;  (lest mile:f)
-        %+  murn  (gulf 0 9)
-        |=  ind=@
-        ?~  nam=(~(get by p.arz) (crip "m{<ind>}n"))  ~
-        :-  ~  =+  mil=*mile:f  %_  mil
-          title    u.nam
-          summary  (~(gut by p.arz) (crip "m{<ind>}s") '')
-          cost     (fall (rush (~(gut by p.arz) (crip "m{<ind>}c") '') royl-rs:so) .0)
+      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %m0n %m0s %m0c]))  p.arz  [%| *]
+        :+  %init  ~
+        =+  pro=*proj:f  %_  pro
+          title       (~(got by p.arz) %nam)
+          summary     (~(gut by p.arz) %sum '')
+          assessment  (fall ses [~tocwex .1])
+        ::
+            image
+          =+  pic=(~(gut by p.arz) %pic '')
+          ?~((rush pic auri:de-purl:html) ~ `pic)
+        ::
+            milestones
+          ;;  (lest mile:f)
+          =/  ind=@              0
+          =/  miz=(list mile:f)  ~
+          |-  ::  while m<i>n is a valid argument, add [m<i>n m<i>s m<i>c] to list
+          ?~  nam=(~(get by p.arz) (crip "m{<ind>}n"))  (flop miz)
+          =-  $(ind +(ind), miz [- miz])
+          =+  mil=*mile:f  %_  mil
+            title    u.nam
+            summary  (~(gut by p.arz) (crip "m{<ind>}s") '')
+            cost     (fall (rush (~(gut by p.arz) (crip "m{<ind>}c") '') royl-rs:so) .0)
+          ==
         ==
       ==
     ==
@@ -251,4 +239,4 @@
     ==
   ==
 --
-::  VERSION: [0 1 3]
+::  VERSION: [0 1 2]

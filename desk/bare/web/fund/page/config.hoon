@@ -8,14 +8,14 @@
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
-  =/  rex=(map @t bean)  (malt ~[['act' &]])
-  ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
-    =+  act=(~(got by p.arz) 'act')
-    ?.  ?=(?(%vita-enable %vita-disable) act)
-      (crip "bad act; expected (vita-*), not {(trip act)}")
-    ::  FIXME: This is a hack to support pokes that edit app-global
-    ::  (instead of project-specific) information
-    ;;(act-now:f [[our.bol %$] ?:(=(%vita-enable act) %join %exit) ~]~)
+  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
+    ?+    act=(~(got by p.arz) %act)
+        (crip "bad act; expected vita-*, not {(trip act)}")
+      ::  FIXME: This is a hack to support pokes that edit app-global
+      ::  (as opposed to project-specific) information
+      %vita-enable   [[our.bol %$] %join ~]
+      %vita-disable  [[our.bol %$] %exit ~]
+    ==
   ==
 ++  final
   |=  [gud=? txt=brief:rudder]

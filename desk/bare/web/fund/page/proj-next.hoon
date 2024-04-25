@@ -10,12 +10,11 @@
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
   =/  [lag=flag:f *]  (greb:proj:preface:fh hed)
-  =/  rex=(map @t bean)  (malt ~[['act' &]])
-  ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
-    =+  act=(~(got by p.arz) 'act')
-    ?.  ?=(%bump-prop act)
-      (crip "bad act; expected (bump-*), not {(trip act)}")
-    ;;(act-now:f [lag %bump %prop ~]~)
+  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
+    ?+    act=(~(got by p.arz) %act)
+        (crip "bad act; expected bump-prop, not {(trip act)}")
+      %bump-prop  [lag %bump %prop ~]
+    ==
   ==
 ++  final
   |=  [gud=? txt=brief:rudder]

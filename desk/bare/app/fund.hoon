@@ -114,10 +114,10 @@
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
-    ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
-    :*  (crip (poke:enjs:format:fh i.act))  ::  NOTE: Assumes first card is key
-        +.state                             ::  TODO: eager evaluate the cards?
-        (turn act |=([f=flag:f p=prod:f] (po-mk-car:(po-abed:po-core f) p.f p)))
+    ^-  [dat=dat-now:f bre=brief:rudder kaz=(list card)]
+    :*  +.state
+        (crip (poke:enjs:format:fh act))
+        [(po-mk-car:(po-abed:po-core p.act) p.p.act q.act)]~
     ==
   ==
 ::

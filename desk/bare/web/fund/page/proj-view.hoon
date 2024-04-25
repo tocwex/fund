@@ -10,100 +10,121 @@
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
   =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh hed)
-  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['sxb' |] ['sxa' |] ['swa' |] ['soa' |] ['ssa' |] ['mxb' |] ['mxa' |] ['mad' |] ['mis' |] ['mia' |] ['mit' |] ['des' |] ['dea' |] ['det' |] ['mib' |] ['mih' |] ['mii' |]])
-  ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
-    =+  act=(~(got by p.arz) 'act')
-    ?.  ?=(?(%bump-born %bump-prop %bump-lock %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib %draw-done %draw-dead %wipe-casi %wipe-cade %wipe-resi %wipe-rede) act)
-      (crip "bad act; expected (bump-*|mula), not {(trip act)}")
+  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
     =+  lin=(dec (lent milestones.pro))
-    ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
-    ?-  act
-      %bump-born  [%bump %born ~]~
-      %bump-work  [%bump %work ~]~
-      %bump-sess  [%bump %sess ~]~
-      %wipe-cade  [%wipe (bloq:dejs:format:fh (~(got by p.arz) 'mii')) ~]~
-      %wipe-rede  [%wipe lin ~]~
+    =-  ?@(- - [lag -])
+    ^-  $@(@t prod:f)
+    ?+    act=(~(got by p.arz) %act)
+        (crip "bad act; expected (bump-*|wipe-*|mula-*), not {(trip act)}")
+      %bump-born  [%bump %born ~]
+      %bump-work  [%bump %work ~]
+      %bump-sess  [%bump %sess ~]
+      %wipe-rede  [%wipe lin ~]
+    ::
+        %wipe-cade
+      ?+  arz=(parz:fh bod (sy ~[%mii]))  p.arz  [%| *]
+        [%wipe (bloq:dejs:format:fh (~(got by p.arz) %mii)) ~]
+      ==
     ::
         %wipe-casi
-      :_  ~  :+  %wipe  (bloq:dejs:format:fh (~(got by p.arz) 'mii'))
-      :^    ~
-          (sign:dejs:format:fh (~(got by p.arz) 'mis'))
-        (addr:dejs:format:fh (~(got by p.arz) 'mia'))
-      [%| (addr:dejs:format:fh (~(got by p.arz) 'mit'))]
+      ?+  arz=(parz:fh bod (sy ~[%mii %mis %mia %mit]))  p.arz  [%| *]
+        :+  %wipe  (bloq:dejs:format:fh (~(got by p.arz) %mii))
+        :^    ~
+            (sign:dejs:format:fh (~(got by p.arz) %mis))
+          (addr:dejs:format:fh (~(got by p.arz) %mia))
+        [%| (addr:dejs:format:fh (~(got by p.arz) %mit))]
+      ==
     ::
         %wipe-resi
-      :_  ~  :+  %wipe  lin
-      :^    ~
-          (sign:dejs:format:fh (~(got by p.arz) 'mis'))
-        (addr:dejs:format:fh (~(got by p.arz) 'mia'))
-      [%| (addr:dejs:format:fh (~(got by p.arz) 'mit'))]
+      ?+  arz=(parz:fh bod (sy ~[%mis %mia %mit]))  p.arz  [%| *]
+        :+  %wipe  lin
+        :^    ~
+            (sign:dejs:format:fh (~(got by p.arz) %mis))
+          (addr:dejs:format:fh (~(got by p.arz) %mia))
+        [%| (addr:dejs:format:fh (~(got by p.arz) %mit))]
+      ==
     ::
         %bump-prop
-      :_  ~  :+  %bump  %prop
-      :-  ~  =+  oat=*oath:f  %_  oat
-          sigm
-        :*  (sign:dejs:format:fh (~(got by p.arz) 'oas'))
-            (addr:dejs:format:fh (~(got by p.arz) 'oaa'))
-            [%& (crip (~(oath pj:f -.pro) p.lag))]
+      ?+  arz=(parz:fh bod (sy ~[%oas %oaa]))  p.arz  [%| *]
+        :+  %bump  %prop
+        :-  ~  =+  oat=*oath:f  %_  oat
+            sigm
+          :*  (sign:dejs:format:fh (~(got by p.arz) %oas))
+              (addr:dejs:format:fh (~(got by p.arz) %oaa))
+              [%& (crip (~(oath pj:f -.pro) p.lag))]
+          ==
         ==
       ==
     ::
         %bump-lock
-      :_  ~  :+  %bump  %lock  :-  ~
-      :*  :-  (bloq:dejs:format:fh (~(got by p.arz) 'sxb'))
-            (addr:dejs:format:fh (~(got by p.arz) 'sxa'))
-          sigm:(need contract.pro)
-          (addr:dejs:format:fh (~(got by p.arz) 'swa'))
-          (addr:dejs:format:fh (~(got by p.arz) 'soa'))
-          (addr:dejs:format:fh (~(got by p.arz) 'ssa'))
+      ?+  arz=(parz:fh bod (sy ~[%sxb %sxa %swa %soa %ssa]))  p.arz  [%| *]
+        :+  %bump  %lock  :-  ~
+        :*  :-  (bloq:dejs:format:fh (~(got by p.arz) %sxb))
+              (addr:dejs:format:fh (~(got by p.arz) %sxa))
+            sigm:(need contract.pro)
+            (addr:dejs:format:fh (~(got by p.arz) %swa))
+            (addr:dejs:format:fh (~(got by p.arz) %soa))
+            (addr:dejs:format:fh (~(got by p.arz) %ssa))
+        ==
       ==
     ::
         %bump-done
-      :_  ~  :+  %bump  %done
-      :-  ~  =+  oat=*oath:f  %_  oat
-          sigm
-        :*  (sign:dejs:format:fh (~(got by p.arz) 'mis'))
-            (addr:dejs:format:fh (~(got by p.arz) 'mia'))
-            [%| (addr:dejs:format:fh (~(got by p.arz) 'mit'))]
+      ?+  arz=(parz:fh bod (sy ~[%mis %mia %mit]))  p.arz  [%| *]
+        :+  %bump  %done
+        :-  ~  =+  oat=*oath:f  %_  oat
+            sigm
+          :*  (sign:dejs:format:fh (~(got by p.arz) %mis))
+              (addr:dejs:format:fh (~(got by p.arz) %mia))
+              [%| (addr:dejs:format:fh (~(got by p.arz) %mit))]
+          ==
         ==
       ==
     ::
         %bump-dead
-      :_  ~  :+  %bump  %dead
-      :-  ~  =+  oat=*oath:f  %_  oat
-          sigm
-        :*  (sign:dejs:format:fh (~(got by p.arz) 'des'))
-            (addr:dejs:format:fh (~(got by p.arz) 'dea'))
-            [%| (addr:dejs:format:fh (~(got by p.arz) 'det'))]
+      ?+  arz=(parz:fh bod (sy ~[%des %dea %det]))  p.arz  [%| *]
+        :+  %bump  %dead
+        :-  ~  =+  oat=*oath:f  %_  oat
+            sigm
+          :*  (sign:dejs:format:fh (~(got by p.arz) %des))
+              (addr:dejs:format:fh (~(got by p.arz) %dea))
+              [%| (addr:dejs:format:fh (~(got by p.arz) %det))]
+          ==
         ==
       ==
     ::
         %draw-done
-      :_  ~  :^  %draw
-          (bloq:dejs:format:fh (~(got by p.arz) 'mii'))
-        (bloq:dejs:format:fh (~(got by p.arz) 'mib'))
-      (addr:dejs:format:fh (~(got by p.arz) 'mih'))
+      ?+  arz=(parz:fh bod (sy ~[%mii %mib %mih]))  p.arz  [%| *]
+        :^  %draw
+            (bloq:dejs:format:fh (~(got by p.arz) %mii))
+          (bloq:dejs:format:fh (~(got by p.arz) %mib))
+        (addr:dejs:format:fh (~(got by p.arz) %mih))
+      ==
     ::
         %draw-dead
-      :_  ~  :^  %draw
-          lin
-        (bloq:dejs:format:fh (~(got by p.arz) 'mib'))
-      (addr:dejs:format:fh (~(got by p.arz) 'mih'))
+      ?+  arz=(parz:fh bod (sy ~[%mib %mih]))  p.arz  [%| *]
+        :^  %draw
+            lin
+          (bloq:dejs:format:fh (~(got by p.arz) %mib))
+        (addr:dejs:format:fh (~(got by p.arz) %mih))
+      ==
     ::
-        *  ::  mula-*
-      =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
-      =/  wen=@ud  (bloq:dejs:format:fh (~(got by p.arz) 'mxb'))
-      =/  sum=@rs  (mony:dejs:format:fh (~(got by p.arz) 'sum'))
-      =/  msg=@t  (~(got by p.arz) 'msg')
-      ?-  act
-        %mula-plej  [%mula %plej (need who) sum wen msg]~
-      ::
-          %mula-trib
-        :_  ~
-        :*  %mula  %trib  who  sum
-            :-  [wen (addr:dejs:format:fh (~(got by p.arz) 'mxa'))]
-              (addr:dejs:format:fh (~(got by p.arz) 'mad'))
-            msg
+        ?(%mula-plej %mula-trib)
+      ?+  arz=(parz:fh bod (sy ~[%mxb %sum %msg]))  p.arz  [%| *]
+        =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
+        =/  wen=@ud  (bloq:dejs:format:fh (~(got by p.arz) %mxb))
+        =/  sum=@rs  (mony:dejs:format:fh (~(got by p.arz) %sum))
+        =/  msg=@t  (~(got by p.arz) %msg)
+        ?-  act
+          %mula-plej  [%mula %plej (need who) sum wen msg]
+        ::
+            %mula-trib
+          ?+  arz=(parz:fh bod (sy ~[%mxa %mad]))  p.arz  [%| *]
+            :*  %mula  %trib  who  sum
+                :-  [wen (addr:dejs:format:fh (~(got by p.arz) %mxa))]
+                  (addr:dejs:format:fh (~(got by p.arz) %mad))
+                msg
+            ==
+          ==
         ==
       ==
     ==

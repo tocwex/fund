@@ -224,7 +224,7 @@
 ::
 ::  $act-now: action data forwarded to rudder-related POST requests
 ::
-+$  act-now  (lest poke)
++$  act-now  poke
 ::
 ::  $pag-now: base data structure for rudder-related page cores
 ::

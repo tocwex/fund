@@ -16,25 +16,21 @@
 ::
 ::  +parz: parse POST request parameters considering required arguments
 ::
-::    =+  rex=(malt ~[['required' &] ['optional' |] ...])
-::    ?+  arz=(pargs:web:f body rex)  p.arz  [%| *]
+::    ?+  arz=(parz:http bod (sy ~[%req ...]))  p.arz  [%| *]
 ::      ::  ... process `arz` here ...
 ::    ==
 ::
 ++  parz
-  |=  [bod=(unit octs) rex=(map @t bean)]
+  ::  TODO: Update this function to be capable of accepting and applying
+  ::  coercion functions to the required arguments (e.g. this must be a
+  ::  @t that can be parsed as an ethereum address @ux)
+  |=  [bod=(unit octs) rex=(set @t)]
   ^-  (each @t (map @t @t))
   ?~  bod  &+'no http request body provided'
   =/  hav=(map @t @t)  (frisk:rudder q.u.bod)
-  =-  ?:  =(0 ~(wyt in mis))  |+arz
-      &+(crip "missing required arguments: {<mis>}")
-  ^-  [mis=(set @t) arz=(map @t @t)]
-  =<  -  %+  ~(rib by rex)  [*(set @t) *(map @t @t)]
-  |=  [[arg=@t req=bean] mis=(set @t) arz=(map @t @t)]
-  :_  [arg req]
-  =/  nex=(unit @t)  (~(get by hav) arg)
-  :_  ?~(nex arz (~(put by arz) arg u.nex))
-  ?.(&(req =(~ nex)) mis (~(put in mis) arg))
+  =/  mis=(set @t)  (~(dif in rex) ~(key by hav))
+  ?:  =(0 ~(wyt in mis))  |+hav
+  &+(crip "missing required arguments: {<mis>}")
 ::
 ::  +route: rudder-related transformer of url ($trail) into (potential)
 ::  page id ($place)

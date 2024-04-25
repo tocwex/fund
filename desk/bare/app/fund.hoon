@@ -3,7 +3,8 @@
 /+  dbug, verb, tonic, vita-client
 /~  pagz  pag-now:f  /web/fund/page
 |%
-+$  card  card:agent:gall
++$  card       card:agent:gall
++$  sign-gall  sign:agent:gall
 +$  state-now  [%0 dat-now:f]
 --
 ^-  agent:gall
@@ -16,33 +17,16 @@
     +*  tis  .
         def  ~(. (default-agent tis |) bol)
         cor  ~(. +> [bol ~])
-    ++  on-init
-      ^-  (quip card _tis)
-      =^(caz state abet:init:cor [caz tis])
-    ++  on-save  !>([state epic-now:f])
-    ++  on-load
-      |=  vas=vase
-      ^-  (quip card _tis)
-      =^(caz state abet:(load:cor vas) [caz tis])
-    ++  on-poke
-      |=  [mar=mark vas=vase]
-      ^-  (quip card _tis)
-      =^(caz state abet:(poke:cor mar vas) [caz tis])
-    ++  on-watch
-      |=  pat=path
-      ^-  (quip card _tis)
-      =^(caz state abet:(watch:cor pat) [caz tis])
+    ++  on-init   =^(caz state abet:init:cor [caz tis])
+    ++  on-save   !>([state epic-now:f])
+    ++  on-load   |=(v=vase =^(caz state abet:(load:cor v) [caz tis]))
+    ++  on-poke   |=([m=mark v=vase] =^(caz state abet:(poke:cor m v) [caz tis]))
+    ++  on-watch  |=(p=path =^(caz state abet:(watch:cor p) [caz tis]))
     ++  on-peek   peek:cor
     ++  on-leave  on-leave:def
     ++  on-fail   on-fail:def
-    ++  on-agent
-      |=  [wyr=wire syn=sign:agent:gall]
-      ^-  (quip card _tis)
-      =^(caz state abet:(agent:cor wyr syn) [caz tis])
-    ++  on-arvo
-      |=  [wyr=wire syn=sign-arvo]
-      ^-  (quip card _tis)
-      =^(caz state abet:(arvo:cor wyr syn) [caz tis])
+    ++  on-agent  |=([w=wire s=sign-gall] =^(caz state abet:(agent:cor w s) [caz tis]))
+    ++  on-arvo   |=([w=wire s=sign-arvo] =^(caz state abet:(arvo:cor w s) [caz tis]))
     --
 |_  [bol=bowl:gall caz=(list card)]
 ::
@@ -161,7 +145,7 @@
   ==
 ::
 ++  agent
-  |=  [pat=(pole knot) syn=sign:agent:gall]
+  |=  [pat=(pole knot) syn=sign-gall]
   ^+  cor
   ?+    pat  cor
   ::  sss responses  ::

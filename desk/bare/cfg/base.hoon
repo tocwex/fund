@@ -1,4 +1,4 @@
-::  base.hoon : %fund default configuration file
+::  /cfg/base.hoon : %fund base configuration file
 ::
 ::    see /lib/config.hoon for more information
 ::

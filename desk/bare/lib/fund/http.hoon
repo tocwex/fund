@@ -314,7 +314,10 @@
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =+  go-base="https://fonts.googleapis.com"
-    =+  sl-base="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist"
+    ::  =+  sl-base="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist"
+    ::  IDEA: Apply transformer to all manx in order to enable pretty
+    ::  naming conventions that allow for Sail syntax definitions,
+    ::  e.g. 'ajs-click' instead of '@click'
     |^  ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
           ;head
             ;meta(charset "UTF-8");
@@ -342,10 +345,10 @@
             ::  FIXME: Make this line legible somehow
             ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
-            ;link(rel "stylesheet", href "{sl-base}/themes/light.css");
+            ::  ;link(rel "stylesheet", href "{sl-base}/themes/light.css");
             ;script(id "urbit", type "inline-module"): {enjs:config}
             ;script(src "https://unpkg.com/inline-module/index.js");
-            ;script(type "module", src "{sl-base}/shoelace-autoloader.js");
+            ::  ;script(type "module", src "{sl-base}/shoelace-autoloader.js");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)

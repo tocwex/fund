@@ -263,7 +263,7 @@
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
                 ;+  %-  prod-butn:htmx:fh  :^  %mula-plej  %black  "pledge only ~"
-                    ?.  (auth:fh bol)  "pledges only available to authenticated ships"
+                    ?.  &((auth:fh bol) (plan:fx src.bol))  "pledges only available to authenticated planets"
                     ?:  (~(has by pledges.pro) src.bol)  "you must fulfill your outstanding pledge"
                     ~
                 ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)

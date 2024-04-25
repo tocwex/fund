@@ -57,6 +57,13 @@
   |=  who=@p
   ^-  bean
   (gte 2 (met 3 who))
+::
+::  +plan: is the given identity at least as privileged as a planet?
+::
+++  plan
+  |=  who=@p
+  ^-  bean
+  (gte 4 (met 3 who))
 
 +|  %arvo
 ::

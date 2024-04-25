@@ -289,7 +289,8 @@
         ::  (so src.bol must always be the %plej attestor; no forwarding!)
         ::  NOTE: Reinstate this check once POST requests directly apply
         ::  cards locally instead of forwarding them
-        ::  ?>  =(src.bol ship.pod)
+        ?>  =(src.bol ship.pod)
+        ?>  (plan:fx src.bol)
         ?<  (~(has by pledges.pro) ship.pod)
         %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod))
       ::

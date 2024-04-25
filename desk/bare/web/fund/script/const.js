@@ -1,4 +1,4 @@
-import { FUND_DEBUG, FUND_CHAIN } from '#urbit';
+import { FUND_CHAIN } from '#urbit';
 
 export const FUND_CUT = 0.01;
 

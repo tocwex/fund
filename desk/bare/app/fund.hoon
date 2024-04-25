@@ -114,11 +114,13 @@
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
-    ^-  [dat=dat-now:f bre=brief:rudder kaz=(list card)]
-    :*  +.state
-        (crip (poke:enjs:format:fh act))
-        [(po-mk-car:(po-abed:po-core p.act) p.p.act q.act)]~
-    ==
+    ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
+    :-  (crip (poke:enjs:format:fh act))
+    ?.  =(p.p.act our.bol)
+      [+.state [(po-mk-car:(po-abed:po-core p.act) p.p.act q.act)]~]
+    ::  FIXME: A little sloppy, but it works!
+    =+  kor=^$(mar %fund-poke, vas !>(act))
+    [+.state.kor (scag (sub (lent caz.kor) (lent caz)) caz.kor)]
   ==
 ::
 ++  watch

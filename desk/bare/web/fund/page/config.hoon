@@ -35,7 +35,7 @@
       ;div(class "text-xl sm:text-2xl"): You can change your decision at any time.
       ;div(class "flex gap-2")
         ;+  (prod-butn:htmx:fh %vita-enable %green "yes ✓" ~)
-        ;+  (prod-butn:htmx:fh %vita-disable %black "no ~" ~)
+        ;+  (prod-butn:htmx:fh %vita-disable %red "no ✗" ~)
       ==
     ==
   ==

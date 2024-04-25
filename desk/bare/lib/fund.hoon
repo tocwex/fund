@@ -76,7 +76,7 @@
     =+  end==(min lin)
     =+  fos=?:(!dun cost.mil cash:(need withdrawal.mil))
     =+  fil=?:(|(end (lte:rs fre fos)) fre fos)
-    =+  pos=?~(!dun (sub:rs fos fil) .0)
+    =+  pos=?:(!dun (sub:rs fos fil) .0)
     =+  pej=?:(|(end (lte:rs pre pos)) pre pos)
     [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
   ++  mula                                       ::  project-wide $mula list

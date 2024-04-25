@@ -420,8 +420,14 @@
         =+  udr=(sig:rs ovr)
         =?  ovr  !udr  (mul:rs .-1 ovr)
         =+  tot=`@rs`(add:rs cost.odi ?:(udr .0 ovr))
-        ::  FIXME: Properly display if our overage is pledge instead of fill
-        =+  odz=`(list @rs)`~[?:(udr fill.odi cost.odi) plej.odi ovr]
+        =/  odz=(list @rs)
+          ?:  udr  ~[fill.odi plej.odi ovr]
+          =+  [fre=fill.odi pre=plej.odi]
+          =+  fos=cost.odi
+          =+  fil=?:((lte:rs fre fos) fre fos)
+          =+  pos=(sub:rs fos fil)
+          =+  pej=?:((lte:rs pre pos) pre pos)
+          ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
         ::  FIXME: Funding percentage calculations aren't right when there

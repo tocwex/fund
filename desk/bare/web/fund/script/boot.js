@@ -1,6 +1,6 @@
 import alpineTurboDriveAdapter from 'https://cdn.skypack.dev/alpine-turbo-drive-adapter';
 import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1';
-import Alpine from 'https://cdn.skypack.dev/alpinejs@3.x.x';
+import Alpine from 'https://cdn.skypack.dev/alpinejs@v3.13.9';
 import { tw, apply, setup } from 'https://cdn.skypack.dev/twind';
 import * as colors from 'https://cdn.skypack.dev/twind/colors';
 import { css } from 'https://cdn.skypack.dev/twind/css';

@@ -439,7 +439,7 @@
       '''
       import {
         txnGetURL, safeGetURL, safeGetBlock,
-        safeSign, safeDeploy, safeDepositFunds,
+        safeSignDeploy, safeExecDeploy, safeExecDeposit,
         safeSignClaim, safeExecClaim, safeSignRefund, safeExecRefund,
       } from '/apps/fund/asset/safe.js';
 
@@ -461,7 +461,7 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          safeSign({
+          safeSignDeploy({
             projectContent: document.querySelector("#fund-oath-proj").value,
           }).then(([address, signature]) => {
             document.querySelector("#fund-oath-addr").value = address;
@@ -477,7 +477,7 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          safeDeploy({
+          safeExecDeploy({
             oracleAddress: document.querySelector("#fund-safe-orac").value,
           }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
             console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
@@ -510,7 +510,7 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          safeDepositFunds({
+          safeExecDeposit({
             fundAmount: event.target.form.querySelector("input[name=sum]").value,
             fundToken: event.target.form.querySelector("select[name=tok]").value,
             safeAddress: document.querySelector("#fund-safe-addr").value,

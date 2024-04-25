@@ -31,8 +31,7 @@ export const safeGetBlock = async () => {
   return block.toString();
 };
 
-// TODO: safeSignDeploy
-export const safeSign = async ({projectContent}) => {
+export const safeSignDeploy = async ({projectContent}) => {
   const { address } = getAccount(window.Wagmi);
   const signature = await signMessage(window.Wagmi, {
     account: address,
@@ -41,8 +40,7 @@ export const safeSign = async ({projectContent}) => {
   return [address, signature];
 };
 
-// TODO: safeExecDeploy
-export const safeDeploy = async ({oracleAddress}) => {
+export const safeExecDeploy = async ({oracleAddress}) => {
   const { address: workerAddress } = getAccount(window.Wagmi);
   const deployTransaction = await writeContract(window.Wagmi, {
     abi: CONTRACT.SAFE_PROXYFACTORY.ABI,
@@ -80,8 +78,7 @@ export const safeDeploy = async ({oracleAddress}) => {
   ];
 };
 
-// TODO: safeDeposit
-export const safeDepositFunds = async ({fundAmount, fundToken, safeAddress}) => {
+export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
   const TOKEN = safeTransactionToken();
   const { address: funderAddress } = getAccount(window.Wagmi);
   // const tokenDecimals = await readContract(window.Wagmi, {

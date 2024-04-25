@@ -89,7 +89,7 @@
       ~?  dum  ">> GET @ {url} : arz({<arz>})"
       (build:tis arz msg)
     --
-  ++  conf                                       ::  config checks
+  ++  init                                       ::  initialization checks
     |=  pag=pag-now
     ^-  pag-now
     |_  [bol=bowl:gall ord=order:rudder dat=dat-now]

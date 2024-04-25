@@ -2,7 +2,7 @@
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
-%-  mine:preface:fh  %-  conf:preface:fh
+%-  mine:preface:fh  %-  init:preface:fh
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  |=([header-list:http (unit octs)] !!)

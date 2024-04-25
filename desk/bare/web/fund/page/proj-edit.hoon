@@ -3,7 +3,7 @@
 /+  f=fund, fx=fund-xtra, fh=fund-http
 /+  rudder
 %-  dump:preface:fh
-%-  mine:preface:fh  %-  conf:preface:fh  %-  (proj:preface:fh |)
+%-  mine:preface:fh  %-  init:preface:fh  %-  (proj:preface:fh |)
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply

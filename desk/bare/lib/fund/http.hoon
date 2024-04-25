@@ -382,6 +382,8 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;+  ?:  (auth bol)
+                ?:  =(our src):bol
+                  ;div.fund-butn-base: {<src.bol>}
                 ;a.fund-butn-link/"/~/logout?redirect={(trip url)}": {<src.bol>}
               ;a.fund-butn-link/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-effect: …loading…

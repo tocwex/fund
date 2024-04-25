@@ -42,6 +42,7 @@ if (window.Alpine === undefined) {
       'fund-pill': `text-nowrap px-2 py-1 border-2 rounded-full`,
       'fund-tytl-link': `text-xl font-medium duration-300 hover:text-yellow-500`,
       'fund-form-group': `flex flex-col-reverse w-full p-1 gap-1`,
+      'fund-butn-base': `text-nowrap px-2 py-1 rounded-md border-2 border-black`,
       'fund-butn-link': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
       'fund-butn-effect': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
       'fund-butn-red': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200`,

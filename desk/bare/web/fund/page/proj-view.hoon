@@ -439,18 +439,23 @@
       document.querySelector("#prod-butn-bump-prop")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeSign({
             projectContent: document.querySelector("#fund-oath-proj").value,
           }).then(([address, signature]) => {
             document.querySelector("#fund-oath-addr").value = address;
             document.querySelector("#fund-oath-sign").value = signature;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       });
       document.querySelector("#prod-butn-bump-lock")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeDeploy({
             oracleAddress: document.querySelector("#fund-safe-orac").value,
           }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
@@ -461,21 +466,29 @@
             document.querySelector("#fund-safe-oadr").value = oracleAddress;
             document.querySelector("#fund-safe-sadr").value = safeAddress;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       });
       document.querySelector("#prod-butn-mula-plej")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeGetBlock().then((block) => {
             document.querySelector("#fund-mula-xboq").value = block;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       });
       document.querySelector("#prod-butn-mula-trib")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeDepositFunds({
             fundAmount: event.target.form.querySelector("input[name=sum]").value,
             fundToken: event.target.form.querySelector("select[name=tok]").value,
@@ -486,12 +499,16 @@
             document.querySelector("#fund-mula-xboq").value = xblock;
             document.querySelector("#fund-mula-xadr").value = xhash;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       });
       document.querySelector("#prod-butn-bump-done")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeSignClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             workerAddress: document.querySelector("#fund-safe-work").value,
@@ -502,6 +519,9 @@
             event.target.form.querySelector("#fund-mile-addr").value = address;
             event.target.form.querySelector("#fund-mile-text").value = payload;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       });
@@ -509,6 +529,7 @@
       .forEach(button => button?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeExecClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             oracleAddress: document.querySelector("#fund-safe-orac").value,
@@ -522,6 +543,9 @@
             event.target.form.querySelector("#fund-mile-amin").value =
               event.target.form.querySelector("#fund-mile-idex").value;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       }));
@@ -529,6 +553,7 @@
       .forEach(button => button?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeSignRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -537,12 +562,16 @@
             document.querySelector("#fund-dead-addr").value = address;
             document.querySelector("#fund-dead-text").value = payload;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       }));
       document.querySelector("#prod-butn-draw-dead")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeExecRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -553,6 +582,9 @@
             event.target.form.querySelector("#fund-mile-bloq").value = xblock;
             event.target.form.querySelector("#fund-mile-hash").value = xhash;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       });
@@ -561,6 +593,7 @@
         // wipe-casi: wipe to cl(aim) si(gn)
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeSignClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             workerAddress: document.querySelector("#fund-safe-work").value,
@@ -573,6 +606,9 @@
             event.target.form.querySelector("#fund-mile-amin").value =
               event.target.form.querySelector("#fund-mile-idex").value;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       }));
@@ -590,6 +626,7 @@
         // wipe-resi: wipe to re(fund) si(gn)
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeSignRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -598,6 +635,9 @@
             event.target.form.querySelector("#fund-mile-addr").value = address;
             event.target.form.querySelector("#fund-mile-text").value = payload;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
           });
         }
       });

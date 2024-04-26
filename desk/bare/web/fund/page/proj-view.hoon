@@ -153,9 +153,8 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  (trip title.pro)
-  ;div#maincontent.p-2  ::  =x-data  (trip '{hello: "world!"}')
-      ::  =data-safe-addr  (addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))
-    ::  ;div(class "text-4xl sm:text-5xl", x-text "hello");
+  ;div#maincontent.p-2(x-data "proj_view")
+    ;div(class "text-4xl sm:text-5xl", x-text "proj_name");
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
@@ -428,6 +427,18 @@
               ==
             ==
           ==
+    ==
+    ;script
+      ;+  ;/
+      """
+      document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
+        'proj_name': '{<q.lag>}',
+        'safe_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
+        'safe_bloq': {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
+        'work_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
+        'orac_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
+      })));
+      """
     ==
     ;script(type "module")
       ;+  ;/  ^~  %-  trip

@@ -196,6 +196,7 @@
       [%drop ~]
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
+      ::  [%blot ...mula-like...]
       [%draw min=@ act=xact]
       [%wipe min=@ sig=(unit sigm)]
       ::  meta prods  ::

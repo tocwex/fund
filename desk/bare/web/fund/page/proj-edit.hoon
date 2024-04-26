@@ -72,7 +72,7 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
-  ;form#maincontent.p-2(method "post", autocomplete "off")
+  ;form#maincontent.p-2(method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div
           ;div(class "flex flex-wrap items-center justify-between")
@@ -80,7 +80,7 @@
             ;div(class "flex items-center gap-x-2")
               ;div(class "text-xl")
                 ; Funding Goal:
-                ;span(id "proj-cost"): ${(mony:enjs:format:fh ?~(pru .0 ~(cost pj:f -.u.pru)))}
+                ;span(x-text "proj_cost");
               ==
               ;+  (stat-pill:htmx:fh sat)
             ==
@@ -115,50 +115,69 @@
           ==
         ==
         ;div
-          ;div(class "text-3xl pt-2"): Milestones
-          ;div(id "mile-welz", class "mx-2")
+          ;div.text-3xl.pt-2: Milestones
+          ;div#milz-well.mx-2
             ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                 |=  [min=@ mil=mile:f]
                 ^-  manx
-                ;div(id "mile-well", class "my-2 p-4 border-2 border-black rounded-xl")
+                ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-black rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
-                    ;div(id "mile-head", class "text-3xl"): Milestone #{<+(min)>}
+                    ;h3(class "text-3xl"): Milestone #{<+(min)>}
                     ;+  (stat-pill:htmx:fh status.mil)
                   ==
-                  ;div
-                    ;div(class "flex")
-                      ;div(class "fund-form-group")
-                        ;input#mile-name.p-1  =name  "m{<min>}n"  =type  "text"
-                          =placeholder  "Give your milestone a title"
-                          =value  (trip title.mil);
-                        ;label(for "m{<min>}n"): milestone title
-                      ==
-                      ;div(class "fund-form-group")
-                        ;input#mile-cost.p-1  =name  "m{<min>}c"  =type  "number"
-                          =min  "0"  =max  "100000000"  =step  "0.01"
-                          =placeholder  "0"
-                          =value  ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))
-                          =onchange  "updateTotal()";
-                        ;label(for "m{<min>}c"): milestone cost ($)
-                      ==
+                  ;div(class "flex")
+                    ;div(class "fund-form-group")
+                      ;input.p-1  =name  "m{<min>}n"  =type  "text"
+                        =placeholder  "Give your milestone a title"
+                        =value  (trip title.mil);
+                      ;label(for "m{<min>}n"): milestone title
                     ==
                     ;div(class "fund-form-group")
-                      ;div(class "grow-wrap")
-                        ;textarea#mile-summ.p-1  =name  "m{<min>}s"  =rows  "3"
-                          =placeholder  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
-                          =value  (trip summary.mil)
-                          ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
-                          =oninput  "this.parentNode.dataset.replicatedValue = this.value"
-                          ; {(trip summary.mil)}
-                        ==
-                      ==
-                      ;label(for "m{<min>}s"): milestone description
+                      ::  ;input#mile-cost.p-1  =name  =type  "number"
+                      ::    =min  "0"  =max  "100000000"  =step  "0.01"
+                      ::    =placeholder  "0"
+                      ::    =value
+                      ::    =onchange  "updateTotal()";
+                      ;+  :_  ~  :-  %input
+                          ;:  welp
+                              [%class "p-1"]~
+                              [%name "m{<min>}c"]~
+                              [%type "number"]~
+                              [%required ~]~
+                              [%min "0"]~
+                              [%max "100000000"]~
+                              [%step "0.01"]~
+                              [%placeholder "0"]~
+                              [%'@change' "updateMile"]~
+                              [%value ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))]~
+                          ==
+                      ;label(for "m{<min>}c"): milestone cost ($)
                     ==
+                  ==
+                  ;div(class "fund-form-group")
+                    ;div(class "grow-wrap")
+                      ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
+                        =placeholder  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
+                        =value  (trip summary.mil)
+                        ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
+                        =oninput  "this.parentNode.dataset.replicatedValue = this.value"
+                        ; {(trip summary.mil)}
+                      ==
+                    ==
+                    ;label(for "m{<min>}s"): milestone description
                   ==
                 ==
           ==
-          ;div(class "flex justify-center mx-auto")
-            ;button#mile-butn(type "button", class "fund-butn-black"): New Milestone +
+          ;div.flex.justify-center.mx-auto
+            ::  ;button#mile-butn(type "button", class "fund-butn-black"): New Milestone +
+            ::
+            ;+  :_  ; New Milestone +
+                :-  %button
+                ;:  welp
+                    [%class "fund-butn-black"]~
+                    [%type "button"]~
+                    [%'@click' "appendMile"]~
+                ==
           ==
         ==
         ;div
@@ -203,39 +222,42 @@
       ==
     ==
     ;script
-      ;+  ;/  ^~  %-  trip
-      '''
-      // FIXME: Uncaught SyntaxError: Identifier 'updateTotal' has already been
-      // declared (caused by global declaration used w/ turbojs)
-      const updateTotal = (event) => {
-        const costDivs = document.querySelectorAll("#mile-cost");
-        const totalAmount = Array.from(costDivs).reduce((a, n) => {
-          const i = Number(n.value);
-          return a + (Number.isNaN(i) ? 0 : i);
-        }, 0);
-        document.querySelector("#proj-cost").innerText = `\$${totalAmount}`;
-      };
-      '''
-    ==
-    ;script(type "module")
-      ;+  ;/  ^~  %-  trip
-      '''
-      document.querySelector("#mile-butn").addEventListener("click", (event) => {
-        const wellDiv = document.querySelector("#mile-welz");
-        const wellClone = document.querySelector("#mile-well").cloneNode(true);
-        const wellIndex = wellDiv.childElementCount;
-        wellClone.querySelector("#mile-head").innerHTML = `Milestone #${wellIndex + 1}`;
-        ["name", "cost", "summ"].forEach(fieldName => {
-          const fieldElem = wellClone.querySelector(`#mile-${fieldName}`);
-          fieldElem.setAttribute("name", `m${wellIndex}${fieldName.at(0)}`);
-          fieldElem.value = "";
-        });
-        wellDiv.appendChild(wellClone);
-      });
-      document.querySelectorAll("textarea").forEach(textarea => {
-        textarea.parentNode.dataset.replicatedValue = textarea.value;
-      });
-      '''
+      ;+  ;/
+      """
+      document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{
+        'proj_cost': 0,
+        'mile_cost': [{(roll ?~(pru ~ milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+        init() \{
+          this.updateProj();
+          document.querySelectorAll('textarea').forEach(textarea => \{
+            textarea.parentNode.dataset.replicatedValue = textarea.value;
+          });
+        },
+        updateProj() \{
+          this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0)}`;
+        },
+        updateMile(event) \{
+          const min = Number(event.target.getAttribute('name')[1]);
+          const mav = Number(event.target.value);
+          this.mile_cost[min] = (Number.isNaN(mav) ? 0 : mav);
+          this.updateProj();
+        },
+        appendMile(event) \{
+          const wellDiv = document.querySelector('#milz-well');
+          const wellClone = document.querySelector('#mile-0').cloneNode(true);
+          const wellIndex = this.mile_cost.length;
+          wellClone.querySelector('h3').innerHTML = `Milestone #$\{wellIndex + 1}`;
+          ['m0n', 'm0c', 'm0s'].forEach(fieldName => \{
+            const fieldElem = wellClone.querySelector(`[name=$\{fieldName}]`);
+            fieldElem.setAttribute('name', `m$\{wellIndex}$\{fieldName.at(2)}`);
+            fieldElem.value = '';
+            fieldElem.innerHTML = '';
+          });
+          wellDiv.appendChild(wellClone);
+          this.mile_cost = this.mile_cost.concat([0]);
+        },
+      })));
+      """
     ==
   ==
 --

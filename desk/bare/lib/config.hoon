@@ -1,12 +1,15 @@
 /~  cfgz  (map @tas vase)  /cfg
 |%
 ++  conf                                         ::  config as map
-  =<  best
-  |%
-  ++  base  (~(got by cfgz) %base)
-  ++  beat  (snag 0 (turn (skip ~(tap by cfgz) |=([n=@ta *] =(%base n))) tail))
-  ++  best  (~(uni by base) beat)
-  --
+  ~+
+  ::  NOTE: Configuration files are ordered in precedence by the reverse
+  ::  alphabetical sorting of their file names (e.g. %base is overridden
+  ::  by %main, which is overridden by %test, etc.)
+  ^-  (map @tas vase)
+  =<  +  %^  spin
+      (sort ~(tap by cfgz) |=([[a=@ta *] [b=@ta *]] (lth a b)))
+    *(map @tas vase)
+  |=([[p=@ta n=(map @tas vase)] a=(map @tas vase)] [[p n] (~(uni by a) n)])
 ++  slot                                         ::  value of key in config
   |=  key=@tas  ~+
   ^-  vase

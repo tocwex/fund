@@ -482,6 +482,23 @@
       %done  "green-500"
       %dead  "red-500"
     ==
+  ++  copy-butn                                  ::  copy project link button
+    |=  [txt=tape]
+    :_  ; {txt}
+    :-  %button
+    :~  [%type "button"]
+        [%title "copy url"]
+        [%class "fund-butn-effect {cas}"]
+        :-  %'@click'
+        ^~  %-  trip
+        '''
+        copy(window.location.toString().replace(
+          /\/((project)|(next))\/(~[^\/]+)\/([^\/]+).*/,
+          "/project/$4/$5",
+        ));
+        swap($el, 'copied ✔️');
+        '''
+    ==
   ++  link-butn                                  ::  hyperlink/redirect button
     |=  [wer=tape tab=bean txt=tape dis=tape]
     ^-  manx

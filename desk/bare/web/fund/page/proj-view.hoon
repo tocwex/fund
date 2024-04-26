@@ -153,7 +153,9 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  (trip title.pro)
-  ;div#maincontent(class "p-2")
+  ;div#maincontent.p-2  ::  =x-data  (trip '{hello: "world!"}')
+      ::  =data-safe-addr  (addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))
+    ::  ;div(class "text-4xl sm:text-5xl", x-text "hello");
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
@@ -215,14 +217,7 @@
         ==
         ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
         ;*  ?:  ?=(?(%born %prop) sat)  ~
-            :_  ~  :_  ; share 🔗
-            :-  %button
-            :~  [%id "fund-butn-share"]
-                [%type "button"]
-                [%title "copy url"]
-                [%class "fund-butn-effect"]
-                [%'@click' "copy(window.location.toString(), '#fund-butn-share')"]
-            ==
+            :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~
           =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"

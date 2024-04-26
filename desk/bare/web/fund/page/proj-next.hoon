@@ -48,17 +48,7 @@
             'Thank you for your contribution!'
           =/  what-butn
             (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what is %fund?" ~)
-          ::  TODO: Refactor/share w/ `proj-view.hoon` source code
-          =/  share-butn
-            :_  ; share project
-            :-  %button
-            :~  [%id "fund-butn-share"]
-                [%type "button"]
-                [%title "copy url"]
-                [%class "fund-butn-effect"]
-                [%'@click' "copy(window.location.toString().replace(/\\/next\\/([^\\/]+)\\/([^\\/]+)\\/mula/, '/project/$1/$2'), '#fund-butn-share')"]
-            ==
-          :+  share-butn
+          :+  (copy-butn:htmx:fh "share project")
             (link-butn:htmx:fh (dest:enrl:format:fh pat(- %project, +>+ ~)) %| "view project" ~)
           ?-    aut
               %admin

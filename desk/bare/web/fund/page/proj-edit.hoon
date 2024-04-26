@@ -72,7 +72,7 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "project edit"
-  ;form#maincontent(method "post", autocomplete "off", class "p-2")
+  ;form#maincontent.p-2(method "post", autocomplete "off")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div
           ;div(class "flex flex-wrap items-center justify-between")

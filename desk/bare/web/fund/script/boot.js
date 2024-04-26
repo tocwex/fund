@@ -68,8 +68,17 @@ if (window.Alpine === undefined) {
       tw,
       tws,
       copy: copyTextToClipboard,
+      swap: swapContent,
     }));
   });
+
+  function swapContent(elem, text) {
+    if (elem.getAttribute("data-text") === null) {
+      elem.setAttribute("data-text", elem.innerText);
+    }
+    elem.innerText = text;
+    setTimeout(() => {elem.innerText = elem.getAttribute("data-text");}, 2000);
+  }
 
   function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement("textarea");
@@ -95,7 +104,7 @@ if (window.Alpine === undefined) {
     document.body.removeChild(textArea);
   }
 
-  function copyTextToClipboard(text, sel = "") {
+  function copyTextToClipboard(text) {
     if (!navigator.clipboard) {
       fallbackCopyTextToClipboard(text);
       return;
@@ -105,13 +114,6 @@ if (window.Alpine === undefined) {
     }, function(err) {
       console.error('Async: Could not copy text: ', err);
     });
-
-    if (sel !== "") {
-      const button = document.querySelector(sel);
-      const oldHTML = button.innerHTML;
-      button.innerHTML = "copied ✔️";
-      setTimeout(() => {button.innerHTML = oldHTML;}, 2000);
-    }
   }
 
   window.Wagmi = createConfig({

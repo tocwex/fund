@@ -147,6 +147,12 @@ export const safeExecRefund = async ({safeAddress, safeInitBlock, oracleSignatur
 // interface Cut = {cut: number, to: `0x${string}`};
 // interface Transaction = {id: Token, amt: bigint, to: `0x${string}`};
 
+// Solution from: https://stackoverflow.com/a/871646/837221
+function SafeError(message = "") {
+    this.name = "SafeError";
+    this.message = message;
+}; SafeError.prototype = Error.prototype;
+
 const safeNextSaltNonce = () => (fromHex(keccak256(toHex(Date.now())), "bigint"));
 const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT["USDC"]); // (CONTRACT[id.toUpperCase()]);
 
@@ -228,22 +234,15 @@ const safeGetTransactions = ({amount, cuts}) => {
   // FIXME: Make stronger guarantees about rounding and then remove this check
   const bigintAmount = BigInt(Math.round(amount * 10 ** CONTRACT["USDC"].DECIMALS));
   const bigintTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
-  if (bigintAmount !== bigintTotal) {
-    throw new Error(`Mismatch between requested transaction total and refund total: (${bigintAmount}, ${bigintTotal})`);
-  }
+  if (bigintAmount !== bigintTotal)
+    throw new SafeError(`mismatch between requested transaction total and refund total: (${bigintAmount}, ${bigintTotal})`);
 
   return transactions;
 };
 
 const safeGetWithdrawalArgs = async ({safe, transactions}) => {
-  // TODO: Figure out if we want to support extracting funds in
-  // an arbitrary order by milestone... as it is, this always uses
-  // the latest nonce for a safe and thus the extractions must be
-  // sequential and occur before the subsequent milestone evaluation
-  // - NOTE: Best method is probably to allow arbitrary extraction, but
-  //   to revoke an approval when using the signature doesn't work (e.g.
-  //   if the user brings their own safe and has transactions in the
-  //   meantime, or if the extractions occur out of order).
+  if (transactions.length === 0)
+    throw new SafeError(`unable to construct withdrawal for safe; no transactions provided (probably no funds available)`);
   console.log(`constructing transaction for safe ${safe} with arguments:`);
   console.log(transactions);
   const isDelegateCall = (transactions.length > 1) ? 1 : 0;

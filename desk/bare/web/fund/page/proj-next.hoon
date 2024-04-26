@@ -32,7 +32,7 @@
     (sort ~(tap in (~(rols pj:f -.pro) p.lag src.bol)) gth)
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  ~
+  :^  bol  ord  (trip title.pro)
   |^  ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
         ?+    typ.pat  !!
             %edit

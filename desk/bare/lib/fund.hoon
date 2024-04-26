@@ -106,10 +106,7 @@
   ++  oath                                       ::  text of assessment contract
     |=  wox=@p
     ^-  tape
-    =-  ;:  welp
-            "I, {<p.assessment>}, hereby agree to assess the following project "
-            "proposed by {<wox>}:\0a\0a{-}"
-        ==
+    =-  "I, {<p.assessment>}, hereby agree to assess the following project proposed by {<wox>}:\0a\0a{-}"
     %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
     %+  weld
       ^-  (list tape)

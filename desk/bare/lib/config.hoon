@@ -8,7 +8,7 @@
   ++  best  (~(uni by base) beat)
   --
 ++  slot                                         ::  value of key in config
-  |=  key=@tas
+  |=  key=@tas  ~+
   ^-  vase
   (~(got by conf) key)
 ++  enjs                                         ::  js-compatible dump of config

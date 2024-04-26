@@ -314,29 +314,23 @@
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =+  go-base="https://fonts.googleapis.com"
-    ::  =+  sl-base="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist"
-    ::  IDEA: Apply transformer to all manx in order to enable pretty
-    ::  naming conventions that allow for Sail syntax definitions,
-    ::  e.g. 'ajs-click' instead of '@click'
     |^  ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
             ::  OpenGraph Meta Tags
-            ;meta(property "og:url", content "https://tocwexsyndicate.com");
             ;meta(property "og:type", content "website");
-            ;meta(property "og:title", content "%fund - sovereign work assessment tools for humans");
-            ;meta(property "og:description", content "%fund: A sovereign webapp built by ~toxwex.syndicate on an integrated blockchain escrow ecosystem for human created, understood, and assessed 'wise contracts'.");
-            ;meta(property "og:image", content "https://avatars.githubusercontent.com/u/96998266");
-            ;meta(property "og:image:width", content "240");
-            ;meta(property "og:image:height", content "240");
+            ;meta(property "og:title", content (trip !<(@t (slot:config %meta-tytl))));
+            ;meta(property "og:description", content (trip !<(@t (slot:config %meta-desc))));
+            ;meta(property "og:url", content (trip !<(@t (slot:config %site-corp))));
+            ;meta(property "og:image", content (trip !<(@t (slot:config %meta-logo))));
             ::  Twitter/X Meta Tags
             ;meta(name "twitter:card", content "summary_large_image");
-            ;meta(property "twitter:domain", content "tocwexsyndicate.com");
-            ;meta(property "twitter:url", content "https://tocwexsyndicate.com");
-            ;meta(name "twitter:title", content "%fund - sovereign work assessment tools for humans");
-            ;meta(name "twitter:description", content "%fund: A sovereign webapp built by ~toxwex.syndicate on an integrated blockchain escrow ecosystem for human created, understood, and assessed 'wise contracts'.");
-            ;meta(name "twitter:image", content "https://avatars.githubusercontent.com/u/96998266");
+            ;meta(property "twitter:domain", content (trip !<(@t (slot:config %site-base))));
+            ;meta(property "twitter:url", content (trip !<(@t (slot:config %site-corp))));
+            ;meta(name "twitter:title", content (trip !<(@t (slot:config %meta-tytl))));
+            ;meta(name "twitter:description", content (trip !<(@t (slot:config %meta-desc))));
+            ;meta(name "twitter:image", content (trip !<(@t (slot:config %meta-logo))));
             ::  Website Meta Data/Libraries
             ;title: {(weld "%fund - " ?~(tyt "home" tyt))}
             ;link/"{(dest:enrl:format /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
@@ -345,10 +339,8 @@
             ::  FIXME: Make this line legible somehow
             ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
-            ::  ;link(rel "stylesheet", href "{sl-base}/themes/light.css");
             ;script(id "urbit", type "inline-module"): {enjs:config}
             ;script(src "https://unpkg.com/inline-module/index.js");
-            ::  ;script(type "module", src "{sl-base}/shoelace-autoloader.js");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)

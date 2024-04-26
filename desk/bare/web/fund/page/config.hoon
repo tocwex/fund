@@ -27,7 +27,7 @@
   ^-  reply:rudder
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  ~
+  :^  bol  ord  "config"
   ;form#maincontent(method "post", autocomplete "off", class "p-2 h-[80vh]")
     ;div(class "flex flex-col h-full flex-wrap justify-center items-center text-center gap-6")
       ;div(class "text-4xl sm:text-5xl")

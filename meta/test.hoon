@@ -1,4 +1,4 @@
-::  test.hoon : %fund debug configuration file
+::  /cfg/test.hoon : %fund debug configuration file
 ::
 ::    to deploy locally, run the following:
 ::

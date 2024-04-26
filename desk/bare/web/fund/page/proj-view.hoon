@@ -152,7 +152,7 @@
   =/  [nin=@ mile:f]  ~(next pj:f pro)
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  "{(trip title.pro)}"
+  :^  bol  ord  (trip title.pro)
   ;div#maincontent(class "p-2")
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
@@ -470,6 +470,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -490,6 +491,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -503,6 +505,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -523,6 +526,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -543,6 +547,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -567,6 +572,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       }));
@@ -586,6 +592,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       }));
@@ -606,6 +613,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -630,6 +638,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       }));
@@ -659,6 +668,7 @@
           }, (error) => {
             console.log(error);
             event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });

@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-next/hoon: project redirect page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
-/+  rudder
+/+  rudder, config
 %-  dump:preface:fh
 %-  init:preface:fh  %-  (proj:preface:fh &)
 ^-  pag-now:f
@@ -34,47 +34,48 @@
   %-  render:htmx:fh
   :^  bol  ord  (trip title.pro)
   |^  ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
+        =/  syt
+          :*  hep=(trip !<(@t (slot:config %site-help)))
+              hos=(trip !<(@t (slot:config %site-host)))
+              pro=(dest:enrl:format:fh pat(- %project, +>+ ~))
+          ==
+        =/  btn
+          :*  hep=(link-butn:htmx:fh hep.syt %& "what is %fund?" ~)
+              pro=(link-butn:htmx:fh pro.syt %| "view project" ~)
+              ^=  das  |=  rol=role:f
+              =+  roc=(role:enjs:format:fh rol)
+              =+  rul=(dest:enrl:format:fh /dashboard/[(crip roc)])
+              (link-butn:htmx:fh rul %| "{roc} dashboard" ~)
+          ==
         ?+    typ.pat  !!
+            %bump
+          %+  next-page  'Your project action has been submitted.'
+          [pro.btn (turn (skip roz |=(r=role:f =(%fund r))) das.btn)]
+        ::
             %edit
-          %+  next-page
-            'Your changes have been saved!'
+          %+  next-page  'Your changes have been saved!'
           :~  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓" ~)
-              (link-butn:htmx:fh (dest:enrl:format:fh pat(- %project)) %| "continue editing" ~)
-              (link-butn:htmx:fh (dest:enrl:format:fh /) %| "return home" ~)
+              =+  (dest:enrl:format:fh pat(- %project))
+                (link-butn:htmx:fh - %| "continue editing" ~)
+              pro.btn
           ==
         ::
             %mula
-          %+  next-page
-            'Thank you for your contribution!'
-          =/  what-butn
-            (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "what is %fund?" ~)
-          :+  (copy-butn:htmx:fh "share project")
-            (link-butn:htmx:fh (dest:enrl:format:fh pat(- %project, +>+ ~)) %| "view project" ~)
-          ?-    aut
-              %admin
-            :~  (link-butn:htmx:fh (dest:enrl:format:fh /dashboard/funder) %| "funder dashboard" ~)
-            ==
+          %+  next-page  'Thank you for your contribution!'
+          %+  welp  ~[(copy-butn:htmx:fh "share project") pro.btn]
+          ?-  aut
+            %admin  ~[(das.btn %fund)]
           ::
               %eauth
-            ::  FIXME: Need a real link to download %fund
-            :~  what-butn
-                (link-butn:htmx:fh "https://tocwexsyndicate.com" %& "download %fund" ~)
+            :~  hep.btn
+                (link-butn:htmx:fh "{hep.syt}/#installing-fund" %& "download %fund" ~)
             ==
           ::
               %clear
-            :~  what-butn
-                (link-butn:htmx:fh "https://redhorizon.com/join/217ddb05-07f1-4897-8c6a-d6ef76da7380" %& "get urbit" ~)
+            :~  hep.btn
+                (link-butn:htmx:fh hos.syt %& "get urbit" ~)
             ==
           ==
-        ::
-            %bump
-          %+  next-page
-            'Your project action has been submitted.'
-          :-  (link-butn:htmx:fh (dest:enrl:format:fh pat(- %project, +>+ ~)) %| "view project" ~)
-          %+  turn  (skip roz |=(r=role:f =(%fund r)))
-          |=  rol=role:f
-          =+  roc=(crip (welp (trip rol) ?:(=(%orac rol) "le" "er")))
-          (link-butn:htmx:fh (dest:enrl:format:fh /dashboard/[roc]) %| "{(trip roc)} dashboard" ~)
         ==
       ==
   ++  next-page

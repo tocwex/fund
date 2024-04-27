@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
-/+  rudder
+/+  rudder, config
 %-  dump:preface:fh
 %-  init:preface:fh  %-  (proj:preface:fh &)
 ^-  pag-now:f
@@ -145,8 +145,10 @@
   ::  NOTE: Gate non-`our` users to my ship's non-draft projects
   ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
-  =+  [wok=(~(has in roz) %work) ora=(~(has in roz) %orac) tex==(~tocwex src.bol)]
-  =+  [tym=|(wok ora) pyr=|(wok ora tex)]
+  =+  wok=(~(has in roz) %work)
+  =+  ora=(~(has in roz) %orac)
+  =+  arb==(!<(@p (slot:config %point)) src.bol)
+  =+  [tym=|(wok ora) pyr=|(wok ora arb)]
   =/  pod=odit:f  ~(odit pj:f pro)
   =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
@@ -433,10 +435,16 @@
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
         'proj_name': '{<q.lag>}',
+        'proj_oath': '{(~(oath pj:f pro) p.lag)}',
         'safe_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
         'safe_bloq': {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
         'work_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
         'orac_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
+        'orac_cut': {(mony:enjs:format:fh q.assessment.pro)},
+        'mile_cost': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+        'mile_whom': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
+        'mile_sign': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))},")))}],
+        'mile_take': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh ?~(withdrawal.n *@rs cash.u.withdrawal.n))},")))}],
       })));
       """
     ==
@@ -452,7 +460,7 @@
       // FIXME: For sign/exec transactions, verify that:
       // - The user has some wallet connected
       // - The wallet is the appropriate one based on the transaction spec (e.g.
-      //   either the worker, the oracle, or the tocwex wallet).
+      //   either the worker, the oracle, or the company wallet).
       // FIXME: Will small fractions cause problems with the signature and
       // exact matching extraction amounts?
       // TODO: Consider amending the "safeExec*" commands such that they submit

@@ -284,6 +284,14 @@
       |=  pok=^poke
       ^-  tape
       "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(%bump -.q.pok) ~ ['-' (trip +<.q.pok)])}"
+    ++  role                                     ::  %orac => "oracle"
+      |=  rol=^role
+      ^-  tape
+      ?-  rol
+        %work  "worker"
+        %orac  "oracle"
+        %fund  "funder"
+      ==
     ++  mula                                     ::  [%plej ...] => "pledged"
       |=  mul=^mula
       ^-  tape

@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base page for %fund
 ::
 /+  f=fund, fx=fund-xtra, fh=fund-http
-/+  rudder
+/+  rudder, config
 %-  dump:preface:fh
 %-  mine:preface:fh  %-  init:preface:fh  %-  (proj:preface:fh |)
 ^-  pag-now:f
@@ -14,11 +14,6 @@
     ::  FIXME: Go to next available name if this path is already taken
     ::  by another project (add random number suffix)
     =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) %nam))])
-    ::  NOTE: This only accepts an assessment as legitimate if *both*
-    ::  assessor and amount are specified
-    =/  ses=(unit sess:f)
-      %+  both  (slaw %p (~(gut by p.arz) %sea (scot %p ~tocwex)))
-      (rush (~(gut by p.arz) %seo %0) royl-rs:so)
     =-  ?@(- - [lag -])
     ^-  $@(@t prod:f)
     ?+    act=(~(got by p.arz) %act)
@@ -27,15 +22,18 @@
       %bump-born  ?~(pru 'project does not exist' [%bump %born ~])
     ::
         %init
-      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %m0n %m0s %m0c]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
         :+  %init  ~
         =+  pro=*proj:f  %_  pro
           title       (~(got by p.arz) %nam)
-          summary     (~(gut by p.arz) %sum '')
-          assessment  (fall ses [~tocwex .1])
+          summary     (~(got by p.arz) %sum)
+        ::
+            assessment
+          :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
+          (fall (rush (~(got by p.arz) %seo) royl-rs:so) .1)
         ::
             image
-          =+  pic=(~(gut by p.arz) %pic '')
+          =+  pic=(~(got by p.arz) %pic)
           ?~((rush pic auri:de-purl:html) ~ `pic)
         ::
             milestones
@@ -165,7 +163,7 @@
             ;div(class "fund-form-group")
               ;input.p-1  =name  "sea"  =type  "text"
                 =pattern  (trip '(~(([a-z]{3})|([a-z]{6})))?')
-                =placeholder  (scow %p ~tocwex)
+                =placeholder  (scow %p !<(@p (slot:config %point)))
                 =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
               ;label(for "sea"): oracle identity (star or galaxy)
             ==
@@ -205,7 +203,7 @@
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{
         'proj_cost': 0,
-        'mile_cost': [{(roll ?~(pru ~ milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+        'mile_cost': [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
         init() \{
           this.updateProj();
           document.querySelectorAll('textarea').forEach(textarea => \{

@@ -219,9 +219,10 @@
     =-  (gte hav ned)
     :-  ^-  hav=perm:f
         ?:  =(p.lag src.bol)  %boss
-        ::  FIXME: Including ~tocwex here is a hack for the Gnosis Safe arch
-        ::  and should be removed in the next version
-        ?:  |(=(p.assessment.pro src.bol) =(~tocwex src.bol))  %peer
+        ::  FIXME: Including company point here is a hack for the Gnosis
+        ::  Safe arch and should be removed in the future versions
+        =+  pyr=(sy ~[p.assessment.pro !<(@p (slot:config %point))])
+        ?:  (~(has in pyr) src.bol)  %peer
         %peon
     ^-  ned=perm:f
     ?+  -.pod    %peon

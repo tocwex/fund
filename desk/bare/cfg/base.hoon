@@ -12,6 +12,7 @@
     [%site-base !>('tocwexsyndicate.com')]
     [%site-corp !>('https://tocwexsyndicate.com')]
     [%site-help !>('https://docs.tocwexsyndicate.com')]
+    [%site-host !>('https://redhorizon.com/join/217ddb05-07f1-4897-8c6a-d6ef76da7380')]
     [%meta-tytl !>('%fund - sovereign work assessment tools for humans')]
     [%meta-logo !>('https://avatars.githubusercontent.com/u/96998266')]
     [%meta-desc !>('%fund: A sovereign webapp built by ~toxwex.syndicate on an integrated blockchain escrow ecosystem for human created, understood, and assessed "wise contracts".')]

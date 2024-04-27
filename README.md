@@ -135,6 +135,8 @@ cp sss/urbit/lib/sss.hoon full/lib/
 cp sss/urbit/sur/sss.hoon full/sur/
 git clone -b sl/improve-install-data-reliability --depth 1 https://github.com/sidnym-ladrut/vita.git vit
 cp vit/vita-client/lib/vita-client.hoon full/lib/
+git clone --depth 1 https://github.com/tinnus-napbus/manx-utils.git mut
+cp mut/lib/manx-utils.hoon full/lib/
 ```
 
 To perform a versioned release:

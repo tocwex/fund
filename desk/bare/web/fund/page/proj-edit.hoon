@@ -133,24 +133,11 @@
                       ;label(for "m{<min>}n"): milestone title
                     ==
                     ;div(class "fund-form-group")
-                      ::  ;input#mile-cost.p-1  =name  =type  "number"
-                      ::    =min  "0"  =max  "100000000"  =step  "0.01"
-                      ::    =placeholder  "0"
-                      ::    =value
-                      ::    =onchange  "updateTotal()";
-                      ;+  :_  ~  :-  %input
-                          ;:  welp
-                              [%class "p-1"]~
-                              [%name "m{<min>}c"]~
-                              [%type "number"]~
-                              [%required ~]~
-                              [%min "0"]~
-                              [%max "100000000"]~
-                              [%step "0.01"]~
-                              [%placeholder "0"]~
-                              [%'@change' "updateMile"]~
-                              [%value ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))]~
-                          ==
+                      ;input.p-1  =name  "m{<min>}c"  =type  "number"
+                        =min  "0"  =max  "100000000"  =step  "0.01"
+                        =placeholder  "0"
+                        =value  ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))
+                        =x-on-change  "updateMile";
                       ;label(for "m{<min>}c"): milestone cost ($)
                     ==
                   ==
@@ -169,15 +156,7 @@
                 ==
           ==
           ;div.flex.justify-center.mx-auto
-            ::  ;button#mile-butn(type "button", class "fund-butn-black"): New Milestone +
-            ::
-            ;+  :_  ; New Milestone +
-                :-  %button
-                ;:  welp
-                    [%class "fund-butn-black"]~
-                    [%type "button"]~
-                    [%'@click' "appendMile"]~
-                ==
+            ;button.fund-butn-black(type "button", x-on-click "appendMile"): New Milestone +
           ==
         ==
         ;div

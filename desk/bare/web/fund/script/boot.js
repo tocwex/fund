@@ -68,6 +68,7 @@ if (window.Alpine === undefined) {
       tw,
       tws,
       copy: copyTextToClipboard,
+      copp: copyProjectURL,
       swap: swapContent,
     }));
   });
@@ -78,6 +79,13 @@ if (window.Alpine === undefined) {
     }
     elem.innerText = text;
     setTimeout(() => {elem.innerText = elem.getAttribute("data-text");}, 2000);
+  }
+
+  function copyProjectURL() {
+    copyTextToClipboard(window.location.toString().replace(
+      /\/((project)|(next))\/(~[^\/]+)\/([^\/]+).*/,
+      "/project/$4/$5",
+    ));
   }
 
   function fallbackCopyTextToClipboard(text) {

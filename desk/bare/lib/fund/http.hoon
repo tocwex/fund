@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
 /+  *fund, fx=fund-xtra
-/+  config, rudder, tonic
+/+  config, mu=manx-utils, rudder, tonic
 |%
 ::
 ::  +auth: is `src.bowl` in the given bowl an authenticated user?
@@ -349,7 +349,17 @@
           ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "twind")
             ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
             ;+  head
-            ;+  bod
+            ;+  %-  ~(apply-attrs mu bod)
+                ::  FIXME: This should be made more efficient my using
+                ::  @tas/binary & comparisons (& two values, should
+                ::  result in %x-on-, then do transform and replace)
+                |=  [man=mane tap=tape]
+                :_  tap
+                ?^  man  man
+                =+  luq="x-on-"
+                =+  tan=(trip man)
+                ?.  =(luq (scag (lent luq) tan))  man
+                (crip (snap tan (dec (lent luq)) ':'))
             ;+  foot
           ==
           ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
@@ -489,15 +499,8 @@
     :~  [%type "button"]
         [%title "copy url"]
         [%class "fund-butn-effect {cas}"]
-        :-  %'@click'
-        ^~  %-  trip
-        '''
-        copy(window.location.toString().replace(
-          /\/((project)|(next))\/(~[^\/]+)\/([^\/]+).*/,
-          "/project/$4/$5",
-        ));
-        swap($el, 'copied ✔️');
-        '''
+        [%x-data ~]
+        [%x-on-click "copp(); swap($el, 'copied ✔️');"]
     ==
   ++  link-butn                                  ::  hyperlink/redirect button
     |=  [wer=tape tab=bean txt=tape dis=tape]

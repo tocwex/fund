@@ -155,14 +155,13 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  (trip title.pro)
-  ;div#maincontent.p-2(x-data "proj_view")
-    ;div(class "text-4xl sm:text-5xl", x-text "proj_name");
+  ;div#maincontent.p-2
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
           ; Goal
-          ;span#proj-cost: ${(mony:enjs:format:fh cost.pod)}
+          ;span: ${(mony:enjs:format:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
       ==
@@ -337,7 +336,7 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal
-                  ;span#proj-cost: ${(mony:enjs:format:fh cost.mil)}
+                  ;span: ${(mony:enjs:format:fh cost.mil)}
                 ==
                 ;+  (stat-pill:htmx:fh status.mil)
               ==
@@ -430,24 +429,24 @@
             ==
           ==
     ==
-    ;script
-      ;+  ;/
-      """
-      document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
-        'proj_name': '{<q.lag>}',
-        'proj_oath': '{(~(oath pj:f pro) p.lag)}',
-        'safe_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
-        'safe_bloq': {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
-        'work_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
-        'orac_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
-        'orac_cut': {(mony:enjs:format:fh q.assessment.pro)},
-        'mile_cost': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
-        'mile_whom': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
-        'mile_sign': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))},")))}],
-        'mile_take': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh ?~(withdrawal.n *@rs cash.u.withdrawal.n))},")))}],
-      })));
-      """
-    ==
+    ::  ;script
+    ::    ;+  ;/
+    ::    """
+    ::    document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
+    ::      'proj_name': '{<q.lag>}',
+    ::      'proj_oath': '{(~(oath pj:f pro) p.lag)}',
+    ::      'safe_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
+    ::      'safe_bloq': {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
+    ::      'work_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
+    ::      'orac_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
+    ::      'orac_cut': {(mony:enjs:format:fh q.assessment.pro)},
+    ::      'mile_cost': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+    ::      'mile_whom': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
+    ::      'mile_sign': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))},")))}],
+    ::      'mile_take': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh ?~(withdrawal.n *@rs cash.u.withdrawal.n))},")))}],
+    ::    })));
+    ::    """
+    ::  ==
     ;script(type "module")
       ;+  ;/  ^~  %-  trip
       '''

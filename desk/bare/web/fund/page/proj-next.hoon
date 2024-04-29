@@ -49,12 +49,12 @@
           ==
         ?+    typ.pat  !!
             %bump
-          %+  next-page  'Your project action has been submitted.'
+          %^  next-page  'Your project action has been submitted.'  ~
           [pro.btn (turn (skip roz |=(r=role:f =(%fund r))) das.btn)]
         ::
             %edit
-          %+  next-page  'Your changes have been saved!'
-          :~  (prod-butn:htmx:fh %bump-prop %green "request escrow ✓" ~)
+          %^  next-page  'Your changes have been saved!'  ~
+          :~  (prod-butn:htmx:fh %bump-prop %green "request oracle ✓" ~)
               =+  (dest:enrl:format:fh pat(- %project))
                 (link-butn:htmx:fh - %| "continue editing" ~)
               pro.btn
@@ -62,28 +62,37 @@
         ::
             %mula
           %+  next-page  'Thank you for your contribution!'
-          %+  welp  ~[(copy-butn:htmx:fh "share project") pro.btn]
           ?-  aut
-            %admin  ~[(das.btn %fund)]
+              %admin
+            :-  ~
+            ~[(copy-butn:htmx:fh "share project") pro.btn (das.btn %fund)]
           ::
               %eauth
-            :~  hep.btn
+            :-  ~
+            :~  (copy-butn:htmx:fh "share project")
+                pro.btn
+                hep.btn
                 (link-butn:htmx:fh "{hep.syt}/#installing-fund" %& "download %fund" ~)
             ==
           ::
               %clear
-            :~  hep.btn
+            :-  `'If you would like to make direct connections with the worker that you are funding, or other contributors to the project, click "get urbit" below.'
+            :~  (copy-butn:htmx:fh "share project")
+                pro.btn
+                hep.btn
                 (link-butn:htmx:fh hos.syt %& "get urbit" ~)
             ==
           ==
         ==
       ==
   ++  next-page
-    |=  [tyt=@t buz=marl]
+    |=  [tyt=@t txt=(unit @t) buz=marl]
     ^-  manx
     ;form#maincontent(method "post", autocomplete "off", class "p-2 h-[80vh]")
       ;div(class "flex flex-col h-full flex-wrap justify-center items-center text-center gap-10")
         ;div(class "text-4xl sm:text-5xl"): {(trip tyt)}
+        ;*  ?~  txt  ~
+            :_  ~  ;div(class "text-xl sm:text-2xl"): {(trip u.txt)}
         ;div(class "flex gap-2")
           ;*  buz
         ==
@@ -91,3 +100,4 @@
     ==
   --
 --
+::  VERSION: [0 2 0]

@@ -136,7 +136,7 @@
                         =placeholder  "0"
                         =value  ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))
                         =x-on-change  "updateMile";
-                      ;label(for "m{<min>}c"): milestone cost ($)
+                      ;label(for "m{<min>}c"): milestone budget ($)
                     ==
                   ==
                   ;div(class "fund-form-group")
@@ -188,7 +188,7 @@
                   %prop  ~[croc-butn drop-butn]
                 ==
             ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~)
-            ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "cancel escrow ~" ~)
+            ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "retract proposal ~" ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
               (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~)
@@ -238,4 +238,4 @@
     ==
   ==
 --
-::  VERSION: [0 1 2]
+::  VERSION: [0 2 0]

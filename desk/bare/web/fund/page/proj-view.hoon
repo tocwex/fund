@@ -196,11 +196,11 @@
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
                 ?:  &(wok ?=(%prop sat))
-                  %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize escrow ✓"
+                  %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize oracle ✓"
                   ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
                 ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
-                ?:  &(wok !ora)
+                ?:  !ora
                   ;a.fund-butn-link/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
                 ;div;
           ==
@@ -224,7 +224,11 @@
           ?.  ?=(%prop sat)  ::  contribute aside form
             :_  ~
             ;form(method "post", autocomplete "off", class cas)
-              ;div(class "p-2 text-3xl w-full"): Contribute
+              ;div(class "p-2 text-3xl w-full")
+                ;+  ?~  pej=(~(get by pledges.pro) src.bol)
+                      ;span: Contribute
+                    ;span: Fulfill Pledge
+              ==
               ;div(class "flex gap-2")
                 ;div(class "fund-form-group")
                   ;+  :_  ~  :-  %input
@@ -254,7 +258,7 @@
               ==
               ;div(class "fund-form-group")
                 ;input.p-2(name "msg", type "text", placeholder "awesome work!");
-                ;label(for "msg"): message
+                ;label(for "msg"): public message
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
                 ;+  %-  prod-butn:htmx:fh  :^  %mula-plej  %black  "pledge only ~"
@@ -462,7 +466,7 @@
       const checkConnectedAddress = (expectedAddresses, roleTitle) => {
         const { address: currentAddress } = getAccount(window.Wagmi);
         if (currentAddress === undefined)
-          throw new ConnectorNotConnectedError("Connector not connected.");
+          throw new ConnectorNotConnectedError("Wallet not connected.");
         if (
           !expectedAddresses
             .concat([FUND_SIGN_ADDR])
@@ -685,7 +689,7 @@
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           try {
-            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+            checkConnectedAddress([document.querySelector("#fund-safe-orac").value], "oracle");
           } catch(error) {
             console.log(error);
             event.target.innerHTML = "error ✗";
@@ -760,4 +764,4 @@
     ==
   ==
 --
-::  VERSION: [0 1 3]
+::  VERSION: [0 2 0]

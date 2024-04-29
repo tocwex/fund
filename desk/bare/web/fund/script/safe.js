@@ -42,6 +42,8 @@ export const safeSignDeploy = async ({projectContent}) => {
 
 export const safeExecDeploy = async ({oracleAddress}) => {
   const { address: workerAddress } = getAccount(window.Wagmi);
+  if (fromHex(oracleAddress, "bigint") === fromHex(workerAddress, "bigint"))
+    throw new SafeError(`cannot use the same wallet for the worker and oracle: ${workerAddress}`);
   const deployTransaction = await writeContract(window.Wagmi, {
     abi: CONTRACT.SAFE_PROXYFACTORY.ABI,
     address: CONTRACT.SAFE_PROXYFACTORY.ADDRESS,
@@ -148,7 +150,7 @@ export const safeExecRefund = async ({safeAddress, safeInitBlock, oracleSignatur
 // interface Transaction = {id: Token, amt: bigint, to: `0x${string}`};
 
 // Solution from: https://stackoverflow.com/a/871646/837221
-function SafeError(message = "") {
+export function SafeError(message = "") {
     this.name = "SafeError";
     this.message = message;
 }; SafeError.prototype = Error.prototype;

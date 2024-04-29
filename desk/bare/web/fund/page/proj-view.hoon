@@ -451,10 +451,26 @@
       ;+  ;/  ^~  %-  trip
       '''
       import {
-        txnGetURL, safeGetURL, safeGetBlock,
+        txnGetURL, safeGetURL, safeGetBlock, SafeError,
         safeSignDeploy, safeExecDeploy, safeExecDeposit,
         safeSignClaim, safeExecClaim, safeSignRefund, safeExecRefund,
       } from '/apps/fund/asset/safe.js';
+      import { getAccount, ConnectorNotConnectedError } from 'https://esm.sh/@wagmi/core@2.x';
+      import { fromHex } from 'https://esm.sh/viem@2.x';
+      import { FUND_SIGN_ADDR } from '#urbit';
+
+      const checkConnectedAddress = (expectedAddresses, roleTitle) => {
+        const { address: currentAddress } = getAccount(window.Wagmi);
+        if (currentAddress === undefined)
+          throw new ConnectorNotConnectedError("Connector not connected.");
+        if (
+          !expectedAddresses
+            .concat([FUND_SIGN_ADDR])
+            .map(a => fromHex(a, "bigint"))
+            .includes(fromHex(currentAddress, "bigint"))
+        )
+          throw new SafeError(`connected wallet is not the ${roleTitle} wallet for this safe; please connect one of: ${expectedAddresses.join(" ")}`);
+      };
 
       // FIXME: For sign/exec transactions, verify that:
       // - The user has some wallet connected
@@ -547,6 +563,14 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-orac").value], "oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             workerAddress: document.querySelector("#fund-safe-work").value,
@@ -569,6 +593,14 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value], "worker");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeExecClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             oracleAddress: document.querySelector("#fund-safe-orac").value,
@@ -594,6 +626,14 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -613,6 +653,14 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeExecRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -636,6 +684,14 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             workerAddress: document.querySelector("#fund-safe-work").value,
@@ -670,6 +726,14 @@
         event.preventDefault();
         if (event.target.form.reportValidity()) {
           event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,

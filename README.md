@@ -8,15 +8,7 @@ settlement and trusted identity assessment of work completion.
 Within your Urbit ship's command-line interface, enter the following command(s):
 
 ```
-|install ~firser-dister-sidnym-ladrut %fund
-```
-
-If you've installed a beta/unreleased version, expect OTAs to regularly break
-backward compatibility. To restore your desk, run the following command(s):
-
-```
-|nuke %fund
-|install ~firser-dister-sidnym-ladrut %fund
+|install ~tocwex %fund
 ```
 
 ## Build/Develop ##

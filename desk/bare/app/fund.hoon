@@ -1,50 +1,33 @@
-/+  f=fund, h=fund-http, *sss
-/+  default-agent, rudder
-/+  dbug, verb, tonic  ::  debug-only
+/+  f=fund, fh=fund-http
+/+  config, default-agent, rudder, *sss
+/+  dbug, verb, tonic, vita-client
 /~  pagz  pag-now:f  /web/fund/page
 |%
-+$  card  card:agent:gall
++$  card       card:agent:gall
++$  sign-gall  sign:agent:gall
 +$  state-now  [%0 dat-now:f]
 --
 ^-  agent:gall
 =|  state-now
 =*  state  -
-=<
-  %+  verb  &  ::  debug-only
-  %-  agent:dbug  ::  debug-only
-  %-  agent:tonic  ::  debug-only
-  |_  bol=bowl:gall
-  +*  tis  .
-      def  ~(. (default-agent tis |) bol)
-      cor  ~(. +> [bol ~])
-  ++  on-init
-    ^-  (quip card _tis)
-    =^(caz state abet:init:cor [caz tis])
-  ++  on-save  !>([state epic-now:f])
-  ++  on-load
-    |=  vas=vase
-    ^-  (quip card _tis)
-    =^(caz state abet:(load:cor vas) [caz tis])
-  ++  on-poke
-    |=  [mar=mark vas=vase]
-    ^-  (quip card _tis)
-    =^(caz state abet:(poke:cor mar vas) [caz tis])
-  ++  on-watch
-    |=  pat=path
-    ^-  (quip card _tis)
-    =^(caz state abet:(watch:cor pat) [caz tis])
-  ++  on-peek   peek:cor
-  ++  on-leave  on-leave:def
-  ++  on-fail   on-fail:def
-  ++  on-agent
-    |=  [wyr=wire syn=sign:agent:gall]
-    ^-  (quip card _tis)
-    =^(caz state abet:(agent:cor wyr syn) [caz tis])
-  ++  on-arvo
-    |=  [wyr=wire syn=sign-arvo]
-    ^-  (quip card _tis)
-    =^(caz state abet:(arvo:cor wyr syn) [caz tis])
-  --
+=<  =-  ?.  !<(bean (slot:config %debug))  -
+        (verb & (agent:dbug (agent:tonic -)))
+    %-  (agent:vita-client | !<(@p (slot:config %point)))
+    |_  bol=bowl:gall
+    +*  tis  .
+        def  ~(. (default-agent tis |) bol)
+        cor  ~(. +> [bol ~])
+    ++  on-init   =^(caz state abet:init:cor [caz tis])
+    ++  on-save   !>([state epic-now:f])
+    ++  on-load   |=(v=vase =^(caz state abet:(load:cor v) [caz tis]))
+    ++  on-poke   |=([m=mark v=vase] =^(caz state abet:(poke:cor m v) [caz tis]))
+    ++  on-watch  |=(p=path =^(caz state abet:(watch:cor p) [caz tis]))
+    ++  on-peek   peek:cor
+    ++  on-leave  on-leave:def
+    ++  on-fail   on-fail:def
+    ++  on-agent  |=([w=wire s=sign-gall] =^(caz state abet:(agent:cor w s) [caz tis]))
+    ++  on-arvo   |=([w=wire s=sign-arvo] =^(caz state abet:(arvo:cor w s) [caz tis]))
+    --
 |_  [bol=bowl:gall caz=(list card)]
 ::
 +*  da-poz  (proz-subs:sss:f bol subs)
@@ -88,6 +71,15 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([lag=flag:f pod=prod:f] vas)
+    ~?  !<(bean (slot:config %debug))   (poke:enjs:format:fh lag pod)
+    ::  FIXME: This is a hack to support pokes that edit app-global
+    ::  (instead of project-specific) information
+    ?:  =([our.bol %$] lag)
+      %-  emit
+      :*  %pass   /fund/vita
+          %agent  [our.bol dap.bol]
+          %poke   vita-client+!>([%set-enabled ?=(%join -.pod)])
+      ==
     po-abet:(po-push:(po-abed:po-core lag) pod)
   ::  sss pokes  ::
       %sss-on-rock
@@ -110,20 +102,25 @@
     po-abet:(po-pull:(po-abed:po-core (proj-flag:sss:f path.res)) res)
   ::  http pokes  ::
       %handle-http-request
-    =-  cor(caz (welp (flop kaz) caz), +.state dat)
+    =+  !<(ord=order:rudder vas)
+    =/  vaz=(list card)
+      ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
+      [(active:vita-client bol)]~
+    =-  cor(caz (welp (flop (welp kaz vaz)) caz), +.state dat)
     ^-  [kaz=(list card) dat=dat-now:f]
-    %.  [bol !<(order:rudder vas) +.state]
+    %.  [bol ord +.state]
     %-  (steer:rudder dat-now:f act-now:f)
-    :^  pagz  route:h  (fours:rudder +.state)
+    :^  pagz  route:fh  (fours:rudder +.state)
     |=  act=act-now:f
     ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
-    ~&  >>  (turn act |=([f=flag:f p=prod:f] "{(flag:dump:h f)} : {<-.p>}"))
-    =-  [bre kaz dat]
+    =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
     ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
-    :*  ~                              ::  TODO: Make this the redirect path
-        +.state                        ::  TODO: eager evaluate the cards?
-        (turn act |=([f=flag:f p=prod:f] (po-mk-car:(po-abed:po-core f) p.f p)))
-    ==
+    :-  (crip (poke:enjs:format:fh act))
+    ?.  =(p.p.act our.bol)
+      [+.state [(po-mk-car:(po-abed:po-core p.act) p.p.act q.act)]~]
+    ::  FIXME: A little sloppy, but it works!
+    =+  kor=^$(mar %fund-poke, vas !>(act))
+    [+.state.kor (scag (sub (lent caz.kor) (lent caz)) caz.kor)]
   ==
 ::
 ++  watch
@@ -150,10 +147,10 @@
   ==
 ::
 ++  agent
-  |=  [pat=(pole knot) syn=sign:agent:gall]
+  |=  [pat=(pole knot) syn=sign-gall]
   ^+  cor
   ?+    pat  cor
-  :: sss responses ::
+  ::  sss responses  ::
       [~ %sss %on-rock @ @ @ %fund %proj @ @ ~]
     (pull ~ (chit:da-poz |3:pat syn))
   ::
@@ -162,14 +159,18 @@
   ::
       [~ %sss %scry-response @ @ @ %fund %proj @ @ ~]
     (push (tell:du-poz |3:pat syn))
-  :: proxy response ::
+  ::  config responses  ::
+      [%fund %vita ~]
+    ?>  ?=(%poke-ack -.syn)
+    ?~  p.syn  cor(init.state &)
+    ((slog u.p.syn) cor)
+  ::  proxy response  ::
       [%fund %proj sip=@ nam=@ ~]
     ?>  ?=(%poke-ack -.syn)
     =/  sip=@p    (slav %p sip.pat)
-    =/  nam=@tas  (slav %tas nam.pat)
+    =/  nam=@tas  ?:(=(~ nam.pat) %$ (slav %tas nam.pat))
     ?~  p.syn  cor
-    %-  (slog u.p.syn)
-    cor
+    ((slog u.p.syn) cor)
   ==
 ::
 ++  arvo
@@ -200,10 +201,10 @@
   ++  po-da-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
   ::
   ++  po-mk-car
-    |=  [for=@p pod=prod:f]
+    |=  [who=@p pod=prod:f]
     ^-  card
     :*  %pass   po-pj-pat
-        %agent  [for dap.bol]
+        %agent  [who dap.bol]
         %poke   fund-poke+!>([lag pod])
     ==
   ++  po-do-read
@@ -218,9 +219,10 @@
     =-  (gte hav ned)
     :-  ^-  hav=perm:f
         ?:  =(p.lag src.bol)  %boss
-        ::  FIXME: Including ~tocwex here is a hack for the Gnosis Safe arch
-        ::  and should be removed in the next version
-        ?:  |(=(p.assessment.pro src.bol) =(~tocwex src.bol))  %peer
+        ::  FIXME: Including company point here is a hack for the Gnosis
+        ::  Safe arch and should be removed in the future versions
+        =+  pyr=(sy ~[p.assessment.pro !<(@p (slot:config %point))])
+        ?:  (~(has in pyr) src.bol)  %peer
         %peon
     ^-  ned=perm:f
     ?+  -.pod    %peon

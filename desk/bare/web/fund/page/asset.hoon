@@ -1,7 +1,7 @@
 ::  /web/fund/page/asset/hoon: render an arbitrary asset file (png, svg, etc.)
 ::
 /-  f=fund
-/+  rudder, s=server, h=fund-http
+/+  rudder, s=server, fh=fund-http
 ::  FIXME: This doesn't work because /~ only accepts hoon files.
 ::  /~  asez  mime  /web/fund/asset
 ::  TODO: Could use %clay .^((list path) %ct %/app/landscape) for something
@@ -11,7 +11,8 @@
 /*  tocwex-logo  %mime  /web/fund/asset/tocwex/svg
 /*  x-logo       %mime  /web/fund/asset/x/svg
 /*  github-logo  %mime  /web/fund/asset/github/svg
-/*  const-js      %mime  /web/fund/script/const/js
+/*  gear-logo    %mime  /web/fund/asset/gear/svg
+/*  const-js     %mime  /web/fund/script/const/js
 /*  boot-js      %mime  /web/fund/script/boot/js
 /*  safe-js      %mime  /web/fund/script/safe/js
 /*  fund-css     %mime  /web/fund/style/fund/css
@@ -22,13 +23,14 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  [pat=(pole knot) *]  (durl:h url.request.ord)
+  =/  pat=(pole knot)  (slag:derl:format:fh url.request.ord)
   ?>  ?=([%asset ast=@t ~] pat)
   |^  ?+  ast.pat  [%code 404 'Not found']
         %~.urbit.svg     (svg-reply urbit-logo)
         %~.tocwex.svg    (svg-reply tocwex-logo)
         %~.x.svg         (svg-reply x-logo)
         %~.github.svg    (svg-reply github-logo)
+        %~.gear.svg      (svg-reply gear-logo)
         %~.boot.js       (js-reply boot-js)
         %~.const.js      (js-reply const-js)
         %~.safe.js       (js-reply safe-js)
@@ -52,4 +54,4 @@
     [%full (%*(. js-response:gen:s cache %.y) +.mime)]
   --
 --
-::  VERSION: [0 1 3]
+::  VERSION: [0 2 0]

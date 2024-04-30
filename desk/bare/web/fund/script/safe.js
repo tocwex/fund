@@ -7,18 +7,23 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
-import { DEBUG_MODE, TOCWEX_CUT, ADDRESS, CONTRACT } from './const.js';
+import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from '#urbit';
+import { FUND_CUT, ADDRESS, CONTRACT } from './const.js';
 
 //////////////////////
 // Module Functions //
 //////////////////////
 
 export const txnGetURL = (address) => (
-  `https://${!DEBUG_MODE ? "" : "sepolia."}etherscan.io/tx/${address}`
+  `https://${
+    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN}.`
+  }etherscan.io/tx/${address}`
 );
 
 export const safeGetURL = (address) => (
-  `https://app.safe.global/home?safe=${!DEBUG_MODE ? "" : "sep:"}${address}`
+  `https://app.safe.global/home?safe=${
+    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN.substring(0, 3)}:`
+  }${address}`
 );
 
 export const safeGetBlock = async () => {
@@ -26,8 +31,7 @@ export const safeGetBlock = async () => {
   return block.toString();
 };
 
-// TODO: safeSignDeploy
-export const safeSign = async ({projectContent}) => {
+export const safeSignDeploy = async ({projectContent}) => {
   const { address } = getAccount(window.Wagmi);
   const signature = await signMessage(window.Wagmi, {
     account: address,
@@ -36,9 +40,10 @@ export const safeSign = async ({projectContent}) => {
   return [address, signature];
 };
 
-// TODO: safeExecDeploy
-export const safeDeploy = async ({oracleAddress}) => {
+export const safeExecDeploy = async ({oracleAddress}) => {
   const { address: workerAddress } = getAccount(window.Wagmi);
+  if (fromHex(oracleAddress, "bigint") === fromHex(workerAddress, "bigint"))
+    throw new SafeError(`cannot use the same wallet for the worker and oracle: ${workerAddress}`);
   const deployTransaction = await writeContract(window.Wagmi, {
     abi: CONTRACT.SAFE_PROXYFACTORY.ABI,
     address: CONTRACT.SAFE_PROXYFACTORY.ADDRESS,
@@ -49,7 +54,7 @@ export const safeDeploy = async ({oracleAddress}) => {
         abi: CONTRACT.SAFE_TEMPLATE.ABI,
         functionName: "setup",
         args: [
-          [workerAddress, oracleAddress, ADDRESS.TOCWEX_SIGNER], 2n,
+          [workerAddress, oracleAddress, FUND_SIGN_ADDR], 2n,
           // TODO: Post-setup logic (contract address, call params) needs to go here
           ADDRESS.NULL, "",
           CONTRACT.SAFE_FALLBACK.ADDRESS,
@@ -75,8 +80,7 @@ export const safeDeploy = async ({oracleAddress}) => {
   ];
 };
 
-// TODO: safeDeposit
-export const safeDepositFunds = async ({fundAmount, fundToken, safeAddress}) => {
+export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
   const TOKEN = safeTransactionToken();
   const { address: funderAddress } = getAccount(window.Wagmi);
   // const tokenDecimals = await readContract(window.Wagmi, {
@@ -145,6 +149,12 @@ export const safeExecRefund = async ({safeAddress, safeInitBlock, oracleSignatur
 // interface Cut = {cut: number, to: `0x${string}`};
 // interface Transaction = {id: Token, amt: bigint, to: `0x${string}`};
 
+// Solution from: https://stackoverflow.com/a/871646/837221
+export function SafeError(message = "") {
+    this.name = "SafeError";
+    this.message = message;
+}; SafeError.prototype = Error.prototype;
+
 const safeNextSaltNonce = () => (fromHex(keccak256(toHex(Date.now())), "bigint"));
 const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT["USDC"]); // (CONTRACT[id.toUpperCase()]);
 
@@ -163,9 +173,9 @@ const safeEncodeTransaction = ({id, amt, to}) => {
 
 const safeGetClaimTransactions = async ({fundAmount, workerAddress, oracleAddress, oracleCut}) => {
   const adminCuts = [
-    {to: ADDRESS.TOCWEX_WALLET, cut: TOCWEX_CUT},
+    {to: FUND_SAFE_ADDR, cut: FUND_CUT},
     {to: oracleAddress, cut: Number(oracleCut) / 100.0},
-    {to: workerAddress, cut: 1.0 - (TOCWEX_CUT + (Number(oracleCut) / 100.0))},
+    {to: workerAddress, cut: 1.0 - (FUND_CUT + (Number(oracleCut) / 100.0))},
   ];
   return safeGetTransactions({amount: fundAmount, cuts: adminCuts});
 };
@@ -226,22 +236,15 @@ const safeGetTransactions = ({amount, cuts}) => {
   // FIXME: Make stronger guarantees about rounding and then remove this check
   const bigintAmount = BigInt(Math.round(amount * 10 ** CONTRACT["USDC"].DECIMALS));
   const bigintTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
-  if (bigintAmount !== bigintTotal) {
-    throw new Error(`Mismatch between requested transaction total and refund total: (${bigintAmount}, ${bigintTotal})`);
-  }
+  if (bigintAmount !== bigintTotal)
+    throw new SafeError(`mismatch between requested transaction total and refund total: (${bigintAmount}, ${bigintTotal})`);
 
   return transactions;
 };
 
 const safeGetWithdrawalArgs = async ({safe, transactions}) => {
-  // TODO: Figure out if we want to support extracting funds in
-  // an arbitrary order by milestone... as it is, this always uses
-  // the latest nonce for a safe and thus the extractions must be
-  // sequential and occur before the subsequent milestone evaluation
-  // - NOTE: Best method is probably to allow arbitrary extraction, but
-  //   to revoke an approval when using the signature doesn't work (e.g.
-  //   if the user brings their own safe and has transactions in the
-  //   meantime, or if the extractions occur out of order).
+  if (transactions.length === 0)
+    throw new SafeError(`unable to construct withdrawal for safe; no transactions provided (probably no funds available)`);
   console.log(`constructing transaction for safe ${safe} with arguments:`);
   console.log(transactions);
   const isDelegateCall = (transactions.length > 1) ? 1 : 0;

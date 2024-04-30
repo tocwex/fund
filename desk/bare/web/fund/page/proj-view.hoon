@@ -1,102 +1,130 @@
 ::  /web/fund/page/proj-view/hoon: render base page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
-/+  rudder
+/+  rudder, config
+%-  dump:preface:fh
+%-  init:preface:fh  %-  (proj:preface:fh &)
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
-  =/  [pat=(list knot) *]  (durl:fh url.request.ord)
-  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  =/  rex=(map @t bean)  (malt ~[['act' &] ['sum' |] ['tok' |] ['msg' |] ['oas' |] ['oaa' |] ['mxb' |] ['mxa' |] ['mad' |] ['mis' |] ['mia' |] ['mit' |] ['des' |] ['dea' |] ['det' |] ['mib' |] ['mih' |] ['mii' |]])
-  ?+  arz=(parz:fh bod rex)  p.arz  [%| *]
-    =+  act=(~(got by p.arz) 'act')
-    ::  FIXME: This check is actually a bit redundant b/c it's checked
-    ::  again in `po-push:po-core` (see proj-edit.hoon for details).
-    ?.  ?=(?(%bump-born %bump-prop %bump-work %bump-sess %bump-done %bump-dead %mula-plej %mula-trib %draw-done %draw-dead %wipe-casi %wipe-cade %wipe-resi %wipe-rede) act)
-      (crip "bad act; expected (bump-*|mula), not {(trip act)}")
-    ?~  pro=(~(get by (prez-ours:sss:f bol dat)) lag)
-      (crip "bad act={<act>}; project doesn't exist: {<lag>}")
-    =+  lin=(dec (lent milestones.u.pro))
-    ;;  act-now:f  %-  turn  :_  |=(p=prod:f [lag p])  ^-  (list prod:f)
-    ?-  act
-      %bump-born  [%bump %born ~]~
-      %bump-work  [%bump %work ~]~
-      %bump-sess  [%bump %sess ~]~
-      %wipe-cade  [%wipe (bloq:take:fh (~(got by p.arz) 'mii')) ~]~
-      %wipe-rede  [%wipe lin ~]~
+  =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh hed)
+  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
+    =+  lin=(dec (lent milestones.pro))
+    =-  ?@(- - [lag -])
+    ^-  $@(@t prod:f)
+    ?+    act=(~(got by p.arz) %act)
+        (crip "bad act; expected (bump-*|wipe-*|mula-*), not {(trip act)}")
+      %bump-born  [%bump %born ~]
+      %bump-work  [%bump %work ~]
+      %bump-sess  [%bump %sess ~]
+      %wipe-rede  [%wipe lin ~]
+    ::
+        %wipe-cade
+      ?+  arz=(parz:fh bod (sy ~[%mii]))  p.arz  [%| *]
+        [%wipe (bloq:dejs:format:fh (~(got by p.arz) %mii)) ~]
+      ==
     ::
         %wipe-casi
-      :_  ~  :+  %wipe  (bloq:take:fh (~(got by p.arz) 'mii'))
-      :^    ~
-          (sign:take:fh (~(got by p.arz) 'mis'))
-        (addr:take:fh (~(got by p.arz) 'mia'))
-      [%| (addr:take:fh (~(got by p.arz) 'mit'))]
+      ?+  arz=(parz:fh bod (sy ~[%mii %mis %mia %mit]))  p.arz  [%| *]
+        :+  %wipe  (bloq:dejs:format:fh (~(got by p.arz) %mii))
+        :^    ~
+            (sign:dejs:format:fh (~(got by p.arz) %mis))
+          (addr:dejs:format:fh (~(got by p.arz) %mia))
+        [%| (addr:dejs:format:fh (~(got by p.arz) %mit))]
+      ==
     ::
         %wipe-resi
-      :_  ~  :+  %wipe  lin
-      :^    ~
-          (sign:take:fh (~(got by p.arz) 'mis'))
-        (addr:take:fh (~(got by p.arz) 'mia'))
-      [%| (addr:take:fh (~(got by p.arz) 'mit'))]
+      ?+  arz=(parz:fh bod (sy ~[%mis %mia %mit]))  p.arz  [%| *]
+        :+  %wipe  lin
+        :^    ~
+            (sign:dejs:format:fh (~(got by p.arz) %mis))
+          (addr:dejs:format:fh (~(got by p.arz) %mia))
+        [%| (addr:dejs:format:fh (~(got by p.arz) %mit))]
+      ==
     ::
         %bump-prop
-      :_  ~  :+  %bump  %prop
-      :-  ~  =+  oat=*oath:f  %_  oat
-          sigm
-        :*  (sign:take:fh (~(got by p.arz) 'oas'))
-            (addr:take:fh (~(got by p.arz) 'oaa'))
-            [%& (crip (~(oath pj:f -.u.pro) p.lag))]
+      ?+  arz=(parz:fh bod (sy ~[%oas %oaa]))  p.arz  [%| *]
+        :+  %bump  %prop
+        :-  ~  =+  oat=*oath:f  %_  oat
+            sigm
+          :*  (sign:dejs:format:fh (~(got by p.arz) %oas))
+              (addr:dejs:format:fh (~(got by p.arz) %oaa))
+              [%& (crip (~(oath pj:f -.pro) p.lag))]
+          ==
+        ==
+      ==
+    ::
+        %bump-lock
+      ?+  arz=(parz:fh bod (sy ~[%sxb %sxa %swa %soa %ssa]))  p.arz  [%| *]
+        :+  %bump  %lock  :-  ~
+        :*  :-  (bloq:dejs:format:fh (~(got by p.arz) %sxb))
+              (addr:dejs:format:fh (~(got by p.arz) %sxa))
+            sigm:(need contract.pro)
+            (addr:dejs:format:fh (~(got by p.arz) %swa))
+            (addr:dejs:format:fh (~(got by p.arz) %soa))
+            (addr:dejs:format:fh (~(got by p.arz) %ssa))
         ==
       ==
     ::
         %bump-done
-      :_  ~  :+  %bump  %done
-      :-  ~  =+  oat=*oath:f  %_  oat
-          sigm
-        :*  (sign:take:fh (~(got by p.arz) 'mis'))
-            (addr:take:fh (~(got by p.arz) 'mia'))
-            [%| (addr:take:fh (~(got by p.arz) 'mit'))]
+      ?+  arz=(parz:fh bod (sy ~[%mis %mia %mit]))  p.arz  [%| *]
+        :+  %bump  %done
+        :-  ~  =+  oat=*oath:f  %_  oat
+            sigm
+          :*  (sign:dejs:format:fh (~(got by p.arz) %mis))
+              (addr:dejs:format:fh (~(got by p.arz) %mia))
+              [%| (addr:dejs:format:fh (~(got by p.arz) %mit))]
+          ==
         ==
       ==
     ::
         %bump-dead
-      :_  ~  :+  %bump  %dead
-      :-  ~  =+  oat=*oath:f  %_  oat
-          sigm
-        :*  (sign:take:fh (~(got by p.arz) 'des'))
-            (addr:take:fh (~(got by p.arz) 'dea'))
-            [%| (addr:take:fh (~(got by p.arz) 'det'))]
+      ?+  arz=(parz:fh bod (sy ~[%des %dea %det]))  p.arz  [%| *]
+        :+  %bump  %dead
+        :-  ~  =+  oat=*oath:f  %_  oat
+            sigm
+          :*  (sign:dejs:format:fh (~(got by p.arz) %des))
+              (addr:dejs:format:fh (~(got by p.arz) %dea))
+              [%| (addr:dejs:format:fh (~(got by p.arz) %det))]
+          ==
         ==
       ==
     ::
         %draw-done
-      :_  ~  :^  %draw
-          (bloq:take:fh (~(got by p.arz) 'mii'))
-        (bloq:take:fh (~(got by p.arz) 'mib'))
-      (addr:take:fh (~(got by p.arz) 'mih'))
+      ?+  arz=(parz:fh bod (sy ~[%mii %mib %mih]))  p.arz  [%| *]
+        :^  %draw
+            (bloq:dejs:format:fh (~(got by p.arz) %mii))
+          (bloq:dejs:format:fh (~(got by p.arz) %mib))
+        (addr:dejs:format:fh (~(got by p.arz) %mih))
+      ==
     ::
         %draw-dead
-      :_  ~  :^  %draw
-          lin
-        (bloq:take:fh (~(got by p.arz) 'mib'))
-      (addr:take:fh (~(got by p.arz) 'mih'))
+      ?+  arz=(parz:fh bod (sy ~[%mib %mih]))  p.arz  [%| *]
+        :^  %draw
+            lin
+          (bloq:dejs:format:fh (~(got by p.arz) %mib))
+        (addr:dejs:format:fh (~(got by p.arz) %mih))
+      ==
     ::
-        *  ::  mula-*
-      =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
-      =/  wen=@ud  (bloq:take:fh (~(got by p.arz) 'mxb'))
-      =/  sum=@rs  (mony:take:fh (~(got by p.arz) 'sum'))
-      =/  msg=@t  (~(got by p.arz) 'msg')
-      ?-  act
-        %mula-plej  [%mula %plej (need who) sum wen msg]~
-      ::
-          %mula-trib
-        :_  ~
-        :*  %mula  %trib  who  sum
-            :-  [wen (addr:take:fh (~(got by p.arz) 'mxa'))]
-              (addr:take:fh (~(got by p.arz) 'mad'))
-            msg
+        ?(%mula-plej %mula-trib)
+      ?+  arz=(parz:fh bod (sy ~[%mxb %sum %msg]))  p.arz  [%| *]
+        =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
+        =/  wen=@ud  (bloq:dejs:format:fh (~(got by p.arz) %mxb))
+        =/  sum=@rs  (mony:dejs:format:fh (~(got by p.arz) %sum))
+        =/  msg=@t  (~(got by p.arz) %msg)
+        ?-  act
+          %mula-plej  [%mula %plej (need who) sum wen msg]
+        ::
+            %mula-trib
+          ?+  arz=(parz:fh bod (sy ~[%mxa %mad]))  p.arz  [%| *]
+            :*  %mula  %trib  who  sum
+                :-  [wen (addr:dejs:format:fh (~(got by p.arz) %mxa))]
+                  (addr:dejs:format:fh (~(got by p.arz) %mad))
+                msg
+            ==
+          ==
         ==
       ==
     ==
@@ -104,46 +132,44 @@
 ++  final  ::  POST render
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  ?.  gud  [%code 500 txt]
-  ::  FIXME: This is a hack to force the page to reload. We can't just
-  ::  call `+build` because edits are lazily evaluated via cards (this
-  ::  is always true if `!=(our.bol src.bol)`)
-  :+  %next  (crip (aurl:fh -:(durl:fh url.request.ord)))
-  ?~(txt 'invalid edit to project (see dojo for details)' txt)
+  =/  [lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  :-  %next  :_  ~
+  (desc:enrl:format:fh /next/(scot %p p.lag)/[q.lag]/[?:(=(%mula pyp) %mula %bump)])
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  [pat=(list knot) *]  (durl:fh url.request.ord)
-  =/  lag=flag:f  [(slav %p (snag 1 pat)) (slav %tas (snag 2 pat))]
-  ?~  pre=(~(get by (prez-ours:sss:f bol dat)) lag)  [%code 404 '']
-  =*  pro  -.u.pre
+  =/  pat=(list knot)  (slag:derl:format:fh url.request.ord)
+  =/  [lag=flag:f pre=prej:f]  (greb:proj:preface:fh arz)
+  =*  pro  -.pre
   =/  sat=stat:f  ~(stat pj:f pro)
   ::  NOTE: Gate non-`our` users to my ship's non-draft projects
-  ?:  &(!=(our.bol src.bol) |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
+  ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
-  =+  [wok=(~(has in roz) %work) ora=(~(has in roz) %orac) tex==(~tocwex src.bol)]
-  =+  [tym=|(wok ora) pyr=|(wok ora tex)]
+  =+  wok=(~(has in roz) %work)
+  =+  ora=(~(has in roz) %orac)
+  =+  arb==(!<(@p (slot:config %point)) src.bol)
+  =+  [tym=|(wok ora) pyr=|(wok ora arb)]
   =/  pod=odit:f  ~(odit pj:f pro)
   =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
   :-  %page
   %-  render:htmx:fh
-  :^  bol  ord  "{(trip title.pro)}"
-  ;div#maincontent(class "p-2")
+  :^  bol  ord  (trip title.pro)
+  ;div#maincontent.p-2
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
-          ; Funding Goal
-          ;span#proj-cost: ${(mony:dump:fh cost.pod)}
+          ; Goal
+          ;span: ${(mony:enjs:format:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
       ==
       ;div.hidden
-        ;data#fund-safe-addr(value (addr:dump:fh ?~(contract.pro 0x0 safe.u.contract.pro)));
-        ;data#fund-safe-bloq(value (bloq:dump:fh ?~(contract.pro 0 p.xact.u.contract.pro)));
-        ;data#fund-safe-work(value (addr:dump:fh ?~(contract.pro 0x0 work.u.contract.pro)));
-        ;data#fund-safe-orac(value (addr:dump:fh ?~(contract.pro 0x0 orac.u.contract.pro)));
+        ;data#fund-safe-addr(value (addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro)));
+        ;data#fund-safe-bloq(value (bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro)));
+        ;data#fund-safe-work(value (addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro)));
+        ;data#fund-safe-orac(value (addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)));
       ==
     ==
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
@@ -158,9 +184,9 @@
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
                 ?.  wok
-                  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): send message →
+                  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): send message →
                 ?:  ?=(?(%born %prop) sat)
-                  ;a.fund-butn-link/"{(aurl:fh (snoc pat %edit))}": edit project →
+                  ;a.fund-butn-link/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
                 ?.  ?=(?(%done %dead) sat)
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
                 ;div;
@@ -169,26 +195,40 @@
             ;div(class "text-sm font-light underline"): trusted oracle
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
-                ?.  ora
-                  ;a.fund-butn-link/"{(curl:fh p.assessment.pro)}"(target "_blank"): send message →
-                ?.  ?=(?(%born %prop %done %dead) sat)
+                ?:  &(wok ?=(%prop sat))
+                  %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize oracle ✓"
+                  ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
                   (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
+                ?:  !ora
+                  ;a.fund-butn-link/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
                 ;div;
           ==
           ;div.hidden
             ;input#fund-dead-sign(name "des", type "text");
             ;input#fund-dead-addr(name "dea", type "text");
             ;input#fund-dead-text(name "det", type "text");
+            ;input#fund-safe-xboq(name "sxb", type "text");
+            ;input#fund-safe-xadr(name "sxa", type "text");
+            ;input#fund-safe-wadr(name "swa", type "text");
+            ;input#fund-safe-oadr(name "soa", type "text");
+            ;input#fund-safe-sadr(name "ssa", type "text");
           ==
         ==
         ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
+        ;*  ?:  ?=(?(%born %prop) sat)  ~
+            :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~
           =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"
           ?.  ?=(%prop sat)  ::  contribute aside form
             :_  ~
             ;form(method "post", autocomplete "off", class cas)
-              ;div(class "p-2 text-3xl w-full"): Contribute
+              ;div(class "p-2 text-3xl w-full")
+                ;+  ?~  pej=(~(get by pledges.pro) src.bol)
+                      ;span: Contribute
+                    ;span: Fulfill Pledge
+              ==
               ;div(class "flex gap-2")
                 ;div(class "fund-form-group")
                   ;+  :_  ~  :-  %input
@@ -202,7 +242,7 @@
                           [%placeholder "10"]~
                           [%class "p-2"]~
                           ?~  pej=(~(get by pledges.pro) src.bol)  ~
-                          ~[[%readonly ~] [%value (mony:dump:fh cash.u.pej)]]
+                          ~[[%readonly ~] [%value (mony:enjs:format:fh cash.u.pej)]]
                       ==
                   ;label(for "sum"): amount ($)
                 ==
@@ -218,11 +258,11 @@
               ==
               ;div(class "fund-form-group")
                 ;input.p-2(name "msg", type "text", placeholder "awesome work!");
-                ;label(for "msg"): message
+                ;label(for "msg"): public message
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
                 ;+  %-  prod-butn:htmx:fh  :^  %mula-plej  %black  "pledge only ~"
-                    ?.  (auth:fh bol)  "pledges only available to authenticated ships"
+                    ?.  &((auth:fh bol) (plan:fx src.bol))  "pledges only available to authenticated planets"
                     ?:  (~(has by pledges.pro) src.bol)  "you must fulfill your outstanding pledge"
                     ~
                 ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)
@@ -233,7 +273,7 @@
                 ;input#fund-mula-xadr(name "mxa", type "text");
               ==
             ==
-          ?:  (~(has in roz) %orac)  ::  oracle acceptance form
+          ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
             :_  ~
             ;form(method "post", autocomplete "off", class cas)
               ;div(class "p-2 text-3xl w-full"): Review Request
@@ -247,7 +287,7 @@
                   ;span:  is offering the following compensation for your services:
                 ==
                 ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
-                  ;span(class "font-medium"): {(mony:dump:fh q.assessment.pro)}%
+                  ;span(class "font-medium"): {(mony:enjs:format:fh q.assessment.pro)}%
                   ;span:  of each milestone payout upon completed assessment
                 ==
                 ;div(class "p-2")
@@ -262,8 +302,7 @@
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
                 ;+  (prod-butn:htmx:fh %bump-born %black "decline ~" ~)
-                ;+  %-  prod-butn:htmx:fh  :^  %bump-prop  %green  "accept ✓"
-                    ?~(contract.pro ~ "awaiting confirmation from project worker")
+                ;+  (prod-butn:htmx:fh %bump-prop %green "accept ✓" ~)
               ==
               ;div.hidden
                 ;data#fund-oath-proj(value (~(oath pj:f pro) p.lag));
@@ -283,7 +322,7 @@
           ==
           ;div(class "flex gap-2")
             ; Goal
-            ;span(class "font-medium"): ${(mony:dump:fh cost.pod)}
+            ;span(class "font-medium"): ${(mony:enjs:format:fh cost.pod)}
           ==
         ==
         ;+  (odit-ther:htmx:fh pod)
@@ -301,7 +340,7 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal
-                  ;span#proj-cost: ${(mony:dump:fh cost.mil)}
+                  ;span: ${(mony:enjs:format:fh cost.mil)}
                 ==
                 ;+  (stat-pill:htmx:fh status.mil)
               ==
@@ -318,14 +357,14 @@
                     :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~)
                   ::
                       ?.  &(cur ora ?=(%sess status.mil))  ~
-                    :~  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): message worker →
+                    :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
                         (prod-butn:htmx:fh %bump-work %black "changes required ~" ~)
                         (prod-butn:htmx:fh %bump-done %green "approve ✓" ~)
                     ==
                   ::
                   ::
                       ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
-                    :~  ;a.fund-butn-link/"{(curl:fh p.lag)}"(target "_blank"): message worker →
+                    :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
                         (prod-butn:htmx:fh %wipe-casi %green "reapprove ✓" ~)
                     ==
                   ::
@@ -351,11 +390,11 @@
                   ==
             ==
             ;div.hidden
-              ;data#fund-mile-cost(value (mony:dump:fh fill.oil));
-              ;data#fund-mile-ocut(value (mony:dump:fh q.assessment.pro));
-              ;data#fund-mile-awho(value (addr:dump:fh ?~(withdrawal.mil *@ux from.sigm.u.withdrawal.mil)));
-              ;data#fund-mile-asig(value (sign:dump:fh ?~(withdrawal.mil *@ux sign.sigm.u.withdrawal.mil)));
-              ;data#fund-mile-atak(value (mony:dump:fh ?~(withdrawal.mil *@rs cash.u.withdrawal.mil)));
+              ;data#fund-mile-cost(value (mony:enjs:format:fh fill.oil));
+              ;data#fund-mile-ocut(value (mony:enjs:format:fh q.assessment.pro));
+              ;data#fund-mile-awho(value (addr:enjs:format:fh ?~(withdrawal.mil *@ux from.sigm.u.withdrawal.mil)));
+              ;data#fund-mile-asig(value (sign:enjs:format:fh ?~(withdrawal.mil *@ux sign.sigm.u.withdrawal.mil)));
+              ;data#fund-mile-atak(value (mony:enjs:format:fh ?~(withdrawal.mil *@rs cash.u.withdrawal.mil)));
               ;data#fund-mile-idex(value "{<min>}");
               ;input#fund-mile-sign(name "mis", type "text");
               ;input#fund-mile-addr(name "mia", type "text");
@@ -387,25 +426,60 @@
               ;div(class "p-1"): {(trip note.mul)}
             ==
             ;div(class "flex flex-wrap sm:flex-nowrap items-center")
-              ;div(class "mx-auto p-1 font-semibold"): ${(mony:dump:fh cash.mul)}
+              ;div(class "mx-auto p-1 font-semibold"): ${(mony:enjs:format:fh cash.mul)}
               ;div(class "mx-auto p-1 flex")
                 ;div(class "text-nowrap py-1 px-2 border-2 rounded-full font-medium {cas}"): {wut}
               ==
             ==
           ==
     ==
+    ::  ;script
+    ::    ;+  ;/
+    ::    """
+    ::    document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
+    ::      'proj_name': '{<q.lag>}',
+    ::      'proj_oath': '{(~(oath pj:f pro) p.lag)}',
+    ::      'safe_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
+    ::      'safe_bloq': {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
+    ::      'work_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
+    ::      'orac_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
+    ::      'orac_cut': {(mony:enjs:format:fh q.assessment.pro)},
+    ::      'mile_cost': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+    ::      'mile_whom': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
+    ::      'mile_sign': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))},")))}],
+    ::      'mile_take': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh ?~(withdrawal.n *@rs cash.u.withdrawal.n))},")))}],
+    ::    })));
+    ::    """
+    ::  ==
     ;script(type "module")
       ;+  ;/  ^~  %-  trip
       '''
       import {
-        txnGetURL, safeGetBlock, safeSign, safeDepositFunds,
+        txnGetURL, safeGetURL, safeGetBlock, SafeError,
+        safeSignDeploy, safeExecDeploy, safeExecDeposit,
         safeSignClaim, safeExecClaim, safeSignRefund, safeExecRefund,
       } from '/apps/fund/asset/safe.js';
+      import { getAccount, ConnectorNotConnectedError } from 'https://esm.sh/@wagmi/core@2.x';
+      import { fromHex } from 'https://esm.sh/viem@2.x';
+      import { FUND_SIGN_ADDR } from '#urbit';
+
+      const checkConnectedAddress = (expectedAddresses, roleTitle) => {
+        const { address: currentAddress } = getAccount(window.Wagmi);
+        if (currentAddress === undefined)
+          throw new ConnectorNotConnectedError("Wallet not connected.");
+        if (
+          !expectedAddresses
+            .concat([FUND_SIGN_ADDR])
+            .map(a => fromHex(a, "bigint"))
+            .includes(fromHex(currentAddress, "bigint"))
+        )
+          throw new SafeError(`connected wallet is not the ${roleTitle} wallet for this safe; please connect one of: ${expectedAddresses.join(" ")}`);
+      };
 
       // FIXME: For sign/exec transactions, verify that:
       // - The user has some wallet connected
       // - The wallet is the appropriate one based on the transaction spec (e.g.
-      //   either the worker, the oracle, or the tocwex wallet).
+      //   either the worker, the oracle, or the company wallet).
       // FIXME: Will small fractions cause problems with the signature and
       // exact matching extraction amounts?
       // TODO: Consider amending the "safeExec*" commands such that they submit
@@ -419,28 +493,60 @@
       document.querySelector("#prod-butn-bump-prop")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
-          safeSign({
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          safeSignDeploy({
             projectContent: document.querySelector("#fund-oath-proj").value,
           }).then(([address, signature]) => {
             document.querySelector("#fund-oath-addr").value = address;
             document.querySelector("#fund-oath-sign").value = signature;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
+          });
+        }
+      });
+      document.querySelector("#prod-butn-bump-lock")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          safeExecDeploy({
+            oracleAddress: document.querySelector("#fund-safe-orac").value,
+          }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
+            console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
+            document.querySelector("#fund-safe-xboq").value = xblock;
+            document.querySelector("#fund-safe-xadr").value = xhash;
+            document.querySelector("#fund-safe-wadr").value = workerAddress;
+            document.querySelector("#fund-safe-oadr").value = oracleAddress;
+            document.querySelector("#fund-safe-sadr").value = safeAddress;
+            event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
       document.querySelector("#prod-butn-mula-plej")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
           safeGetBlock().then((block) => {
             document.querySelector("#fund-mula-xboq").value = block;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
       document.querySelector("#prod-butn-mula-trib")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
-          safeDepositFunds({
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          safeExecDeposit({
             fundAmount: event.target.form.querySelector("input[name=sum]").value,
             fundToken: event.target.form.querySelector("select[name=tok]").value,
             safeAddress: document.querySelector("#fund-safe-addr").value,
@@ -450,12 +556,25 @@
             document.querySelector("#fund-mula-xboq").value = xblock;
             document.querySelector("#fund-mula-xadr").value = xhash;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
       document.querySelector("#prod-butn-bump-done")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-orac").value], "oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             workerAddress: document.querySelector("#fund-safe-work").value,
@@ -466,6 +585,10 @@
             event.target.form.querySelector("#fund-mile-addr").value = address;
             event.target.form.querySelector("#fund-mile-text").value = payload;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -473,6 +596,15 @@
       .forEach(button => button?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value], "worker");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeExecClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             oracleAddress: document.querySelector("#fund-safe-orac").value,
@@ -486,6 +618,10 @@
             event.target.form.querySelector("#fund-mile-amin").value =
               event.target.form.querySelector("#fund-mile-idex").value;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       }));
@@ -493,6 +629,15 @@
       .forEach(button => button?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -501,12 +646,25 @@
             document.querySelector("#fund-dead-addr").value = address;
             document.querySelector("#fund-dead-text").value = payload;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       }));
       document.querySelector("#prod-butn-draw-dead")?.addEventListener("click", (event) => {
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeExecRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -517,6 +675,10 @@
             event.target.form.querySelector("#fund-mile-bloq").value = xblock;
             event.target.form.querySelector("#fund-mile-hash").value = xhash;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -525,6 +687,15 @@
         // wipe-casi: wipe to cl(aim) si(gn)
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-orac").value], "oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignClaim({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             workerAddress: document.querySelector("#fund-safe-work").value,
@@ -537,6 +708,10 @@
             event.target.form.querySelector("#fund-mile-amin").value =
               event.target.form.querySelector("#fund-mile-idex").value;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       }));
@@ -554,6 +729,15 @@
         // wipe-resi: wipe to re(fund) si(gn)
         event.preventDefault();
         if (event.target.form.reportValidity()) {
+          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+          try {
+            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
+          } catch(error) {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            alert(error.message);
+            return;
+          }
           safeSignRefund({
             safeAddress: document.querySelector("#fund-safe-addr").value,
             safeInitBlock: document.querySelector("#fund-safe-bloq").value,
@@ -562,6 +746,10 @@
             event.target.form.querySelector("#fund-mile-addr").value = address;
             event.target.form.querySelector("#fund-mile-text").value = payload;
             event.target.form.requestSubmit(event.target);
+          }, (error) => {
+            console.log(error);
+            event.target.innerHTML = "error ✗";
+            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
           });
         }
       });
@@ -576,4 +764,4 @@
     ==
   ==
 --
-::  VERSION: [0 1 3]
+::  VERSION: [0 2 0]

@@ -8,15 +8,7 @@ settlement and trusted identity assessment of work completion.
 Within your Urbit ship's command-line interface, enter the following command(s):
 
 ```
-|install ~firser-dister-sidnym-ladrut %fund
-```
-
-If you've installed a beta/unreleased version, expect OTAs to regularly break
-backward compatibility. To restore your desk, run the following command(s):
-
-```
-|nuke %fund
-|install ~firser-dister-sidnym-ladrut %fund
+|install ~tocwex %fund
 ```
 
 ## Build/Develop ##
@@ -120,7 +112,7 @@ find bare -type f | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); 
 mkdir -p full/lib/ full/mar full/sur
 ln -sr ../LICENSE.txt full/license.txt
 # git clone --depth 1 https://github.com/urbit/yard yar
-git clone -b 412k-rc2 --depth 1 https://github.com/urbit/urbit.git urb
+git clone -b 411k --depth 1 https://github.com/urbit/urbit.git urb
 cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*} full/lib/
 cp urb/pkg/arvo/sur/verb.hoon full/sur/
 git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
@@ -133,16 +125,10 @@ cp gat/tonic/mar/cass.hoon full/mar/
 git clone -b sl/fix-scry-request-agent-wire --depth 1 https://github.com/sidnym-ladrut/sss.git sss
 cp sss/urbit/lib/sss.hoon full/lib/
 cp sss/urbit/sur/sss.hoon full/sur/
-```
-
-To toggle debug mode (between release mode and local debug mode):
-
-```bash
-find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)::  (.*::\s*debug-only$)/\1\2/" {} \;
-```
-
-```bash
-find ./desk/bare/ -type f -exec sed -i -r "s/(^\s*)(.*::\s*debug-only$)/\1::  \2/" {} \;
+git clone -b sl/improve-install-data-reliability --depth 1 https://github.com/sidnym-ladrut/vita.git vit
+cp vit/vita-client/lib/vita-client.hoon full/lib/
+git clone --depth 1 https://github.com/tinnus-napbus/manx-utils.git mut
+cp mut/lib/manx-utils.hoon full/lib/
 ```
 
 To perform a versioned release:

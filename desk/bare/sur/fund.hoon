@@ -196,6 +196,7 @@
       [%drop ~]
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
+      ::  [%blot ...mula-like...]
       [%draw min=@ act=xact]
       [%wipe min=@ sig=(unit sigm)]
       ::  meta prods  ::
@@ -217,14 +218,14 @@
 ::
 +$  dat-now
   $:  =proz
-      =rolz
+      init=_|
       subs=_(mk-subs:sss *lake:proj path:proj)
       pubs=_(mk-pubs:sss *lake:proj path:proj)
   ==
 ::
 ::  $act-now: action data forwarded to rudder-related POST requests
 ::
-+$  act-now  (lest poke)
++$  act-now  poke
 ::
 ::  $pag-now: base data structure for rudder-related page cores
 ::

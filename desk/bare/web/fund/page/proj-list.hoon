@@ -2,6 +2,7 @@
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
+%-  mine:preface:fh  %-  init:preface:fh
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  |=([header-list:http (unit octs)] !!)
@@ -9,12 +10,9 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  ::  NOTE: Only the ship owner can access non-project pages
-  ?.  =(our.bol src.bol)  [%auth url.request.ord]
-  =/  [pat=(pole knot) *]  (durl:fh url.request.ord)
-  =/  dyp=@tas  (rear `(list knot)`pat)
-  ::  TODO: Only privileged ships can access the oracle listing
-  ?:  &(=(%oracle dyp) !(star:fx src.bol))  [%code 404 '']
+  =/  dyp=@tas  (rear (slag:derl:format:fh url.request.ord))
+  ?:  &(=(%oracle dyp) !(star:fx src.bol))
+    [%code 404 'oracle dashboard only available to stars and galaxies']
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "{(trip dyp)} dashboard"
@@ -73,7 +71,7 @@
       ;div(class "flex justify-between")
         ;div(class "text-3xl pt-2"): {tyt}
         ;*  ?.  new  ~
-            :_  ~  ;a.self-center.fund-butn-black/"{(aurl:fh /create/project)}": New Project +
+            :_  ~  ;a.self-center.fund-butn-black/"{(dest:enrl:format:fh /create/project)}": New Project +
       ==
       ;*  ?~  pez
             :~  ;div(class "italics mx-4 text-gray-600")
@@ -88,7 +86,7 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal
-                  ;span#proj-cost: ${(mony:dump:fh ~(cost pj:f pro))}
+                  ;span#proj-cost: ${(mony:enjs:format:fh ~(cost pj:f pro))}
                 ==
                 ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
               ==
@@ -96,10 +94,13 @@
             ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
             ;div(class "py-1"): {(trip summary.pro)}
             ;div(class "flex gap-x-4")
-              ;a.fund-butn-link/"{(aurl:fh /project/(scot %p sip)/[nam])}": view project →
+              ;a.fund-butn-link/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam])}": view project →
+              ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
+                  :_  ~
+                  ;a.fund-butn-link/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam]/edit)}": edit project →
             ==
           ==
     ==
   --
 --
-::  VERSION: [0 1 3]
+::  VERSION: [0 2 0]

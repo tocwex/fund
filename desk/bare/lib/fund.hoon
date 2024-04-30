@@ -1,12 +1,6 @@
 /-  *fund
-/+  fx=fund-xtra, tx=naive-transactions
+/+  fx=fund-xtra, tx=naive-transactions, config
 |%
-::
-::  +twex-sadr: the t(oc)wex (sign) addr(ess)
-::
-++  twex-addr
-  ?:  &  0xcbbd.2aab.5ee5.09e8.531a.b407.d48f.c93c.dc25.e1ad  ::  debug-only
-  0x0
 ::
 ::  +filo: fill in an $odit by calculating `=need` (if required)
 ::
@@ -38,7 +32,10 @@
   ^-  (unit @ux)
   =/  dat=tape  =+(t=(trip `@t`p.mesg.sig) ?-(-.mesg.sig %& t, %| (flop t)))
   =/  msg=tape  "\19Ethereum Signed Message:\0a{(a-co:co (met 3 p.mesg.sig))}{dat}"
-  =/  syg=octs  (as-octs:mimes:html (crip msg))
+  ::  FIXME: Should use +crip instead of +rep, but can't due to a bug in
+  ::  +crip dealing with tapes containing \00 entries; see:
+  ::  https://github.com/urbit/urbit/pull/6818
+  =/  syg=octs  (as-octs:mimes:html (rep 3 msg))
   (verify-sig:tx sign.sig syg)
 ::
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
@@ -79,7 +76,7 @@
     =+  end==(min lin)
     =+  fos=?:(!dun cost.mil cash:(need withdrawal.mil))
     =+  fil=?:(|(end (lte:rs fre fos)) fre fos)
-    =+  pos=?~(!dun (sub:rs fos fil) .0)
+    =+  pos=?:(!dun (sub:rs fos fil) .0)
     =+  pej=?:(|(end (lte:rs pre pos)) pre pos)
     [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
   ++  mula                                       ::  project-wide $mula list
@@ -109,10 +106,7 @@
   ++  oath                                       ::  text of assessment contract
     |=  wox=@p
     ^-  tape
-    =-  ;:  welp
-            "I, {<p.assessment>}, hereby agree to assess the following project "
-            "proposed by {<wox>}:\0a\0a{-}"
-        ==
+    =-  "I, {<p.assessment>}, hereby agree to assess the following project proposed by {<wox>}:\0a\0a{-}"
     %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
     %+  weld
       ^-  (list tape)
@@ -201,7 +195,7 @@
         ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig s)))
         ++  orac-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy [orac.-]~))))
         ++  team-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.-]))))
-        ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- twex-addr]))))
+        ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- !<(addr (slot:config %sign-addr))]))))
         ++  dead-milz
           |=  oat=oath
           ?>  (team-sigm sigm.oat)
@@ -228,15 +222,16 @@
         %bump
       =/  [min=@ mil=mile]  ~(next pj pro)
       ?:  ?=(%born status.mil)
-        ?>  &(?=(%prop sat.pod) ?=(@ oat.pod))
+        ?>  &(?=(%prop sat.pod) ?=(~ oat.pod))
         ?>  aver-work  ::  born=>prop:worker
         (edit-milz |=(m=mile m(status %prop)))
       ?:  ?=(%prop status.mil)
-        ?>  ?|  &(?=(%born sat.pod) ?=(@ oat.pod))
+        ?>  ?|  &(?=(%born sat.pod) ?=(~ oat.pod))
                 &(?=(?(%prop %lock) sat.pod) ?=(^ oat.pod))
             ==
         ?>  |(?=(?(%born %prop) sat.pod) aver-work)  ::  prop=>lock:worker
         ?>  |(?=(?(%born %lock) sat.pod) aver-orac)  ::  prop=>prop:oracle
+        ?>  |(?=(?(%prop %lock) sat.pod) ?=(~ contract.pro) aver-work)  ::  prop=>born:worker(post-orac-accept)
         =.  contract.pro
           ?+  sat.pod  !!
               %born
@@ -291,7 +286,8 @@
         ::  (so src.bol must always be the %plej attestor; no forwarding!)
         ::  NOTE: Reinstate this check once POST requests directly apply
         ::  cards locally instead of forwarding them
-        ::  ?>  =(src.bol ship.pod)
+        ?>  =(src.bol ship.pod)
+        ?>  (plan:fx src.bol)
         ?<  (~(has by pledges.pro) ship.pod)
         %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod))
       ::

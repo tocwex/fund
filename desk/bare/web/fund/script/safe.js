@@ -7,7 +7,7 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
-import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from '#urbit';
+import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, CONTRACT } from './const.js';
 
 //////////////////////

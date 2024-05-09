@@ -347,12 +347,11 @@
             ::  FIXME: Make this line legible somehow
             ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
-            ;script(id "urbit", type "inline-module"): {enjs:config}
-            ;script(src "https://unpkg.com/inline-module/index.js");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)
                 ==
+            ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
           ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "twind")
             ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
@@ -370,7 +369,6 @@
                 (crip (snap tan (dec (lent luq)) ':'))
             ;+  foot
           ==
-          ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
         ==
     ++  hair
       ^-  manx

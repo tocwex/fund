@@ -7,11 +7,13 @@ import { css } from 'https://cdn.skypack.dev/twind/css';
 import 'https://cdn.skypack.dev/twind/shim';
 import {
   http, createConfig, injected,
-  connect, disconnect, reconnect,
-  getAccount,
+  connect, disconnect, reconnect, getAccount,
 } from 'https://esm.sh/@wagmi/core@2.x';
+import { fromHex } from 'https://esm.sh/viem@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
-import { RPC } from './const.js';
+import * as SAFE from './safe.js';
+import { FUND_SIGN_ADDR } from './config.js';
+import { NETWORK } from './const.js';
 
 if (window.Alpine === undefined) {
   setup({
@@ -63,15 +65,14 @@ if (window.Alpine === undefined) {
     return () => styles;
   }
 
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('twind', () => ({
-      tw,
-      tws,
-      copy: copyTextToClipboard,
-      copp: copyProjectURL,
-      swap: swapContent,
-    }));
-  });
+  document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
+    copyText: copyTextToClipboard,
+    copyPURL: copyProjectURL,
+    swapText: swapContent,
+    sendForm: submitForm,
+    checkWallet,
+    ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
+  })));
 
   function swapContent(elem, text) {
     if (elem.getAttribute("data-text") === null) {
@@ -124,12 +125,64 @@ if (window.Alpine === undefined) {
     });
   }
 
+  function submitForm(event, checks = [], action = Promise.resolve(undefined)) {
+    event.preventDefault();
+    if ((event.target.form !== undefined) && !event.target.form.reportValidity()) {
+      return Promise.resolve(undefined);
+    } else {
+      event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+      return new Promise((resolve, reject) => {
+        try {
+          checks.forEach(check => check());
+          resolve();
+        } catch(error) {
+          reject(error);
+        }
+      }).then(action).then(formData => {
+        const form = document.createElement("form");
+        form.method = "post";
+        form.setAttribute("class", "hidden");
+        const button = event.target.cloneNode(true);
+        form.appendChild(button);
+
+        const appendInput = ([key, value]) => {
+          const field = document.createElement("input");
+          field.name = key;
+          field.value = value;
+          form.appendChild(field);
+        };
+        Object.entries(formData).forEach(appendInput);
+        if (event.target.form !== undefined) {
+          [...(new FormData(event.target.form).entries())].forEach(appendInput);
+        }
+
+        document.body.appendChild(form);
+        form.requestSubmit(button);
+      }).catch((error) => {
+        event.target.innerHTML = "error ✗";
+        console.log(error);
+        alert(error.message);
+      });
+    }
+  }
+
+  function checkWallet(expectedAddresses, roleTitle) {
+    const { address: currentAddress } = SAFE.safeGetAccount();
+    if (
+      !expectedAddresses
+        .concat([FUND_SIGN_ADDR])
+        .map(address => fromHex(address, "bigint"))
+        .includes(fromHex(currentAddress, "bigint"))
+    )
+      throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
+  }
+
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
     connectors: [injected()],
     transports: {
-      [mainnet.id]: http(RPC.MAINNET),
-      [sepolia.id]: http(RPC.SEPOLIA),
+      [mainnet.id]: http(NETWORK.RPC.MAINNET),
+      [sepolia.id]: http(NETWORK.RPC.SEPOLIA),
     },
   });
   window.Wagmi.subscribe(

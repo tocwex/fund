@@ -7,8 +7,8 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
-import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from '#urbit';
-import { FUND_CUT, ADDRESS, CONTRACT } from './const.js';
+import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
+import { FUND_CUT, ADDRESS, NETWORK, CONTRACT } from './const.js';
 
 //////////////////////
 // Module Functions //
@@ -31,8 +31,19 @@ export const safeGetBlock = async () => {
   return block.toString();
 };
 
+export const safeGetAccount = () => {
+  const account = getAccount(window.Wagmi);
+  if (account.isDisconnected)
+    throw new SafeError(`wallet not connected; please click the 'connect' button in the top-right corner of the page to continue`);
+  if (account.chain === undefined)
+    throw new SafeError(`error with blockchain network; unable to recognize connected network`);
+  if (account.chain.id !== NETWORK.ID[FUND_CHAIN.toUpperCase()])
+    throw new SafeError(`using the wrong blockchain network for this client; please switch your network to '${FUND_CHAIN}' instead`);
+  return account;
+}
+
 export const safeSignDeploy = async ({projectContent}) => {
-  const { address } = getAccount(window.Wagmi);
+  const { address } = safeGetAccount();
   const signature = await signMessage(window.Wagmi, {
     account: address,
     message: projectContent,
@@ -41,7 +52,7 @@ export const safeSignDeploy = async ({projectContent}) => {
 };
 
 export const safeExecDeploy = async ({oracleAddress}) => {
-  const { address: workerAddress } = getAccount(window.Wagmi);
+  const { address: workerAddress } = safeGetAccount();
   if (fromHex(oracleAddress, "bigint") === fromHex(workerAddress, "bigint"))
     throw new SafeError(`cannot use the same wallet for the worker and oracle: ${workerAddress}`);
   const deployTransaction = await writeContract(window.Wagmi, {
@@ -82,7 +93,7 @@ export const safeExecDeploy = async ({oracleAddress}) => {
 
 export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
   const TOKEN = safeTransactionToken();
-  const { address: funderAddress } = getAccount(window.Wagmi);
+  const { address: funderAddress } = safeGetAccount();
   // const tokenDecimals = await readContract(window.Wagmi, {
   //   abi: TOKEN.ABI,
   //   address: TOKEN.ADDRESS,
@@ -108,7 +119,7 @@ export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
 };
 
 export const safeSignClaim = async ({safeAddress, fundAmount, workerAddress, oracleCut}) => {
-  const { address: oracleAddress } = getAccount(window.Wagmi);
+  const { address: oracleAddress } = safeGetAccount();
   const transactions = await safeGetClaimTransactions({
     fundAmount,
     workerAddress,
@@ -119,7 +130,7 @@ export const safeSignClaim = async ({safeAddress, fundAmount, workerAddress, ora
 };
 
 export const safeExecClaim = async ({safeAddress, fundAmount, oracleSignature, oracleAddress, oracleCut}) => {
-  const { address: workerAddress } = getAccount(window.Wagmi);
+  const { address: workerAddress } = safeGetAccount();
   const transactions = await safeGetClaimTransactions({
     fundAmount,
     workerAddress,
@@ -130,13 +141,13 @@ export const safeExecClaim = async ({safeAddress, fundAmount, oracleSignature, o
 };
 
 export const safeSignRefund = async ({safeAddress, safeInitBlock}) => {
-  const { address: oracleAddress } = getAccount(window.Wagmi);
+  const { address: oracleAddress } = safeGetAccount();
   const transactions = await safeGetRefundTransactions({safeAddress, safeInitBlock});
   return safeSignWithdrawal({transactions, oracleAddress, safeAddress});
 };
 
 export const safeExecRefund = async ({safeAddress, safeInitBlock, oracleSignature, oracleAddress}) => {
-  const { address: workerAddress } = getAccount(window.Wagmi);
+  const { address: workerAddress } = safeGetAccount();
   const transactions = await safeGetRefundTransactions({safeAddress, safeInitBlock});
   return safeExecWithdrawal({transactions, oracleSignature, oracleAddress, workerAddress, safeAddress});
 };

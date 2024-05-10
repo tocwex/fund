@@ -36,12 +36,12 @@
       ==
     ::
         %wipe-resi
-      ?+  arz=(parz:fh bod (sy ~[%mis %mia %mit]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%des %dea %det]))  p.arz  [%| *]
         :+  %wipe  lin
         :^    ~
-            (sign:dejs:format:fh (~(got by p.arz) %mis))
-          (addr:dejs:format:fh (~(got by p.arz) %mia))
-        [%| (addr:dejs:format:fh (~(got by p.arz) %mit))]
+            (sign:dejs:format:fh (~(got by p.arz) %des))
+          (addr:dejs:format:fh (~(got by p.arz) %dea))
+        [%| (addr:dejs:format:fh (~(got by p.arz) %det))]
       ==
     ::
         %bump-prop
@@ -155,7 +155,7 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  (trip title.pro)
-  ;div#maincontent.p-2
+  ;div#maincontent.p-2(x-data "proj_view")
     ;div(class "flex flex-wrap items-center justify-between")
       ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
       ;div(class "flex items-center gap-x-2")
@@ -164,12 +164,6 @@
           ;span: ${(mony:enjs:format:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
-      ==
-      ;div.hidden
-        ;data#fund-safe-addr(value (addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro)));
-        ;data#fund-safe-bloq(value (bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro)));
-        ;data#fund-safe-work(value (addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro)));
-        ;data#fund-safe-orac(value (addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)));
       ==
     ==
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
@@ -188,7 +182,7 @@
                 ?:  ?=(?(%born %prop) sat)
                   ;a.fund-butn-link/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
                 ?.  ?=(?(%done %dead) sat)
-                  (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
+                  (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" "cancelContract" ~)
                 ;div;
           ==
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
@@ -196,23 +190,15 @@
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
                 ?:  &(wok ?=(%prop sat))
-                  %-  prod-butn:htmx:fh  :^  %bump-lock  %green  "finalize oracle ✓"
-                  ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                  %:  prod-butn:htmx:fh
+                      %bump-lock  %green  "finalize oracle ✓"  "finalizeContract"
+                      ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                  ==
                 ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
-                  (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" ~)
+                  (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" "cancelContract" ~)
                 ?:  !ora
                   ;a.fund-butn-link/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
                 ;div;
-          ==
-          ;div.hidden
-            ;input#fund-dead-sign(name "des", type "text");
-            ;input#fund-dead-addr(name "dea", type "text");
-            ;input#fund-dead-text(name "det", type "text");
-            ;input#fund-safe-xboq(name "sxb", type "text");
-            ;input#fund-safe-xadr(name "sxa", type "text");
-            ;input#fund-safe-wadr(name "swa", type "text");
-            ;input#fund-safe-oadr(name "soa", type "text");
-            ;input#fund-safe-sadr(name "ssa", type "text");
           ==
         ==
         ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
@@ -261,21 +247,20 @@
                 ;label(for "msg"): public message
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
-                ;+  %-  prod-butn:htmx:fh  :^  %mula-plej  %black  "pledge only ~"
-                    ?.  &((auth:fh bol) (plan:fx src.bol))  "pledges only available to authenticated planets"
-                    ?:  (~(has by pledges.pro) src.bol)  "you must fulfill your outstanding pledge"
-                    ~
-                ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" ~)
-              ==
-              ;div.hidden
-                ;input#fund-mula-addr(name "mad", type "text");
-                ;input#fund-mula-xboq(name "mxb", type "text");
-                ;input#fund-mula-xadr(name "mxa", type "text");
+                ;+  %:  prod-butn:htmx:fh
+                        %mula-plej  %black  "pledge only ~"  "plejFunds"
+                        ?.  &((auth:fh bol) (plan:fx src.bol))
+                          "pledges only available to authenticated planets"
+                        ?:  (~(has by pledges.pro) src.bol)
+                          "you must fulfill your outstanding pledge"
+                        ~
+                    ==
+                ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" "sendFunds" ~)
               ==
             ==
           ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
             :_  ~
-            ;form(method "post", autocomplete "off", class cas)
+            ;form(method "post", class cas)
               ;div(class "p-2 text-3xl w-full"): Review Request
               ;div(class "gap-2")
                 ;div(class "p-2")
@@ -301,13 +286,8 @@
                 ==
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
-                ;+  (prod-butn:htmx:fh %bump-born %black "decline ~" ~)
-                ;+  (prod-butn:htmx:fh %bump-prop %green "accept ✓" ~)
-              ==
-              ;div.hidden
-                ;data#fund-oath-proj(value (~(oath pj:f pro) p.lag));
-                ;input#fund-oath-sign(name "oas", type "text");
-                ;input#fund-oath-addr(name "oaa", type "text");
+                ;+  (prod-butn:htmx:fh %bump-born %black "decline ~" ~ ~)
+                ;+  (prod-butn:htmx:fh %bump-prop %green "accept ✓" "acceptContract" ~)
               ==
             ==
           ~  ::  no aside form
@@ -334,7 +314,7 @@
           |=  [min=@ mil=mile:f]
           ^-  manx
           =/  oil=odit:f  (snag min moz)
-          ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 my-4 p-2 lg:p-4 border-2 border-black rounded-xl")
+          ;form(method "post", class "flex flex-col gap-y-2 my-4 p-2 lg:p-4 border-2 border-black rounded-xl", x-data "\{ mile_idex: {<min>} }")
             ;div(class "flex flex-wrap justify-between items-center gap-2")
               ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(min)>}: {(trip title.mil)}
               ;div(class "flex items-center gap-x-2")
@@ -351,62 +331,52 @@
               ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                   ;:    welp
                       ?.  &(cur wok ?=(%lock status.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %bump-work %black "mark in-progress ~" ~)
+                    :_  ~  (prod-butn:htmx:fh %bump-work %black "mark in-progress ~" ~ ~)
                   ::
                       ?.  &(cur wok ?=(%work status.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~)
+                    :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~ ~)
                   ::
                       ?.  &(cur ora ?=(%sess status.mil))  ~
                     :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:htmx:fh %bump-work %black "changes required ~" ~)
-                        (prod-butn:htmx:fh %bump-done %green "approve ✓" ~)
+                        (prod-butn:htmx:fh %bump-work %black "changes required ~" ~ ~)
+                        (prod-butn:htmx:fh %bump-done %green "approve ✓" "approveMilestone" ~)
                     ==
                   ::
                   ::
                       ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
                     :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:htmx:fh %wipe-casi %green "reapprove ✓" ~)
+                        (prod-butn:htmx:fh %wipe-casi %green "reapprove ✓" "approveMilestone" ~)
                     ==
                   ::
                       ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-cade %red "clear approval ✗" ~)
+                    :_  ~  (prod-butn:htmx:fh %wipe-cade %red "clear approval ✗" "clearMilestone" ~)
                   ::
                       ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
                     :_  ~
-                    %-  prod-butn:htmx:fh  :^  %draw-done  %green  "claim funds ✓"
-                    ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
+                    %:  prod-butn:htmx:fh
+                        %draw-done  %green  "claim funds ✓"  "claimMilestone"
+                        ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
+                    ==
                   ::
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-resi %green "sign refund ~" ~)
+                    :_  ~  (prod-butn:htmx:fh %wipe-resi %green "sign refund ~" "cancelContract" ~)
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-rede %red "clear approval ✗" ~)
+                    :_  ~  (prod-butn:htmx:fh %wipe-rede %red "clear approval ✗" "clearMilestone" ~)
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
                     :_  ~
-                    %-  prod-butn:htmx:fh  :^  %draw-dead  %green  "refund funds ✓"
-                    ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
+                    %:  prod-butn:htmx:fh
+                        %draw-dead  %green  "refund funds ✓"  "refundContract"
+                        ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
+                    ==
                   ==
-            ==
-            ;div.hidden
-              ;data#fund-mile-cost(value (mony:enjs:format:fh fill.oil));
-              ;data#fund-mile-ocut(value (mony:enjs:format:fh q.assessment.pro));
-              ;data#fund-mile-awho(value (addr:enjs:format:fh ?~(withdrawal.mil *@ux from.sigm.u.withdrawal.mil)));
-              ;data#fund-mile-asig(value (sign:enjs:format:fh ?~(withdrawal.mil *@ux sign.sigm.u.withdrawal.mil)));
-              ;data#fund-mile-atak(value (mony:enjs:format:fh ?~(withdrawal.mil *@rs cash.u.withdrawal.mil)));
-              ;data#fund-mile-idex(value "{<min>}");
-              ;input#fund-mile-sign(name "mis", type "text");
-              ;input#fund-mile-addr(name "mia", type "text");
-              ;input#fund-mile-text(name "mit", type "text");
-              ;input#fund-mile-bloq(name "mib", type "text");
-              ;input#fund-mile-hash(name "mih", type "text");
-              ;input#fund-mile-amin(name "mii", type "text");
             ==
           ==
     ==
     ;div
-      ;div(class "text-3xl pt-2"): Proposal Funders
+      ;div(class "text-3xl pt-2"): Project Funders
       ;*  =/  muz=(list mula:f)  ~(mula pj:f pro)
           ?~  muz
             :~  ;div(class "italics mx-4 text-gray-600")
@@ -433,335 +403,143 @@
             ==
           ==
     ==
-    ::  ;script
-    ::    ;+  ;/
-    ::    """
-    ::    document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
-    ::      'proj_name': '{<q.lag>}',
-    ::      'proj_oath': '{(~(oath pj:f pro) p.lag)}',
-    ::      'safe_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
-    ::      'safe_bloq': {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
-    ::      'work_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
-    ::      'orac_addr': '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
-    ::      'orac_cut': {(mony:enjs:format:fh q.assessment.pro)},
-    ::      'mile_cost': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
-    ::      'mile_whom': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
-    ::      'mile_sign': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))},")))}],
-    ::      'mile_take': [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh ?~(withdrawal.n *@rs cash.u.withdrawal.n))},")))}],
-    ::    })));
-    ::    """
-    ::  ==
-    ;script(type "module")
-      ;+  ;/  ^~  %-  trip
-      '''
-      import {
-        txnGetURL, safeGetURL, safeGetBlock, SafeError,
-        safeSignDeploy, safeExecDeploy, safeExecDeposit,
-        safeSignClaim, safeExecClaim, safeSignRefund, safeExecRefund,
-      } from '/apps/fund/asset/safe.js';
-      import { getAccount, ConnectorNotConnectedError } from 'https://esm.sh/@wagmi/core@2.x';
-      import { fromHex } from 'https://esm.sh/viem@2.x';
-      import { FUND_SIGN_ADDR } from '#urbit';
-
-      const checkConnectedAddress = (expectedAddresses, roleTitle) => {
-        const { address: currentAddress } = getAccount(window.Wagmi);
-        if (currentAddress === undefined)
-          throw new ConnectorNotConnectedError("Wallet not connected.");
-        if (
-          !expectedAddresses
-            .concat([FUND_SIGN_ADDR])
-            .map(a => fromHex(a, "bigint"))
-            .includes(fromHex(currentAddress, "bigint"))
-        )
-          throw new SafeError(`connected wallet is not the ${roleTitle} wallet for this safe; please connect one of: ${expectedAddresses.join(" ")}`);
-      };
-
-      // FIXME: For sign/exec transactions, verify that:
-      // - The user has some wallet connected
-      // - The wallet is the appropriate one based on the transaction spec (e.g.
-      //   either the worker, the oracle, or the company wallet).
-      // FIXME: Will small fractions cause problems with the signature and
-      // exact matching extraction amounts?
-      // TODO: Consider amending the "safeExec*" commands such that they submit
-      // an appropriate %wipe-* command if they fail ()
-
-      // NOTE: Actual form buttons:
-      // - mula-trib: reads amount/token from form
-      // All other buttons are MetaMask queries (with some input data) followed
-      // by POST requests (these do not even need to be forms)
-
-      document.querySelector("#prod-butn-bump-prop")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          safeSignDeploy({
-            projectContent: document.querySelector("#fund-oath-proj").value,
-          }).then(([address, signature]) => {
-            document.querySelector("#fund-oath-addr").value = address;
-            document.querySelector("#fund-oath-sign").value = signature;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      });
-      document.querySelector("#prod-butn-bump-lock")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          safeExecDeploy({
-            oracleAddress: document.querySelector("#fund-safe-orac").value,
-          }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
-            console.log(`safe creation successful; view at: ${safeGetURL(safeAddress)}`);
-            document.querySelector("#fund-safe-xboq").value = xblock;
-            document.querySelector("#fund-safe-xadr").value = xhash;
-            document.querySelector("#fund-safe-wadr").value = workerAddress;
-            document.querySelector("#fund-safe-oadr").value = oracleAddress;
-            document.querySelector("#fund-safe-sadr").value = safeAddress;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      });
-      document.querySelector("#prod-butn-mula-plej")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          safeGetBlock().then((block) => {
-            document.querySelector("#fund-mula-xboq").value = block;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      });
-      document.querySelector("#prod-butn-mula-trib")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          safeExecDeposit({
-            fundAmount: event.target.form.querySelector("input[name=sum]").value,
-            fundToken: event.target.form.querySelector("select[name=tok]").value,
-            safeAddress: document.querySelector("#fund-safe-addr").value,
-          }).then(([address, xblock, xhash]) => {
-            console.log(`contribution successful; view at: ${txnGetURL(xhash)}`);
-            document.querySelector("#fund-mula-addr").value = address;
-            document.querySelector("#fund-mula-xboq").value = xblock;
-            document.querySelector("#fund-mula-xadr").value = xhash;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      });
-      document.querySelector("#prod-butn-bump-done")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          try {
-            checkConnectedAddress([document.querySelector("#fund-safe-orac").value], "oracle");
-          } catch(error) {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            alert(error.message);
-            return;
-          }
-          safeSignClaim({
-            safeAddress: document.querySelector("#fund-safe-addr").value,
-            workerAddress: document.querySelector("#fund-safe-work").value,
-            fundAmount: event.target.form.querySelector("#fund-mile-cost").value,
-            oracleCut: event.target.form.querySelector("#fund-mile-ocut").value,
-          }).then(([address, signature, payload]) => {
-            event.target.form.querySelector("#fund-mile-sign").value = signature;
-            event.target.form.querySelector("#fund-mile-addr").value = address;
-            event.target.form.querySelector("#fund-mile-text").value = payload;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      });
-      document.querySelectorAll("#prod-butn-draw-done")
-      .forEach(button => button?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          try {
-            checkConnectedAddress([document.querySelector("#fund-safe-work").value], "worker");
-          } catch(error) {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            alert(error.message);
-            return;
-          }
-          safeExecClaim({
-            safeAddress: document.querySelector("#fund-safe-addr").value,
-            oracleAddress: document.querySelector("#fund-safe-orac").value,
-            oracleSignature: event.target.form.querySelector("#fund-mile-asig").value,
-            fundAmount: event.target.form.querySelector("#fund-mile-atak").value,
-            oracleCut: event.target.form.querySelector("#fund-mile-ocut").value,
-          }).then(([xblock, xhash]) => {
-            console.log(`claim successful; view at: ${txnGetURL(xhash)}`);
-            event.target.form.querySelector("#fund-mile-bloq").value = xblock;
-            event.target.form.querySelector("#fund-mile-hash").value = xhash;
-            event.target.form.querySelector("#fund-mile-amin").value =
-              event.target.form.querySelector("#fund-mile-idex").value;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      }));
-      document.querySelectorAll("#prod-butn-bump-dead")
-      .forEach(button => button?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          try {
-            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
-          } catch(error) {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            alert(error.message);
-            return;
-          }
-          safeSignRefund({
-            safeAddress: document.querySelector("#fund-safe-addr").value,
-            safeInitBlock: document.querySelector("#fund-safe-bloq").value,
-          }).then(([address, signature, payload]) => {
-            document.querySelector("#fund-dead-sign").value = signature;
-            document.querySelector("#fund-dead-addr").value = address;
-            document.querySelector("#fund-dead-text").value = payload;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      }));
-      document.querySelector("#prod-butn-draw-dead")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          try {
-            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
-          } catch(error) {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            alert(error.message);
-            return;
-          }
-          safeExecRefund({
-            safeAddress: document.querySelector("#fund-safe-addr").value,
-            safeInitBlock: document.querySelector("#fund-safe-bloq").value,
-            oracleAddress: event.target.form.querySelector("#fund-mile-awho").value,
-            oracleSignature: event.target.form.querySelector("#fund-mile-asig").value,
-          }).then(([xblock, xhash]) => {
-            console.log(`refund successful; view at: ${txnGetURL(xhash)}`);
-            event.target.form.querySelector("#fund-mile-bloq").value = xblock;
-            event.target.form.querySelector("#fund-mile-hash").value = xhash;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      });
-      document.querySelectorAll("#prod-butn-wipe-casi")
-      .forEach(button => button?.addEventListener("click", (event) => {
-        // wipe-casi: wipe to cl(aim) si(gn)
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          try {
-            checkConnectedAddress([document.querySelector("#fund-safe-orac").value], "oracle");
-          } catch(error) {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            alert(error.message);
-            return;
-          }
-          safeSignClaim({
-            safeAddress: document.querySelector("#fund-safe-addr").value,
-            workerAddress: document.querySelector("#fund-safe-work").value,
-            fundAmount: event.target.form.querySelector("#fund-mile-cost").value,
-            oracleCut: event.target.form.querySelector("#fund-mile-ocut").value,
-          }).then(([address, signature, payload]) => {
-            event.target.form.querySelector("#fund-mile-sign").value = signature;
-            event.target.form.querySelector("#fund-mile-addr").value = address;
-            event.target.form.querySelector("#fund-mile-text").value = payload;
-            event.target.form.querySelector("#fund-mile-amin").value =
-              event.target.form.querySelector("#fund-mile-idex").value;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      }));
-      document.querySelectorAll("#prod-butn-wipe-cade")
-      .forEach(button => button?.addEventListener("click", (event) => {
-        // wipe-cade: wipe to cl(aim) de(lete)
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.form.querySelector("#fund-mile-amin").value =
-            event.target.form.querySelector("#fund-mile-idex").value;
-          event.target.form.requestSubmit(event.target);
-        }
-      }));
-      document.querySelector("#prod-butn-wipe-resi")?.addEventListener("click", (event) => {
-        // wipe-resi: wipe to re(fund) si(gn)
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
-          try {
-            checkConnectedAddress([document.querySelector("#fund-safe-work").value, document.querySelector("#fund-safe-orac").value], "worker/oracle");
-          } catch(error) {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            alert(error.message);
-            return;
-          }
-          safeSignRefund({
-            safeAddress: document.querySelector("#fund-safe-addr").value,
-            safeInitBlock: document.querySelector("#fund-safe-bloq").value,
-          }).then(([address, signature, payload]) => {
-            event.target.form.querySelector("#fund-mile-sign").value = signature;
-            event.target.form.querySelector("#fund-mile-addr").value = address;
-            event.target.form.querySelector("#fund-mile-text").value = payload;
-            event.target.form.requestSubmit(event.target);
-          }, (error) => {
-            console.log(error);
-            event.target.innerHTML = "error ✗";
-            if (error.name === "SafeError" || error.name === "ConnectorNotConnectedError") alert(error.message);
-          });
-        }
-      });
-      document.querySelector("#prod-butn-wipe-rede")?.addEventListener("click", (event) => {
-        // wipe-rede: wipe to re(fund) de(lete)
-        event.preventDefault();
-        if (event.target.form.reportValidity()) {
-          event.target.form.requestSubmit(event.target);
-        }
-      });
-      '''
+    ;script
+      ;+  ;/
+      """
+      document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
+        proj_oath: `{(~(oath pj:f pro) p.lag)}`,
+        safe_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
+        safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
+        work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
+        orac_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
+        orac_cut: {(mony:enjs:format:fh q.assessment.pro)},
+        mile_fill: [{(roll moz |=([n=odit:f a=tape] (weld a "{(mony:enjs:format:fh fill.n)},")))}],
+        mile_whom: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
+        mile_sign: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "'{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))}',")))}],
+        mile_take: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh ?~(withdrawal.n *@rs cash.u.withdrawal.n))},")))}],
+        acceptContract(event) \{
+          this.sendForm(event, [], () => (
+            this.safeSignDeploy(\{
+              projectContent: this.proj_oath,
+            }).then(([address, signature]) => (\{
+              oas: signature,
+              oaa: address,
+            }))
+          ));
+        },
+        finalizeContract(event) \{
+          this.sendForm(event, [], () => (
+            this.safeExecDeploy(\{
+              oracleAddress: this.orac_addr,
+            }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => \{
+              console.log(`safe creation successful; view at: $\{this.safeGetURL(safeAddress)}`);
+              return \{
+                sxb: xblock,
+                sxa: xhash,
+                swa: workerAddress,
+                soa: oracleAddress,
+                ssa: safeAddress,
+              };
+            })
+          ));
+        },
+        plejFunds(event) \{
+          this.sendForm(event, [], () => (
+            this.safeGetBlock().then((block) => (\{mxb: block}))
+          ));
+        },
+        sendFunds(event) \{
+          this.sendForm(event, [], () => (
+            this.safeExecDeposit(\{
+              safeAddress: this.safe_addr,
+              fundAmount: event.target.form.querySelector("[name=sum]").value,
+              fundToken: event.target.form.querySelector("[name=tok]").value,
+            }).then(([address, xblock, xhash]) => \{
+              console.log(`contribution successful; view at: $\{this.txnGetURL(xhash)}`);
+              return \{
+                mad: address,
+                mxb: xblock,
+                mxa: xhash,
+              };
+            })
+          ));
+        },
+        approveMilestone(event) \{
+          this.sendForm(event, [() => this.checkWallet([this.orac_addr], "oracle")], () => (
+            this.safeSignClaim(\{
+              safeAddress: this.safe_addr,
+              workerAddress: this.work_addr,
+              oracleCut: this.orac_cut,
+              fundAmount: this.mile_fill[this.mile_idex],
+            }).then(([address, signature, payload]) => (\{
+              mii: this.mile_idex,
+              mia: address,
+              mis: signature,
+              mit: payload,
+            }))
+          ));
+        },
+        clearMilestone(event) \{
+          this.sendForm(event, [], () => (
+            Promise.resolve(\{mii: this.mile_idex})
+          ));
+        },
+        claimMilestone(event) \{
+          this.sendForm(event, [() => this.checkWallet([this.work_addr], "worker")], () => (
+            this.safeExecClaim(\{
+              safeAddress: this.safe_addr,
+              fundAmount: this.mile_take[this.mile_idex],
+              oracleSignature: this.mile_sign[this.mile_idex],
+              oracleAddress: this.orac_addr,
+              oracleCut: this.orac_cut,
+            }).then(([xblock, xhash]) => \{
+              console.log(`claim successful; view at: $\{this.txnGetURL(xhash)}`);
+              return \{
+                mii: this.mile_idex,
+                mib: xblock,
+                mih: xhash,
+              };
+            })
+          ));
+        },
+        cancelContract(event) \{
+          this.sendForm(event,
+            [() => this.checkWallet([this.work_addr, this.orac_addr], "worker/oracle")],
+            () => (
+              this.safeSignRefund(\{
+                safeAddress: this.safe_addr,
+                safeInitBlock: this.safe_bloq,
+              }).then(([address, signature, payload]) => (\{
+                des: signature,
+                dea: address,
+                det: payload,
+              }))
+            )
+          );
+        },
+        refundContract(event) \{
+          this.sendForm(event,
+            // FIXME: Should disallow the prior signer, i.e. `this.mile_whom[this.mile_idex]`
+            [() => this.checkWallet([this.work_addr, this.orac_addr], "worker/oracle")],
+            () => (
+              this.safeExecRefund(\{
+                safeAddress: this.safe_addr,
+                safeInitBlock: this.safe_bloq,
+                oracleAddress: this.mile_whom[this.mile_idex],
+                oracleSignature: this.mile_sign[this.mile_idex],
+              }).then(([xblock, xhash]) => \{
+                console.log(`refund successful; view at: $\{this.txnGetURL(xhash)}`);
+                return \{
+                  mib: xblock,
+                  mih: xhash,
+                };
+              })
+            )
+          );
+        },
+      })));
+      """
     ==
   ==
 --
-::  VERSION: [0 2 0]
+::  VERSION: [0 2 1]

@@ -1,7 +1,7 @@
 ::  /web/fund/page/asset/hoon: render an arbitrary asset file (png, svg, etc.)
 ::
 /-  f=fund
-/+  rudder, s=server, fh=fund-http
+/+  config, rudder, s=server, fh=fund-http
 ::  FIXME: This doesn't work because /~ only accepts hoon files.
 ::  /~  asez  mime  /web/fund/asset
 ::  TODO: Could use %clay .^((list path) %ct %/app/landscape) for something
@@ -31,6 +31,7 @@
         %~.x.svg         (svg-reply x-logo)
         %~.github.svg    (svg-reply github-logo)
         %~.gear.svg      (svg-reply gear-logo)
+        %~.config.js     (js-reply [/text/plain (as-octt:mimes:html enjs:config)])
         %~.boot.js       (js-reply boot-js)
         %~.const.js      (js-reply const-js)
         %~.safe.js       (js-reply safe-js)
@@ -54,4 +55,4 @@
     [%full (%*(. js-response:gen:s cache %.y) +.mime)]
   --
 --
-::  VERSION: [0 2 0]
+::  VERSION: [0 2 1]

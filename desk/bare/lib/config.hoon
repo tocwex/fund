@@ -25,7 +25,7 @@
   :-  (cuss (turn (trip key) |=(t=@tD ?.(=('-' t) t '_'))))
   ?+  -.val  !!
     [%atom %f *]  ?:(!<(bean val) "true" "false")
-    [%atom %ux *]  "'{(welp ~['0' 'x'] ((x-co:co 40) !<(@ux val)))}'"
-    [%atom dim=@ ~]  "'{(scow ->-.val !<(@ val))}'"
+    [%atom %ux *]  "'{['0' 'x' ((x-co:co 40) !<(@ux val))]}'"
+    [%atom dim=@ ~]  "'{(scow %tas !<(@ val))}'"
   ==
 --

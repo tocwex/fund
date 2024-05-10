@@ -179,22 +179,32 @@
     ==
     ;div(class "flex flex-col gap-y-2 m-1")
       ;div(class "text-3xl w-full"): Confirm & Launch
-      ; Please review your proposal in detail and ensure
-      ; your trusted oracle is in mutual agreement on expectations
-      ; for review of work and release of funds.
+      ;p
+        ; Please review your proposal in detail and ensure
+        ; your trusted oracle is in mutual agreement on expectations
+        ; for review of work and release of funds.
+      ==
+      ;p
+        ;span: Please note there is a
+        ;span(class "font-semibold"):  1% protocol fee
+        ;span:  on all successfully completed milestone withdrawals.
+        ;span:  Refund transactions do not incurr any fees.
+      ==
       ;div(class "flex w-full justify-center gap-x-2 mx-auto")
         ;*  |^  ?+  sat  !!  ::  ~[dead-butn drop-butn]
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~)
-            ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "retract proposal ~" ~)
+            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~ ~)
+            ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-              (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~)
+              (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~ ~)
             ::  ++  dead-butn
-            ::    %-  prod-butn:htmx:fh  :^   %dead  %red  "discontinue project ✗"
-            ::    ?.(?=(%dead sat) ~ "project has already been discontinued")
+            ::    %:  prod-butn:htmx:fh
+            ::        %dead  %red  "discontinue project ✗"  ~
+            ::        ?.(?=(%dead sat) ~ "project has already been discontinued")
+            ::    ==
             --
       ==
     ==
@@ -202,8 +212,8 @@
       ;+  ;/
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{
-        'proj_cost': 0,
-        'mile_cost': [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+        proj_cost: 0,
+        mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
         init() \{
           this.updateProj();
           document.querySelectorAll('textarea').forEach(textarea => \{
@@ -238,4 +248,4 @@
     ==
   ==
 --
-::  VERSION: [0 2 0]
+::  VERSION: [0 2 1]

@@ -14,6 +14,21 @@
       (~(has by peers) src.bol)
   ==
 ::
+::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
+::
+::    x-on-* => x-on:*
+::
+++  alix
+  |=  man=manx
+  ^-  manx
+  %-  ~(apply-attrs mu man)
+  |=  [man=mane tap=tape]
+  :_  tap
+  ?^  man  man
+  ?.  =('x-on-' (dis 'x-on-' man))  man
+  =+  pre=[3 (met 3 'x-on-')]
+  (con 'x-on:' (lsh pre (rsh pre man)))
+::
 ::  +parz: parse POST request parameters considering required arguments
 ::
 ::    ?+  arz=(parz:http bod (sy ~[%req ...]))  p.arz  [%| *]
@@ -271,11 +286,11 @@
     ++  addr                                     ::  0xabcd.ef... => "0xabcdef..."
       |=  adr=^addr
       ^-  tape
-      (weld "0x" ((x-co:co 40) adr))
+      ['0' 'x' ((x-co:co 40) adr)]
     ++  sign                                     ::  0xabcd.ef... => "0xabcdef..."
       |=  sig=^sign
       ^-  tape
-      (weld "0x" ((x-co:co 130) sig))
+      ['0' 'x' ((x-co:co 130) sig)]
     ++  flag                                     ::  [~zod %nam] => "~zod/nam"
       |=  lag=^flag
       ^-  tape
@@ -322,7 +337,8 @@
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =+  go-base="https://fonts.googleapis.com"
-    |^  ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
+    |^  =-  (alix -)
+        ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
@@ -353,20 +369,10 @@
                 ==
             ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
-          ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "twind")
+          ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "fund")
             ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
             ;+  head
-            ;+  %-  ~(apply-attrs mu bod)
-                ::  FIXME: This should be made more efficient my using
-                ::  @tas/binary & comparisons (& two values, should
-                ::  result in %x-on-, then do transform and replace)
-                |=  [man=mane tap=tape]
-                :_  tap
-                ?^  man  man
-                =+  luq="x-on-"
-                =+  tan=(trip man)
-                ?.  =(luq (scag (lent luq) tan))  man
-                (crip (snap tan (dec (lent luq)) ':'))
+            ;+  bod
             ;+  foot
           ==
         ==
@@ -507,7 +513,7 @@
         [%title "copy url"]
         [%class "fund-butn-effect {cas}"]
         [%x-data ~]
-        [%x-on-click "copp(); swap($el, 'copied ✔️');"]
+        [%x-on-click "copyPURL(); swapText($el, 'copied ✔️');"]
     ==
   ++  link-butn                                  ::  hyperlink/redirect button
     |=  [wer=tape tab=bean txt=tape dis=tape]
@@ -521,18 +527,20 @@
         [%class "fund-butn-link {cas}"]~
     ==
   ++  prod-butn                                  ::  prod/poke/action button
-    |=  [pod=@tas clr=?(%red %black %green) txt=tape dis=tape]
+    |=  [pod=@tas clr=?(%red %black %green) txt=tape xon=tape dis=tape]
     ^-  manx
     ::  TODO: Use on-click tooltips in order to allow disabled buttons
     ::  to perform error reporting on mobile
     :_  ; {txt}
     :-  %button
-    %+  welp  ?~(dis ~ ~[[%disabled ~] [%title dis]])
-    :~  [%id "prod-butn-{(trip pod)}"]
-        [%type "submit"]
-        [%name "act"]
-        [%value (trip pod)]
-        [%class "fund-butn-{(trip clr)} {cas}"]
+    ;:  welp
+        ?~(dis ~ ~[[%disabled ~] [%title dis]])
+        ?~(xon ~ ~[[%x-data ~] [%x-on-click xon]])
+        [%id "prod-butn-{(trip pod)}"]~
+        [%type "submit"]~
+        [%name "act"]~
+        [%value (trip pod)]~
+        [%class "fund-butn-{(trip clr)} {cas}"]~
     ==
   --
 --

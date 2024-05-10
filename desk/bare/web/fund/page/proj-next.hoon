@@ -54,7 +54,7 @@
         ::
             %edit
           %^  next-page  'Your changes have been saved!'  ~
-          :~  (prod-butn:htmx:fh %bump-prop %green "request oracle ✓" ~)
+          :~  (prod-butn:htmx:fh %bump-prop %green "request oracle ✓" ~ ~)
               =+  (dest:enrl:format:fh pat(- %project))
                 (link-butn:htmx:fh - %| "continue editing" ~)
               pro.btn

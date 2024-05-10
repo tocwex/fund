@@ -4,30 +4,32 @@ export const FUND_CUT = 0.01;
 
 export const ADDRESS = Object.freeze({
   NULL: "0x0000000000000000000000000000000000000000",
-  NETWORK: Object.freeze({
-    MAINNET: "0x00000000000000000000000000000000000000001", // 1
-    SEPOLIA: "0x00000000000000000000000000000000000aa36a7", // 11155111
-  })[FUND_CHAIN.toUpperCase()],
 });
 
-export const RPC = Object.freeze({
-  // NOTE: Make it at least nontrivial to sniff out and steal these API keys
-  MAINNET:
-    ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
-     "-", "m", "a", "i", "n", "n", "e", "t", ".", "g", ".",
-     "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
-     "/", "v", "2", "/", "3", "E", "1", "u", "G", "l", "C",
-     "j", "i", "F", "W", "V", "n", "L", "r", "1", "3", "b",
-     "b", "n", "J", "B", "F", "F", "W", "c", "-", "4", "W",
-     "B", "2", "2"].join(""),
-  SEPOLIA:
-    ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
-     "-", "s", "e", "p", "o", "l", "i", "a", ".", "g", ".",
-     "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
-     "/", "v", "2", "/", "2", "R", "E", "E", "E", "A", "S",
-     "1", "y", "b", "f", "y", "f", "H", "R", "3", "4", "w",
-     "B", "D", "F", "C", "I", "H", "C", "S", "X", "J", "t",
-     "d", "f", "E"].join(""),
+export const NETWORK = Object.freeze({
+  ID: Object.freeze({
+    MAINNET: 1,
+    SEPOLIA: 11155111,
+  }),
+  RPC: Object.freeze({
+    // NOTE: Make it at least nontrivial to sniff out and steal these API keys
+    MAINNET:
+      ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
+       "-", "m", "a", "i", "n", "n", "e", "t", ".", "g", ".",
+       "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
+       "/", "v", "2", "/", "3", "E", "1", "u", "G", "l", "C",
+       "j", "i", "F", "W", "V", "n", "L", "r", "1", "3", "b",
+       "b", "n", "J", "B", "F", "F", "W", "c", "-", "4", "W",
+       "B", "2", "2"].join(""),
+    SEPOLIA:
+      ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
+       "-", "s", "e", "p", "o", "l", "i", "a", ".", "g", ".",
+       "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
+       "/", "v", "2", "/", "2", "R", "E", "E", "E", "A", "S",
+       "1", "y", "b", "f", "y", "f", "H", "R", "3", "4", "w",
+       "B", "D", "F", "C", "I", "H", "C", "S", "X", "J", "t",
+       "d", "f", "E"].join(""),
+  }),
 });
 
 export const ABI = Object.freeze({

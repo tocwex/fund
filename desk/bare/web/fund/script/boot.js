@@ -11,6 +11,8 @@ import {
 } from 'https://esm.sh/@wagmi/core@2.x';
 import { fromHex } from 'https://esm.sh/viem@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm'
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { NETWORK } from './const.js';
@@ -30,28 +32,71 @@ if (window.Alpine === undefined) {
     // FIXME: Some of the override styling (e.g. 'p-1' for input/textarea) is
     // being overridden by twind's *own* preflight; need to disable this somehow
     // - https://github.com/tw-in-js/twind/issues/221
-    preflight: (preflight, {theme}) => ({
-      ...preflight,
-      input: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
-      textarea: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
-      select: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
+    preflight: (preflight, {theme}) => (css(preflight, {
+      "ul,ol": apply`list-inside`, // NOTE: Needed to override "ul,ol" rule in preflight
+      ul: apply`list-disc`,
+      ol: apply`list-decimal`,
+      blockquote: apply`p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800`,
+      input: apply`fund-input`,
+      textarea: apply`fund-input`,
+      select: apply`fund-input`,
       label: apply`text-black font-light py-1`,
-      code: apply`font-mono bg-grey-400 text-black rounded-md p-2`,
-    }),
-    // FIXME: Recursive style embeddings don't seem to work with the shim; may
-    // need to use `tw(...)` directly to refactor beyond 1 level
+      code: apply`font-mono bg-gray-200 text-black rounded-md py-0.5 px-1.5`,
+    })),
     plugins: {
-      'fund-pill': `text-nowrap px-2 py-1 border-2 rounded-full`,
-      'fund-tytl-link': `text-xl font-medium duration-300 hover:text-yellow-500`,
-      'fund-form-group': `flex flex-col-reverse w-full p-1 gap-1`,
-      'fund-butn-base': `text-nowrap px-2 py-1 rounded-md border-2 border-black`,
-      'fund-butn-link': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
-      'fund-butn-effect': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
-      'fund-butn-red': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200`,
-      'fund-butn-green': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-green-600 bg-green-600 hover:bg-green-500 disabled:bg-green-200 disabled:border-green-200`,
-      'fund-butn-black': `text-nowrap px-2 py-1 rounded-md text-white  border-2 border-black bg-black hover:bg-gray-800 disabled:bg-gray-200 disabled:border-gray-200`,
-      'fund-odit-ther': `w-full flex h-8 text-white border-2 border-black`,
-      'fund-odit-sect': `h-full flex justify-center items-center text-center`,
+      'fund-pill': apply`text-nowrap px-2 py-1 border-2 rounded-full`,
+      'fund-mark': apply`flex flex-col gap-2`,
+      'fund-link': apply`text-blue-400 underline active:text-purple-400`, // FIXME: Want: text-[-webkit-link]
+      'fund-input': apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
+      'fund-tytl-link': apply`text-xl font-medium duration-300 hover:text-yellow-500`,
+      'fund-form-group': apply`flex flex-col-reverse w-full p-1 gap-1`,
+      'fund-butn-base': apply`text-nowrap px-2 py-1 rounded-md border-2 border-black`,
+      'fund-butn-link': apply`fund-butn-base duration-300 hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
+      'fund-butn-effect': apply`fund-butn-base duration-300 text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
+      'fund-butn-red': apply`fund-butn-base text-white border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200`,
+      'fund-butn-green': apply`fund-butn-base text-white border-green-600 bg-green-600 hover:bg-green-500 disabled:bg-green-200 disabled:border-green-200`,
+      'fund-butn-black': apply`fund-butn-base text-white border-black bg-black hover:bg-gray-800 disabled:bg-gray-200 disabled:border-gray-200`,
+      'fund-odit-ther': apply`w-full flex h-8 text-white border-2 border-black`,
+      'fund-odit-sect': apply`h-full flex justify-center items-center text-center`,
+    },
+  });
+
+  marked.use({
+    gfm: true,
+    breaks: false,
+    renderer: {
+      link: (href, title, text) => {
+        const anchElem = document.createElement("a");
+        anchElem.setAttribute("class", "fund-link");
+        anchElem.setAttribute("href", href);
+        if (title) anchElem.setAttribute("title", title);
+        anchElem.innerHTML = text;
+        return anchElem.outerHTML;
+      },
+      code: (code, info, escaped) => {
+        const preElem = document.createElement("pre");
+        preElem.setAttribute("class", "min-w-full inline-block");
+        const codElem = document.createElement("code");
+        codElem.setAttribute("class", "block py-2 px-3");
+        codElem.innerText = code;
+        preElem.appendChild(codElem);
+        return preElem.outerHTML;
+      },
+      // TODO: Hoist the class map to preflight class attributes
+      heading: (text, level, raw) => {
+        const headElem = document.createElement(`h${level}`);
+        headElem.setAttribute("class", [
+          "",                              // 0
+          "text-2xl font-bold",            // 1
+          "text-xl font-semibold",         // 2
+          "text-lg font-semibold",         // 3
+          "underline font-medium italic",  // 4
+          "underline font-medium italic",  // 5
+          "underline italic",              // 6
+        ][level]);
+        headElem.innerHTML = text;
+        return headElem.outerHTML;
+      },
     },
   });
 
@@ -71,6 +116,8 @@ if (window.Alpine === undefined) {
     swapText: swapContent,
     sendForm: submitForm,
     checkWallet,
+    marked,
+    DOMPurify,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 

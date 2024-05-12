@@ -201,7 +201,7 @@
                 ;div;
           ==
         ==
-        ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
+        ;div(class "fund-mark p-2 sm:text-lg", x-html "DOMPurify.sanitize(marked.parse(proj_desc))");
         ;*  ?:  ?=(?(%born %prop) sat)  ~
             :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
@@ -407,7 +407,8 @@
       ;+  ;/
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
-        proj_oath: `{(~(oath pj:f pro) p.lag)}`,
+        proj_oath: `{(turn (~(oath pj:f pro) p.lag) |=(t=@tD ?.(=(t '`') t '\\`')))}`,
+        proj_desc: `{(turn (trip summary.pro) |=(t=@tD ?.(=(t '`') t '\\`')))}`,
         safe_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
         safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
         work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',

@@ -336,9 +336,8 @@
   ++  render                                     ::  render page w/ head/foot/styles/etc.
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
-    =+  go-base="https://fonts.googleapis.com"
-    |^  =-  (alix -)
-        ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
+    =-  (alix -)
+    |^  ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
@@ -358,10 +357,10 @@
             ::  Website Meta Data/Libraries
             ;title: {(weld "%fund - " ?~(tyt "home" tyt))}
             ;link/"{(dest:enrl:format /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
-            ;link/"{go-base}"(rel "preconnect");
+            ;link/"https://fonts.googleapis.com"(rel "preconnect");
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ::  FIXME: Make this line legible somehow
-            ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
+            ;link/"https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");

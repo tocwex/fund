@@ -22,6 +22,15 @@
   ?~  b  ~
   [[i.a i.b] $(a t.a, b t.b)]
 ::
+::  +find: given list [l1, …, lN] and gate of g: li -> ?, return the
+::  first item where g(li) is true
+::
+++  find
+  |*  [a=(list) b=$-(* ?)]
+  =>  .(a (homo a))
+  ^-  (unit _?>(?=(^ a) i.a))
+  ?~(c=(skim a b) ~ `i.c)
+::
 ::  +asci: transform arbitrary @t into nearest equivalent @tas
 ::
 ++  asci

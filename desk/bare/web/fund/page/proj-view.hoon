@@ -201,7 +201,7 @@
                 ;div;
           ==
         ==
-        ;div(class "fund-mark p-2 sm:text-lg", x-html "DOMPurify.sanitize(marked.parse(proj_desc))");
+        ;+  (udon-well:htmx:fh (trip summary.pro) &)
         ;*  ?:  ?=(?(%born %prop) sat)  ~
             :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
@@ -326,7 +326,7 @@
               ==
             ==
             ;+  (odit-ther:htmx:fh oil)
-            ; {(trip summary.mil)}
+            ;+  (udon-well:htmx:fh (trip summary.mil) &)
             ;div(class "flex flex-wrap items-center justify-end gap-2")
               ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                   ;:    welp
@@ -408,7 +408,6 @@
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
         proj_oath: `{(turn (~(oath pj:f pro) p.lag) |=(t=@tD ?.(=(t '`') t '\\`')))}`,
-        proj_desc: `{(turn (trip summary.pro) |=(t=@tD ?.(=(t '`') t '\\`')))}`,
         safe_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
         safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
         work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',

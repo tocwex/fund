@@ -92,7 +92,7 @@
               ==
             ==
             ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
-            ;div(class "py-1"): {(trip summary.pro)}
+            ;+  (udon-well:htmx:fh (trip summary.pro) |)
             ;div(class "flex gap-x-4")
               ;a.fund-butn-link/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam])}": view project →
               ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~

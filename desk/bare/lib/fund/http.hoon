@@ -197,6 +197,9 @@
       |=  cor=cord  ~+
       ^-  path
       =/  [pre=tape suf=tape]  (chop:fx (trip cor) '?')
+      ::  FIXME: A smarter `stab` parser would be better, e.g. something like:
+      ::  `path`(rash '/a/b/' ;~(sfix stap fas))
+      =?  pre  ?=([%'/' *] (flop pre))  (snip pre)
       (need (decap:rudder /apps/fund (stab (crip pre))))
     ++  flag                                     ::  (url path) (project) flag
       |=  cor=cord  ~+
@@ -490,6 +493,42 @@
         |:([n=[0 0] a=[0 1]] ?:((gth +.n +.a) n a))
       ==
     --
+  ++  udon-well                                  ::  udon (markdown) well
+    |=  [txt=tape big=bean]
+    ^-  manx
+    |^  (post udon)
+    ++  udon                                     ::  generate udon from text
+      ^-  manx
+      ::  FIXME: Figure out how to get 'line-clamp' to override 'flex'
+      ::  display CSS to allow for line breaks in previews
+      =+  kas=?:(big "flex flex-col gap-3" "line-clamp-5")
+      =-  -(a.g [[%class " {kas} {cas}"] a.g])
+      ^-  manx
+      ?-  udo=(mule |.(!<(manx (slap !>(~) (ream (crip ";>\0a{txt}\0a"))))))
+        [%& *]  +.udo
+        [%| *]  ;p: {txt}
+      ==
+    ++  post                                     ::  apply attribute post-processing
+      |=  man=manx
+      ^-  manx
+      =-  %-  ~(apply-elem mu -)
+          |=([n=mane t=mart] [n ?+(n t %a [[%class "fund-link"] t])])
+      %-  ~(post-apply-nodes mu man)
+      |=  [[man=mane mat=mart] mal=marl]
+      ?+    man  [[man mat] mal]
+          %pre                                   ::  pre: add inner code block
+        :-  [man mat]
+        [[%code ~] mal]~
+      ::
+          %img                                   ::  img: shrink to a if !big
+        ?:  big  [[man mat] mal]
+        =/  src=(unit [mane tape])  (find:fx mat |=([m=mane tape] =(%src m)))
+        =/  alt=(unit [mane tape])  (find:fx mat |=([m=mane tape] =(%alt m)))
+        :-  [%a ?~(src mat [[%href +.u.src] mat])]
+        :_  mal
+        ;span: {?^(alt +.u.alt ?^(src +.u.src (dest:enrl:format /)))}
+      ==
+    --
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat
     ^-  manx
@@ -505,7 +544,7 @@
       %dead  "red-500"
     ==
   ++  copy-butn                                  ::  copy project link button
-    |=  [txt=tape]
+    |=  txt=tape
     :_  ; {txt}
     :-  %button
     :~  [%type "button"]

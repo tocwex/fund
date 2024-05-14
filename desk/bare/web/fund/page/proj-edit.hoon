@@ -91,6 +91,7 @@
                   =value  (trip ?~(pru '' title.u.pru));
                 ;label(for "nam"): project title
               ==
+              ::  TODO: Remove now that udon/markdown is supported?
               ;div(class "fund-form-group")
                 ;input.p-1  =name  "pic"  =type  "url"
                   =placeholder  "https://example.com/example.png"

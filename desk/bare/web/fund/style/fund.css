@@ -35,3 +35,8 @@ input[required] + label:after {
   content: '*';
   color: red;
 }
+
+/* FIXME: This needs to be revised; it may cause unexpected problems */
+li > p {
+  display: inline;
+}

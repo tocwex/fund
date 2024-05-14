@@ -11,7 +11,7 @@ import {
 } from 'https://esm.sh/@wagmi/core@2.x';
 import { fromHex } from 'https://esm.sh/viem@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
-import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+// import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm'
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
@@ -32,20 +32,40 @@ if (window.Alpine === undefined) {
     // FIXME: Some of the override styling (e.g. 'p-1' for input/textarea) is
     // being overridden by twind's *own* preflight; need to disable this somehow
     // - https://github.com/tw-in-js/twind/issues/221
-    preflight: (preflight, {theme}) => (css(preflight, {
-      "ul,ol": apply`list-inside`, // NOTE: Needed to override "ul,ol" rule in preflight
-      ul: apply`list-disc`,
-      ol: apply`list-decimal`,
-      blockquote: apply`p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800`,
-      input: apply`fund-input`,
-      textarea: apply`fund-input`,
-      select: apply`fund-input`,
-      label: apply`text-black font-light py-1`,
-      code: apply`font-mono bg-gray-200 text-black rounded-md py-0.5 px-1.5`,
-    })),
+    preflight: (preflight, {theme}) => {
+      const preflightRemovals = {
+        "ul,ol": undefined,
+        "h1,h2,h3,h4,h5,h6": undefined
+      };
+      return (css(Object.assign({}, preflight, preflightRemovals), {
+        "ul,ol": apply`list-inside`, // NOTE: Needed to override "ul,ol" rule in preflight
+        form: apply`mb-0`, // NOTE: Needed to override "margin-block-end" rule in Chrome browsers
+        ul: apply`list-disc`,
+        ol: apply`list-decimal`,
+        h1: apply`text-2xl font-bold`,
+        h2: apply`text-xl font-semibold`,
+        h3: apply`text-lg font-semibold`,
+        h4: apply`underline font-medium italic`,
+        h5: apply`underline font-medium italic`,
+        h6: apply`underline italic`,
+        blockquote: apply`p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800`,
+        input: apply`fund-input`,
+        textarea: apply`fund-input`,
+        select: apply`fund-input`,
+        label: apply`text-black font-light py-1`,
+        code: apply`font-mono bg-gray-200 rounded-md py-0.5 px-1.5`,
+      }));
+    },
     plugins: {
+      // FIXME: Custom implementation based on (not working) plugin:
+      // https://www.npmjs.com/package/@twind/preset-line-clamp
+      'line-clamp': (parts) => ({
+        overflow: 'hidden',
+        display: '-webkit-box',
+        '-webkit-box-orient': 'vertical',
+        '-webkit-line-clamp': `${parts[0]}`,
+      }),
       'fund-pill': apply`text-nowrap px-2 py-1 border-2 rounded-full`,
-      'fund-mark': apply`flex flex-col gap-2`,
       'fund-link': apply`text-blue-400 underline active:text-purple-400`, // FIXME: Want: text-[-webkit-link]
       'fund-input': apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
       'fund-tytl-link': apply`text-xl font-medium duration-300 hover:text-yellow-500`,
@@ -61,44 +81,37 @@ if (window.Alpine === undefined) {
     },
   });
 
-  marked.use({
-    gfm: true,
-    breaks: false,
-    renderer: {
-      link: (href, title, text) => {
-        const anchElem = document.createElement("a");
-        anchElem.setAttribute("class", "fund-link");
-        anchElem.setAttribute("href", href);
-        if (title) anchElem.setAttribute("title", title);
-        anchElem.innerHTML = text;
-        return anchElem.outerHTML;
-      },
-      code: (code, info, escaped) => {
-        const preElem = document.createElement("pre");
-        preElem.setAttribute("class", "min-w-full inline-block");
-        const codElem = document.createElement("code");
-        codElem.setAttribute("class", "block py-2 px-3");
-        codElem.innerText = code;
-        preElem.appendChild(codElem);
-        return preElem.outerHTML;
-      },
-      // TODO: Hoist the class map to preflight class attributes
-      heading: (text, level, raw) => {
-        const headElem = document.createElement(`h${level}`);
-        headElem.setAttribute("class", [
-          "",                              // 0
-          "text-2xl font-bold",            // 1
-          "text-xl font-semibold",         // 2
-          "text-lg font-semibold",         // 3
-          "underline font-medium italic",  // 4
-          "underline font-medium italic",  // 5
-          "underline italic",              // 6
-        ][level]);
-        headElem.innerHTML = text;
-        return headElem.outerHTML;
-      },
-    },
-  });
+  // marked.use({
+  //   gfm: true,
+  //   breaks: false,
+  //   renderer: {
+  //     link: (href, title, text) => {
+  //       const anchElem = document.createElement("a");
+  //       anchElem.setAttribute("class", "fund-link");
+  //       anchElem.setAttribute("href", href);
+  //       if (title) anchElem.setAttribute("title", title);
+  //       anchElem.innerHTML = text;
+  //       return anchElem.outerHTML;
+  //     },
+  //     code: (code, info, escaped) => {
+  //       const preElem = document.createElement("pre");
+  //       preElem.setAttribute("class", "min-w-full inline-block");
+  //       const codElem = document.createElement("code");
+  //       codElem.setAttribute("class", "block py-2 px-3");
+  //       codElem.innerText = code;
+  //       preElem.appendChild(codElem);
+  //       return preElem.outerHTML;
+  //     },
+  //     image: (href, title, text) => {
+  //       const imagElem = document.createElement("img");
+  //       imagElem.setAttribute("class", "mx-auto border-2 border-black"); // w-full
+  //       imagElem.setAttribute("src", href);
+  //       if (text) imagElem.setAttribute("alt", text);
+  //       if (title) imagElem.setAttribute("title", title);
+  //       return imagElem.outerHTML;
+  //     },
+  //   },
+  // });
 
   window.Alpine = Alpine;
   const tws = (parts) => {
@@ -116,7 +129,7 @@ if (window.Alpine === undefined) {
     swapText: swapContent,
     sendForm: submitForm,
     checkWallet,
-    marked,
+    // marked,
     DOMPurify,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));

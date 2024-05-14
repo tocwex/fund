@@ -65,8 +65,11 @@ if (window.Alpine === undefined) {
         '-webkit-box-orient': 'vertical',
         '-webkit-line-clamp': `${parts[0]}`,
       }),
+      'fund-link': (parts) => ({
+        'color': '-webkit-link',
+        'text-decoration': 'underline',
+      }),
       'fund-pill': apply`text-nowrap px-2 py-1 border-2 rounded-full`,
-      'fund-link': apply`text-blue-400 underline active:text-purple-400`, // FIXME: Want: text-[-webkit-link]
       'fund-input': apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
       'fund-tytl-link': apply`text-xl font-medium duration-300 hover:text-yellow-500`,
       'fund-form-group': apply`flex flex-col-reverse w-full p-1 gap-1`,

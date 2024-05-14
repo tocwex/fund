@@ -517,8 +517,8 @@
       |=  [[man=mane mat=mart] mal=marl]
       ?+    man  [[man mat] mal]
           %pre                                   ::  pre: add inner code block
-        :-  [man mat]
-        [[%code ~] mal]~
+        :-  [man [[%class "min-w-full inline-block"] mat]]
+        [[%code [%class "block py-2 px-3"]~] mal]~
       ::
           %img                                   ::  img: shrink to a if !big
         ?:  big  [[man mat] mal]

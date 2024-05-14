@@ -397,9 +397,7 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;*  ?.  =(our src):bol  ~
-              :~  ;a.w-8.h-8/"{(dest:enrl:format /config)}"
-                    ;img@"{(dest:enrl:format /asset/[~.gear.svg])}";
-              ==  ==
+              :_  ~  ;a.fund-butn-link/"{(dest:enrl:format /config)}": ⚙️
           ;+  ?:  (auth bol)
                 ?:  =(our src):bol
                   ;div.fund-butn-base: {<src.bol>}

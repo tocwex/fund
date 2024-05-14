@@ -502,7 +502,7 @@
       ::  FIXME: Figure out how to get 'line-clamp' to override 'flex'
       ::  display CSS to allow for line breaks in previews
       =+  kas=?:(big "flex flex-col gap-3" "line-clamp-5")
-      =-  -(a.g [[%class " {kas} {cas}"] a.g])
+      =-  -(a.g [[%class "{kas} {cas}"] a.g])
       ^-  manx
       ?-  udo=(mule |.(!<(manx (slap !>(~) (ream (crip ";>\0a{txt}\0a"))))))
         [%& *]  +.udo

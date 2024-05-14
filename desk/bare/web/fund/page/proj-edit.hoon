@@ -16,6 +16,9 @@
     =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) %nam))])
     =-  ?@(- - [lag -])
     ^-  $@(@t prod:f)
+    ::  FIXME: Removes whitespace at the end (introduced by CSS trick to
+    ::  auto-resize text areas); ideally, this wouldn't be necessary
+    =+  trim=|=(t=@t (crip (flop (scan (flop (trip t)) ;~(pfix (star (mask " \0a\0d\09")) (star next))))))
     ?+    act=(~(got by p.arz) %act)
         (crip "bad act; expected (init|drop|bump-*), not {(trip act)}")
       %drop       [%drop ~]
@@ -26,7 +29,7 @@
         :+  %init  ~
         =+  pro=*proj:f  %_  pro
           title       (~(got by p.arz) %nam)
-          summary     (~(got by p.arz) %sum)
+          summary     (trim (~(got by p.arz) %sum))
         ::
             assessment
           :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
@@ -45,7 +48,7 @@
           =-  $(ind +(ind), miz [- miz])
           =+  mil=*mile:f  %_  mil
             title    u.nam
-            summary  (~(gut by p.arz) (crip "m{<ind>}s") '')
+            summary  (trim (~(gut by p.arz) (crip "m{<ind>}s") ''))
             cost     (fall (rush (~(gut by p.arz) (crip "m{<ind>}c") '') royl-rs:so) .0)
           ==
         ==
@@ -104,8 +107,7 @@
                 ;textarea.p-1  =name  "sum"  =rows  "3"
                   =placeholder  "Write a worthy description of your project"
                   =value  (trip ?~(pru '' summary.u.pru))
-                  ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
-                  =oninput  "this.parentNode.dataset.replicatedValue = this.value"
+                  =x-on-input  "updateTextarea"
                   ; {(trip ?~(pru '' summary.u.pru))}
                 ==
               ==
@@ -145,8 +147,7 @@
                       ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
                         =placeholder  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
                         =value  (trip summary.mil)
-                        ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
-                        =oninput  "this.parentNode.dataset.replicatedValue = this.value"
+                        =x-on-input  "updateTextarea"
                         ; {(trip summary.mil)}
                       ==
                     ==
@@ -217,12 +218,15 @@
         mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
         init() \{
           this.updateProj();
-          document.querySelectorAll('textarea').forEach(textarea => \{
-            textarea.parentNode.dataset.replicatedValue = textarea.value;
-          });
+          document.querySelectorAll('textarea').forEach(elem => (
+            this.updateTextarea(\{target: elem})
+          ));
         },
         updateProj() \{
           this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0)}`;
+        },
+        updateTextarea(event) \{
+          event.target.parentNode.dataset.replicatedValue = event.target.value;
         },
         updateMile(event) \{
           const min = Number(event.target.getAttribute('name')[1]);

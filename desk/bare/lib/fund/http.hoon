@@ -431,6 +431,19 @@
         ==
       ==
     --
+  ++  hero-plaq                                  ::  full-page notification w/ buttons
+    |=  [tyt=@t txt=(unit @t) buz=marl]
+    ^-  manx
+    ;form#maincontent(method "post", class "p-2 h-[80vh] {cas}")
+      ;div(class "flex flex-col h-full flex-wrap justify-center items-center text-center gap-10")
+        ;div(class "text-4xl sm:text-5xl"): {(trip tyt)}
+        ;*  ?~  txt  ~
+            :_  ~  ;div(class "text-xl sm:text-2xl"): {(trip u.txt)}
+        ;div(class "flex gap-2")
+          ;*  buz
+        ==
+      ==
+    ==
   ++  odit-ther                                  ::  funding thermometer element
     |=  odi=odit
     ^-  manx

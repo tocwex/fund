@@ -28,20 +28,15 @@
   :-  %page
   %-  render:htmx:fh
   :^  bol  ord  "config"
-  ;form#maincontent(method "post", autocomplete "off", class "p-2 h-[80vh]")
-    ;div(class "flex flex-col h-full flex-wrap justify-center items-center text-center gap-6")
-      ;div(class "text-4xl sm:text-5xl")
-        ;+  ?.  init.dat
-            ;span: Thanks for installing %fund!
-          ;span: Update your preferences?
-      ==
-      ;div(class "text-xl sm:text-2xl"): Will you help us by sending usage information?
-      ;div(class "text-xl sm:text-2xl"): You can change your decision at any time.
-      ;div(class "flex gap-2")
-        ;+  (prod-butn:htmx:fh %vita-enable %green "yes ✓" ~ ~)
-        ;+  (prod-butn:htmx:fh %vita-disable %red "no ✗" ~ ~)
-      ==
-    ==
+  %^    hero-plaq:htmx:fh
+      ?.(init.dat 'Thanks for installing %fund!' 'Update your preferences?')
+    :-  ~
+    '''
+    Will you help us by sending usage information?
+    You can change your decision at any time.
+    '''
+  ;=  ;+  (prod-butn:htmx:fh %vita-enable %green "yes ✓" ~ ~)
+      ;+  (prod-butn:htmx:fh %vita-disable %red "no ✗" ~ ~)
   ==
 --
 ::  VERSION: [0 2 1]

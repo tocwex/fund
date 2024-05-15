@@ -3,7 +3,7 @@
 ::    to deploy locally, run the following:
 ::
 ::    cd ./desk/full/cfg/
-::    ln ../../../meta/xtra/test.hoon ./
+::    ln -s ../../../meta/xtra/test.hoon ./
 ::
 %-  malt
 ^-  (list [@tas vase])

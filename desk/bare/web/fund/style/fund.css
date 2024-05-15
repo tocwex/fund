@@ -35,36 +35,3 @@ input[required] + label:after {
   content: '*';
   color: red;
 }
-
-/* FIXME: This needs to be revised; it may cause unexpected problems */
-li > p {
-  display: inline;
-}
-
-/* FIXME: Integrate this in a better way */
-ol,
-ul,
-li {
-  margin: 0;
-  padding: 0;
-}
-ol,ul {
-  counter-reset: list;
-  display: table;
-}
-li {
-  list-style: none;
-  counter-increment: list;
-  display: table-row;
-}
-ol > li::before {
-  content: counter(list) ".";
-}
-ul > li::before {
-  content: "•"; /*"‣";*/
-}
-li::before {
-  display: table-cell;
-  text-align: right;
-  padding-right: 1em;
-}

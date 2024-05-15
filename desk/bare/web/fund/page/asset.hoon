@@ -11,7 +11,6 @@
 /*  tocwex-logo  %mime  /web/fund/asset/tocwex/svg
 /*  x-logo       %mime  /web/fund/asset/x/svg
 /*  github-logo  %mime  /web/fund/asset/github/svg
-/*  gear-logo    %mime  /web/fund/asset/gear/svg
 /*  const-js     %mime  /web/fund/script/const/js
 /*  boot-js      %mime  /web/fund/script/boot/js
 /*  safe-js      %mime  /web/fund/script/safe/js
@@ -30,7 +29,6 @@
         %~.tocwex.svg    (svg-reply tocwex-logo)
         %~.x.svg         (svg-reply x-logo)
         %~.github.svg    (svg-reply github-logo)
-        %~.gear.svg      (svg-reply gear-logo)
         %~.config.js     (js-reply [/text/plain (as-octt:mimes:html enjs:config)])
         %~.boot.js       (js-reply boot-js)
         %~.const.js      (js-reply const-js)

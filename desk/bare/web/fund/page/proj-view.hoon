@@ -201,7 +201,7 @@
                 ;div;
           ==
         ==
-        ;+  (udon-well:htmx:fh (trip summary.pro) &)
+        ;+  (mark-well:htmx:fh (trip summary.pro) &)
         ;*  ?:  ?=(?(%born %prop) sat)  ~
             :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
@@ -326,7 +326,7 @@
               ==
             ==
             ;+  (odit-ther:htmx:fh oil)
-            ;+  (udon-well:htmx:fh (trip summary.mil) &)
+            ;+  (mark-well:htmx:fh (trip summary.mil) &)
             ;div(class "flex flex-wrap items-center justify-end gap-2")
               ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                   ;:    welp

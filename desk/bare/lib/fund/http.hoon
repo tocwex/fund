@@ -17,6 +17,7 @@
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
 ::
 ::    x-on-* => x-on:*
+::    xlass => :class
 ::
 ++  alix
   |=  man=manx
@@ -25,9 +26,11 @@
   |=  [man=mane tap=tape]
   :_  tap
   ?^  man  man
-  ?.  =('x-on-' (dis 'x-on-' man))  man
-  =+  pre=[3 (met 3 'x-on-')]
-  (con 'x-on:' (lsh pre (rsh pre man)))
+  ?:  =(%xlass man)  ':class'
+  ?:  =(%x-on- (dis %x-on- man))
+    =+  pre=[3 (met 3 %x-on-)]
+    (con 'x-on:' (lsh pre (rsh pre man)))
+  man
 ::
 ::  +parz: parse POST request parameters considering required arguments
 ::
@@ -340,7 +343,7 @@
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =-  (alix -)
-    |^  ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
+    |^  ;html(class "!block", style "display: none;")  ::  NOTE: https://twind.style/installation
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
@@ -369,6 +372,7 @@
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)
                 ==
+            ;script(type "module", src "https://cdn.jsdelivr.net/npm/zero-md@3?register");
             ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
           ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "fund")
@@ -400,7 +404,7 @@
               :_  ~  ;a.fund-butn-link/"{(dest:enrl:format /config)}": ⚙️
           ;+  ?:  (auth bol)
                 ?:  =(our src):bol
-                  ;div.fund-butn-base: {<src.bol>}
+                  ;div.fund-butn-base.border-black: {<src.bol>}
                 ;a.fund-butn-link/"/~/logout?redirect={(trip url)}": {<src.bol>}
               ;a.fund-butn-link/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-effect: …loading…
@@ -504,7 +508,18 @@
         |:([n=[0 0] a=[0 1]] ?:((gth +.n +.a) n a))
       ==
     --
-  ++  udon-well                                  ::  udon (markdown) well
+  ++  mark-well                                  ::  markdown (github) well
+    |=  [txt=tape big=bean]
+    ^-  manx
+    =+  kas=?:(big "" "line-clamp-5")
+    ;zero-md(class "{kas} {cas}", xlass "cmd()", no-shadow ~, manual-render ~)
+      ;template
+        ::  ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
+        ;link/"https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"(rel "stylesheet");
+      ==
+      ;script(type "text/markdown"): {txt}
+    ==
+  ++  udon-well                                  ::  udon (hoon-markdown) well
     |=  [txt=tape big=bean]
     ^-  manx
     |^  (post udon)

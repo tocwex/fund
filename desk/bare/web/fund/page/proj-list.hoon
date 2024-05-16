@@ -1,8 +1,8 @@
-::  /web/fund/page/proj-list/hoon: render base page for %fund
+::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
-%-  mine:preface:fh  %-  init:preface:fh
+%-  :(cork mine:preface:fh init:preface:fh)
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  |=([header-list:http (unit octs)] !!)

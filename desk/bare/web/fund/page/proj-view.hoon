@@ -1,9 +1,8 @@
-::  /web/fund/page/proj-view/hoon: render base page for %fund
+::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder, config
-%-  dump:preface:fh
-%-  init:preface:fh  %-  (proj:preface:fh &)
+%-  :(cork dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply

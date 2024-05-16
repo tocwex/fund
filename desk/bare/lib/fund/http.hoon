@@ -515,7 +515,8 @@
     ;zero-md(class "{kas} {cas}", xlass "cmd()", no-shadow ~, manual-render ~)
       ;template
         ::  ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
-        ;link/"https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"(rel "stylesheet");
+        ;link/"https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"
+          =rel  "stylesheet";
       ==
       ;script(type "text/markdown"): {txt}
     ==

@@ -113,8 +113,8 @@ mkdir -p full/lib/ full/mar full/sur
 ln -sr ../LICENSE.txt full/license.txt
 # git clone --depth 1 https://github.com/urbit/yard yar
 git clone -b 411k --depth 1 https://github.com/urbit/urbit.git urb
-cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*} full/lib/
-cp urb/pkg/arvo/sur/verb.hoon full/sur/
+cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*,strand*} full/lib/
+cp urb/pkg/arvo/sur/{verb*,spider*} full/sur/
 git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
 cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} full/lib/
 cp yar/desk/mar/{bill*,docket*,hoon*,json*,kelvin*,mime*,noun*,ship*,txt*,css*,png*,svg*,js*} full/mar/

@@ -1,16 +1,18 @@
 # `%fund` Debugging
 
-Enabling debug mode (and other configurations) in `%fund` is simple; just run
-this command to enable it:
+Enabling debug mode in `%fund` is simple; just run these commands to enable it:
 
 ```
 |cp /=fund=/cfg/xtra/verb/hoon /=fund=/cfg/verb/hoon
+-fund!web-reload-
 ```
 
-and this command to disable it:
+and these commands to disable it:
 
 ```
 |rm /=fund=/cfg/verb/hoon
+-fund!web-reload-
 ```
 
-TODO: Add generator to update all `/web/fund/page` files.
+For more information on different configuration options, see the contents of
+the `/desk/bare/cfg/xtra` directory.

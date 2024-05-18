@@ -201,7 +201,7 @@
           ==
         ==
         ;+  (mark-well:htmx:fh (trip summary.pro) &)
-        ;*  ?:  ?=(?(%born %prop) sat)  ~
+        ;*  ?:  |(?=(?(%born %prop) sat) !=(our.bol p.lag))  ~
             :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~

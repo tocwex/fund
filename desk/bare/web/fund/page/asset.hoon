@@ -40,7 +40,7 @@
   ?~  ned
     :-  %next  :_  ~
     %-  desc:enrl:format:fh
-    pat(fyl (crip (welp (trip fyl.pat) "?v={<-.hav>}.{<+<.hav>}.{<+>.hav>}")))
+    pat(fyl (crip (welp (trip fyl.pat) "?v={<+2.hav>}.{<+6.hav>}.{<+7.hav>}")))
   ::  if this file has an old version specified, 404
   ?.  =(hav u.ned)
     [%code 404 'Not found (old version)']

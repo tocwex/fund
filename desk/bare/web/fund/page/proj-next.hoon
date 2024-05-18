@@ -64,7 +64,11 @@
       ?-  aut
           %admin
         :-  ~
-        ~[(copy-butn:htmx:fh "share project") pro.btn (das.btn %fund)]
+        ;:  welp
+            ?.(=(our.bol p.lag) ~ [(copy-butn:htmx:fh "share project")]~)
+            [pro.btn]~
+            [(das.btn %fund)]~
+        ==
       ::
           %eauth
         :-  ~

@@ -26,9 +26,9 @@
   ?.  add  kiln-rm+!>((pre pin))
   =/  pou=path  (pre [%cfg (slaj:fx 2 pin)])
   kiln-info+!>([*tape `(foal:space:userlib pou ext [%atom %t ~] txt)])
+::  FIXME: Need to wait for a sec so that config file loads before all
+::  the web files are changed
+;<  ~  bind:m  (sleep:io ~s1)
 ;<  tid=tid:spider   bind:m  (start-thread:io %web-reload)
-::  FIXME: For some reason, we need to kick it twice in order for
-::  de-caching to be reliable... this is probably related to race
-::  conditions
-;<  tid=tid:spider   bind:m  (start-thread:io %web-reload)
+::  ;<  thread-result:io  bind:m  (await-thread:io %web-reload !>(~))
 (pure:m !>(~))

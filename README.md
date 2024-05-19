@@ -119,7 +119,7 @@ git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut
 cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} full/lib/
 cp yar/desk/mar/{bill*,docket*,hoon*,json*,kelvin*,mime*,noun*,ship*,txt*,css*,png*,svg*,js*} full/mar/
 cp yar/desk/sur/docket* full/sur/
-git clone --depth 1 https://github.com/arthyn/gin-tonic.git gat
+git clone -b sl/tonic-reload-any-file --depth 1 https://github.com/sidnym-ladrut/gin-tonic.git gat
 cp gat/tonic/lib/tonic.hoon full/lib/
 cp gat/tonic/mar/cass.hoon full/mar/
 git clone -b sl/fix-scry-request-agent-wire --depth 1 https://github.com/sidnym-ladrut/sss.git sss

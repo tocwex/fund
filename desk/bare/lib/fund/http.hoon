@@ -372,7 +372,6 @@
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)
                 ==
-            ;script(type "module", src "https://cdn.jsdelivr.net/npm/zero-md@3?register");
             ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
           ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "fund")
@@ -514,9 +513,7 @@
     =+  kas=?:(big "" "line-clamp-5")
     ;zero-md(class "{kas} {cas}", xlass "cmd()", no-shadow ~, manual-render ~)
       ;template
-        ::  ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
-        ;link/"https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"
-          =rel  "stylesheet";
+        ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
       ==
       ;script(type "text/markdown"): {txt}
     ==

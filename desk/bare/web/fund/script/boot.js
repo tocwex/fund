@@ -11,8 +11,8 @@ import {
 } from 'https://esm.sh/@wagmi/core@2.x';
 import { fromHex } from 'https://esm.sh/viem@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
-// import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
-// import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm'
+import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
+import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm'
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { NETWORK } from './const.js';
@@ -31,40 +31,15 @@ if (window.Alpine === undefined) {
         mono: ['Roboto Mono', 'mono'],
       },
     },
-    // TODO: Still need to work on overrides from base preflight;
-    // should be able to apply p-4 to textarea and it should work...
     // TODO: It would be great to put this all in a CSS file that
     // was loaded by this file or the browser and then injected here
-    // TODO: Still need to fix ol,ul; at least it's easier
     preflight: twind.css(`
-      form {
-        @apply mb-0;
-      }
-      ol,ul {
-        @apply list-outside;
-      }
-      ol {
-        @apply list-decimal;
-      }
-      ul {
-        @apply list-disc;
-      }
-      textarea,select,input {
-        @apply fund-input;
-      }
-      blockquote {
-        @apply p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800;
-      }
-      code {
-        @apply font-mono bg-gray-200 rounded-md py-0.5 px-1.5;
-      }
-      label {
-        @apply text-black font-light py-1;
-      }
+      form { margin: unset; }
+      textarea,select,input { padding: unset; @apply fund-input; }
+      label { @apply font-light py-1; }
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
-      ['fund-link', {'color': '-webkit-link', 'text-decoration': 'underline'}],
       ['fund-pill', 'text-nowrap px-2 py-1 border-2 rounded-full'],
       ['fund-input', 'w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)'],
       ['fund-tytl-link', 'text-xl font-medium duration-300 hover:text-yellow-500'],
@@ -80,99 +55,6 @@ if (window.Alpine === undefined) {
     ],
   });
 
-  // setup({
-  //   theme: {
-  //     fontFamily: {
-  //       serif: ['Poppins', 'Noto Emoji', 'serif'],
-  //       sans: ['Noto Emoji', 'sans-serif'],
-  //       mono: ['Roboto Mono', 'mono'],
-  //     },
-  //     extend: { colors },
-  //   },
-  //   // FIXME: This should ultimately be in some sort of CSS file that can be
-  //   // replaced by the user for custom styling
-  //   // FIXME: Some of the override styling (e.g. 'p-1' for input/textarea) is
-  //   // being overridden by twind's *own* preflight; need to disable this somehow
-  //   // - https://github.com/tw-in-js/twind/issues/221
-  //   preflight: (preflight, {theme}) => {
-  //     const preflightEdits = {
-  //       // "ol,ul": undefined,
-  //       // "h1,h2,h3,h4,h5,h6": undefined,
-  //       // "fieldset,ol,ul,legend": undefined,
-  //       // "fieldset,legend": { padding: '0' },
-  //     };
-  //     return (css(Object.assign({}, preflight, preflightEdits), {
-  //       form: apply`mb-0`, // NOTE: Needed to override "margin-block-end" rule in Chrome browsers
-  //       ul: apply`list-disc`,
-  //       ol: apply`list-decimal`,
-  //       blockquote: apply`p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800`,
-  //       input: apply`fund-input`,
-  //       textarea: apply`fund-input`,
-  //       select: apply`fund-input`,
-  //       label: apply`text-black font-light py-1`,
-  //       code: apply`font-mono bg-gray-200 rounded-md py-0.5 px-1.5`,
-  //     }));
-  //   },
-  //   plugins: {
-  //     // FIXME: Custom implementation based on (not working) plugin:
-  //     // https://www.npmjs.com/package/@twind/preset-line-clamp
-  //     'line-clamp': (parts) => ({
-  //       overflow: 'hidden',
-  //       display: '-webkit-box',
-  //       '-webkit-box-orient': 'vertical',
-  //       '-webkit-line-clamp': `${parts[0]}`,
-  //     }),
-  //     'fund-link': (parts) => ({
-  //       'color': '-webkit-link',
-  //       'text-decoration': 'underline',
-  //     }),
-  //     'fund-pill': apply`text-nowrap px-2 py-1 border-2 rounded-full`,
-  //     'fund-input': apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
-  //     'fund-tytl-link': apply`text-xl font-medium duration-300 hover:text-yellow-500`,
-  //     'fund-form-group': apply`flex flex-col-reverse w-full p-1 gap-1`,
-  //     'fund-butn-base': apply`text-nowrap px-2 py-1 rounded-md border-2 border-black`,
-  //     'fund-butn-link': apply`fund-butn-base duration-300 hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
-  //     'fund-butn-effect': apply`fund-butn-base duration-300 text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
-  //     'fund-butn-red': apply`fund-butn-base text-white border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200`,
-  //     'fund-butn-green': apply`fund-butn-base text-white border-green-600 bg-green-600 hover:bg-green-500 disabled:bg-green-200 disabled:border-green-200`,
-  //     'fund-butn-black': apply`fund-butn-base text-white border-black bg-black hover:bg-gray-800 disabled:bg-gray-200 disabled:border-gray-200`,
-  //     'fund-odit-ther': apply`w-full flex h-8 text-white border-2 border-black`,
-  //     'fund-odit-sect': apply`h-full flex justify-center items-center text-center`,
-  //   },
-  // });
-
-  // marked.use({
-  //   gfm: true,
-  //   breaks: false,
-  //   renderer: {
-  //     link: (href, title, text) => {
-  //       const anchElem = document.createElement("a");
-  //       anchElem.setAttribute("class", "fund-link");
-  //       anchElem.setAttribute("href", href);
-  //       if (title) anchElem.setAttribute("title", title);
-  //       anchElem.innerHTML = text;
-  //       return anchElem.outerHTML;
-  //     },
-  //     code: (code, info, escaped) => {
-  //       const preElem = document.createElement("pre");
-  //       preElem.setAttribute("class", "min-w-full inline-block");
-  //       const codElem = document.createElement("code");
-  //       codElem.setAttribute("class", "block py-2 px-3");
-  //       codElem.innerText = code;
-  //       preElem.appendChild(codElem);
-  //       return preElem.outerHTML;
-  //     },
-  //     image: (href, title, text) => {
-  //       const imagElem = document.createElement("img");
-  //       imagElem.setAttribute("class", "mx-auto border-2 border-black"); // w-full
-  //       imagElem.setAttribute("src", href);
-  //       if (text) imagElem.setAttribute("alt", text);
-  //       if (title) imagElem.setAttribute("title", title);
-  //       return imagElem.outerHTML;
-  //     },
-  //   },
-  // });
-
   window.Alpine = Alpine;
   function tws(parts) {
     const styles = Object.entries(parts).reduce((obj, [part, value]) => {
@@ -182,15 +64,70 @@ if (window.Alpine === undefined) {
     return css(styles);
   }
   function cmd() {
+    // https://twind.run/junior-crazy-mummy?file=script
     return twind.css({
+      '.markdown-body > *': {'@apply': 'mt-3'},
+      '.markdown-body > *:first-child': {'@apply': 'mt-0'},
       '& h1': {'@apply': 'text-2xl font-bold'},
       '& h2': {'@apply': 'text-xl font-semibold'},
       '& h3': {'@apply': 'text-lg font-semibold'},
       '& h4': {'@apply': 'underline font-medium italic'},
       '& h5': {'@apply': 'underline font-medium italic'},
       '& h6': {'@apply': 'underline italic'},
+      '& a': {'color': '-webkit-link', 'text-decoration': 'underline'},
+      '& ol,ul': {'padding': 'unset', 'padding-inline-start': '1.5rem', '@apply': 'list-outside'},
+      '& ul': {'@apply': 'list-disc'},
+      '& ol': {'@apply': 'list-decimal'},
+      // NOTE: These two segments should debatably be hoisted into 'preflight'.
+      '& blockquote': {'@apply': 'p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800'},
+      '& code': {'@apply': 'font-mono bg-gray-200 rounded-md py-0.5 px-1.5'},
     });
   }
+
+  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
+  customElements.define(
+    'zero-md',
+    class extends ZeroMd {
+      async load() {
+        await super.load();
+        this.marked.use({
+          gfm: true,
+          breaks: false,
+          parse: async (obj) => {
+            const parsed = await super.parse(obj);
+            return DOMPurify.sanitize(parsed);
+          },
+          renderer: {
+            image: (href, title, text) => {
+              // FIXME: This is a really gross way to test if the 'zero-md'
+              // container is in preview mode; ideally, we'd use CSS instead
+              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
+              const imagElem = document.createElement(isPreview ? "a" : "img");
+              if (isPreview) {
+                imagElem.setAttribute("href", href);
+                imagElem.innerText = text ?? title ?? href;
+              } else {
+                imagElem.setAttribute("src", href);
+                if (text) imagElem.setAttribute("alt", text);
+                if (title) imagElem.setAttribute("title", title);
+              }
+              return imagElem.outerHTML;
+            },
+          },
+        });
+      }
+    }
+  );
+
+  // FIXME: For some reason, twind's style refresher doesn't fire when a
+  // submission fails, so we replicate its "reveal content" behavior manually
+  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
+  document.addEventListener('turbo:submit-end', (event) => {
+    if (!event.detail.success) {
+      document.documentElement.setAttribute("class", "");
+      document.documentElement.setAttribute("style", "");
+    }
+  });
 
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     tws,
@@ -200,8 +137,6 @@ if (window.Alpine === undefined) {
     swapText: swapContent,
     sendForm: submitForm,
     checkWallet,
-    // marked,
-    // DOMPurify,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 

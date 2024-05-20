@@ -2,7 +2,7 @@
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder, config
-%-  :(cork dump:preface:fh init:preface:fh (proj:preface:fh &))
+%-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
@@ -402,11 +402,15 @@
             ==
           ==
     ==
+    ::  FIXME: We use inline HTML instead of inline JS in order to
+    ::  circumvent the need for text escaping (e.g. ', ", and `).
+    ;div.hidden
+      ;data#fund-proj-oath(value (~(oath pj:f pro) p.lag));
+    ==
     ;script
       ;+  ;/
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
-        proj_oath: `{(turn (~(oath pj:f pro) p.lag) |=(t=@tD ?.(=(t '`') t '\\`')))}`,
         safe_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
         safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
         work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
@@ -419,7 +423,7 @@
         acceptContract(event) \{
           this.sendForm(event, [], () => (
             this.safeSignDeploy(\{
-              projectContent: this.proj_oath,
+              projectContent: document.querySelector("#fund-proj-oath").value,
             }).then(([address, signature]) => (\{
               oas: signature,
               oaa: address,

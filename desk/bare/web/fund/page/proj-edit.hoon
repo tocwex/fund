@@ -2,7 +2,7 @@
 ::
 /+  f=fund, fx=fund-xtra, fh=fund-http
 /+  rudder, config
-%-  :(cork dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
+%-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
@@ -110,7 +110,7 @@
                   ; {(trip ?~(pru '' summary.u.pru))}
                 ==
               ==
-              ;label(for "sum"): project description
+              ;label(for "sum"): project description (markdown)
             ==
           ==
         ==
@@ -150,7 +150,7 @@
                         ; {(trip summary.mil)}
                       ==
                     ==
-                    ;label(for "m{<min>}s"): milestone description
+                    ;label(for "m{<min>}s"): milestone description (markdown)
                   ==
                 ==
           ==

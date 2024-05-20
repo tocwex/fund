@@ -2,7 +2,7 @@
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder, config
-%-  :(cork dump:preface:fh init:preface:fh (proj:preface:fh &))
+%-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue

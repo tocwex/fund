@@ -207,6 +207,13 @@ if (window.Alpine === undefined) {
       }).then(action).then(formData => {
         const form = document.createElement("form");
         form.method = "post";
+        // FIXME: This is necessary in order to send the raw message
+        // payload to the BE (e.g. sending the signed contract text as
+        // part of the submission), but the %rudder's `+frisk` method
+        // would need to be extended to support this
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+        // form.enctype = "multipart/form-data";
+        form.enctype = "application/x-www-form-urlencoded";
         form.setAttribute("class", "hidden");
         const button = event.target.cloneNode(true);
         form.appendChild(button);

@@ -8,6 +8,14 @@
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
+  =>  |%
+      ++  trim                                 ::  remove trailing whitespace and \r
+        |=  cor=@t
+        %-  crip  %-  flop
+        %-  skip  :_  |=(c=@t =('\0d' c))
+        %+  scan  (flop (trip cor))
+        ;~(pfix (star (mask " \0a\0d\09")) (star next))
+      --
   =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
     ::  FIXME: Go to next available name if this path is already taken
@@ -15,9 +23,6 @@
     =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) %nam))])
     =-  ?@(- - [lag -])
     ^-  $@(@t prod:f)
-    ::  FIXME: Removes whitespace at the end (introduced by CSS trick to
-    ::  auto-resize text areas); ideally, this wouldn't be necessary
-    =+  trim=|=(t=@t (crip (flop (scan (flop (trip t)) ;~(pfix (star (mask " \0a\0d\09")) (star next))))))
     ?+    act=(~(got by p.arz) %act)
         (crip "bad act; expected (init|drop|bump-*), not {(trip act)}")
       %drop       [%drop ~]

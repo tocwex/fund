@@ -141,8 +141,8 @@
   =/  [lag=flag:f pre=prej:f]  (greb:proj:preface:fh arz)
   =*  pro  -.pre
   =/  sat=stat:f  ~(stat pj:f pro)
-  ::  NOTE: Gate non-`our` users to my ship's non-draft projects
-  ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
+  ::  NOTE: Gate non-`our` users to my ship's proposed-or-after projects
+  ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(%born sat)))  [%auth url.request.ord]
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
   =+  wok=(~(has in roz) %work)
   =+  ora=(~(has in roz) %orac)
@@ -201,7 +201,7 @@
           ==
         ==
         ;+  (mark-well:htmx:fh (trip summary.pro) &)
-        ;*  ?:  |(?=(?(%born %prop) sat) !=(our.bol p.lag))  ~
+        ;*  ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
             :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~

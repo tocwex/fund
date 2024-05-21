@@ -90,7 +90,14 @@ if (window.Alpine === undefined) {
     'zero-md',
     class extends ZeroMd {
       async load() {
+        const elem = document.createElement("div");
+        elem.setAttribute("id", "fund-loader");
+        elem.setAttribute("class", "fund-loader");
+        elem.innerText = "⏳";
+        this.appendChild(elem);
+
         await super.load();
+
         this.marked.use({
           gfm: true,
           breaks: false,
@@ -116,10 +123,14 @@ if (window.Alpine === undefined) {
             },
           },
         });
-        // this.removeChild(Array.from(this.children).find(e => e.id === "fund-loader"));
       }
-    }
+    },
   );
+  addEventListener('zero-md-rendered', (event) => {
+    const outer = event.target;
+    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
+    if (loader) outer.removeChild(loader);
+  });
 
   // FIXME: For some reason, twind's style refresher doesn't fire when a
   // submission fails, so we replicate its "reveal content" behavior manually

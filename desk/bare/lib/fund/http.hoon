@@ -515,7 +515,6 @@
       ;template
         ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
       ==
-      ::  ;div#fund-loader.fund-loader: ⏳
       ;script(type "text/markdown"): {txt}
     ==
   ++  udon-well                                  ::  udon (hoon-markdown) well

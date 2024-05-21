@@ -53,4 +53,4 @@
   :+  200  [%content-type (forj '/' p.mym)]  ::  1 week cache time
   ?:(!<(bean (slot:config %debug)) ~ ['cache-control' 'max-age=604800']~)
 --
-::  VERSION: [0 2 1]
+::  VERSION: [0 2 2]

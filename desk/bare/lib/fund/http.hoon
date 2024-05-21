@@ -511,10 +511,11 @@
     |=  [txt=tape big=bean]
     ^-  manx
     =+  kas=?:(big "" "line-clamp-5")
-    ;zero-md(class "{kas} {cas}", xlass "cmd()", no-shadow ~, manual-render ~)
+    ;zero-md(class "w-full {kas} {cas}", xlass "cmd()", no-shadow ~)
       ;template
         ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
       ==
+      ::  ;div#fund-loader.fund-loader: ⏳
       ;script(type "text/markdown"): {txt}
     ==
   ++  udon-well                                  ::  udon (hoon-markdown) well

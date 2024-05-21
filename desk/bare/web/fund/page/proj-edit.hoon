@@ -98,7 +98,6 @@
                   =value  (trip ?~(pru '' title.u.pru));
                 ;label(for "nam"): project title
               ==
-              ::  TODO: Remove now that udon/markdown is supported?
               ;div(class "fund-form-group")
                 ;input.p-1  =name  "pic"  =type  "url"
                   =placeholder  "https://example.com/example.png"
@@ -109,13 +108,13 @@
             ;div(class "fund-form-group")
               ;div(class "grow-wrap")
                 ;textarea.p-1  =name  "sum"  =rows  "3"
-                  =placeholder  "Write a worthy description of your project"
+                  =placeholder  "Write a worthy description of your project (markdown supported!)"
                   =value  (trip ?~(pru '' summary.u.pru))
                   =x-on-input  "updateTextarea"
                   ; {(trip ?~(pru '' summary.u.pru))}
                 ==
               ==
-              ;label(for "sum"): project description (markdown)
+              ;label(for "sum"): project description
             ==
           ==
         ==
@@ -149,13 +148,13 @@
                   ;div(class "fund-form-group")
                     ;div(class "grow-wrap")
                       ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
-                        =placeholder  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
+                        =placeholder  "Describe your milestone in detail (in plain text or markdown), such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
                         =value  (trip summary.mil)
                         =x-on-input  "updateTextarea"
                         ; {(trip summary.mil)}
                       ==
                     ==
-                    ;label(for "m{<min>}s"): milestone description (markdown)
+                    ;label(for "m{<min>}s"): milestone description
                   ==
                 ==
           ==

@@ -1,14 +1,21 @@
-::  /web/fund/page/proj-view/hoon: render base page for %fund
+::  /web/fund/page/proj-edit/hoon: render project edit page for %fund
 ::
 /+  f=fund, fx=fund-xtra, fh=fund-http
 /+  rudder, config
-%-  dump:preface:fh
-%-  mine:preface:fh  %-  init:preface:fh  %-  (proj:preface:fh |)
+%-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder act-now:f)
+  =>  |%
+      ++  trim                                 ::  remove trailing whitespace and \r
+        |=  cor=@t
+        %-  crip  %-  flop
+        %-  skip  :_  |=(c=@t =('\0d' c))
+        %+  scan  (flop (trip cor))
+        ;~(pfix (star (mask " \0a\0d\09")) (star next))
+      --
   =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
     ::  FIXME: Go to next available name if this path is already taken
@@ -26,7 +33,7 @@
         :+  %init  ~
         =+  pro=*proj:f  %_  pro
           title       (~(got by p.arz) %nam)
-          summary     (~(got by p.arz) %sum)
+          summary     (trim (~(got by p.arz) %sum))
         ::
             assessment
           :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
@@ -45,7 +52,7 @@
           =-  $(ind +(ind), miz [- miz])
           =+  mil=*mile:f  %_  mil
             title    u.nam
-            summary  (~(gut by p.arz) (crip "m{<ind>}s") '')
+            summary  (trim (~(gut by p.arz) (crip "m{<ind>}s") ''))
             cost     (fall (rush (~(gut by p.arz) (crip "m{<ind>}c") '') royl-rs:so) .0)
           ==
         ==
@@ -101,10 +108,9 @@
             ;div(class "fund-form-group")
               ;div(class "grow-wrap")
                 ;textarea.p-1  =name  "sum"  =rows  "3"
-                  =placeholder  "Write a worthy description of your project"
+                  =placeholder  "Write a worthy description of your project (markdown supported!)"
                   =value  (trip ?~(pru '' summary.u.pru))
-                  ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
-                  =oninput  "this.parentNode.dataset.replicatedValue = this.value"
+                  =x-on-input  "updateTextarea"
                   ; {(trip ?~(pru '' summary.u.pru))}
                 ==
               ==
@@ -142,10 +148,9 @@
                   ;div(class "fund-form-group")
                     ;div(class "grow-wrap")
                       ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
-                        =placeholder  "Describe your milestone in detail, such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
+                        =placeholder  "Describe your milestone in detail (in plain text or markdown), such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
                         =value  (trip summary.mil)
-                        ::  FIXME: Ghastly, but needed for auto-grow trick (see fund.css)
-                        =oninput  "this.parentNode.dataset.replicatedValue = this.value"
+                        =x-on-input  "updateTextarea"
                         ; {(trip summary.mil)}
                       ==
                     ==
@@ -216,12 +221,15 @@
         mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
         init() \{
           this.updateProj();
-          document.querySelectorAll('textarea').forEach(textarea => \{
-            textarea.parentNode.dataset.replicatedValue = textarea.value;
-          });
+          document.querySelectorAll('textarea').forEach(elem => (
+            this.updateTextarea(\{target: elem})
+          ));
         },
         updateProj() \{
           this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0)}`;
+        },
+        updateTextarea(event) \{
+          event.target.parentNode.dataset.replicatedValue = event.target.value;
         },
         updateMile(event) \{
           const min = Number(event.target.getAttribute('name')[1]);
@@ -248,4 +256,4 @@
     ==
   ==
 --
-::  VERSION: [0 2 1]
+::  VERSION: [0 2 2]

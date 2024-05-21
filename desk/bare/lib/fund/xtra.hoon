@@ -22,6 +22,24 @@
   ?~  b  ~
   [[i.a i.b] $(a t.a, b t.b)]
 ::
+::  +find: given list [l1, …, lN] and gate of g: li -> ?, return the
+::  first item where g(li) is true
+::
+++  find
+  |*  [a=(list) b=$-(* ?)]
+  =>  .(a (homo a))
+  ^-  (unit _?>(?=(^ a) i.a))
+  ?~(c=(skim a b) ~ `i.c)
+::
+::  +slaj: given list [l1, …, lN] and count a, return the last a
+::  items [l(max(1, N-a)), …, lN]
+::
+++  slaj
+  |*  [a=@ b=(list)]
+  =>  .(b (homo b))
+  =+  c=(lent b)
+  ?:((gte a c) b (slag (sub c a) b))
+::
 ::  +asci: transform arbitrary @t into nearest equivalent @tas
 ::
 ++  asci

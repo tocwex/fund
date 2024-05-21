@@ -17,6 +17,7 @@
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
 ::
 ::    x-on-* => x-on:*
+::    xlass => :class
 ::
 ++  alix
   |=  man=manx
@@ -25,9 +26,11 @@
   |=  [man=mane tap=tape]
   :_  tap
   ?^  man  man
-  ?.  =('x-on-' (dis 'x-on-' man))  man
-  =+  pre=[3 (met 3 'x-on-')]
-  (con 'x-on:' (lsh pre (rsh pre man)))
+  ?:  =(%xlass man)  ':class'
+  ?:  =(%x-on- (dis %x-on- man))
+    =+  pre=[3 (met 3 %x-on-)]
+    (con 'x-on:' (lsh pre (rsh pre man)))
+  man
 ::
 ::  +parz: parse POST request parameters considering required arguments
 ::
@@ -197,6 +200,9 @@
       |=  cor=cord  ~+
       ^-  path
       =/  [pre=tape suf=tape]  (chop:fx (trip cor) '?')
+      ::  FIXME: A smarter `stab` parser would be better, e.g. something like:
+      ::  `path`(rash '/a/b/' ;~(sfix stap fas))
+      =?  pre  ?=([%'/' *] (flop pre))  (snip pre)
       (need (decap:rudder /apps/fund (stab (crip pre))))
     ++  flag                                     ::  (url path) (project) flag
       |=  cor=cord  ~+
@@ -336,9 +342,8 @@
   ++  render                                     ::  render page w/ head/foot/styles/etc.
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
-    =+  go-base="https://fonts.googleapis.com"
-    |^  =-  (alix -)
-        ;html(hidden ~)  ::  NOTE: https://twind.dev/handbook/the-shim.html#prevent-fouc
+    =-  (alix -)
+    |^  ;html(class "!block", style "display: none;")  ::  NOTE: https://twind.style/installation
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
@@ -358,10 +363,10 @@
             ::  Website Meta Data/Libraries
             ;title: {(weld "%fund - " ?~(tyt "home" tyt))}
             ;link/"{(dest:enrl:format /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
-            ;link/"{go-base}"(rel "preconnect");
+            ;link/"https://fonts.googleapis.com"(rel "preconnect");
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ::  FIXME: Make this line legible somehow
-            ;link/"{go-base}/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
+            ;link/"https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
@@ -395,12 +400,10 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;*  ?.  =(our src):bol  ~
-              :~  ;a.w-8.h-8/"{(dest:enrl:format /config)}"
-                    ;img@"{(dest:enrl:format /asset/[~.gear.svg])}";
-              ==  ==
+              :_  ~  ;a.fund-butn-link/"{(dest:enrl:format /config)}": ⚙️
           ;+  ?:  (auth bol)
                 ?:  =(our src):bol
-                  ;div.fund-butn-base: {<src.bol>}
+                  ;div.fund-butn-base.border-black: {<src.bol>}
                 ;a.fund-butn-link/"/~/logout?redirect={(trip url)}": {<src.bol>}
               ;a.fund-butn-link/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-effect: …loading…
@@ -431,6 +434,19 @@
         ==
       ==
     --
+  ++  hero-plaq                                  ::  full-page notification w/ buttons
+    |=  [tyt=@t txt=(unit @t) buz=marl]
+    ^-  manx
+    ;form#maincontent(method "post", class "p-2 h-[80vh] {cas}")
+      ;div(class "flex flex-col h-full flex-wrap justify-center items-center text-center gap-10")
+        ;div(class "text-4xl sm:text-5xl"): {(trip tyt)}
+        ;*  ?~  txt  ~
+            :_  ~  ;div(class "text-xl sm:text-2xl"): {(trip u.txt)}
+        ;div(class "flex gap-2")
+          ;*  buz
+        ==
+      ==
+    ==
   ++  odit-ther                                  ::  funding thermometer element
     |=  odi=odit
     ^-  manx
@@ -491,6 +507,52 @@
         |:([n=[0 0] a=[0 1]] ?:((gth +.n +.a) n a))
       ==
     --
+  ++  mark-well                                  ::  markdown (github) well
+    |=  [txt=tape big=bean]
+    ^-  manx
+    =+  kas=?:(big "" "line-clamp-5")
+    ;zero-md(class "w-full {kas} {cas}", xlass "cmd()", no-shadow ~)
+      ;template
+        ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
+      ==
+      ;script(type "text/markdown"): {txt}
+    ==
+  ++  udon-well                                  ::  udon (hoon-markdown) well
+    |=  [txt=tape big=bean]
+    ^-  manx
+    |^  (post udon)
+    ++  udon                                     ::  generate udon from text
+      ^-  manx
+      ::  FIXME: Figure out how to get 'line-clamp' to override 'flex'
+      ::  display CSS to allow for line breaks in previews
+      =+  kas=?:(big "flex flex-col gap-3" "line-clamp-5")
+      =-  -(a.g [[%class "{kas} {cas}"] a.g])
+      ^-  manx
+      ?-  udo=(mule |.(!<(manx (slap !>(~) (ream (crip ";>\0a{txt}\0a"))))))
+        [%& *]  +.udo
+        [%| *]  ;p: {txt}
+      ==
+    ++  post                                     ::  apply attribute post-processing
+      |=  man=manx
+      ^-  manx
+      =-  %-  ~(apply-elem mu -)
+          |=([n=mane t=mart] [n ?+(n t %a [[%class "fund-link"] t])])
+      %-  ~(post-apply-nodes mu man)
+      |=  [[man=mane mat=mart] mal=marl]
+      ?+    man  [[man mat] mal]
+          %pre                                   ::  pre: add inner code block
+        :-  [man [[%class "min-w-full inline-block"] mat]]
+        [[%code [%class "block py-2 px-3"]~] mal]~
+      ::
+          %img                                   ::  img: shrink to a if !big
+        ?:  big  [[man mat] mal]
+        =/  src=(unit [mane tape])  (find:fx mat |=([m=mane tape] =(%src m)))
+        =/  alt=(unit [mane tape])  (find:fx mat |=([m=mane tape] =(%alt m)))
+        :-  [%a ?~(src mat [[%href +.u.src] mat])]
+        :_  mal
+        ;span: {?^(alt +.u.alt ?^(src +.u.src (dest:enrl:format /)))}
+      ==
+    --
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat
     ^-  manx
@@ -506,7 +568,7 @@
       %dead  "red-500"
     ==
   ++  copy-butn                                  ::  copy project link button
-    |=  [txt=tape]
+    |=  txt=tape
     :_  ; {txt}
     :-  %button
     :~  [%type "button"]

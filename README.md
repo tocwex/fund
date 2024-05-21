@@ -102,33 +102,10 @@ find ./desk/bare/web/fund/page/ -type f -exec sh -c "sed -i '/^::  RELOAD$/d' {}
 
 #### Back-end Workflows ####
 
-To generate a new full desk from the existing base desk, run all
-of the following commands:
+To generate a new full desk from the existing base desk:
 
 ```bash
-cd ./desk
-rm -rI full/
-find bare -type f | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
-mkdir -p full/lib/ full/mar full/sur
-ln -sr ../LICENSE.txt full/license.txt
-# git clone --depth 1 https://github.com/urbit/yard yar
-git clone -b 411k --depth 1 https://github.com/urbit/urbit.git urb
-cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*} full/lib/
-cp urb/pkg/arvo/sur/verb.hoon full/sur/
-git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
-cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} full/lib/
-cp yar/desk/mar/{bill*,docket*,hoon*,json*,kelvin*,mime*,noun*,ship*,txt*,css*,png*,svg*,js*} full/mar/
-cp yar/desk/sur/docket* full/sur/
-git clone --depth 1 https://github.com/arthyn/gin-tonic.git gat
-cp gat/tonic/lib/tonic.hoon full/lib/
-cp gat/tonic/mar/cass.hoon full/mar/
-git clone -b sl/fix-scry-request-agent-wire --depth 1 https://github.com/sidnym-ladrut/sss.git sss
-cp sss/urbit/lib/sss.hoon full/lib/
-cp sss/urbit/sur/sss.hoon full/sur/
-git clone -b sl/improve-install-data-reliability --depth 1 https://github.com/sidnym-ladrut/vita.git vit
-cp vit/vita-client/lib/vita-client.hoon full/lib/
-git clone --depth 1 https://github.com/tinnus-napbus/manx-utils.git mut
-cp mut/lib/manx-utils.hoon full/lib/
+./meta/exec/regen
 ```
 
 To perform a versioned release:

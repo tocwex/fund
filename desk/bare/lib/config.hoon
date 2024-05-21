@@ -7,7 +7,7 @@
   ::  by %main, which is overridden by %test, etc.)
   ^-  (map @tas vase)
   =<  +  %^  spin
-      (sort ~(tap by cfgz) |=([[a=@ta *] [b=@ta *]] (lth a b)))
+      (sort ~(tap by cfgz) |=([[a=@tas *] [b=@tas *]] (aor a b)))
     *(map @tas vase)
   |=([[p=@ta n=(map @tas vase)] a=(map @tas vase)] [[p n] (~(uni by a) n)])
 ++  slot                                         ::  value of key in config
@@ -26,6 +26,7 @@
   ?+  -.val  !!
     [%atom %f *]  ?:(!<(bean val) "true" "false")
     [%atom %ux *]  "'{['0' 'x' ((x-co:co 40) !<(@ux val))]}'"
+    [%atom %p *]  "'{(scow %p !<(@ val))}'"
     [%atom dim=@ ~]  "'{(scow %tas !<(@ val))}'"
   ==
 --

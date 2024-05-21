@@ -1,9 +1,8 @@
-::  /web/fund/page/proj-view/hoon: render base page for %fund
+::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder, config
-%-  dump:preface:fh
-%-  init:preface:fh  %-  (proj:preface:fh &)
+%-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  pag-now:f
 |_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
 ++  argue  ::  POST reply
@@ -142,8 +141,8 @@
   =/  [lag=flag:f pre=prej:f]  (greb:proj:preface:fh arz)
   =*  pro  -.pre
   =/  sat=stat:f  ~(stat pj:f pro)
-  ::  NOTE: Gate non-`our` users to my ship's non-draft projects
-  ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(?(%born %prop) sat)))  [%auth url.request.ord]
+  ::  NOTE: Gate non-`our` users to my ship's proposed-or-after projects
+  ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(%born sat)))  [%auth url.request.ord]
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
   =+  wok=(~(has in roz) %work)
   =+  ora=(~(has in roz) %orac)
@@ -201,8 +200,8 @@
                 ;div;
           ==
         ==
-        ;div(class "my-1 mx-3 p-1 whitespace-normal sm:text-lg"): {(trip summary.pro)}
-        ;*  ?:  ?=(?(%born %prop) sat)  ~
+        ;+  (mark-well:htmx:fh (trip summary.pro) &)
+        ;*  ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
             :_  ~  (copy-butn:htmx:fh "share 🔗")
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~
@@ -326,7 +325,7 @@
               ==
             ==
             ;+  (odit-ther:htmx:fh oil)
-            ; {(trip summary.mil)}
+            ;+  (mark-well:htmx:fh (trip summary.mil) &)
             ;div(class "flex flex-wrap items-center justify-end gap-2")
               ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                   ;:    welp
@@ -403,11 +402,15 @@
             ==
           ==
     ==
+    ::  FIXME: We use inline HTML instead of inline JS in order to
+    ::  circumvent the need for text escaping (e.g. ', ", and `).
+    ;div.hidden
+      ;data#fund-proj-oath(value (~(oath pj:f pro) p.lag));
+    ==
     ;script
       ;+  ;/
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
-        proj_oath: `{(~(oath pj:f pro) p.lag)}`,
         safe_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
         safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
         work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
@@ -420,7 +423,7 @@
         acceptContract(event) \{
           this.sendForm(event, [], () => (
             this.safeSignDeploy(\{
-              projectContent: this.proj_oath,
+              projectContent: document.querySelector("#fund-proj-oath").value,
             }).then(([address, signature]) => (\{
               oas: signature,
               oaa: address,
@@ -542,4 +545,4 @@
     ==
   ==
 --
-::  VERSION: [0 2 1]
+::  VERSION: [0 2 2]

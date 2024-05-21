@@ -1,71 +1,150 @@
 import alpineTurboDriveAdapter from 'https://cdn.skypack.dev/alpine-turbo-drive-adapter';
 import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1';
 import Alpine from 'https://cdn.skypack.dev/alpinejs@v3.13.9';
-import { tw, apply, setup } from 'https://cdn.skypack.dev/twind';
-import * as colors from 'https://cdn.skypack.dev/twind/colors';
-import { css } from 'https://cdn.skypack.dev/twind/css';
-import 'https://cdn.skypack.dev/twind/shim';
+import * as twind from 'https://cdn.jsdelivr.net/npm/@twind/core@1.1.3/+esm';
+import presetTwind from 'https://cdn.jsdelivr.net/npm/@twind/preset-tailwind@1.1.4/+esm';
+import presetLineClamp from 'https://cdn.jsdelivr.net/npm/@twind/preset-line-clamp@1.0.7/+esm';
+import presetAutoPrefix from 'https://cdn.jsdelivr.net/npm/@twind/preset-autoprefix@1.0.7/+esm';
 import {
   http, createConfig, injected,
   connect, disconnect, reconnect, getAccount,
 } from 'https://esm.sh/@wagmi/core@2.x';
 import { fromHex } from 'https://esm.sh/viem@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
+import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
+import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm'
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { NETWORK } from './const.js';
 
 if (window.Alpine === undefined) {
-  setup({
+  twind.install({
+    presets: [
+      presetTwind(),
+      presetLineClamp(),
+      presetAutoPrefix(),
+    ],
     theme: {
       fontFamily: {
         serif: ['Poppins', 'Noto Emoji', 'serif'],
         sans: ['Noto Emoji', 'sans-serif'],
         mono: ['Roboto Mono', 'mono'],
       },
-      extend: { colors },
     },
-    // FIXME: This should ultimately be in some sort of CSS file that can be
-    // replaced by the user for custom styling
-    // FIXME: Some of the override styling (e.g. 'p-1' for input/textarea) is
-    // being overridden by twind's *own* preflight; need to disable this somehow
-    // - https://github.com/tw-in-js/twind/issues/221
-    preflight: (preflight, {theme}) => ({
-      ...preflight,
-      input: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
-      textarea: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)`,
-      select: apply`w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)`,
-      label: apply`text-black font-light py-1`,
-      code: apply`font-mono bg-grey-400 text-black rounded-md p-2`,
-    }),
-    // FIXME: Recursive style embeddings don't seem to work with the shim; may
-    // need to use `tw(...)` directly to refactor beyond 1 level
-    plugins: {
-      'fund-pill': `text-nowrap px-2 py-1 border-2 rounded-full`,
-      'fund-tytl-link': `text-xl font-medium duration-300 hover:text-yellow-500`,
-      'fund-form-group': `flex flex-col-reverse w-full p-1 gap-1`,
-      'fund-butn-base': `text-nowrap px-2 py-1 rounded-md border-2 border-black`,
-      'fund-butn-link': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black hover:(rounded-lg bg-yellow-400 border-yellow-400)`,
-      'fund-butn-effect': `text-nowrap px-2 py-1 rounded-md duration-300 border-2 border-black text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)`,
-      'fund-butn-red': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200`,
-      'fund-butn-green': `text-nowrap px-2 py-1 rounded-md text-white border-2 border-green-600 bg-green-600 hover:bg-green-500 disabled:bg-green-200 disabled:border-green-200`,
-      'fund-butn-black': `text-nowrap px-2 py-1 rounded-md text-white  border-2 border-black bg-black hover:bg-gray-800 disabled:bg-gray-200 disabled:border-gray-200`,
-      'fund-odit-ther': `w-full flex h-8 text-white border-2 border-black`,
-      'fund-odit-sect': `h-full flex justify-center items-center text-center`,
-    },
+    // TODO: It would be great to put this all in a CSS file that
+    // was loaded by this file or the browser and then injected here
+    preflight: twind.css(`
+      form { margin: unset; }
+      textarea,select,input { padding: unset; @apply fund-input; }
+      label { @apply font-light py-1; }
+    `),
+    rules: [
+      ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
+      ['fund-pill', 'text-nowrap px-2 py-1 border-2 rounded-full'],
+      ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
+      ['fund-input', 'w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)'],
+      ['fund-tytl-link', 'text-xl font-medium duration-300 hover:text-yellow-500'],
+      ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
+      ['fund-butn-base', 'text-nowrap px-2 py-1 rounded-md border-2'],
+      ['fund-butn-link', 'fund-butn-base border-black duration-300 hover:(rounded-lg bg-yellow-400 border-yellow-400)'],
+      ['fund-butn-effect', 'fund-butn-base border-black duration-300 text-white bg-black hover:(text-black rounded-md rounded-lg bg-white)'],
+      ['fund-butn-red', 'fund-butn-base text-white border-red-600 bg-red-600 hover:bg-red-500 disabled:bg-red-200 disabled:border-red-200'],
+      ['fund-butn-green', 'fund-butn-base text-white border-green-600 bg-green-600 hover:bg-green-500 disabled:bg-green-200 disabled:border-green-200'],
+      ['fund-butn-black', 'fund-butn-base text-white border-black bg-black hover:bg-gray-800 disabled:bg-gray-200 disabled:border-gray-200'],
+      ['fund-odit-ther', 'w-full flex h-8 text-white border-2 border-black'],
+      ['fund-odit-sect', 'h-full flex justify-center items-center text-center'],
+    ],
   });
 
   window.Alpine = Alpine;
-  const tws = (parts) => {
+  function tws(parts) {
     const styles = Object.entries(parts).reduce((obj, [part, value]) => {
-      obj[`&::part(${part})`] = css(apply(value))
-
+      obj[`&::part(${part})`] = {'@apply': value};
       return obj;
     }, {});
-    return () => styles;
+    return css(styles);
+  }
+  function cmd() {
+    // https://twind.run/junior-crazy-mummy?file=script
+    return twind.css({
+      '.markdown-body > *': {'@apply': 'mt-3'},
+      '.markdown-body > *:first-child': {'@apply': 'mt-0'},
+      '& h1': {'@apply': 'text-2xl font-bold'},
+      '& h2': {'@apply': 'text-xl font-semibold'},
+      '& h3': {'@apply': 'text-lg font-semibold'},
+      '& h4': {'@apply': 'underline font-medium italic'},
+      '& h5': {'@apply': 'underline font-medium italic'},
+      '& h6': {'@apply': 'underline italic'},
+      '& a': {'color': '-webkit-link', 'text-decoration': 'underline'},
+      '& ol,ul': {'padding': 'unset', 'padding-inline-start': '1.5rem', '@apply': 'list-outside'},
+      '& ul': {'@apply': 'list-disc'},
+      '& ol': {'@apply': 'list-decimal'},
+      // NOTE: These two segments should debatably be hoisted into 'preflight'.
+      '& blockquote': {'@apply': 'p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800'},
+      '& code': {'@apply': 'font-mono bg-gray-200 rounded-md py-0.5 px-1.5'},
+    });
   }
 
+  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
+  customElements.define(
+    'zero-md',
+    class extends ZeroMd {
+      async load() {
+        const elem = document.createElement("div");
+        elem.setAttribute("id", "fund-loader");
+        elem.setAttribute("class", "fund-loader");
+        elem.innerText = "⏳";
+        this.appendChild(elem);
+
+        await super.load();
+
+        this.marked.use({
+          gfm: true,
+          breaks: false,
+          parse: async (obj) => {
+            const parsed = await super.parse(obj);
+            return DOMPurify.sanitize(parsed);
+          },
+          renderer: {
+            image: (href, title, text) => {
+              // FIXME: This is a really gross way to test if the 'zero-md'
+              // container is in preview mode; ideally, we'd use CSS instead
+              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
+              const imagElem = document.createElement(isPreview ? "a" : "img");
+              if (isPreview) {
+                imagElem.setAttribute("href", href);
+                imagElem.innerText = text ?? title ?? href;
+              } else {
+                imagElem.setAttribute("src", href);
+                if (text) imagElem.setAttribute("alt", text);
+                if (title) imagElem.setAttribute("title", title);
+              }
+              return imagElem.outerHTML;
+            },
+          },
+        });
+      }
+    },
+  );
+  addEventListener('zero-md-rendered', (event) => {
+    const outer = event.target;
+    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
+    if (loader) outer.removeChild(loader);
+  });
+
+  // FIXME: For some reason, twind's style refresher doesn't fire when a
+  // submission fails, so we replicate its "reveal content" behavior manually
+  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
+  document.addEventListener('turbo:submit-end', (event) => {
+    if (!event.detail.success) {
+      document.documentElement.setAttribute("class", "");
+      document.documentElement.setAttribute("style", "");
+    }
+  });
+
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
+    tws,
+    cmd,
     copyText: copyTextToClipboard,
     copyPURL: copyProjectURL,
     swapText: swapContent,
@@ -141,6 +220,13 @@ if (window.Alpine === undefined) {
       }).then(action).then(formData => {
         const form = document.createElement("form");
         form.method = "post";
+        // FIXME: This is necessary in order to send the raw message
+        // payload to the BE (e.g. sending the signed contract text as
+        // part of the submission), but the %rudder's `+frisk` method
+        // would need to be extended to support this
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+        // form.enctype = "multipart/form-data";
+        form.enctype = "application/x-www-form-urlencoded";
         form.setAttribute("class", "hidden");
         const button = event.target.cloneNode(true);
         form.appendChild(button);

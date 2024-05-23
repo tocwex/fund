@@ -11,10 +11,18 @@
   =>  |%
       ++  trim                                 ::  remove trailing whitespace and \r
         |=  cor=@t
+        ^-  @t
         %-  crip  %-  flop
         %-  skip  :_  |=(c=@t =('\0d' c))
         %+  scan  (flop (trip cor))
         ;~(pfix (star (mask " \0a\0d\09")) (star next))
+      ++  pars                                 ::  parse real number
+        |=  cor=@t
+        ^-  (unit real:f)
+        ?-  val=(mule |.((real:dejs:format:fh cor)))
+          [%| *]  ~
+          [%& *]  `+.val
+        ==
       --
   =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
@@ -37,7 +45,7 @@
         ::
             assessment
           :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
-          (fall (rush (~(got by p.arz) %seo) royl-rs:so) .1)
+          (fall (pars (~(got by p.arz) %seo)) one:val:rl:f)
         ::
             image
           =+  pic=(~(got by p.arz) %pic)
@@ -53,7 +61,7 @@
           =+  mil=*mile:f  %_  mil
             title    u.nam
             summary  (trim (~(gut by p.arz) (crip "m{<ind>}s") ''))
-            cost     (fall (rush (~(gut by p.arz) (crip "m{<ind>}c") '') royl-rs:so) .0)
+            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '')) zer:val:rl:f)
           ==
         ==
       ==
@@ -140,7 +148,7 @@
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
                         =min  "0"  =max  "100000000"  =step  "0.01"
                         =placeholder  "0"
-                        =value  ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))
+                        =value  ?:(=(zer:val:rl:f cost.mil) "" (real:enjs:format:fh cost.mil))
                         =x-on-change  "updateMile";
                       ;label(for "m{<min>}c"): milestone budget ($)
                     ==
@@ -176,7 +184,7 @@
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "1"
-                =value  ?~(pru "" (mony:enjs:format:fh q.assessment.u.pru));
+                =value  ?~(pru "" (real:enjs:format:fh q.assessment.u.pru));
               ;label(for "seo"): fee offer (%)
             ==
           ==
@@ -218,7 +226,7 @@
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{
         proj_cost: 0,
-        mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+        mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(real:enjs:format:fh cost.n)},")))}],
         init() \{
           this.updateProj();
           document.querySelectorAll('textarea').forEach(elem => (

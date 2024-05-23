@@ -10,7 +10,7 @@
   %_    odi
       void
     ?^  void.odi  void.odi
-    `(sub:rs cost.odi (add:rs fill.odi plej.odi))
+    `(sub:rl cost.odi (add:rl fill.odi plej.odi))
   ==
 ::
 ::  +tula: t(ime) associated with a $(m)ula (measured by block height)
@@ -38,6 +38,32 @@
   =/  syg=octs  (as-octs:mimes:html (rep 3 msg))
   (verify-sig:tx sign.sig syg)
 ::
+::  +rl: r(ea)l (library); helper core for $real data
+::
+++  rl
+  =>  |%
+      ++  dun  |=(a=fn `real`?>(?=(%f -.a) a))
+      --
+  |%
+  ++  add  |:([a=[%f *? --0 0] b=[%f *? --0 0]] (dun (ead:fl a b)))
+  ++  sub  |:([a=[%f *? --0 0] b=[%f *? --0 0]] (dun (ead:fl a (neg b))))
+  ++  neg  |=(a=fn (dun ?-(-.a %f a(s !s.a), %i a(s !s.a), %n a)))
+  ++  mul  (corl dun emu:fl)
+  ++  div  (corl dun div:fl)
+  ++  toi  (corl need toi:fl)
+  ++  lth  (corl need lth:fl)
+  ++  lte  (corl need lte:fl)
+  ++  gth  (corl need gth:fl)
+  ++  gte  (corl need gte:fl)
+  ++  equ  (corl need equ:fl)
+  ++  val
+    |%
+    ++  zer  [%f *? --0 0]
+    ++  one  [%f *? -112 5.192.296.858.534.827.628.530.496.329.220.096]
+    ++  hun  [%f *? -106 8.112.963.841.460.668.169.578.900.514.406.400]
+    --
+  --
+::
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
 ::
 ++  pj
@@ -49,18 +75,18 @@
     ^-  ^stat
     status:mil:next
   ++  cost                                       ::  summed milestone costs
-    ^-  @rs
-    (roll (turn milestonez |=(n=mile cost.n)) add:rs)
+    ^-  real
+    (roll (turn milestonez |=(n=mile cost.n)) add:rl)
   ++  plej                                       ::  summed pledge amounts
-    ^-  @rs
+    ^-  real
     %+  roll  ~(val by pledges)
-    |=([n=^plej a=@rs] (add:rs a cash.n))
+    |=([n=^plej a=real] (add:rl a cash.n))
   ++  fill                                       ::  project-wide cost fill
-    ^-  @rs
-    (roll (turn contribs |=(t=trib cash.t)) add:rs)
+    ^-  real
+    (roll (turn contribs |=(t=trib cash.t)) add:rl)
   ++  take                                       ::  project-wide claimed funds
-    ^-  @rs
-    %-  roll  :_  add:rs
+    ^-  real
+    %-  roll  :_  add:rl
     %-  turn  :_  |=(n=mile cost.n)
     %+  skim  milestonez
     |=(n=mile &(?=(%done status.n) ?=(^ withdrawal.n) ?=(^ xact.u.withdrawal.n)))
@@ -71,14 +97,14 @@
     ^-  (list ^odit)
     =/  lin=@  (dec (lent milestonez))
     =<  -  %^  spin  milestonez  [0 fill plej]
-    |=  [mil=mile min=@ fre=@rs pre=@rs]
+    |=  [mil=mile min=@ fre=real pre=real]
     =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil))
     =+  end==(min lin)
     =+  fos=?:(!dun cost.mil cash:(need withdrawal.mil))
-    =+  fil=?:(|(end (lte:rs fre fos)) fre fos)
-    =+  pos=?:(!dun (sub:rs fos fil) .0)
-    =+  pej=?:(|(end (lte:rs pre pos)) pre pos)
-    [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
+    =+  fil=?:(|(end (lte:rl fre fos)) fre fos)
+    =+  pos=?:(!dun (sub:rl fos fil) [%f %.y --0 0])
+    =+  pej=?:(|(end (lte:rl pre pos)) pre pos)
+    [(filo [cost.mil fil pej ~]) +(min) (sub:rl fre fil) (sub:rl pre pej)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))
@@ -111,7 +137,7 @@
     %+  weld
       ^-  (list tape)
       :~  "title: {(trip title)}"
-          "oracle: {<p.assessment>} (for {(r-co:co (rlys q.assessment))}%)"
+          "oracle: {<p.assessment>} (for {(r-co:co (drg:fl q.assessment))}%)"
           "summary: {(trip summary)}"
       ==
     %+  turn  (enum:fx milestonez)
@@ -121,7 +147,7 @@
     ^-  (list tape)
     :~  "milestone #{<+(min)>}:"
         "title: {(trip title.mil)}"
-        "cost: {(r-co:co (rlys cost.mil))}"
+        "cost: {(r-co:co (drg:fl cost.mil))}"
         "summary: {(trip summary.mil)}"
     ==
   --
@@ -205,7 +231,7 @@
             =+  niz=(turn miz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
             %+  snoc  (snip niz)
             =+  mil=(rear niz)
-            mil(withdrawal `[~ sigm.oat (sub:rs ~(fill pj pro) ~(take pj pro))])
+            mil(withdrawal `[~ sigm.oat (sub:rl ~(fill pj pro) ~(take pj pro))])
           ==
         --
     =/  sat=stat  ~(stat pj pro)
@@ -278,7 +304,7 @@
     ::
         %mula
       ?<  ?=(?(%born %prop %done %dead) sat)
-      ?>  (gth:rs cash.pod .0)
+      ?>  (gth:rl cash.pod *real)
       ?-    +<.pod
           %plej
         ::  NOTE: This is a sufficient check because we only allow the
@@ -293,8 +319,7 @@
       ::
           %trib
         =/  pol=(unit plej)  ?~(ship.pod ~ (~(get by pledges.pro) (need ship.pod)))
-        ::  TODO: Is this okay or should we require direct equality?
-        ?>  |(?=(~ pol) (equ:rs cash.u.pol cash.pod))
+        ?>  |(?=(~ pol) =(cash.u.pol cash.pod))
         %_    pro
             pledges
           ?~  pol  pledges.pro
@@ -323,7 +348,7 @@
       =/  mod=odit  (snag min ~(odim pj pro))
       ?~  sig.pod  (edit-mile min mil(withdrawal ~))
       ?>  (peer-sigm u.sig.pod)
-      =+  fil=?:(?=(%done status.mil) fill.mod (sub:rs ~(fill pj pro) ~(take pj pro)))
+      =+  fil=?:(?=(%done status.mil) fill.mod (sub:rl ~(fill pj pro) ~(take pj pro)))
       (edit-mile min mil(withdrawal `[~ u.sig.pod fil]))
     ==
   --

@@ -64,6 +64,15 @@ export const CONTRACT = Object.freeze({
     DECIMALS: 18,
     ABI: ABI.ERC20,
   }),
+  // https://star.market/about
+  WSTR: Object.freeze({
+    ADDRESS: Object.freeze({
+      MAINNET: "0xf0dc76c22139ab22618ddfb498be1283254612b1",
+      SEPOLIA: "0x3066F428D935a44bE7AA845B6C6b812519CE1e17",
+    })[FUND_CHAIN.toUpperCase()],
+    DECIMALS: 18,
+    ABI: ABI.ERC20,
+  }),
   // https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/multi_send_call_only.json
   SAFE_MULTISEND: Object.freeze({
     ADDRESS: Object.freeze({

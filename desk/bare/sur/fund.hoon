@@ -16,9 +16,13 @@
 ::
 +$  flag  (pair @p @tas)
 ::
+::  $real: real number interface (%f case of $fn core type)
+::
++$  real  [%f s=? e=@s a=@u]
+::
 ::  $sess: assessment information (ship, cut)
 ::
-+$  sess  (pair @p @rs)
++$  sess  (pair @p real)
 ::
 ::  $mesg: blockchain signed message information (message or raw hex)
 ::
@@ -93,7 +97,7 @@
 ::
 +$  plej
   $:  ship=@p
-      cash=@rs
+      cash=real
       when=bloq
       note=@t
   ==
@@ -102,7 +106,7 @@
 ::
 +$  trib
   $:  ship=(unit @p)
-      cash=@rs
+      cash=real
       when=stub
       note=@t
   ==
@@ -117,10 +121,10 @@
 ::  $odit: financials associated with a work unit ($proj, $mile)
 ::
 +$  odit
-  $:  cost=@rs
-      fill=@rs
-      plej=@rs
-      void=(unit @rs)
+  $:  cost=real
+      fill=real
+      plej=real
+      void=(unit real)
   ==
 ::
 ::  $oath: blockchain project agreement receipt
@@ -138,7 +142,7 @@
 +$  with
   $:  xact=(unit xact)
       =sigm
-      cash=@rs
+      cash=real
   ==
 
 +|  %core
@@ -149,7 +153,7 @@
   $:  title=@t
       summary=@t
       image=(unit @t)
-      cost=@rs
+      cost=real
       status=stat
       withdrawal=(unit with)
   ==

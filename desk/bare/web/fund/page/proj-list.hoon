@@ -86,7 +86,7 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal
-                  ;span#proj-cost: ${(mony:enjs:format:fh ~(cost pj:f pro))}
+                  ;span#proj-cost: ${(real:enjs:format:fh ~(cost pj:f pro))}
                 ==
                 ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
               ==

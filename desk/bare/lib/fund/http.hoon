@@ -242,6 +242,14 @@
   +|  %js
   ++  dejs                                       ::  js-tape => noun
     |%
+    ++  real                                     ::  "12.34" => [%f s=%.y e=-109 a=...]
+      |=  rel=@t
+      ^-  ^real
+      ::  TODO: Should strip trailing zeroes
+      =;  fen=fn  ?>(?=(%f -.fen) fen)
+      (grd:fl (royl-cell:so (rash rel royl-rn:so)))
+    ::  TODO: Refactor to use 'real', and then do exponentiation and
+    ::  formatting manually afterwards
     ++  mony                                     ::  "12.34" => .1.2345e1
       |=  mon=@t
       ^-  @rs
@@ -269,6 +277,18 @@
     --
   ++  enjs                                       ::  noun => js-tape
     |%
+    ++  real                                     ::  [%f s=%.y e=-109 a=...] => "12.34"
+      |=  rel=^real
+      ^-  tape
+      =/  del=dn  (drg:fl rel)
+      ?>  ?=(%d -.del)
+      =/  rep=tape  ?:(s.del "" "-")
+      =/  f  ((d-co:co 1) a.del)
+      =^  e  e.del
+        =/  e=@s  (sun:si (lent f))
+        =/  sci  :(sum:si e.del e -1)
+        [(sum:si sci --1) --0]
+      (weld rep (ed-co:co e f))
     ++  mony                                     ::  .1.2345e1 => "12.34"
       |=  mon=@rs
       ^-  tape
@@ -452,44 +472,46 @@
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
     |^  =+  ovr=(need void:(filo odi))
-        =+  udr=(sig:rs ovr)
-        =?  ovr  !udr  (mul:rs .-1 ovr)
-        =+  tot=`@rs`(add:rs cost.odi ?:(udr .0 ovr))
-        =/  odz=(list @rs)
+        =+  udr=s.ovr
+        =?  ovr  !udr  (mul:rl (neg:rl one:val:rl) ovr)
+        =+  tot=(add:rl cost.odi ?:(udr zer:val:rl ovr))
+        =/  odz=(list real)
           ?:  udr  ~[fill.odi plej.odi ovr]
           =+  [fre=fill.odi pre=plej.odi]
           =+  fos=cost.odi
-          =+  fil=?:((lte:rs fre fos) fre fos)
-          =+  pos=(sub:rs fos fil)
-          =+  pej=?:((lte:rs pre pos) pre pos)
+          =+  fil=?:((lte:rl fre fos) fre fos)
+          =+  pos=(sub:rl fos fil)
+          =+  pej=?:((lte:rl pre pos) pre pos)
           ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
-        =+  cez=?:((equ:rs .0 tot) `(list @rs)`~[.0 .0 .100] (turn odz (rcen tot)))
+        =/  cez=(list real)
+          ?.  (equ:rl tot zer:val:rl)  (turn odz (rcen tot))
+          ~[zer:val:rl zer:val:rl hun:val:rl]
         =+  dez=(iron (turn cez cend))
         ;div(class "fund-odit-ther {cas}")
           ;*  %+  murn  :(izip:fx odz naz caz cez dez)
-              |=  [dol=@rs nam=tape kas=tape cen=@rs den=@ud]
+              |=  [dol=real nam=tape kas=tape cen=real den=@ud]
               ^-  (unit manx)
               ?:  =(0 den)  ~
               :-  ~
-              ;div(title "{(mony:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
-                ; ${(mony:enjs:format dol)}
+              ;div(title "{(real:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
+                ; ${(real:enjs:format dol)}
               ==
         ==
     ++  rcen                                     ::  odit segment to percentage
-      |=  tot=@rs
-      |=  val=@rs
-      ^-  @rs
-      (mul:rs .100 (div:rs val tot))
+      |=  tot=real
+      |=  val=real
+      ^-  real
+      (mul:rl hun:val:rl (div:rl val tot))
     ++  cend                                     ::  odit percentage to decimal
-      |=  val=@rs
+      |=  val=real
       ^-  @ud
-      ?:  (equ:rs val .0)  0
-      ?:  (lth:rs val .1)  1
-      (abs:si (need (~(toi rs %n) val)))
+      ?:  (equ:rl val zer:val:rl)  0
+      ?:  (lth:rl val one:val:rl)  1
+      (abs:si (toi:rl val))
     ++  iron                                     ::  odit decimals ironed to sum 100
       |=  lis=(list @ud)
       ^-  (list @ud)

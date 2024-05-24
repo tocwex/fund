@@ -18,8 +18,8 @@
         ;~(pfix (star (mask " \0a\0d\09")) (star next))
       ++  pars                                 ::  parse real number
         |=  cor=@t
-        ^-  (unit real:f)
-        ?-  val=(mule |.((real:dejs:format:fh cor)))
+        ^-  (unit cash:f)
+        ?-  val=(mule |.((cash:dejs:format:fh cor)))
           [%| *]  ~
           [%& *]  `+.val
         ==
@@ -45,7 +45,7 @@
         ::
             assessment
           :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
-          (fall (pars (~(got by p.arz) %seo)) one:val:rl:f)
+          (fall (pars (~(got by p.arz) %seo)) 1.000.000)
         ::
             image
           =+  pic=(~(got by p.arz) %pic)
@@ -61,7 +61,7 @@
           =+  mil=*mile:f  %_  mil
             title    u.nam
             summary  (trim (~(gut by p.arz) (crip "m{<ind>}s") ''))
-            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '')) zer:val:rl:f)
+            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '')) 0)
           ==
         ==
       ==
@@ -148,7 +148,7 @@
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
                         =min  "0"  =max  "100000000"  =step  "0.01"
                         =placeholder  "0"
-                        =value  ?:(=(zer:val:rl:f cost.mil) "" (real:enjs:format:fh cost.mil))
+                        =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil))
                         =x-on-change  "updateMile";
                       ;label(for "m{<min>}c"): milestone budget ($)
                     ==
@@ -184,7 +184,7 @@
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "1"
-                =value  ?~(pru "" (real:enjs:format:fh q.assessment.u.pru));
+                =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru));
               ;label(for "seo"): fee offer (%)
             ==
           ==
@@ -226,7 +226,7 @@
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{
         proj_cost: 0,
-        mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(real:enjs:format:fh cost.n)},")))}],
+        mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(cash:enjs:format:fh cost.n)},")))}],
         init() \{
           this.updateProj();
           document.querySelectorAll('textarea').forEach(elem => (

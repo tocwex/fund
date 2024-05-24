@@ -16,14 +16,6 @@
 ::
 +$  flag  (pair @p @tas)
 ::
-::  $real: real number interface (%f case of $fn core type)
-::
-+$  real  [%f s=? e=@s a=@u]
-::
-::  $sess: assessment information (ship, cut)
-::
-+$  sess  (pair @p real)
-::
 ::  $mesg: blockchain signed message information (message or raw hex)
 ::
 +$  mesg  (each @t @ux)
@@ -39,6 +31,10 @@
 ::  $bloq: blockchain block height
 ::
 +$  bloq  @ud  ::  event-id:ethereum-types
+::
+::  $cash: blockchain transaction amount (e.g. gwei)
+::
++$  cash  @ud
 ::
 ::  $xact: blockchain transaction data
 ::
@@ -93,11 +89,15 @@
       %dead  ::  completed unsuccessfully
   ==
 ::
+::  $sess: assessment information (ship, cut)
+::
++$  sess  (pair @p cash)
+::
 ::  $plej: promise for contribution
 ::
 +$  plej
   $:  ship=@p
-      cash=real
+      =cash
       when=bloq
       note=@t
   ==
@@ -106,7 +106,7 @@
 ::
 +$  trib
   $:  ship=(unit @p)
-      cash=real
+      =cash
       when=stub
       note=@t
   ==
@@ -121,10 +121,10 @@
 ::  $odit: financials associated with a work unit ($proj, $mile)
 ::
 +$  odit
-  $:  cost=real
-      fill=real
-      plej=real
-      void=(unit real)
+  $:  cost=cash
+      fill=cash
+      plej=cash
+      void=(unit [s=? v=cash])
   ==
 ::
 ::  $oath: blockchain project agreement receipt
@@ -142,7 +142,7 @@
 +$  with
   $:  xact=(unit xact)
       =sigm
-      cash=real
+      =cash
   ==
 
 +|  %core
@@ -153,7 +153,7 @@
   $:  title=@t
       summary=@t
       image=(unit @t)
-      cost=real
+      cost=cash
       status=stat
       withdrawal=(unit with)
   ==
@@ -172,6 +172,8 @@
         pledges=(map ship plej)
         contribs=(list trib)
         contract=(unit oath)
+        ::  TODO: coin: ... (as data)
+        ::  TODO: network: ... (as int?)
     ==
   +$  wave  [=bowl:gall =poke]
   ++  lake  (lake:sss rock wave)

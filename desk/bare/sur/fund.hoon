@@ -32,7 +32,7 @@
 ::
 +$  bloq  @ud  ::  event-id:ethereum-types
 ::
-::  $cash: blockchain transaction amount (e.g. gwei)
+::  $cash: blockchain transaction amount (e.g. wei)
 ::
 +$  cash  @ud
 ::
@@ -53,6 +53,16 @@
 +$  stub
   $:  =xact
       from=addr
+  ==
+::
+::  $coin: blockchain token information
+::
++$  coin
+  $:  chain=@ud         ::  FIXME: _1 (doesn't work w/ ;;)
+      =addr
+      name=@t
+      symbol=@t
+      decimals=@ud      ::  FIXME: _18 (doesn't work w/ ;;)
   ==
 ::
 ::  $perm: permission level (associated with $poke/$prod)
@@ -168,12 +178,11 @@
         summary=@t
         image=(unit @t)
         assessment=sess
+        currency=coin
         milestones=(lest mile)
         pledges=(map ship plej)
         contribs=(list trib)
         contract=(unit oath)
-        ::  TODO: coin: ... (as data)
-        ::  TODO: network: ... (as int?)
     ==
   +$  wave  [=bowl:gall =poke]
   ++  lake  (lake:sss rock wave)

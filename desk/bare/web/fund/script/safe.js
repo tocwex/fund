@@ -1,5 +1,5 @@
 import {
-  getAccount, getClient, getPublicClient, getBalance, getBlockNumber,
+  getAccount, getClient, getChainId, getPublicClient, getBalance, getBlockNumber,
   signMessage, readContract, writeContract, waitForTransactionReceipt,
 } from 'https://esm.sh/@wagmi/core@2.x';
 import {
@@ -7,43 +7,49 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
-import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
+import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, NETWORK, CONTRACT } from './const.js';
 
 //////////////////////
 // Module Functions //
 //////////////////////
 
-export const txnGetURL = (address) => (
-  `https://${
-    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN}.`
-  }etherscan.io/tx/${address}`
-);
+export const ethGetChain = () => (NETWORK.NAME?.[getChainId(window.Wagmi)] ?? NETWORK.NAME[1]);
 
-export const safeGetURL = (address) => (
-  `https://app.safe.global/home?safe=${
-    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN.substring(0, 3)}:`
-  }${address}`
-);
+export const txnGetURL = (address) => {
+  const chain = ethGetChain().toLowerCase();
+  return `https://${
+    (chain === "mainnet") ? "" : `${chain}.`
+  }etherscan.io/tx/${address}`
+};
+
+export const safeGetURL = (address) => {
+  const chain = ethGetChain().toLowerCase();
+  return `https://app.safe.global/home?safe=${
+    (chain === "mainnet") ? "" : `${chain.substring(0, 3)}:`
+  }${address}`;
+};
 
 export const safeGetBlock = async () => {
   const block = await getBlockNumber(window.Wagmi);
   return block.toString();
 };
 
-export const safeGetAccount = () => {
+export const safeGetAccount = (chainId) => {
   const account = getAccount(window.Wagmi);
   if (account.isDisconnected)
     throw new SafeError(`wallet not connected; please click the 'connect' button in the top-right corner of the page to continue`);
   if (account.chain === undefined)
     throw new SafeError(`error with blockchain network; unable to recognize connected network`);
-  if (account.chain.id !== NETWORK.ID[FUND_CHAIN.toUpperCase()])
-    throw new SafeError(`using the wrong blockchain network for this client; please switch your network to '${FUND_CHAIN}' instead`);
+  if (NETWORK.NAME?.[account.chain.id] === undefined)
+    throw new SafeError(`error with blockchain network; the chain ${account.chain.id} is unsupported`);
+  if (chainId !== undefined && account.chain.id !== chainId)
+    throw new SafeError(`using the wrong blockchain network for this project; please switch your network to '${NETWORK.NAME[chainId].toLowerCase()}' instead`);
   return account;
 }
 
-export const safeSignDeploy = async ({projectContent}) => {
-  const { address } = safeGetAccount();
+export const safeSignDeploy = async ({projectChain, projectContent}) => {
+  const { address } = safeGetAccount(projectChain);
   const signature = await signMessage(window.Wagmi, {
     account: address,
     message: projectContent,
@@ -51,16 +57,16 @@ export const safeSignDeploy = async ({projectContent}) => {
   return [address, signature];
 };
 
-export const safeExecDeploy = async ({oracleAddress}) => {
-  const { address: workerAddress } = safeGetAccount();
+export const safeExecDeploy = async ({projectChain, oracleAddress}) => {
+  const { address: workerAddress } = safeGetAccount(projectChain);
   if (fromHex(oracleAddress, "bigint") === fromHex(workerAddress, "bigint"))
     throw new SafeError(`cannot use the same wallet for the worker and oracle: ${workerAddress}`);
   const deployTransaction = await writeContract(window.Wagmi, {
     abi: CONTRACT.SAFE_PROXYFACTORY.ABI,
-    address: CONTRACT.SAFE_PROXYFACTORY.ADDRESS,
+    address: CONTRACT.SAFE_PROXYFACTORY.ADDRESS[ethGetChain()],
     functionName: "createProxyWithNonce",
     args: [
-      CONTRACT.SAFE_TEMPLATE.ADDRESS,
+      CONTRACT.SAFE_TEMPLATE.ADDRESS[ethGetChain()],
       encodeFunctionData({
         abi: CONTRACT.SAFE_TEMPLATE.ABI,
         functionName: "setup",
@@ -68,7 +74,7 @@ export const safeExecDeploy = async ({oracleAddress}) => {
           [workerAddress, oracleAddress, FUND_SIGN_ADDR], 2n,
           // TODO: Post-setup logic (contract address, call params) needs to go here
           ADDRESS.NULL, "",
-          CONTRACT.SAFE_FALLBACK.ADDRESS,
+          CONTRACT.SAFE_FALLBACK.ADDRESS[ethGetChain()],
           // TODO: Payment info (token, value receiver) (?) needs to go here
           ADDRESS.NULL, 0n, ADDRESS.NULL,
         ],
@@ -91,17 +97,19 @@ export const safeExecDeploy = async ({oracleAddress}) => {
   ];
 };
 
+// TODO: Add optional network specification to each 'safeExec' function
+// from here down (i.e. post-deployment)
 export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
   const TOKEN = safeTransactionToken();
   const { address: funderAddress } = safeGetAccount();
   // const tokenDecimals = await readContract(window.Wagmi, {
   //   abi: TOKEN.ABI,
-  //   address: TOKEN.ADDRESS,
+  //   address: TOKEN.ADDRESS[ethGetChain()],
   //   functionName: "decimals",
   // });
   const sendTransaction = await writeContract(window.Wagmi, {
     abi: TOKEN.ABI,
-    address: TOKEN.ADDRESS,
+    address: TOKEN.ADDRESS[ethGetChain()],
     functionName: "transfer",
     args: [
       safeAddress,
@@ -195,13 +203,13 @@ const safeGetRefundTransactions = async ({safeAddress, safeInitBlock}) => {
   const TOKEN = safeTransactionToken();
   const safeBalance = await getBalance(window.Wagmi, {
     address: safeAddress,
-    token: TOKEN.ADDRESS,
+    token: TOKEN.ADDRESS[ethGetChain()],
   });
   const safeCurrTotal = Number(safeBalance.formatted);
   // FIXME: If there are ever projects that exceed ~2k contributions, this will
   // need to be changed to paginate RPC queries.
   const transferLogs = await getPublicClient(window.Wagmi).getContractEvents({
-    address: TOKEN.ADDRESS,
+    address: TOKEN.ADDRESS[ethGetChain()],
     abi: TOKEN.ABI,
     eventName: "Transfer",
     args: {to: safeAddress},
@@ -260,8 +268,8 @@ const safeGetWithdrawalArgs = async ({safe, transactions}) => {
   console.log(transactions);
   const isDelegateCall = (transactions.length > 1) ? 1 : 0;
   const transactionContract = !isDelegateCall
-    ? safeTransactionToken(transactions[0]).ADDRESS
-    : CONTRACT.SAFE_MULTISEND.ADDRESS;
+    ? safeTransactionToken(transactions[0]).ADDRESS[ethGetChain()]
+    : CONTRACT.SAFE_MULTISEND.ADDRESS[ethGetChain()];
   const transactionData = !isDelegateCall
     ? safeEncodeTransaction(transactions[0])
     : encodeFunctionData({
@@ -275,7 +283,7 @@ const safeGetWithdrawalArgs = async ({safe, transactions}) => {
               // NOTE: 0, toAddress, value (eth), call data length (bytes), call data
               // sepolia.etherscan.io/address/0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b#code#F1#L10
               ["uint8", "address", "uint256", "uint256", "bytes"],
-              [0, TOKEN.ADDRESS, 0n, (encodedTransaction.length - 2) / 2, encodedTransaction],
+              [0, TOKEN.ADDRESS[ethGetChain()], 0n, (encodedTransaction.length - 2) / 2, encodedTransaction],
             );
           })
         ])],

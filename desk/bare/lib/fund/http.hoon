@@ -237,10 +237,8 @@
         ==
     ++  hair
       ^-  manx
-      =+  !<(can=@tas (slot:config %chain))
-      =+  cat=?:(=(%mainnet can) "mainnet" "testnet ({(cuss (trip can))})")
       ;div(class "flex justify-center w-full sticky top-0 bg-yellow-200 py-1 px-2 text-sm font-medium")
-        ; ⚠ {(cuss cat)} VERSION ⚠
+        ; ⚠ DEBUG ENABLED ⚠
       ==
     ++  head
       ^-  manx

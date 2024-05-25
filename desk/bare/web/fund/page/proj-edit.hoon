@@ -37,7 +37,7 @@
       %bump-born  ?~(pru 'project does not exist' [%bump %born ~])
     ::
         %init
-      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %toc %toa %ton %tod %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
         :+  %init  ~
         =+  pro=*proj:f  %_  pro
           title       (~(got by p.arz) %nam)
@@ -50,6 +50,14 @@
             image
           =+  pic=(~(got by p.arz) %pic)
           ?~((rush pic auri:de-purl:html) ~ `pic)
+        ::
+            currency
+          :*  chain=(bloq:dejs:format:fh (~(got by p.arz) %toc))
+              addr=(addr:dejs:format:fh (~(got by p.arz) %toa))
+              name=(~(got by p.arz) %ton)
+              symbol=(~(got by p.arz) %ton)
+              decimals=(bloq:dejs:format:fh (~(got by p.arz) %tod))
+          ==
         ::
             milestones
           ;;  (lest mile:f)
@@ -171,6 +179,43 @@
           ==
         ==
         ;div
+          ;div(class "m-1 pt-2 text-3xl w-full"): Funding Mechanism
+          ;div(class "flex")
+            ;div(class "fund-form-group")
+              ;select.p-2(name "tok")
+                ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
+                    %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
+                    |=  tok=tape
+                    ^-  manx
+                    :_  ; {(cuss tok)}
+                    :-  %option
+                    ;:  welp
+                        [%value tok]~
+                        ?.(=(sym tok) ~ [%selected ~]~)
+                    ==
+              ==
+              ;label(for "tok"): token
+            ==
+            ;div(class "fund-form-group")
+              ;select.p-2(name "net")
+                ::  FIXME: Including the network IDs here is a hack, but
+                ::  this should be fixed by moving chain stuff to the BE
+                ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
+                    %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
+                    |=  [net=tape nid=@ud]
+                    ^-  manx
+                    :_  ; {(caps:fx net)}
+                    :-  %option
+                    ;:  welp
+                        [%value net]~
+                        ?.(=(can nid) ~ [%selected ~]~)
+                    ==
+              ==
+              ;label(for "net"): network
+            ==
+          ==
+        ==
+        ;div
           ;div(class "m-1 pt-2 text-3xl w-full"): Trusted Oracle
           ;div(class "flex")
             ;div(class "fund-form-group")
@@ -201,14 +246,14 @@
         ;span: Please note there is a
         ;span(class "font-semibold"):  1% protocol fee
         ;span:  on all successfully completed milestone withdrawals.
-        ;span:  Refund transactions do not incurr any fees.
+        ;span:  Refund transactions do not incur any fees.
       ==
       ;div(class "flex w-full justify-center gap-x-2 mx-auto")
         ;*  |^  ?+  sat  !!  ::  ~[dead-butn drop-butn]
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~ ~)
+            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" "saveProj" ~)
             ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
@@ -235,6 +280,16 @@
         },
         updateProj() \{
           this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0)}`;
+        },
+        saveProj(event) \{
+          const chain = event.target.form.querySelector('[name=net]').value.toUpperCase();
+          const token = event.target.form.querySelector('[name=tok]').value.toUpperCase();
+          this.sendForm(event, [], () => Promise.resolve(\{
+            toc: this.NETWORK.ID[chain],
+            toa: this.CONTRACT[token].ADDRESS[chain],
+            ton: token.toLowerCase(),
+            tod: this.CONTRACT[token].DECIMALS,
+          }));
         },
         updateTextarea(event) \{
           event.target.parentNode.dataset.replicatedValue = event.target.value;

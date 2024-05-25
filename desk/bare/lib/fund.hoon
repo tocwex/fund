@@ -115,6 +115,7 @@
       ^-  (list tape)
       :~  "title: {(trip title)}"
           "oracle: {<p.assessment>} (for {(cash:enjs:format q.assessment)}%)"
+          "currency: {(trip name.currency)} ({(addr:enjs:format addr.currency)}) on eth chain {(bloq:enjs:format chain.currency)}"
           "summary: {(trip summary)}"
       ==
     %+  turn  (enum:fx milestonez)

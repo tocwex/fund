@@ -415,6 +415,8 @@
         safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
         work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
         orac_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
+        coin_chain: {(bloq:enjs:format:fh chain.currency.pro)},
+        coin_addr: '{(addr:enjs:format:fh addr.currency.pro)}',
         orac_cut: {(cash:enjs:format:fh q.assessment.pro)},
         mile_fill: [{(roll moz |=([n=odit:f a=tape] (weld a "{(cash:enjs:format:fh fill.n)},")))}],
         mile_whom: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
@@ -423,6 +425,7 @@
         acceptContract(event) \{
           this.sendForm(event, [], () => (
             this.safeSignDeploy(\{
+              projectChain: this.coin_chain,
               projectContent: document.querySelector("#fund-proj-oath").value,
             }).then(([address, signature]) => (\{
               oas: signature,
@@ -433,6 +436,7 @@
         finalizeContract(event) \{
           this.sendForm(event, [], () => (
             this.safeExecDeploy(\{
+              projectChain: this.coin_chain,
               oracleAddress: this.orac_addr,
             }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => \{
               console.log(`safe creation successful; view at: $\{this.safeGetURL(safeAddress)}`);

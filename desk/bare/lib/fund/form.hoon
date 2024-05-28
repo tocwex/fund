@@ -56,6 +56,9 @@
     =+  exp=6
     |=  cas=@t
     ^-  ^cash
+    ::  FIXME: `royl-rn:so` crashes on values w/o leading 0s (e.g. '.1')
+    =+  tas=(trip cas)
+    =?  cas  &(?=(^ tas) =(i.tas '.'))  (crip ['0' tas])
     =+  caf=(rash cas (cook royl-cell:so royl-rn:so))
     ?>  ?=(%d -.caf)
     %-  abs:si  %-  need  %-  toi:fl  %-  grd:fl

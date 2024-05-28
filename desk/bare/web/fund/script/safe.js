@@ -7,6 +7,7 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
+import BigNumber from 'https://cdn.jsdelivr.net/npm/bignumber.js@9.1.2/+esm'
 import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, NETWORK, CONTRACT } from './const.js';
 
@@ -97,11 +98,9 @@ export const safeExecDeploy = async ({projectChain, oracleAddress}) => {
   ];
 };
 
-// TODO: Add optional network specification to each 'safeExec' function
-// from here down (i.e. post-deployment)
-export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
-  const TOKEN = safeTransactionToken();
-  const { address: funderAddress } = safeGetAccount();
+export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, safeAddress}) => {
+  const TOKEN = safeTransactionToken({id: fundToken});
+  const { address: funderAddress } = safeGetAccount(projectChain);
   // const tokenDecimals = await readContract(window.Wagmi, {
   //   abi: TOKEN.ABI,
   //   address: TOKEN.ADDRESS[ethGetChain()],
@@ -126,10 +125,11 @@ export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
   ];
 };
 
-export const safeSignClaim = async ({safeAddress, fundAmount, workerAddress, oracleCut}) => {
-  const { address: oracleAddress } = safeGetAccount();
+export const safeSignClaim = async ({projectChain, safeAddress, fundAmount, fundToken, workerAddress, oracleCut}) => {
+  const { address: oracleAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
     fundAmount,
+    fundToken,
     workerAddress,
     oracleAddress,
     oracleCut,
@@ -137,10 +137,11 @@ export const safeSignClaim = async ({safeAddress, fundAmount, workerAddress, ora
   return safeSignWithdrawal({transactions, oracleAddress, safeAddress});
 };
 
-export const safeExecClaim = async ({safeAddress, fundAmount, oracleSignature, oracleAddress, oracleCut}) => {
-  const { address: workerAddress } = safeGetAccount();
+export const safeExecClaim = async ({projectChain, safeAddress, fundAmount, fundToken, oracleSignature, oracleAddress, oracleCut}) => {
+  const { address: workerAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
     fundAmount,
+    fundToken,
     workerAddress,
     oracleAddress,
     oracleCut,
@@ -148,15 +149,15 @@ export const safeExecClaim = async ({safeAddress, fundAmount, oracleSignature, o
   return safeExecWithdrawal({transactions, oracleSignature, oracleAddress, workerAddress, safeAddress});
 };
 
-export const safeSignRefund = async ({safeAddress, safeInitBlock}) => {
-  const { address: oracleAddress } = safeGetAccount();
-  const transactions = await safeGetRefundTransactions({safeAddress, safeInitBlock});
+export const safeSignRefund = async ({projectChain, fundToken, safeAddress, safeInitBlock}) => {
+  const { address: oracleAddress } = safeGetAccount(projectChain);
+  const transactions = await safeGetRefundTransactions({fundToken, safeAddress, safeInitBlock});
   return safeSignWithdrawal({transactions, oracleAddress, safeAddress});
 };
 
-export const safeExecRefund = async ({safeAddress, safeInitBlock, oracleSignature, oracleAddress}) => {
-  const { address: workerAddress } = safeGetAccount();
-  const transactions = await safeGetRefundTransactions({safeAddress, safeInitBlock});
+export const safeExecRefund = async ({projectChain, fundToken, safeAddress, safeInitBlock, oracleSignature, oracleAddress}) => {
+  const { address: workerAddress } = safeGetAccount(projectChain);
+  const transactions = await safeGetRefundTransactions({fundToken, safeAddress, safeInitBlock});
   return safeExecWithdrawal({transactions, oracleSignature, oracleAddress, workerAddress, safeAddress});
 };
 
@@ -175,7 +176,7 @@ export function SafeError(message = "") {
 }; SafeError.prototype = Error.prototype;
 
 const safeNextSaltNonce = () => (fromHex(keccak256(toHex(Date.now())), "bigint"));
-const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT["USDC"]); // (CONTRACT[id.toUpperCase()]);
+const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT[id.toUpperCase()]);
 
 const safeAddressSort = (getAddress = (v) => v) => (a, b) => {
   return (([a, b]) => (a === b) ? 0 : ((a < b) ? -1 : 1))(
@@ -190,17 +191,17 @@ const safeEncodeTransaction = ({id, amt, to}) => {
   });
 };
 
-const safeGetClaimTransactions = async ({fundAmount, workerAddress, oracleAddress, oracleCut}) => {
+const safeGetClaimTransactions = async ({fundAmount, fundToken, workerAddress, oracleAddress, oracleCut}) => {
   const adminCuts = [
     {to: FUND_SAFE_ADDR, cut: FUND_CUT},
     {to: oracleAddress, cut: Number(oracleCut) / 100.0},
     {to: workerAddress, cut: 1.0 - (FUND_CUT + (Number(oracleCut) / 100.0))},
   ];
-  return safeGetTransactions({amount: fundAmount, cuts: adminCuts});
+  return safeGetTransactions({token: fundToken, amount: fundAmount, cuts: adminCuts});
 };
 
-const safeGetRefundTransactions = async ({safeAddress, safeInitBlock}) => {
-  const TOKEN = safeTransactionToken();
+const safeGetRefundTransactions = async ({fundToken, safeAddress, safeInitBlock}) => {
+  const TOKEN = safeTransactionToken({id: fundToken});
   const safeBalance = await getBalance(window.Wagmi, {
     address: safeAddress,
     token: TOKEN.ADDRESS[ethGetChain()],
@@ -228,35 +229,34 @@ const safeGetRefundTransactions = async ({safeAddress, safeInitBlock}) => {
     // these fractions be computed another way to prevent overflows?
     cut: Number(value) / Number(safeFullTotal),
   }));
-  return safeGetTransactions({amount: safeCurrTotal, cuts: contribCuts});
+  return safeGetTransactions({token: fundToken, amount: safeCurrTotal, cuts: contribCuts});
 };
 
-const safeGetTransactions = ({amount, cuts}) => {
-  // NOTE: "amount" is a "Number" of decimal presentation, which is then
-  // converted to a "BigInt" for fractionalizing
+// NOTE: "amount" is a "Number" of decimal presentation, which is then
+// converted to a "BigInt" for fractionalizing
+const safeGetTransactions = ({token, amount, cuts}) => {
+  const TOKEN = safeTransactionToken({id: token});
   const transactionMap = cuts
     .map(({cut, to}) => ({
       to: to,
-      id: "usdc",
-      // TODO: Will this work for all values? Can this overflow the
-      // Number type? Can this also create problems with difficult cut
-      // fractions?
-      amt:  BigInt(Math.round(amount * cut * 10 ** CONTRACT["USDC"].DECIMALS)),
+      id: token,
+      amt: (new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).times(cut).integerValue(),
     })).reduce((acc, {to, id, amt}) => {
       const tid = `${id}:${to}`;
-      let cur = acc[tid] ?? {to, id, amt: 0n};
-      acc[tid] = {to, id, amt: cur.amt + amt};
+      let cur = acc[tid] ?? {to, id, amt: BigNumber(0)};
+      acc[tid] = {to, id, amt: cur.amt.plus(amt)};
       return acc;
     }, {});
   const transactions = Object.values(transactionMap)
+    .map(({to, id, amt}) => ({to, id, amt: BigInt(amt.toString())}))
     .filter(({to, id, amt}) => (amt > 0n))
     .sort(safeAddressSort(v => v.to));
 
   // FIXME: Make stronger guarantees about rounding and then remove this check
-  const bigintAmount = BigInt(Math.round(amount * 10 ** CONTRACT["USDC"].DECIMALS));
-  const bigintTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
-  if (bigintAmount !== bigintTotal)
-    throw new SafeError(`mismatch between requested transaction total and refund total: (${bigintAmount}, ${bigintTotal})`);
+  const bigintAmount = BigInt((new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).toString());
+  const transactionTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
+  if (bigintAmount !== transactionTotal)
+    throw new SafeError(`mismatch between requested transaction total and refund total: (${bigintAmount}, ${transactionTotal})`);
 
   return transactions;
 };

@@ -58,11 +58,13 @@
 ::  $coin: blockchain token information
 ::
 +$  coin
-  $:  chain=@ud         ::  FIXME: _1 (doesn't work w/ ;;)
+  ::  TODO: Consider using $~ to make this default to a specific coin,
+  ::  e.g. mainnet usdc
+  $:  chain=@ud
       =addr
       name=@t
       symbol=@t
-      decimals=@ud      ::  FIXME: _18 (doesn't work w/ ;;)
+      decimals=@ud
   ==
 ::
 ::  $perm: permission level (associated with $poke/$prod)

@@ -1,11 +1,11 @@
 /+  f=fund, fh=fund-http
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
-/~  pagz  pag-now:f  /web/fund/page
+/~  pagz  page:fh  /web/fund/page
 |%
 +$  card       card:agent:gall
 +$  sign-gall  sign:agent:gall
-+$  state-now  [%0 dat-now:f]
++$  state-now  [%0 data:f]
 --
 ^-  agent:gall
 =|  state-now
@@ -18,7 +18,7 @@
         def  ~(. (default-agent tis |) bol)
         cor  ~(. +> [bol ~])
     ++  on-init   =^(caz state abet:init:cor [caz tis])
-    ++  on-save   !>([state epic-now:f])
+    ++  on-save   !>([state 0])
     ++  on-load   |=(v=vase =^(caz state abet:(load:cor v) [caz tis]))
     ++  on-poke   |=([m=mark v=vase] =^(caz state abet:(poke:cor m v) [caz tis]))
     ++  on-watch  |=(p=path =^(caz state abet:(watch:cor p) [caz tis]))
@@ -46,23 +46,22 @@
 ++  init
   ^+  cor
   %-  emit
-  :*  %pass  /eyre/connect  %arvo  %e
+  :*  %pass     /eyre/connect
+      %arvo     %e
       %connect  `/apps/[dap.bol]  dap.bol
   ==
 ::
 ++  load
   |=  vas=vase
   ^+  cor
-  %=    cor
-      state
-    |^  =+  !<([sat=state-any epi=epic:f] vas)
-        ?-  -.sat
-          %0  sat
-        ==
-    +$  state-any  $%(state-now)
-    ::  +$  state-0  ...
-    --
-  ==
+  =-  cor(state -)
+  |^  =+  !<([sat=state-any @] vas)
+      |-
+      ?-  -.sat
+        %0  sat
+      ==
+  +$  state-any  $%(state-now)
+  --
 ::
 ++  poke
   |=  [mar=mark vas=vase]
@@ -107,19 +106,19 @@
       ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
       [(active:vita-client bol)]~
     =-  cor(caz (welp (flop (welp kaz vaz)) caz), +.state dat)
-    ^-  [kaz=(list card) dat=dat-now:f]
+    ^-  [kaz=(list card) dat=data:f]
     %.  [bol ord +.state]
-    %-  (steer:rudder dat-now:f act-now:f)
+    %-  (steer:rudder data:f diff:f)
     :^  pagz  route:fh  (fours:rudder +.state)
-    |=  act=act-now:f
-    ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
+    |=  dif=diff:f
+    ^-  $@(brief:rudder [brief:rudder (list card) data:f])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
-    ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
-    :-  (crip (poke:enjs:format:fh act))
-    ?.  =(p.p.act our.bol)
-      [+.state [(po-mk-car:(po-abed:po-core p.act) p.p.act q.act)]~]
+    ^-  [bre=brief:rudder dat=data:f kaz=(list card)]
+    :-  (crip (poke:enjs:format:fh dif))
+    ?.  =(p.p.dif our.bol)
+      [+.state [(po-mk-car:(po-abed:po-core p.dif) p.p.dif q.dif)]~]
     ::  FIXME: A little sloppy, but it works!
-    =+  kor=^$(mar %fund-poke, vas !>(act))
+    =+  kor=^$(mar %fund-poke, vas !>(dif))
     [+.state.kor (scag (sub (lent caz.kor) (lent caz)) caz.kor)]
   ==
 ::
@@ -179,13 +178,9 @@
   cor
 ::
 ++  po-core
-  |_  [lag=flag:f pro=proj:f gon=_|]
+  |_  [lag=flag:f pro=proj:f]
   ++  po-core  .
-  ++  po-abet
-    ?.  po-is-myn  cor
-    %_  cor
-      proz  ?:(gon (~(del by proz) lag) (~(put by proz) lag pro))
-    ==
+  ++  po-abet  cor
   ++  po-abed
     |=  lag=flag:f
     %=  po-core
@@ -244,7 +239,7 @@
         %wave  q.poke.wave.res
       ==
     ?:  ?=(%exit -.pod)
-      po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
+      po-core(cor (pull ~ (quit:da-poz po-da-pat)))
     po-core(cor (pull (apply:da-poz res)))
   ++  po-push
     |=  pod=prod:f
@@ -262,7 +257,7 @@
           ::
               %drop
             =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
-            po-core(gon &)
+            po-core
           ::
               ?(%bump %mula %draw %wipe)
             ?<  ~|(bad-push+mes po-is-new)
@@ -309,7 +304,7 @@
           ::
               %exit
             ?:  po-is-new  po-core
-            po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
+            po-core(cor (pull ~ (quit:da-poz po-da-pat)))
           ==
         ==
     ++  wash

@@ -164,20 +164,23 @@
   ::  +prez-mine: the local-hosted $prez ($proz w/ peer connection data)
   ::
   ++  prez-mine
-    |=  [bol=bowl:gall dat=dat-now]
+    |=  [bol=bowl:gall dat=data]
     ^-  prez
-    %-  ~(run by proz.dat)
-    |=(p=proj `prej`[p &])
+    =<  -  %+  ~(rib by read:(proz-pubs bol pubs.dat))  *prez
+    |=  [[k=path:proj v=[(unit (set ship)) p=proj]] a=prez]
+    :_  [k v]
+    (~(put by a) (proj-flag k) p.v &)
   ::
   ::  +prez-ours: local and remote $prez ($proz w/ peer connection data)
   ::
   ++  prez-ours
-    |=  [bol=bowl:gall dat=dat-now]
+    |=  [bol=bowl:gall dat=data]
     ^-  prez
     %-  ~(uni by (prez-mine bol dat))
     =<  -  %+  ~(rib by read:(proz-subs bol subs.dat))  *prez
     |=  [[k=[ship dude:gall p=path:proj] v=[s=? f=? p=proj]] a=prez]
-    [(~(put by a) (proj-flag p.k) p.v &(!s.v !f.v)) k v]
+    :_  [k v]
+    (~(put by a) (proj-flag p.k) p.v &(!s.v !f.v))
   ::
   ::  +proj-wash: update function for project peer state deltas
   ::
@@ -314,7 +317,7 @@
       ?>  ?=(?(%dead %done) status.mil)
       ?>  |(?=(%done status.mil) =((lent miz) +(min)))
       ?>  ?=(^ withdrawal.mil)
-      (edit-mile min mil(withdrawal `u.withdrawal.mil(xact `act.pod)))
+      (edit-mile min mil(withdrawal `u.withdrawal.mil(xact `dif.pod)))
     ::
         %wipe
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]

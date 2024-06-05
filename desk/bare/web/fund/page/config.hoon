@@ -3,14 +3,14 @@
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  mine:preface:fh
-^-  pag-now:f
-|_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
+^-  page:fh
+|_  [bol=bowl:gall ord=order:rudder dat=data:f]
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder act-now:f)
-  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
-    ?+    act=(~(got by p.arz) %act)
-        (crip "bad act; expected vita-*, not {(trip act)}")
+  ^-  $@(brief:rudder diff:f)
+  ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
+    ?+    dif=(~(got by p.arz) %dif)
+        (crip "bad dif; expected vita-*, not {(trip dif)}")
       ::  FIXME: This is a hack to support pokes that edit app-global
       ::  (as opposed to project-specific) information
       %vita-enable   [[our.bol %$] %join ~]

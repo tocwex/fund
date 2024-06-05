@@ -1,8 +1,10 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
+/-  fh=fund-http
 /+  *fund, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
++$  page  page:fh  :: FIXME: Needed to shadow %clay $page type
 ::
 ::  +auth: is `src.bowl` in the given bowl an authenticated user?
 ::
@@ -84,9 +86,9 @@
 ++  preface
   |%
   ++  dump                                       ::  print input data
-    |=  pag=pag-now
-    ^-  pag-now
-    |_  [bol=bowl:gall ord=order:rudder dat=dat-now]
+    |=  pag=page
+    ^-  page
+    |_  [bol=bowl:gall ord=order:rudder dat=data]
     +*  tis  ~(. pag bol ord dat)
         dum  !<(bean (slot:config %debug))
         url  (spud (slag:derl:format url.request.ord))
@@ -104,9 +106,9 @@
       (build:tis arz msg)
     --
   ++  init                                       ::  initialization checks
-    |=  pag=pag-now
-    ^-  pag-now
-    |_  [bol=bowl:gall ord=order:rudder dat=dat-now]
+    |=  pag=page
+    ^-  page
+    |_  [bol=bowl:gall ord=order:rudder dat=data]
     +*  tis  ~(. pag bol ord dat)
     ++  argue
       |=  [hed=header-list:http bod=(unit octs)]
@@ -119,9 +121,9 @@
       ?.(init.dat [%next (desc:enrl:format /config) ~] (build:tis arz msg))
     --
   ++  mine                                       ::  `our`-restricted checks
-    |=  pag=pag-now
-    ^-  pag-now
-    |_  [bol=bowl:gall ord=order:rudder dat=dat-now]
+    |=  pag=page
+    ^-  page
+    |_  [bol=bowl:gall ord=order:rudder dat=data]
     +*  tis  ~(. pag bol ord dat)
         myn  =(our src):bol
     ++  argue
@@ -155,9 +157,9 @@
       ;;([flag @tas] (cue txt))
     ++  core
       |=  req=_|
-      |=  pag=pag-now
-      ^-  pag-now
-      |_  [bol=bowl:gall ord=order:rudder dat=dat-now]
+      |=  pag=page
+      ^-  page
+      |_  [bol=bowl:gall ord=order:rudder dat=data]
       +*  tis  ~(. pag bol ord dat)
       ::  FIXME: Should probably make these hacky argument names more unique
       ++  argue
@@ -179,9 +181,9 @@
       --
     --
   ++  pass                                       ::  no effect (placeholder)
-    |=  pag=pag-now
-    ^-  pag-now
-    |_  [bol=bowl:gall ord=order:rudder dat=dat-now]
+    |=  pag=page
+    ^-  page
+    |_  [bol=bowl:gall ord=order:rudder dat=data]
     +*  tis  ~(. pag bol ord dat)
     ++  argue  |=([hed=header-list:http bod=(unit octs)] (argue:tis hed bod))
     ++  final  |=([gud=? txt=brief:rudder] (final:tis gud txt))
@@ -600,7 +602,7 @@
         ?~(xon ~ ~[[%x-data ~] [%x-on-click xon]])
         [%id "prod-butn-{(trip pod)}"]~
         [%type "submit"]~
-        [%name "act"]~
+        [%name "dif"]~
         [%value (trip pod)]~
         [%class "fund-butn-{(trip clr)} {cas}"]~
     ==

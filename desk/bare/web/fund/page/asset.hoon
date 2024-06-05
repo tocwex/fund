@@ -2,8 +2,8 @@
 ::
 /-  f=fund
 /+  config, rudder, fh=fund-http, fx=fund-xtra
-^-  pag-now:f
-|_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
+^-  page:fh
+|_  [bol=bowl:gall ord=order:rudder dat=data:f]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build

@@ -1,9 +1,10 @@
 ::  /web/fund/page/asset/hoon: render an arbitrary asset file (png, svg, etc.)
 ::
-/-  f=fund
-/+  config, rudder, fh=fund-http, fx=fund-xtra
-^-  page:fh
-|_  [bol=bowl:gall ord=order:rudder dat=data:f]
+/-  fd=fund-data
+/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  config, rudder
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build

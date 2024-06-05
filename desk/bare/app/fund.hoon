@@ -1,11 +1,12 @@
+/-  fd=fund-data
 /+  f=fund, fh=fund-http
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
-/~  pagz  page:fh  /web/fund/page
+/~  pagz  page:fd  /web/fund/page
 |%
 +$  card       card:agent:gall
 +$  sign-gall  sign:agent:gall
-+$  state-now  [%0 data:f]
++$  state-now  [%0 data:fd]
 --
 ^-  agent:gall
 =|  state-now
@@ -30,10 +31,11 @@
     --
 |_  [bol=bowl:gall caz=(list card)]
 ::
-+*  da-poz  (proz-subs:sss:f bol subs)
-    du-poz  (proz-pubs:sss:f bol pubs)
-    my-pez  (prez-mine:sss:f bol +.state)
-    us-pez  (prez-ours:sss:f bol +.state)
++*  pj-con  ~(. conn:proj:fd bol +>+.state)
+    da-poz  subs:pj-con
+    du-poz  pubs:pj-con
+    my-pez  mine:pj-con
+    us-pez  ours:pj-con
 ::
 ++  abet  [(flop caz) state]
 ++  cor   .
@@ -98,7 +100,7 @@
   ::
       %sss-proj
     =/  res  !<(into:da-poz (fled vas))
-    po-abet:(po-pull:(po-abed:po-core (proj-flag:sss:f path.res)) res)
+    po-abet:(po-pull:(po-abed:po-core (flag:proj:fd path.res)) res)
   ::  http pokes  ::
       %handle-http-request
     =+  !<(ord=order:rudder vas)
@@ -106,14 +108,14 @@
       ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
       [(active:vita-client bol)]~
     =-  cor(caz (welp (flop (welp kaz vaz)) caz), +.state dat)
-    ^-  [kaz=(list card) dat=data:f]
+    ^-  [kaz=(list card) dat=data:fd]
     %.  [bol ord +.state]
-    %-  (steer:rudder data:f diff:f)
+    %-  (steer:rudder data:fd diff:fd)
     :^  pagz  route:fh  (fours:rudder +.state)
-    |=  dif=diff:f
-    ^-  $@(brief:rudder [brief:rudder (list card) data:f])
+    |=  dif=diff:fd
+    ^-  $@(brief:rudder [brief:rudder (list card) data:fd])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
-    ^-  [bre=brief:rudder dat=data:f kaz=(list card)]
+    ^-  [bre=brief:rudder dat=data:fd kaz=(list card)]
     :-  (crip (poke:enjs:format:fh dif))
     ?.  =(p.p.dif our.bol)
       [+.state [(po-mk-car:(po-abed:po-core p.dif) p.p.dif q.dif)]~]
@@ -309,7 +311,6 @@
         ==
     ++  wash
       |=  caz=(list card)
-      =.  pro  (proj-wash:sss:f pro bol lag pod)
       =.  cor  (push (give:du-poz po-du-pat bol lag pod))
       =.  cor  (emil caz)
       po-core

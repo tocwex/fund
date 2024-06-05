@@ -1,4 +1,3 @@
-/+  sss
 |%
 +|  %base
 ::
@@ -147,22 +146,15 @@
 ::  $proj: collection of work (milestones) requesting funding
 ::
 ++  proj
-  =<  rock
-  |%
-  +$  rock
-    $:  title=@t
-        summary=@t
-        image=(unit @t)
-        assessment=sess
-        milestones=(lest mile)
-        pledges=(map ship plej)
-        contribs=(list trib)
-        contract=(unit oath)
-    ==
-  +$  wave  [=bowl:gall =poke]
-  +$  path  [%fund %proj sip=@ nam=@ ~]
-  ++  lake  (lake:sss rock wave)
-  --
+  $:  title=@t
+      summary=@t
+      image=(unit @t)
+      assessment=sess
+      milestones=(lest mile)
+      pledges=(map ship plej)
+      contribs=(list trib)
+      contract=(unit oath)
+  ==
 ::
 ::  $proz: collection of projects keyed by id (host/term)
 ::
@@ -198,21 +190,10 @@
 ::  $poke: project-bound delta ($prod)
 ::
 +$  poke  (pair flag prod)
+
++|  %misc
 ::
 ::  $mess: (error) mess(age) (used internally)
 ::
 +$  mess  [who=@p wer=flag wut=prod]
-::
-::  $data: top-level app data; forwarded to rudder-related requests
-::
-+$  data
-  $:  =proz
-      init=_|
-      subs=_(mk-subs:sss *lake:proj path:proj)
-      pubs=_(mk-pubs:sss *lake:proj path:proj)
-  ==
-::
-::  $diff: data delta forwarded to rudder-related POST requests
-::
-+$  diff  poke
 --

@@ -1,2 +1,3 @@
-/+  *sss, f=fund
-(mk-mar proj-lake:sss:f)
+/-  fund-proj
+/+  *sss
+(mk-mar lake:fund-proj)

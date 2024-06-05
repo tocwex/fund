@@ -1,13 +1,14 @@
 ::  /web/fund/page/proj-edit/hoon: render project edit page for %fund
 ::
+/-  fd=fund-data
 /+  f=fund, fx=fund-xtra, fh=fund-http
 /+  rudder, config
 %-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
-^-  page:fh
-|_  [bol=bowl:gall ord=order:rudder dat=data:f]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:f)
+  ^-  $@(brief:rudder diff:fd)
   =>  |%
       ++  trim                                 ::  remove trailing whitespace and \r
         |=  cor=@t

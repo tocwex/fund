@@ -1,13 +1,14 @@
 ::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
+/-  fd=fund-data
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
-^-  page:fh
-|_  [bol=bowl:gall ord=order:rudder dat=data:f]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:f)
+  ^-  $@(brief:rudder diff:fd)
   =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     =+  lin=(dec (lent milestones.pro))

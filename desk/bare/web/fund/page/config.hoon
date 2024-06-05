@@ -1,13 +1,14 @@
 ::  /web/fund/page/config/hoon: render config page for %fund
 ::
+/-  fd=fund-data
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  mine:preface:fh
-^-  page:fh
-|_  [bol=bowl:gall ord=order:rudder dat=data:f]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:f)
+  ^-  $@(brief:rudder diff:fd)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected vita-*, not {(trip dif)}")

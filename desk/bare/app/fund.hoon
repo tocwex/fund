@@ -1,4 +1,5 @@
 /-  fd=fund-data
+/-  fd-0=fund-data-0
 /+  f=fund, fh=fund-http
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
@@ -6,7 +7,7 @@
 |%
 +$  card       card:agent:gall
 +$  sign-gall  sign:agent:gall
-+$  state-now  [%0 data:fd]
++$  state-now  [%1 data:fd]
 --
 ^-  agent:gall
 =|  state-now
@@ -19,7 +20,7 @@
         def  ~(. (default-agent tis |) bol)
         cor  ~(. +> [bol ~])
     ++  on-init   =^(caz state abet:init:cor [caz tis])
-    ++  on-save   !>([state 0])
+    ++  on-save   !>([state 0])  ::  NOTE: 0 is unused `epic` flag
     ++  on-load   |=(v=vase =^(caz state abet:(load:cor v) [caz tis]))
     ++  on-poke   |=([m=mark v=vase] =^(caz state abet:(poke:cor m v) [caz tis]))
     ++  on-watch  |=(p=path =^(caz state abet:(watch:cor p) [caz tis]))
@@ -31,7 +32,7 @@
     --
 |_  [bol=bowl:gall caz=(list card)]
 ::
-+*  pj-con  ~(. conn:proj:fd bol +>+.state)
++*  pj-con  ~(. conn:proj:fd bol +>.state)
     da-poz  subs:pj-con
     du-poz  pubs:pj-con
     my-pez  mine:pj-con
@@ -56,13 +57,61 @@
 ++  load
   |=  vas=vase
   ^+  cor
-  =-  cor(state -)
-  |^  =+  !<([sat=state-any @] vas)
+  |^  =+  !<([sat=state-any @] vas)  ::  NOTE: @ is unused `epic` flag
       |-
       ?-  -.sat
-        %0  sat
+        %0  $(sat (move-0-1 sat))
+        %1  cor(state sat)
       ==
-  +$  state-any  $%(state-now)
+  +$  state-any  $%(state-now state-0)
+  +$  state-0    [%0 data:fd-0]
+  +$  state-1    state-now
+  ++  move-0-1
+    |=  old=state-0
+    ^-  state-1
+    |^  [%1 init.old (sove subs.old) (pove pubs.old)]
+    ++  urck  |=(old=vock:lake:proj:fd-0 `vock:lake:proj:fd`[%1 old])
+    ++  uwve  |=(old=vave:lake:proj:fd-0 `vave:lake:proj:fd`[%1 old])
+    +$  trok  ((mop aeon vock:lake:proj:fd) gte)
+    +$  twav  ((mop aeon vave:lake:proj:fd) lte)
+    ++  sove
+      |=  old=_subs:*data:fd-0
+      ^-  _subs:*data:fd
+      ?:  =(~ +.old)  *_subs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_subs:*data:fd
+      |=  [kev=_?>(?=([%0 ^] old) n.+.old) acc=_subs:*data:fd]
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      ?~  q.kev  q.kev
+      `u.q.kev(rock (urck rock.u.q.kev))
+    ++  pove
+      |=  old=_pubs:*data:fd-0
+      ^-  _pubs:*data:fd
+      ?>  ?=(%1 -.old)
+      ?:  =(~ +.old)  *_pubs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_pubs:*data:fd
+      |=  [kev=_?>(?=([%1 ^] old) n.+.old) acc=_pubs:*data:fd]
+      ?>  ?=(%1 -.acc)
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      =-  q.kev(tid -)
+      ?@  tid.q.kev  tid.q.kev
+      %=    tid.q.kev
+          rok
+        =<  -  %^  (dip:((on aeon vock:lake:proj:fd-0) gte) trok)
+            rok.tid.q.kev
+          *trok
+        |=  [a=trok k=aeon v=vock:lake:proj:fd-0]
+        [`v | (put:((on aeon vock:lake:proj:fd) gte) a k (urck v))]
+      ::
+          wav
+        =<  -  %^  (dip:((on aeon vave:lake:proj:fd-0) lte) twav)
+            wav.tid.q.kev
+          *twav
+        |=  [a=twav k=aeon v=vave:lake:proj:fd-0]
+        [`v | (put:((on aeon vave:lake:proj:fd) lte) a k (uwve v))]
+      ==
+    --
   --
 ::
 ++  poke
@@ -312,7 +361,7 @@
         ==
     ++  wash
       |=  caz=(list card)
-      =.  cor  (push (give:du-poz po-du-pat bol lag pod))
+      =.  cor  (push (give:du-poz po-du-pat *vers:lake:proj:fd bol lag pod))
       =.  cor  (emil caz)
       po-core
     --

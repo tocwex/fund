@@ -19,7 +19,7 @@
   :^  bol  ord  "{(trip dyp)} dashboard"
   |^  ?+    dyp  !!
           %worker
-        =/  my-prez  ~(tap by ~(mine conn:proj:fd bol +>.dat))
+        =/  my-prez  ~(tap by ~(mine conn:proj:fd bol +.dat))
         ;div#maincontent
           ;+  %^  prez-welz  "My Draft Proposals"  &
               %+  skim  my-prez
@@ -34,7 +34,7 @@
       ::
           %oracle
         =/  us-sess
-          %+  skim  ~(tap by ~(ours conn:proj:fd bol +>.dat))
+          %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
           |=  [[sip=@p *] pro=proj:f liv=?]
           (~(has in (~(rols pj:f pro) sip our.bol)) %orac)
         ;div#maincontent
@@ -51,7 +51,7 @@
       ::
           %funder
         =/  us-fund
-          %+  skim  ~(tap by ~(ours conn:proj:fd bol +>.dat))
+          %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
           |=  [[sip=@p *] pro=proj:f liv=?]
           (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
         ;div#maincontent

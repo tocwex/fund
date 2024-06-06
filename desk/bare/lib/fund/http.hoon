@@ -164,7 +164,7 @@
       ++  argue
         |=  [hed=header-list:http bod=(unit octs)]
         =/  lag=(unit flag)  (flag:derl:format url.request.ord)
-        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:fd bol +>.dat)) u.lag))
+        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:fd bol +.dat)) u.lag))
         ?:  &(req ?=(~ pro))  'project does not exist'
         (argue:tis [[%flag (jam lag)] [%proj (jam pro)] hed] bod)
       ++  final
@@ -174,7 +174,7 @@
       ++  build
         |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
         =/  lag=(unit flag)  (flag:derl:format url.request.ord)
-        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:fd bol +>.dat)) u.lag))
+        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:fd bol +.dat)) u.lag))
         ?:  &(req ?=(~ pro))  [%code 404 'project does not exist']
         (build:tis [[%flag (jam lag)] [%proj (jam pro)] arz] msg)
       --

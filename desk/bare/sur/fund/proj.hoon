@@ -32,7 +32,11 @@
   |%
   ++  name  %proj
   +$  rock  proj
+  +$  vock  rock
   +$  wave  [=bowl:gall =poke]
+  +$  vave  wave
+  ++  urck  same
+  ++  uwve  same
   ++  wash
     ::  TODO: Add useful error messages to all the various error cases
     |=  [pro=proj bol=bowl:gall lag=^flag pod=prod]

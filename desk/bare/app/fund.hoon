@@ -236,9 +236,10 @@
     ?<  po-is-myn
     =/  pod=prod:f
       ?-  what.res
-        %rock  [%init ~]
-        %tomb  [%exit ~]
-        %wave  q.poke.wave.res
+        %tomb    [%exit ~]
+        %wave    q.poke.wave.res
+        %rock    [%init ~]  ::  NOTE: Placeholder; not actually meaningful
+        %future  [%join ~]  ::  NOTE: Placeholder; not actually meaningful
       ==
     ?:  ?=(%exit -.pod)
       po-core(cor (pull ~ (quit:da-poz po-da-pat)))

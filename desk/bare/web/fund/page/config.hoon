@@ -40,4 +40,4 @@
       ;+  (prod-butn:htmx:fh %vita-disable %red "no ✗" ~ ~)
   ==
 --
-::  VERSION: [0 2 2]
+::  VERSION: [0 3 0]

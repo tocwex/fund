@@ -46,7 +46,7 @@ git clone -b sl/tonic-reload-any-file --depth 1 https://github.com/sidnym-ladrut
 cp gat/tonic/lib/tonic.hoon full/lib/
 cp gat/tonic/mar/cass.hoon full/mar/
 
-git clone -b sl/fix-scry-request-agent-wire --depth 1 https://github.com/sidnym-ladrut/sss.git sss
+git clone -b sl/demo-vsss --depth 1 https://github.com/sidnym-ladrut/sss.git sss
 cp sss/urbit/lib/sss.hoon full/lib/
 cp sss/urbit/sur/sss.hoon full/sur/
 

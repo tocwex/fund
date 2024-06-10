@@ -19,7 +19,14 @@
     --
   ++  grab
     |%
-    ++  noun  (response:poke lake *)
+    ++  noun
+      |=  n=$~(*(response:poke lake *) *)
+      ^-  (response:poke lake *)
+      =/  ures  (mole |.(((response:poke lake *) n)))
+      ?~  ures
+        =/  unres  ((unknown-response:poke *) n)
+        [path.unres dude.unres %future ~]
+      u.ures
     --
   ++  grad  %noun
   --
@@ -44,7 +51,7 @@
     +$  into    (response:poke lake paths)
     +$  result  (request:poke paths)
     +$  fail    [paths ship dude]
-    +$  flow    [=aeon stale=_| fail=_| =rock:lake]
+    +$  flow    [=aeon stale=_| fail=_| rock=vock:lake]
     +$  subs    [%0 (map [ship dude paths] (unit flow))]
     --
   |=  $:  sub=subs
@@ -69,7 +76,7 @@
     %-  malt  %+  murn  ~(tap by sub)
     |=  [key=[ship dude paths] val=(unit flow)]
     ?~  val  ~
-    `[key +.u.val]
+    `[key stale.u.val fail.u.val (urck:lake rock.u.val)]
   ::                                         ::  Check poke-ack for errors.
   ::                                         ::  If an %sss-on-rock poke nacks,
   ++  chit                                   ::  that state is flagged as failed.
@@ -110,18 +117,20 @@
     ^-  (quip card:agent:gall subs)
     =*  current  [src.bowl dude.res path.res]
     =/  old=flow  (fall (~(got by sub) current) *flow)
-    ?:  ?=(%tomb what.res)
-      =/  =flow  old(stale &)
+    ?<  &(?=(%future what.res) fail.old)  ::  crash on subsequent %future calls
+    ?:  ?=(?(%future %tomb) what.res)     ::  mark fail for first %future call
+      =/  =flow  ?:(?=(%future what.res) old(fail &) old(stale &))
       :_  0/(~(put by sub) current `flow)  :_  ~
       (on-rock-poke fake=& current flow ~)
     ::
-    =/  [wave=(unit wave:lake) new=(unit flow)]
+    =/  [wave=(unit vave:lake) new=(unit flow)]
       ?-  what.res
         %rock  ?:  (lte aeon.res aeon.old)  [~ ~]
-               [~ `[aeon.res | | rock.res]]
+               [~ `[aeon.res | | (urck:lake rock.res)]]
         %wave  ?:  (lte aeon.res aeon.old)  [~ ~]
                ?>  =(aeon.res +(aeon.old))
-               [`wave.res `[aeon.res | | (wash:lake rock.old wave.res)]]
+               =/  wave  (uwve:lake wave.res)
+               [`wave `[aeon.res | | (wash:lake (urck:lake rock.old) wave)]]
       ==
     ?~  new  `0/sub
     :_  0/(~(put by sub) current new)  :_  ~
@@ -146,13 +155,13 @@
         %poke   sss-to-pub/[result-type `result`[where dap.bowl]]
     ==
   ++  on-rock-poke
-    |=  [fake=? [=ship =dude path=paths] flow wave=(unit wave:lake)]
+    |=  [fake=? [=ship =dude path=paths] flow wave=(unit vave:lake)]
     ^-  card:agent:gall
     :*  %pass   %+  zoom  ?:(fake %fake %on-rock)
                 (scot %ud aeon)^(scot %p ship)^dude^path
         %agent  [our dap]:bowl
         %poke   ?:(fake %sss-fake-on-rock %sss-on-rock)
-        on-rock-type  `from`[path ship dude stale fail rock wave]
+        on-rock-type  `from`[path ship dude stale fail (urck:lake rock) (bind wave uwve:lake)]
     ==
   --
 ++  du                                       ::  Manage publications.
@@ -164,8 +173,8 @@
     +$  rule    $~  [`5 5]
                 [horizon=(unit @ud) frequency=@ud] ::  Retention policy
     +$  tide
-      $:  rok=((mop aeon rock:lake) gte)
-          wav=((mop aeon wave:lake) lte)
+      $:  rok=((mop aeon vock:lake) gte)
+          wav=((mop aeon vave:lake) lte)
           rul=rule
           mem=(jug ship dude)
       ==
@@ -209,13 +218,13 @@
                 [%1 (map paths buoy)]
             ==
         |%
-        +$  buoy-0
+        +$  buoy-0  $+  buoy-0
           $:  tid=$~(*tide-0 $@(aeon tide-0))
               alo=(unit (set ship))
           ==
-        +$  tide-0
-          $:  rok=((mop aeon rock:lake) gte)
-              wav=((mop aeon wave:lake) lte)
+        +$  tide-0  $+  tide-0
+          $:  rok=((mop aeon vock:lake) gte)
+              wav=((mop aeon vave:lake) lte)
               rul=[rocks=@ud waves=@ud]
               mem=(mip ship dude @da)
           ==
@@ -224,8 +233,8 @@
     --
   |=  [pub=versioned:pubs =bowl:gall result-type=type]
   =>  .(pub +:(update:pubs pub))
-  =*  rok  ((on aeon rock:lake) gte)
-  =*  wav  ((on aeon wave:lake) lte)
+  =*  rok  ((on aeon vock:lake) gte)
+  =*  wav  ((on aeon vave:lake) lte)
   |%
   ++  rule                                   ::  Set new retention policy.
     |=  [path=paths =^rule]
@@ -255,7 +264,7 @@
     ?~  ((soft ^path) path)  ~|  %need-path  !!
     =/  buoy  (~(gut by pub) path *buoy)
     =?  buoy  ?=(@ tid.buoy)
-      %*(. buoy(tid *tide) rok.tid (put:rok ~ +(tid.buoy) *rock:lake))
+      %*(. buoy(tid *tide) rok.tid (put:rok ~ +(tid.buoy) *vock:lake))
     ?>  ?=(^ tid.buoy)
     =*  tide  tid.buoy
     =/  next=aeon  +((latest tide))
@@ -267,7 +276,7 @@
         (send wave/[next wave] ship dude path)
     :-  %1
     %+  ~(put by pub)  path
-    =/  last=[=aeon =rock:lake]  (fall (pry:rok rok.tide) *[key val]:rok)
+    =/  last=[=aeon =vock:lake]  (fall (pry:rok rok.tide) *[key val]:rok)
     =.  wav.tide  (put:wav wav.tide next wave)
     =.  mem.tide  ~
     ?.  =(next (add aeon.last frequency.rul.tide))  buoy
@@ -330,11 +339,12 @@
     ^-  (unit [paths (unit (set ship)) rock:lake])
     ?@  tide=tid.buoy  ~
     :^  ~  path  alo.buoy  =<  rock
-    =/  snap=[=aeon =rock:lake]  (fall (pry:rok rok.tide) *[key val]:rok)
+    =/  snap=[=aeon rock=vock:lake]  (fall (pry:rok rok.tide) *[key val]:rok)
+    =/  snap  snap(rock (urck:lake rock.snap))
     %+  roll  (tap:wav (lot:wav wav.tide `aeon.snap ~))
-    |=  [[=aeon =wave:lake] =_snap]
+    |=  [[=aeon =vave:lake] =_snap]
     ?.  =(aeon +(aeon.snap))  snap
-    [aeon (wash:lake rock.snap wave)]
+    [aeon (wash:lake rock.snap (uwve:lake vave))]
   ::
   ++  apply                                  ::  Handle request from subscriber.
     |=  req=(request:poke paths)
@@ -381,7 +391,7 @@
     ^-  card:agent:gall
     =*  mark  (cat 3 %sss- name:lake)
     =/  callback=^path
-      ?:  ?=(%tomb what.payload)  (zoom tomb-response/(scot %p ship)^dude^path)
+      ?:  ?=(?(%tomb %future) what.payload)  (zoom tomb-response/(scot %p ship)^dude^path)
       (zoom scry-response/(scot %p ship)^dude^(scot %ud aeon.payload)^path)
     :*  %pass   callback
         %agent  [ship dude]
@@ -422,7 +432,8 @@
   ++  form
     |=  =tide
     ^+  tide
-    =/  max-rock=[=aeon =rock:lake]  (fall (pry:rok rok.tide) *[key val]:rok)
+    =/  max-rock=[=aeon rock=vock:lake]  (fall (pry:rok rok.tide) *[key val]:rok)
+    =/  max-rock  max-rock(rock (urck:lake rock.max-rock))
     =/  max-wave  (fall (bind (ram:wav wav.tide) head) 0)
     =?    rok.tide                        ::  Create new rock.
         ?&  !=(frequency.rul.tide 0)
@@ -430,10 +441,10 @@
         ==
       %+  put:rok  rok.tide
       %+  roll  (tab:wav wav.tide `aeon.max-rock max-wave)
-      |:  [*[now=aeon =wave:lake] `[prev=aeon =rock:lake]`max-rock]
+      |:  [*[now=aeon =vave:lake] `[prev=aeon =rock:lake]`max-rock]
       ~|  %aeon-awry
       ?>  =(now +(prev))
-      [now (wash:lake rock wave)]
+      [now (wash:lake rock (uwve:lake vave))]
     =.  rok.tide
       ?~  horizon.rul.tide                ::  Only keep genesis and latest.
         (gas:rok ~ (murn ~[(ram:rok rok.tide) (pry:rok rok.tide)] same))

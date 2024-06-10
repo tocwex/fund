@@ -1,15 +1,4 @@
-/+  sss, rudder
 |%
-+|  %meta
-::
-::  $epic: interface version number (type)
-::
-+$  epic  @ud
-::
-::  $epic-now: interface version number (value)
-::
-++  epic-now  `epic`0
-
 +|  %base
 ::
 ::  $flag: identifier for a project (ship, id)
@@ -157,22 +146,15 @@
 ::  $proj: collection of work (milestones) requesting funding
 ::
 ++  proj
-  =<  rock
-  |%
-  +$  rock
-    $:  title=@t
-        summary=@t
-        image=(unit @t)
-        assessment=sess
-        milestones=(lest mile)
-        pledges=(map ship plej)
-        contribs=(list trib)
-        contract=(unit oath)
-    ==
-  +$  wave  [=bowl:gall =poke]
-  ++  lake  (lake:sss rock wave)
-  +$  path  [%fund %proj sip=@ nam=@ ~]
-  --
+  $:  title=@t
+      summary=@t
+      image=(unit @t)
+      assessment=sess
+      milestones=(lest mile)
+      pledges=(map ship plej)
+      contribs=(list trib)
+      contract=(unit oath)
+  ==
 ::
 ::  $proz: collection of projects keyed by id (host/term)
 ::
@@ -188,7 +170,7 @@
 
 +|  %face
 ::
-::  $prod: raw action identifier
+::  $prod: raw delta identifier
 ::
 +$  prod
   $%  ::  proj prods  ::
@@ -197,7 +179,7 @@
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
       ::  [%blot ...mula-like...]
-      [%draw min=@ act=xact]
+      [%draw min=@ dif=xact]
       [%wipe min=@ sig=(unit sigm)]
       ::  meta prods  ::
       [%join ~]
@@ -205,33 +187,13 @@
       [%lure who=@p wut=role]
   ==
 ::
-::  $poke: project-bound action (prod)
+::  $poke: project-bound delta ($prod)
 ::
 +$  poke  (pair flag prod)
+
++|  %misc
 ::
 ::  $mess: (error) mess(age) (used internally)
 ::
 +$  mess  [who=@p wer=flag wut=prod]
-::  +$  mess  [wer=flag wut=prod who=@p why=(unit @t)]
-::
-::  $dat-now: top-level app data; forwarded to rudder-related requests
-::
-+$  dat-now
-  $:  =proz
-      init=_|
-      subs=_(mk-subs:sss *lake:proj path:proj)
-      pubs=_(mk-pubs:sss *lake:proj path:proj)
-  ==
-::
-::  $act-now: action data forwarded to rudder-related POST requests
-::
-+$  act-now  poke
-::
-::  $pag-now: base data structure for rudder-related page cores
-::
-+$  pag-now  (page:rudder dat-now act-now)
-::
-::  $paz-now: map from page path to rudder page core (for imports with /~)
-::
-+$  paz-now  (map knot pag-now)
 --

@@ -1,20 +1,21 @@
 ::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
+/-  fd=fund-data
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
-^-  pag-now:f
-|_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder act-now:f)
+  ^-  $@(brief:rudder diff:fd)
   =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh hed)
-  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
+  ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     =+  lin=(dec (lent milestones.pro))
     =-  ?@(- - [lag -])
     ^-  $@(@t prod:f)
-    ?+    act=(~(got by p.arz) %act)
-        (crip "bad act; expected (bump-*|wipe-*|mula-*), not {(trip act)}")
+    ?+    dif=(~(got by p.arz) %dif)
+        (crip "bad dif; expected (bump-*|wipe-*|mula-*), not {(trip dif)}")
       %bump-born  [%bump %born ~]
       %bump-work  [%bump %work ~]
       %bump-sess  [%bump %sess ~]
@@ -113,7 +114,7 @@
         =/  wen=@ud  (bloq:dejs:format:fh (~(got by p.arz) %mxb))
         =/  sum=@rs  (mony:dejs:format:fh (~(got by p.arz) %sum))
         =/  msg=@t  (~(got by p.arz) %msg)
-        ?-  act
+        ?-  dif
           %mula-plej  [%mula %plej (need who) sum wen msg]
         ::
             %mula-trib
@@ -545,4 +546,4 @@
     ==
   ==
 --
-::  VERSION: [0 2 2]
+::  VERSION: [0 3 0]

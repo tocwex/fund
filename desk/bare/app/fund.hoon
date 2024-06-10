@@ -1,11 +1,13 @@
+/-  fd=fund-data
+/-  fd-0=fund-data-0
 /+  f=fund, fh=fund-http
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
-/~  pagz  pag-now:f  /web/fund/page
+/~  pagz  page:fd  /web/fund/page
 |%
 +$  card       card:agent:gall
 +$  sign-gall  sign:agent:gall
-+$  state-now  [%0 dat-now:f]
++$  state-now  [%1 data:fd]
 --
 ^-  agent:gall
 =|  state-now
@@ -18,7 +20,7 @@
         def  ~(. (default-agent tis |) bol)
         cor  ~(. +> [bol ~])
     ++  on-init   =^(caz state abet:init:cor [caz tis])
-    ++  on-save   !>([state epic-now:f])
+    ++  on-save   !>([state 0])  ::  NOTE: 0 is unused `epic` flag
     ++  on-load   |=(v=vase =^(caz state abet:(load:cor v) [caz tis]))
     ++  on-poke   |=([m=mark v=vase] =^(caz state abet:(poke:cor m v) [caz tis]))
     ++  on-watch  |=(p=path =^(caz state abet:(watch:cor p) [caz tis]))
@@ -30,10 +32,11 @@
     --
 |_  [bol=bowl:gall caz=(list card)]
 ::
-+*  da-poz  (proz-subs:sss:f bol subs)
-    du-poz  (proz-pubs:sss:f bol pubs)
-    my-pez  (prez-mine:sss:f bol +.state)
-    us-pez  (prez-ours:sss:f bol +.state)
++*  pj-con  ~(. conn:proj:fd bol +>.state)
+    da-poz  subs:pj-con
+    du-poz  pubs:pj-con
+    my-pez  mine:pj-con
+    us-pez  ours:pj-con
 ::
 ++  abet  [(flop caz) state]
 ++  cor   .
@@ -46,23 +49,70 @@
 ++  init
   ^+  cor
   %-  emit
-  :*  %pass  /eyre/connect  %arvo  %e
+  :*  %pass     /eyre/connect
+      %arvo     %e
       %connect  `/apps/[dap.bol]  dap.bol
   ==
 ::
 ++  load
   |=  vas=vase
   ^+  cor
-  %=    cor
-      state
-    |^  =+  !<([sat=state-any epi=epic:f] vas)
-        ?-  -.sat
-          %0  sat
-        ==
-    +$  state-any  $%(state-now)
-    ::  +$  state-0  ...
+  |^  =+  !<([sat=state-any @] vas)  ::  NOTE: @ is unused `epic` flag
+      |-
+      ?-  -.sat
+        %0  $(sat (move-0-1 sat))
+        %1  cor(state sat)
+      ==
+  +$  state-any  $%(state-now state-0)
+  +$  state-0    [%0 data:fd-0]
+  +$  state-1    state-now
+  ++  move-0-1
+    |=  old=state-0
+    ^-  state-1
+    |^  [%1 init.old (sove subs.old) (pove pubs.old)]
+    ++  urck  |=(old=vock:lake:proj:fd-0 `vock:lake:proj:fd`[%1 old])
+    ++  uwve  |=(old=vave:lake:proj:fd-0 `vave:lake:proj:fd`[%1 old])
+    +$  trok  ((mop aeon vock:lake:proj:fd) gte)
+    +$  twav  ((mop aeon vave:lake:proj:fd) lte)
+    ++  sove
+      |=  old=_subs:*data:fd-0
+      ^-  _subs:*data:fd
+      ?:  =(~ +.old)  *_subs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_subs:*data:fd
+      |=  [kev=_?>(?=([%0 ^] old) n.+.old) acc=_subs:*data:fd]
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      ?~  q.kev  q.kev
+      `u.q.kev(rock (urck rock.u.q.kev))
+    ++  pove
+      |=  old=_pubs:*data:fd-0
+      ^-  _pubs:*data:fd
+      ?>  ?=(%1 -.old)
+      ?:  =(~ +.old)  *_pubs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_pubs:*data:fd
+      |=  [kev=_?>(?=([%1 ^] old) n.+.old) acc=_pubs:*data:fd]
+      ?>  ?=(%1 -.acc)
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      =-  q.kev(tid -)
+      ?@  tid.q.kev  tid.q.kev
+      %=    tid.q.kev
+          rok
+        =<  -  %^  (dip:((on aeon vock:lake:proj:fd-0) gte) trok)
+            rok.tid.q.kev
+          *trok
+        |=  [a=trok k=aeon v=vock:lake:proj:fd-0]
+        [`v | (put:((on aeon vock:lake:proj:fd) gte) a k (urck v))]
+      ::
+          wav
+        =<  -  %^  (dip:((on aeon vave:lake:proj:fd-0) lte) twav)
+            wav.tid.q.kev
+          *twav
+        |=  [a=twav k=aeon v=vave:lake:proj:fd-0]
+        [`v | (put:((on aeon vave:lake:proj:fd) lte) a k (uwve v))]
+      ==
     --
-  ==
+  --
 ::
 ++  poke
   |=  [mar=mark vas=vase]
@@ -99,7 +149,7 @@
   ::
       %sss-proj
     =/  res  !<(into:da-poz (fled vas))
-    po-abet:(po-pull:(po-abed:po-core (proj-flag:sss:f path.res)) res)
+    po-abet:(po-pull:(po-abed:po-core (flag:proj:fd path.res)) res)
   ::  http pokes  ::
       %handle-http-request
     =+  !<(ord=order:rudder vas)
@@ -107,19 +157,19 @@
       ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
       [(active:vita-client bol)]~
     =-  cor(caz (welp (flop (welp kaz vaz)) caz), +.state dat)
-    ^-  [kaz=(list card) dat=dat-now:f]
+    ^-  [kaz=(list card) dat=data:fd]
     %.  [bol ord +.state]
-    %-  (steer:rudder dat-now:f act-now:f)
+    %-  (steer:rudder data:fd diff:fd)
     :^  pagz  route:fh  (fours:rudder +.state)
-    |=  act=act-now:f
-    ^-  $@(brief:rudder [brief:rudder (list card) dat-now:f])
+    |=  dif=diff:fd
+    ^-  $@(brief:rudder [brief:rudder (list card) data:fd])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
-    ^-  [bre=brief:rudder dat=dat-now:f kaz=(list card)]
-    :-  (crip (poke:enjs:format:fh act))
-    ?.  =(p.p.act our.bol)
-      [+.state [(po-mk-car:(po-abed:po-core p.act) p.p.act q.act)]~]
+    ^-  [bre=brief:rudder dat=data:fd kaz=(list card)]
+    :-  (crip (poke:enjs:format:fh dif))
+    ?.  =(p.p.dif our.bol)
+      [+.state [(po-mk-car:(po-abed:po-core p.dif) p.p.dif q.dif)]~]
     ::  FIXME: A little sloppy, but it works!
-    =+  kor=^$(mar %fund-poke, vas !>(act))
+    =+  kor=^$(mar %fund-poke, vas !>(dif))
     [+.state.kor (scag (sub (lent caz.kor) (lent caz)) caz.kor)]
   ==
 ::
@@ -179,13 +229,9 @@
   cor
 ::
 ++  po-core
-  |_  [lag=flag:f pro=proj:f gon=_|]
+  |_  [lag=flag:f pro=proj:f]
   ++  po-core  .
-  ++  po-abet
-    ?.  po-is-myn  cor
-    %_  cor
-      proz  ?:(gon (~(del by proz) lag) (~(put by proz) lag pro))
-    ==
+  ++  po-abet  cor
   ++  po-abed
     |=  lag=flag:f
     %=  po-core
@@ -239,12 +285,13 @@
     ?<  po-is-myn
     =/  pod=prod:f
       ?-  what.res
-        %rock  [%init ~]
-        %tomb  [%exit ~]
-        %wave  q.poke.wave.res
+        %tomb    [%exit ~]
+        %wave    q.poke.wave.res
+        %rock    [%init ~]  ::  NOTE: Placeholder; not actually meaningful
+        %future  [%join ~]  ::  NOTE: Placeholder; not actually meaningful
       ==
     ?:  ?=(%exit -.pod)
-      po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
+      po-core(cor (pull ~ (quit:da-poz po-da-pat)))
     po-core(cor (pull (apply:da-poz res)))
   ++  po-push
     |=  pod=prod:f
@@ -262,7 +309,7 @@
           ::
               %drop
             =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
-            po-core(gon &)
+            po-core
           ::
               ?(%bump %mula %draw %wipe)
             ?<  ~|(bad-push+mes po-is-new)
@@ -309,13 +356,12 @@
           ::
               %exit
             ?:  po-is-new  po-core
-            po-core(cor (pull ~ (quit:da-poz po-da-pat)), gon &)
+            po-core(cor (pull ~ (quit:da-poz po-da-pat)))
           ==
         ==
     ++  wash
       |=  caz=(list card)
-      =.  pro  (proj-wash:sss:f pro bol lag pod)
-      =.  cor  (push (give:du-poz po-du-pat bol lag pod))
+      =.  cor  (push (give:du-poz po-du-pat *vers:lake:proj:fd bol lag pod))
       =.  cor  (emil caz)
       po-core
     --

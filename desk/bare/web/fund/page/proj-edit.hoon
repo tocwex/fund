@@ -1,13 +1,14 @@
 ::  /web/fund/page/proj-edit/hoon: render project edit page for %fund
 ::
+/-  fd=fund-data
 /+  f=fund, fx=fund-xtra, fh=fund-http
 /+  rudder, config
 %-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
-^-  pag-now:f
-|_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder act-now:f)
+  ^-  $@(brief:rudder diff:fd)
   =>  |%
       ++  trim                                 ::  remove trailing whitespace and \r
         |=  cor=@t
@@ -17,14 +18,14 @@
         ;~(pfix (star (mask " \0a\0d\09")) (star next))
       --
   =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh hed)
-  ?+  arz=(parz:fh bod (sy ~[%act]))  p.arz  [%| *]
+  ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ::  FIXME: Go to next available name if this path is already taken
     ::  by another project (add random number suffix)
     =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) %nam))])
     =-  ?@(- - [lag -])
     ^-  $@(@t prod:f)
-    ?+    act=(~(got by p.arz) %act)
-        (crip "bad act; expected (init|drop|bump-*), not {(trip act)}")
+    ?+    dif=(~(got by p.arz) %dif)
+        (crip "bad dif; expected (init|drop|bump-*), not {(trip dif)}")
       %drop       [%drop ~]
       %bump-born  ?~(pru 'project does not exist' [%bump %born ~])
     ::
@@ -256,4 +257,4 @@
     ==
   ==
 --
-::  VERSION: [0 2 2]
+::  VERSION: [0 3 0]

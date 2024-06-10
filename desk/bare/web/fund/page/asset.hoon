@@ -1,9 +1,10 @@
 ::  /web/fund/page/asset/hoon: render an arbitrary asset file (png, svg, etc.)
 ::
-/-  f=fund
-/+  config, rudder, fh=fund-http, fx=fund-xtra
-^-  pag-now:f
-|_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
+/-  fd=fund-data
+/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  config, rudder
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build
@@ -53,4 +54,4 @@
   :+  200  [%content-type (forj '/' p.mym)]  ::  1 week cache time
   ?:(!<(bean (slot:config %debug)) ~ ['cache-control' 'max-age=604800']~)
 --
-::  VERSION: [0 2 2]
+::  VERSION: [0 3 0]

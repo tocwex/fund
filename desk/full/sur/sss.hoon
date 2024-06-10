@@ -1,11 +1,15 @@
 |%
 ++  lake
-  |$  [rock wave]
+  |$  [rock vock wave vave]
   $_  ^?
   |%
   ++  name  *term
   +$  rock  ^rock
+  +$  vock  ^vock
   +$  wave  ^wave
+  +$  vave  ^vave
+  ++  urck  |~  vock  *rock
+  ++  uwve  |~  vave  *wave
   ++  wash  |~  [rock wave]  *rock
   --
 +$  aeon  @ud
@@ -22,9 +26,17 @@
     $:  path=paths
         =dude
         $%  [what=%tomb ~]
-            [what=%rock =aeon =rock:lake]
-            [what=%wave =aeon =wave:lake]
+            [what=%future ~]
+            [what=%rock =aeon rock=vock:lake]
+            [what=%wave =aeon wave=vave:lake]
     ==  ==
+  ++  unknown-response
+    |*  paths=mold
+    $:  path=paths
+        =dude
+        what=?(%tomb %rock %wave)
+        *
+    ==
   ++  on-rock
     |*  [=(lake) paths=mold]
     $:  path=paths

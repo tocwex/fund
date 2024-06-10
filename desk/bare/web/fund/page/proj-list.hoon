@@ -1,10 +1,11 @@
 ::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
+/-  fd=fund-data
 /+  f=fund, fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  :(corl mine:preface:fh init:preface:fh)
-^-  pag-now:f
-|_  [bol=bowl:gall ord=order:rudder dat=dat-now:f]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build
@@ -18,7 +19,7 @@
   :^  bol  ord  "{(trip dyp)} dashboard"
   |^  ?+    dyp  !!
           %worker
-        =/  my-prez  ~(tap by (prez-mine:sss:f bol dat))
+        =/  my-prez  ~(tap by ~(mine conn:proj:fd bol +.dat))
         ;div#maincontent
           ;+  %^  prez-welz  "My Draft Proposals"  &
               %+  skim  my-prez
@@ -33,7 +34,7 @@
       ::
           %oracle
         =/  us-sess
-          %+  skim  ~(tap by (prez-ours:sss:f bol dat))
+          %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
           |=  [[sip=@p *] pro=proj:f liv=?]
           (~(has in (~(rols pj:f pro) sip our.bol)) %orac)
         ;div#maincontent
@@ -50,7 +51,7 @@
       ::
           %funder
         =/  us-fund
-          %+  skim  ~(tap by (prez-ours:sss:f bol dat))
+          %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
           |=  [[sip=@p *] pro=proj:f liv=?]
           (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
         ;div#maincontent
@@ -103,4 +104,4 @@
     ==
   --
 --
-::  VERSION: [0 2 2]
+::  VERSION: [0 3 0]

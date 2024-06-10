@@ -160,3 +160,11 @@ need to be accounted for:
 =addr …
 :eth-watcher &eth-watcher-poke [%watch path=/fund/xact/[addr] config=[rpc ~m1 ~m5 bloq ~ [addr]~ ~ ~]]
 ```
+
+# Markdown Testing #
+
+Here are a few links to sample markdown that can be used for testing:
+
+- [mxstbr's Markdown Test File](https://raw.githubusercontent.com/mxstbr/markdown-test-file/master/TEST.md)
+- [Marked Demo](https://marked.js.org/demo/)
+- [`markdown-it` Demo](https://markdown-it.github.io/)

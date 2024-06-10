@@ -16,30 +16,31 @@
   ++  mine                                     ::  local data only
     ^-  prez
     =<  -  %+  ~(rib by read:pubs)  *prez
-    |=  [[k=path v=[(unit (set ship)) p=proj]] a=prez]
+    |=  [[k=path v=[(unit (set ship)) vers p=proj]] a=prez]
     [(~(put by a) (flag k) p.v &) k v]
   ++  ours                                     ::  local and remote data
     ^-  prez
     %-  ~(uni by mine)
     =<  -  %+  ~(rib by read:subs)  *prez
-    |=  [[k=[ship dude:gall p=path] v=[s=? f=? p=proj]] a=prez]
+    |=  [[k=[ship dude:gall p=path] v=[s=? f=? vers p=proj]] a=prez]
     [(~(put by a) (flag p.k) p.v &(!s.v !f.v)) k v]
   --
 
 +|  %core
++$  vers  _%1
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
   |%
   ++  name  %proj
-  +$  rock  proj
-  +$  vock  rock
-  +$  wave  [bol=bowl:gall pok=poke]
-  +$  vave  wave
-  ++  urck  same
-  ++  uwve  same
+  +$  rock  [vers proj]
+  +$  vock  $%(rock)
+  +$  wave  [vers bol=bowl:gall pok=poke]
+  +$  vave  $%(wave)
+  ++  urck  |=(voc=vock `rock`?-(-.voc %1 voc))
+  ++  uwve  |=(vav=vave `wave`?-(-.vav %1 vav))
   ++  wash
     ::  TODO: Add useful error messages to all the various error cases
-    |=  [pro=proj bol=bowl:gall lag=^flag pod=prod]
+    |=  [[vers pro=proj] [vers bol=bowl:gall lag=^flag pod=prod]]
     ^-  rock
     =*  mes  `mess`[src.bol lag pod]
     =*  miz  `(list mile)`milestones.pro
@@ -65,6 +66,7 @@
           ==
         --
     =/  sat=stat  ~(stat pj pro)
+    :-  %1
     ?+    -.pod  pro
         %init
       ?>  aver-work

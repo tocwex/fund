@@ -5,6 +5,10 @@
 ::
 +$  flag  (pair @p @tas)
 ::
+::  $sess: assessment information (ship, cut)
+::
++$  sess  (pair @p @rs)
+::
 ::  $mesg: blockchain signed message information (message or raw hex)
 ::
 +$  mesg  (each @t @ux)
@@ -20,10 +24,6 @@
 ::  $bloq: blockchain block height
 ::
 +$  bloq  @ud  ::  event-id:ethereum-types
-::
-::  $cash: blockchain transaction amount (e.g. wei)
-::
-+$  cash  @ud
 ::
 ::  $xact: blockchain transaction data
 ::
@@ -42,18 +42,6 @@
 +$  stub
   $:  =xact
       from=addr
-  ==
-::
-::  $coin: blockchain token information
-::
-+$  coin
-  ::  TODO: Consider using $~ to make this default to a specific coin,
-  ::  e.g. mainnet usdc
-  $:  chain=@ud
-      =addr
-      name=@t
-      symbol=@t
-      decimals=@ud
   ==
 ::
 ::  $perm: permission level (associated with $poke/$prod)
@@ -90,15 +78,11 @@
       %dead  ::  completed unsuccessfully
   ==
 ::
-::  $sess: assessment information (ship, cut)
-::
-+$  sess  (pair @p cash)
-::
 ::  $plej: promise for contribution
 ::
 +$  plej
   $:  ship=@p
-      =cash
+      cash=@rs
       when=bloq
       note=@t
   ==
@@ -107,7 +91,7 @@
 ::
 +$  trib
   $:  ship=(unit @p)
-      =cash
+      cash=@rs
       when=stub
       note=@t
   ==
@@ -122,10 +106,10 @@
 ::  $odit: financials associated with a work unit ($proj, $mile)
 ::
 +$  odit
-  $:  cost=cash
-      fill=cash
-      plej=cash
-      void=(unit [s=? v=cash])
+  $:  cost=@rs
+      fill=@rs
+      plej=@rs
+      void=(unit @rs)
   ==
 ::
 ::  $oath: blockchain project agreement receipt
@@ -143,7 +127,7 @@
 +$  with
   $:  xact=(unit xact)
       =sigm
-      =cash
+      cash=@rs
   ==
 
 +|  %core
@@ -154,7 +138,7 @@
   $:  title=@t
       summary=@t
       image=(unit @t)
-      cost=cash
+      cost=@rs
       status=stat
       withdrawal=(unit with)
   ==
@@ -162,8 +146,7 @@
 ::  $proj: collection of work (milestones) requesting funding
 ::
 ++  proj
-  $:  currency=coin
-      title=@t
+  $:  title=@t
       summary=@t
       image=(unit @t)
       assessment=sess

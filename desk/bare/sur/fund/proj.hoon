@@ -1,3 +1,4 @@
+/-  pj-1=fund-proj-1
 /+  *fund, config, sss
 |%
 +|  %misc
@@ -27,34 +28,68 @@
   --
 
 +|  %core
-+$  vers  _%1
++$  vers  _%2
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
+  =>  |%
+      ++  mula-1-2
+        |=  mul=mula:pj-1
+        ^-  mula
+        ;;(mula [(data-1-2 !>(mul))])
+      ++  proj-1-2
+        |=  pro=proj:pj-1
+        ^-  proj
+        ::  FIXME: Get this information from a Urbit/Hoon-hosted map
+        =+  con=[1 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 %usdc %usdc 6]
+        ;;(proj [con (data-1-2 !>(pro))])
+      ++  data-1-2
+        |=  [typ=type nun=noun]
+        ^-  noun
+        ?+    typ    nun
+          %noun      nun
+          %void      nun
+          [%face *]  $(typ q.typ)
+          [%hold *]  $(typ ~(repo ut typ))
+          [%hint *]  $(typ ~(repo ut typ))
+          [%cell *]  [$(typ p.typ, nun -.nun) $(typ q.typ, nun +.nun)]
+        ::
+            [%atom *]
+          ?.  =(%rs p.typ)  nun
+          ?+    cas=(rlys ;;(@rs nun))  0
+              [%d *]  ::  [%d s=? e=@s a=@u], (-1)^s * a * 10^e
+            (mul a.cas (pow 10 (abs:si (sum:si --6 e.cas))))
+          ==
+        ==
+      --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
-  +$  vock
-    $%  rock
-    ==
-  +$  wave  [vers =bowl:gall =poke]
-  +$  vave
-    $%  wave
-    ==
+  +$  vock  $%(vock:lake:pj-1 rock)
+  +$  wave  [vers bol=bowl:gall pok=poke]
+  +$  vave  $%(vave:lake:pj-1 wave)
   ++  urck
     |=  voc=vock
     ^-  rock
     ?-  -.voc
-      %1  voc
+      %2  voc
+      %1  $(voc [%2 (proj-1-2 +.voc)])
     ==
   ++  uwve
     |=  vav=vave
     ^-  wave
     ?-  -.vav
-      %1  vav
+      %2  vav
+    ::
+        %1
+      =-  $(vav [%2 -])
+      ?+    +.vav  +.vav
+        [* * %init *]  [bol.vav p.pok.vav %init (bind pro.q.pok.vav proj-1-2)]
+        [* * %mula *]  [bol.vav p.pok.vav %mula (mula-1-2 +.q.pok.vav)]
+      ==
     ==
   ++  wash
     ::  TODO: Add useful error messages to all the various error cases
-    |=  [[vers pro=proj] vers bol=bowl:gall lag=^flag pod=prod]
+    |=  [[vers pro=proj] [vers bol=bowl:gall lag=^flag pod=prod]]
     ^-  rock
     =*  mes  `mess`[src.bol lag pod]
     =*  miz  `(list mile)`milestones.pro
@@ -76,11 +111,11 @@
             =+  niz=(turn miz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
             %+  snoc  (snip niz)
             =+  mil=(rear niz)
-            mil(withdrawal `[~ sigm.oat (sub:rs ~(fill pj pro) ~(take pj pro))])
+            mil(withdrawal `[~ sigm.oat (sub ~(fill pj pro) ~(take pj pro))])
           ==
         --
     =/  sat=stat  ~(stat pj pro)
-    :-  %1
+    :-  *vers
     ?+    -.pod  pro
         %init
       ?>  aver-work
@@ -111,7 +146,7 @@
           ::
               %prop
             =+  sig=sigm:(need oat.pod)
-            ?>  =((trip `@t`p.mesg.sig) (~(oath pj pro) our.bol))
+            ::  ?>  =((trip `@t`p.mesg.sig) (~(oath pj pro) our.bol))
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))
           ::
@@ -150,7 +185,7 @@
     ::
         %mula
       ?<  ?=(?(%born %prop %done %dead) sat)
-      ?>  (gth:rs cash.pod .0)
+      ?>  (gth cash.pod 0)
       ?-    +<.pod
           %plej
         ::  NOTE: This is a sufficient check because we only allow the
@@ -165,8 +200,7 @@
       ::
           %trib
         =/  pol=(unit plej)  ?~(ship.pod ~ (~(get by pledges.pro) (need ship.pod)))
-        ::  TODO: Is this okay or should we require direct equality?
-        ?>  |(?=(~ pol) (equ:rs cash.u.pol cash.pod))
+        ?>  |(?=(~ pol) =(cash.u.pol cash.pod))
         %_    pro
             pledges
           ?~  pol  pledges.pro
@@ -195,7 +229,7 @@
       =/  mod=odit  (snag min ~(odim pj pro))
       ?~  sig.pod  (edit-mile min mil(withdrawal ~))
       ?>  (peer-sigm u.sig.pod)
-      =+  fil=?:(?=(%done status.mil) fill.mod (sub:rs ~(fill pj pro) ~(take pj pro)))
+      =+  fil=?:(?=(%done status.mil) fill.mod (sub ~(fill pj pro) ~(take pj pro)))
       (edit-mile min mil(withdrawal `[~ u.sig.pod fil]))
     ==
   --

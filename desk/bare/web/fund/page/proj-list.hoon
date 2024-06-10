@@ -87,10 +87,16 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal
-                  ;span#proj-cost: ${(mony:enjs:format:fh ~(cost pj:f pro))}
+                  ;span#proj-cost: ${(cash:enjs:format:fh ~(cost pj:f pro))}
                 ==
                 ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
               ==
+            ==
+            ;div(class "flex flex-wrap items-center justify-between")
+              ::  FIXME: Need a Hoon-based solution for associating chain
+              ::  IDs with human-readable names
+              ;div: {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
+              ;div: {(cuss (trip name.currency.pro))}
             ==
             ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
             ;+  (mark-well:htmx:fh (trip summary.pro) |)
@@ -104,4 +110,4 @@
     ==
   --
 --
-::  VERSION: [0 3 0]
+::  VERSION: [0 4 0]

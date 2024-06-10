@@ -69,6 +69,14 @@
   ?:  =(div -.log)  [pre +.log]
   $(pre (snoc pre -.log), log +.log)
 ::
+::  +caps: capitalize the given input string (first character only)
+::
+++  caps
+  |=  tap=tape
+  ^-  tape
+  ?~  tap  tap
+  [-:(cuss [i.tap]~) t.tap]
+::
 ::  +star: is the given identity at least as privileged as a star?
 ::
 ++  star

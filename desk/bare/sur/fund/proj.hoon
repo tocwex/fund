@@ -46,12 +46,17 @@
         |=  [typ=type nun=noun]
         ^-  noun
         ?+    typ    nun
-          %noun      nun
-          %void      nun
           [%face *]  $(typ q.typ)
           [%hold *]  $(typ ~(repo ut typ))
           [%hint *]  $(typ ~(repo ut typ))
           [%cell *]  [$(typ p.typ, nun -.nun) $(typ q.typ, nun +.nun)]
+        ::
+            [%fork *]
+          ::  NOTE: This only works for the simple recursive types,
+          ::  e.g. `unit`, `list`, `map`, etc.
+          =-  ?.(&(?=(^ -<) ?=(^ ->)) nun ?@(nun $(typ -<-) $(typ ->-)))
+          %+  skid  ~(tap in p.typ)
+          |=(t=type &(?=([%atom *] t) ?=(^ q.t) =(0 u.q.t)))
         ::
             [%atom *]
           ?.  =(%rs p.typ)  nun

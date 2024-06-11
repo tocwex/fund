@@ -65,6 +65,33 @@
             (mul a.cas (pow 10 (abs:si (sum:si --6 e.cas))))
           ==
         ==
+      ::  NOTE: We do this manually since disambiguating `$cash` `@ud`
+      ::  values from other `@ud`s would be more annoying than it's
+      ::  worth (we only need assessment/milestones in 2-to-1 case)
+      ++  proj-2-1
+        |=  pro=proj
+        ^-  proj:pj-1
+        =+  c2r=|=(c=@ud (ryls [%d & -6 c]))
+        =+  poj=*proj:pj-1  %=  poj
+          title       title.pro
+          summary     summary.pro
+          image       image.pro
+          assessment  [p.assessment.pro (c2r q.assessment.pro)]
+        ::
+            milestones
+          ;;  (lest mile:pj-1)
+          %+  turn  milestones.pro
+          |=  mil=mile
+          ^-  mile:pj-1
+          =+  myl=*mile:pj-1  %=  myl
+            title    title.mil
+            summary  summary.mil
+            image    image.mil
+            cost     (c2r cost.mil)
+            status   status.mil
+            ::  NOTE: `withdrawal` skipped intentionally
+          ==
+        ==
       --
   |%
   ++  name  %proj
@@ -151,7 +178,8 @@
           ::
               %prop
             =+  sig=sigm:(need oat.pod)
-            ::  ?>  =((trip `@t`p.mesg.sig) (~(oath pj pro) our.bol))
+            ?>  %.  (trip `@t`p.mesg.sig)
+                ~(has in (silt ~[(~(oath pj pro) our.bol) (~(oath pj:pj-1 (proj-2-1 pro)) our.bol)]))
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))
           ::

@@ -252,11 +252,16 @@ const safeGetTransactions = ({token, amount, cuts}) => {
     .filter(({to, id, amt}) => (amt > 0n))
     .sort(safeAddressSort(v => v.to));
 
-  // FIXME: Make stronger guarantees about rounding and then remove this check
-  const bigintAmount = BigInt((new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).toString());
   const transactionTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
-  if (bigintAmount !== transactionTotal)
-    throw new SafeError(`mismatch between requested transaction total and refund total: (${bigintAmount}, ${transactionTotal})`);
+  const bigintAmount = BigInt((new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).toString());
+  const transactionRemainder = (([a, b]) => b - a)([transactionTotal, bigintAmount].sort());
+  // NOTE: This _can_ happen (e.g. {cuts: [0.33333, 0.66666], amount: 1000000});
+  // just make sure the amount is _relatively_ small
+  if (transactionRemainder > 100n) {
+    throw new SafeError(`big roundoff when distributing costs: ${transactionRemainder}`);
+  } else if (transactionRemainder !== 0n) {
+    transactions[0].amt += transactionRemainder;
+  }
 
   return transactions;
 };

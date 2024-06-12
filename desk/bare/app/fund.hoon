@@ -283,14 +283,9 @@
     |=  res=into:da-poz
     ^+  po-core
     ?<  po-is-myn
-    =/  pod=prod:f
-      ?-  what.res
-        %tomb    [%exit ~]
-        %wave    q.poke.wave.res
-        %rock    [%init ~]  ::  NOTE: Placeholder; not actually meaningful
-        %future  [%join ~]  ::  NOTE: Placeholder; not actually meaningful
-      ==
-    ?:  ?=(%exit -.pod)
+    ?:  ?|  ?=(%tomb what.res)
+            &(?=(%wave what.res) ?=(%exit -.q.pok.wave.res))
+        ==
       po-core(cor (pull ~ (quit:da-poz po-da-pat)))
     po-core(cor (pull (apply:da-poz res)))
   ++  po-push

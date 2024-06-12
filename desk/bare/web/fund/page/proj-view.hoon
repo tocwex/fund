@@ -112,7 +112,7 @@
       ?+  arz=(parz:fh bod (sy ~[%mxb %sum %msg]))  p.arz  [%| *]
         =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
         =/  wen=@ud  (bloq:dejs:format:fh (~(got by p.arz) %mxb))
-        =/  sum=@rs  (mony:dejs:format:fh (~(got by p.arz) %sum))
+        =/  sum=cash:f  (cash:dejs:format:fh (~(got by p.arz) %sum))
         =/  msg=@t  (~(got by p.arz) %msg)
         ?-  dif
           %mula-plej  [%mula %plej (need who) sum wen msg]
@@ -161,10 +161,16 @@
       ;div(class "flex items-center gap-x-2")
         ;div(class "text-2xl font-medium")
           ; Goal
-          ;span: ${(mony:enjs:format:fh cost.pod)}
+          ;span: ${(cash:enjs:format:fh cost.pod)}
         ==
         ;+  (stat-pill:htmx:fh sat)
       ==
+    ==
+    ;div(class "flex flex-wrap items-center justify-between")
+      ::  FIXME: Need a Hoon-based solution for associating chain
+      ::  IDs with human-readable names
+      ;div: {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
+      ;div: {(cuss (trip name.currency.pro))}
     ==
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
     ::      :_  ~  ;div(class "text-red-500 text-center"): {(trip txt.u.msg)}
@@ -228,16 +234,15 @@
                           [%placeholder "10"]~
                           [%class "p-2"]~
                           ?~  pej=(~(get by pledges.pro) src.bol)  ~
-                          ~[[%readonly ~] [%value (mony:enjs:format:fh cash.u.pej)]]
+                          ~[[%readonly ~] [%value (cash:enjs:format:fh cash.u.pej)]]
                       ==
-                  ;label(for "sum"): amount ($)
+                  ;label(for "sum"): amount (tokens)
                 ==
                 ;div(class "fund-form-group")
                   ;select.p-2(name "tok")
-                    ;option(value "usdc"): USDC
-                    ::  TODO: Only supporting USDC for the beta
-                    ::  ;option(value "usdt"): USDT
-                    ::  ;option(value "dai"): DAI
+                    ;option(value (trip name.currency.pro))
+                      ; {(cuss (trip name.currency.pro))}
+                    ==
                   ==
                   ;label(for "tok"): token
                 ==
@@ -272,7 +277,7 @@
                   ;span:  is offering the following compensation for your services:
                 ==
                 ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
-                  ;span(class "font-medium"): {(mony:enjs:format:fh q.assessment.pro)}%
+                  ;span(class "font-medium"): {(cash:enjs:format:fh q.assessment.pro)}%
                   ;span:  of each milestone payout upon completed assessment
                 ==
                 ;div(class "p-2")
@@ -302,7 +307,7 @@
           ==
           ;div(class "flex gap-2")
             ; Goal
-            ;span(class "font-medium"): ${(mony:enjs:format:fh cost.pod)}
+            ;span(class "font-medium"): ${(cash:enjs:format:fh cost.pod)}
           ==
         ==
         ;+  (odit-ther:htmx:fh pod)
@@ -320,7 +325,7 @@
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal
-                  ;span: ${(mony:enjs:format:fh cost.mil)}
+                  ;span: ${(cash:enjs:format:fh cost.mil)}
                 ==
                 ;+  (stat-pill:htmx:fh status.mil)
               ==
@@ -396,7 +401,7 @@
               ;div(class "p-1"): {(trip note.mul)}
             ==
             ;div(class "flex flex-wrap sm:flex-nowrap items-center")
-              ;div(class "mx-auto p-1 font-semibold"): ${(mony:enjs:format:fh cash.mul)}
+              ;div(class "mx-auto p-1 font-semibold"): ${(cash:enjs:format:fh cash.mul)}
               ;div(class "mx-auto p-1 flex")
                 ;div(class "text-nowrap py-1 px-2 border-2 rounded-full font-medium {cas}"): {wut}
               ==
@@ -416,14 +421,17 @@
         safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
         work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
         orac_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
-        orac_cut: {(mony:enjs:format:fh q.assessment.pro)},
-        mile_fill: [{(roll moz |=([n=odit:f a=tape] (weld a "{(mony:enjs:format:fh fill.n)},")))}],
+        coin_chain: {(bloq:enjs:format:fh chain.currency.pro)},
+        coin_name: '{(trip name.currency.pro)}',
+        orac_cut: {(cash:enjs:format:fh q.assessment.pro)},
+        mile_fill: [{(roll moz |=([n=odit:f a=tape] (weld a "{(cash:enjs:format:fh fill.n)},")))}],
         mile_whom: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
         mile_sign: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "'{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))}',")))}],
-        mile_take: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh ?~(withdrawal.n *@rs cash.u.withdrawal.n))},")))}],
+        mile_take: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(cash:enjs:format:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n))},")))}],
         acceptContract(event) \{
           this.sendForm(event, [], () => (
             this.safeSignDeploy(\{
+              projectChain: this.coin_chain,
               projectContent: document.querySelector("#fund-proj-oath").value,
             }).then(([address, signature]) => (\{
               oas: signature,
@@ -434,6 +442,7 @@
         finalizeContract(event) \{
           this.sendForm(event, [], () => (
             this.safeExecDeploy(\{
+              projectChain: this.coin_chain,
               oracleAddress: this.orac_addr,
             }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => \{
               console.log(`safe creation successful; view at: $\{this.safeGetURL(safeAddress)}`);
@@ -455,9 +464,11 @@
         sendFunds(event) \{
           this.sendForm(event, [], () => (
             this.safeExecDeposit(\{
+              projectChain: this.coin_chain,
               safeAddress: this.safe_addr,
               fundAmount: event.target.form.querySelector("[name=sum]").value,
-              fundToken: event.target.form.querySelector("[name=tok]").value,
+              // fundToken: event.target.form.querySelector("[name=tok]").value,
+              fundToken: this.coin_name,
             }).then(([address, xblock, xhash]) => \{
               console.log(`contribution successful; view at: $\{this.txnGetURL(xhash)}`);
               return \{
@@ -471,10 +482,12 @@
         approveMilestone(event) \{
           this.sendForm(event, [() => this.checkWallet([this.orac_addr], "oracle")], () => (
             this.safeSignClaim(\{
+              projectChain: this.coin_chain,
               safeAddress: this.safe_addr,
               workerAddress: this.work_addr,
               oracleCut: this.orac_cut,
               fundAmount: this.mile_fill[this.mile_idex],
+              fundToken: this.coin_name,
             }).then(([address, signature, payload]) => (\{
               mii: this.mile_idex,
               mia: address,
@@ -491,8 +504,10 @@
         claimMilestone(event) \{
           this.sendForm(event, [() => this.checkWallet([this.work_addr], "worker")], () => (
             this.safeExecClaim(\{
+              projectChain: this.coin_chain,
               safeAddress: this.safe_addr,
               fundAmount: this.mile_take[this.mile_idex],
+              fundToken: this.coin_name,
               oracleSignature: this.mile_sign[this.mile_idex],
               oracleAddress: this.orac_addr,
               oracleCut: this.orac_cut,
@@ -511,6 +526,8 @@
             [() => this.checkWallet([this.work_addr, this.orac_addr], "worker/oracle")],
             () => (
               this.safeSignRefund(\{
+                projectChain: this.coin_chain,
+                fundToken: this.coin_name,
                 safeAddress: this.safe_addr,
                 safeInitBlock: this.safe_bloq,
               }).then(([address, signature, payload]) => (\{
@@ -527,6 +544,8 @@
             [() => this.checkWallet([this.work_addr, this.orac_addr], "worker/oracle")],
             () => (
               this.safeExecRefund(\{
+                projectChain: this.coin_chain,
+                fundToken: this.coin_name,
                 safeAddress: this.safe_addr,
                 safeInitBlock: this.safe_bloq,
                 oracleAddress: this.mile_whom[this.mile_idex],
@@ -546,4 +565,4 @@
     ==
   ==
 --
-::  VERSION: [0 3 0]
+::  VERSION: [0 4 0]

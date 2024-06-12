@@ -15,7 +15,7 @@ import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm'
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
-import { NETWORK } from './const.js';
+import { CONTRACT, NETWORK } from './const.js';
 
 if (window.Alpine === undefined) {
   twind.install({
@@ -35,14 +35,16 @@ if (window.Alpine === undefined) {
     // was loaded by this file or the browser and then injected here
     preflight: twind.css(`
       form { margin: unset; }
-      textarea,select,input { padding: unset; @apply fund-input; }
+      select { padding: unset; @apply fund-select; }
+      textarea,input { padding: unset; @apply fund-input; }
       label { @apply font-light py-1; }
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
       ['fund-pill', 'text-nowrap px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-input', 'w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400) read-only:(border-gray-400 bg-gray-400)'],
+      ['fund-select', 'w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)'],
+      ['fund-input', 'fund-select read-only:(border-gray-400 bg-gray-400)'],
       ['fund-tytl-link', 'text-xl font-medium duration-300 hover:text-yellow-500'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap px-2 py-1 rounded-md border-2'],
@@ -150,6 +152,8 @@ if (window.Alpine === undefined) {
     swapText: swapContent,
     sendForm: submitForm,
     checkWallet,
+    CONTRACT,
+    NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 

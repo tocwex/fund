@@ -1,5 +1,5 @@
 import {
-  getAccount, getClient, getPublicClient, getBalance, getBlockNumber,
+  getAccount, getClient, getChainId, getPublicClient, getBalance, getBlockNumber,
   signMessage, readContract, writeContract, waitForTransactionReceipt,
 } from 'https://esm.sh/@wagmi/core@2.x';
 import {
@@ -7,43 +7,50 @@ import {
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
 } from 'https://esm.sh/viem@2.x';
-import { FUND_CHAIN, FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
+import BigNumber from 'https://cdn.jsdelivr.net/npm/bignumber.js@9.1.2/+esm'
+import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, NETWORK, CONTRACT } from './const.js';
 
 //////////////////////
 // Module Functions //
 //////////////////////
 
-export const txnGetURL = (address) => (
-  `https://${
-    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN}.`
-  }etherscan.io/tx/${address}`
-);
+export const ethGetChain = () => (NETWORK.NAME?.[getChainId(window.Wagmi)] ?? NETWORK.NAME[1]);
 
-export const safeGetURL = (address) => (
-  `https://app.safe.global/home?safe=${
-    (FUND_CHAIN === "mainnet") ? "" : `${FUND_CHAIN.substring(0, 3)}:`
-  }${address}`
-);
+export const txnGetURL = (address) => {
+  const chain = ethGetChain().toLowerCase();
+  return `https://${
+    (chain === "mainnet") ? "" : `${chain}.`
+  }etherscan.io/tx/${address}`
+};
+
+export const safeGetURL = (address) => {
+  const chain = ethGetChain().toLowerCase();
+  return `https://app.safe.global/home?safe=${
+    (chain === "mainnet") ? "" : `${chain.substring(0, 3)}:`
+  }${address}`;
+};
 
 export const safeGetBlock = async () => {
   const block = await getBlockNumber(window.Wagmi);
   return block.toString();
 };
 
-export const safeGetAccount = () => {
+export const safeGetAccount = (chainId) => {
   const account = getAccount(window.Wagmi);
   if (account.isDisconnected)
     throw new SafeError(`wallet not connected; please click the 'connect' button in the top-right corner of the page to continue`);
   if (account.chain === undefined)
     throw new SafeError(`error with blockchain network; unable to recognize connected network`);
-  if (account.chain.id !== NETWORK.ID[FUND_CHAIN.toUpperCase()])
-    throw new SafeError(`using the wrong blockchain network for this client; please switch your network to '${FUND_CHAIN}' instead`);
+  if (NETWORK.NAME?.[account.chain.id] === undefined)
+    throw new SafeError(`error with blockchain network; the chain ${account.chain.id} is unsupported`);
+  if (chainId !== undefined && account.chain.id !== chainId)
+    throw new SafeError(`using the wrong blockchain network for this project; please switch your network to '${NETWORK.NAME[chainId].toLowerCase()}' instead`);
   return account;
 }
 
-export const safeSignDeploy = async ({projectContent}) => {
-  const { address } = safeGetAccount();
+export const safeSignDeploy = async ({projectChain, projectContent}) => {
+  const { address } = safeGetAccount(projectChain);
   const signature = await signMessage(window.Wagmi, {
     account: address,
     message: projectContent,
@@ -51,16 +58,16 @@ export const safeSignDeploy = async ({projectContent}) => {
   return [address, signature];
 };
 
-export const safeExecDeploy = async ({oracleAddress}) => {
-  const { address: workerAddress } = safeGetAccount();
+export const safeExecDeploy = async ({projectChain, oracleAddress}) => {
+  const { address: workerAddress } = safeGetAccount(projectChain);
   if (fromHex(oracleAddress, "bigint") === fromHex(workerAddress, "bigint"))
     throw new SafeError(`cannot use the same wallet for the worker and oracle: ${workerAddress}`);
   const deployTransaction = await writeContract(window.Wagmi, {
     abi: CONTRACT.SAFE_PROXYFACTORY.ABI,
-    address: CONTRACT.SAFE_PROXYFACTORY.ADDRESS,
+    address: CONTRACT.SAFE_PROXYFACTORY.ADDRESS[ethGetChain()],
     functionName: "createProxyWithNonce",
     args: [
-      CONTRACT.SAFE_TEMPLATE.ADDRESS,
+      CONTRACT.SAFE_TEMPLATE.ADDRESS[ethGetChain()],
       encodeFunctionData({
         abi: CONTRACT.SAFE_TEMPLATE.ABI,
         functionName: "setup",
@@ -68,7 +75,7 @@ export const safeExecDeploy = async ({oracleAddress}) => {
           [workerAddress, oracleAddress, FUND_SIGN_ADDR], 2n,
           // TODO: Post-setup logic (contract address, call params) needs to go here
           ADDRESS.NULL, "",
-          CONTRACT.SAFE_FALLBACK.ADDRESS,
+          CONTRACT.SAFE_FALLBACK.ADDRESS[ethGetChain()],
           // TODO: Payment info (token, value receiver) (?) needs to go here
           ADDRESS.NULL, 0n, ADDRESS.NULL,
         ],
@@ -91,17 +98,17 @@ export const safeExecDeploy = async ({oracleAddress}) => {
   ];
 };
 
-export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
-  const TOKEN = safeTransactionToken();
-  const { address: funderAddress } = safeGetAccount();
+export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, safeAddress}) => {
+  const TOKEN = safeTransactionToken({id: fundToken});
+  const { address: funderAddress } = safeGetAccount(projectChain);
   // const tokenDecimals = await readContract(window.Wagmi, {
   //   abi: TOKEN.ABI,
-  //   address: TOKEN.ADDRESS,
+  //   address: TOKEN.ADDRESS[ethGetChain()],
   //   functionName: "decimals",
   // });
   const sendTransaction = await writeContract(window.Wagmi, {
     abi: TOKEN.ABI,
-    address: TOKEN.ADDRESS,
+    address: TOKEN.ADDRESS[ethGetChain()],
     functionName: "transfer",
     args: [
       safeAddress,
@@ -118,10 +125,11 @@ export const safeExecDeposit = async ({fundAmount, fundToken, safeAddress}) => {
   ];
 };
 
-export const safeSignClaim = async ({safeAddress, fundAmount, workerAddress, oracleCut}) => {
-  const { address: oracleAddress } = safeGetAccount();
+export const safeSignClaim = async ({projectChain, safeAddress, fundAmount, fundToken, workerAddress, oracleCut}) => {
+  const { address: oracleAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
     fundAmount,
+    fundToken,
     workerAddress,
     oracleAddress,
     oracleCut,
@@ -129,10 +137,11 @@ export const safeSignClaim = async ({safeAddress, fundAmount, workerAddress, ora
   return safeSignWithdrawal({transactions, oracleAddress, safeAddress});
 };
 
-export const safeExecClaim = async ({safeAddress, fundAmount, oracleSignature, oracleAddress, oracleCut}) => {
-  const { address: workerAddress } = safeGetAccount();
+export const safeExecClaim = async ({projectChain, safeAddress, fundAmount, fundToken, oracleSignature, oracleAddress, oracleCut}) => {
+  const { address: workerAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
     fundAmount,
+    fundToken,
     workerAddress,
     oracleAddress,
     oracleCut,
@@ -140,15 +149,15 @@ export const safeExecClaim = async ({safeAddress, fundAmount, oracleSignature, o
   return safeExecWithdrawal({transactions, oracleSignature, oracleAddress, workerAddress, safeAddress});
 };
 
-export const safeSignRefund = async ({safeAddress, safeInitBlock}) => {
-  const { address: oracleAddress } = safeGetAccount();
-  const transactions = await safeGetRefundTransactions({safeAddress, safeInitBlock});
+export const safeSignRefund = async ({projectChain, fundToken, safeAddress, safeInitBlock}) => {
+  const { address: oracleAddress } = safeGetAccount(projectChain);
+  const transactions = await safeGetRefundTransactions({fundToken, safeAddress, safeInitBlock});
   return safeSignWithdrawal({transactions, oracleAddress, safeAddress});
 };
 
-export const safeExecRefund = async ({safeAddress, safeInitBlock, oracleSignature, oracleAddress}) => {
-  const { address: workerAddress } = safeGetAccount();
-  const transactions = await safeGetRefundTransactions({safeAddress, safeInitBlock});
+export const safeExecRefund = async ({projectChain, fundToken, safeAddress, safeInitBlock, oracleSignature, oracleAddress}) => {
+  const { address: workerAddress } = safeGetAccount(projectChain);
+  const transactions = await safeGetRefundTransactions({fundToken, safeAddress, safeInitBlock});
   return safeExecWithdrawal({transactions, oracleSignature, oracleAddress, workerAddress, safeAddress});
 };
 
@@ -167,7 +176,7 @@ export function SafeError(message = "") {
 }; SafeError.prototype = Error.prototype;
 
 const safeNextSaltNonce = () => (fromHex(keccak256(toHex(Date.now())), "bigint"));
-const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT["USDC"]); // (CONTRACT[id.toUpperCase()]);
+const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT[id.toUpperCase()]);
 
 const safeAddressSort = (getAddress = (v) => v) => (a, b) => {
   return (([a, b]) => (a === b) ? 0 : ((a < b) ? -1 : 1))(
@@ -182,26 +191,26 @@ const safeEncodeTransaction = ({id, amt, to}) => {
   });
 };
 
-const safeGetClaimTransactions = async ({fundAmount, workerAddress, oracleAddress, oracleCut}) => {
+const safeGetClaimTransactions = async ({fundAmount, fundToken, workerAddress, oracleAddress, oracleCut}) => {
   const adminCuts = [
     {to: FUND_SAFE_ADDR, cut: FUND_CUT},
     {to: oracleAddress, cut: Number(oracleCut) / 100.0},
     {to: workerAddress, cut: 1.0 - (FUND_CUT + (Number(oracleCut) / 100.0))},
   ];
-  return safeGetTransactions({amount: fundAmount, cuts: adminCuts});
+  return safeGetTransactions({token: fundToken, amount: fundAmount, cuts: adminCuts});
 };
 
-const safeGetRefundTransactions = async ({safeAddress, safeInitBlock}) => {
-  const TOKEN = safeTransactionToken();
+const safeGetRefundTransactions = async ({fundToken, safeAddress, safeInitBlock}) => {
+  const TOKEN = safeTransactionToken({id: fundToken});
   const safeBalance = await getBalance(window.Wagmi, {
     address: safeAddress,
-    token: TOKEN.ADDRESS,
+    token: TOKEN.ADDRESS[ethGetChain()],
   });
   const safeCurrTotal = Number(safeBalance.formatted);
   // FIXME: If there are ever projects that exceed ~2k contributions, this will
   // need to be changed to paginate RPC queries.
   const transferLogs = await getPublicClient(window.Wagmi).getContractEvents({
-    address: TOKEN.ADDRESS,
+    address: TOKEN.ADDRESS[ethGetChain()],
     abi: TOKEN.ABI,
     eventName: "Transfer",
     args: {to: safeAddress},
@@ -220,35 +229,39 @@ const safeGetRefundTransactions = async ({safeAddress, safeInitBlock}) => {
     // these fractions be computed another way to prevent overflows?
     cut: Number(value) / Number(safeFullTotal),
   }));
-  return safeGetTransactions({amount: safeCurrTotal, cuts: contribCuts});
+  return safeGetTransactions({token: fundToken, amount: safeCurrTotal, cuts: contribCuts});
 };
 
-const safeGetTransactions = ({amount, cuts}) => {
-  // NOTE: "amount" is a "Number" of decimal presentation, which is then
-  // converted to a "BigInt" for fractionalizing
+// NOTE: "amount" is a "Number" of decimal presentation, which is then
+// converted to a "BigInt" for fractionalizing
+const safeGetTransactions = ({token, amount, cuts}) => {
+  const TOKEN = safeTransactionToken({id: token});
   const transactionMap = cuts
     .map(({cut, to}) => ({
       to: to,
-      id: "usdc",
-      // TODO: Will this work for all values? Can this overflow the
-      // Number type? Can this also create problems with difficult cut
-      // fractions?
-      amt:  BigInt(Math.round(amount * cut * 10 ** CONTRACT["USDC"].DECIMALS)),
+      id: token,
+      amt: (new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).times(cut).integerValue(),
     })).reduce((acc, {to, id, amt}) => {
       const tid = `${id}:${to}`;
-      let cur = acc[tid] ?? {to, id, amt: 0n};
-      acc[tid] = {to, id, amt: cur.amt + amt};
+      let cur = acc[tid] ?? {to, id, amt: BigNumber(0)};
+      acc[tid] = {to, id, amt: cur.amt.plus(amt)};
       return acc;
     }, {});
   const transactions = Object.values(transactionMap)
+    .map(({to, id, amt}) => ({to, id, amt: BigInt(amt.toString())}))
     .filter(({to, id, amt}) => (amt > 0n))
     .sort(safeAddressSort(v => v.to));
 
-  // FIXME: Make stronger guarantees about rounding and then remove this check
-  const bigintAmount = BigInt(Math.round(amount * 10 ** CONTRACT["USDC"].DECIMALS));
-  const bigintTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
-  if (bigintAmount !== bigintTotal)
-    throw new SafeError(`mismatch between requested transaction total and refund total: (${bigintAmount}, ${bigintTotal})`);
+  const transactionTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
+  const bigintAmount = BigInt((new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).toString());
+  const transactionRemainder = (([a, b]) => b - a)([transactionTotal, bigintAmount].sort());
+  // NOTE: This _can_ happen (e.g. {cuts: [0.33333, 0.66666], amount: 1000000});
+  // just make sure the amount is _relatively_ small
+  if (transactionRemainder > 100n) {
+    throw new SafeError(`big roundoff when distributing costs: ${transactionRemainder}`);
+  } else if (transactionRemainder !== 0n) {
+    transactions[0].amt += transactionRemainder;
+  }
 
   return transactions;
 };
@@ -260,8 +273,8 @@ const safeGetWithdrawalArgs = async ({safe, transactions}) => {
   console.log(transactions);
   const isDelegateCall = (transactions.length > 1) ? 1 : 0;
   const transactionContract = !isDelegateCall
-    ? safeTransactionToken(transactions[0]).ADDRESS
-    : CONTRACT.SAFE_MULTISEND.ADDRESS;
+    ? safeTransactionToken(transactions[0]).ADDRESS[ethGetChain()]
+    : CONTRACT.SAFE_MULTISEND.ADDRESS[ethGetChain()];
   const transactionData = !isDelegateCall
     ? safeEncodeTransaction(transactions[0])
     : encodeFunctionData({
@@ -275,7 +288,7 @@ const safeGetWithdrawalArgs = async ({safe, transactions}) => {
               // NOTE: 0, toAddress, value (eth), call data length (bytes), call data
               // sepolia.etherscan.io/address/0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b#code#F1#L10
               ["uint8", "address", "uint256", "uint256", "bytes"],
-              [0, TOKEN.ADDRESS, 0n, (encodedTransaction.length - 2) / 2, encodedTransaction],
+              [0, TOKEN.ADDRESS[ethGetChain()], 0n, (encodedTransaction.length - 2) / 2, encodedTransaction],
             );
           })
         ])],

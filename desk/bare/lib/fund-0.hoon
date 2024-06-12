@@ -1,5 +1,5 @@
-/-  *fund
-/+  format=fund-form, fx=fund-xtra, tx=naive-transactions
+/-  *fund-0
+/+  fx=fund-xtra, tx=naive-transactions
 |%
 ::
 ::  +filo: fill in an $odit by calculating `void` (if required)
@@ -10,8 +10,7 @@
   %_    odi
       void
     ?^  void.odi  void.odi
-    =+  fil=(add fill.odi plej.odi)
-    `[(gth cost.odi fil) (sub (max cost.odi fil) (min cost.odi fil))]
+    `(sub:rs cost.odi (add:rs fill.odi plej.odi))
   ==
 ::
 ::  +tula: t(ime) associated with a $(m)ula (measured by block height)
@@ -50,26 +49,21 @@
     ^-  ^stat
     status:mil:next
   ++  cost                                       ::  summed milestone costs
-    ^-  cash
-    (roll (turn milestonez |=(n=mile cost.n)) add)
+    ^-  @rs
+    (roll (turn milestonez |=(n=mile cost.n)) add:rs)
   ++  plej                                       ::  summed pledge amounts
-    ^-  cash
+    ^-  @rs
     %+  roll  ~(val by pledges)
-    |=([n=^plej a=cash] (add a cash.n))
+    |=([n=^plej a=@rs] (add:rs a cash.n))
   ++  fill                                       ::  project-wide cost fill
-    ^-  cash
-    (roll (turn contribs |=(t=trib cash.t)) add)
+    ^-  @rs
+    (roll (turn contribs |=(t=trib cash.t)) add:rs)
   ++  take                                       ::  project-wide claimed funds
-    ^-  cash
-    %-  roll  :_  add
-    %+  turn  milestonez
-    |=  mil=mile
-    ?.  ?&  ?=(%done status.mil)
-            ?=(^ withdrawal.mil)
-            ?=(^ xact.u.withdrawal.mil)
-        ==
-      0
-    cash.u.withdrawal.mil
+    ^-  @rs
+    %-  roll  :_  add:rs
+    %-  turn  :_  |=(n=mile cost.n)
+    %+  skim  milestonez
+    |=(n=mile &(?=(%done status.n) ?=(^ withdrawal.n) ?=(^ xact.u.withdrawal.n)))
   ++  odit                                       ::  project-wide audit
     ^-  ^odit
     (filo [cost fill plej ~])
@@ -77,14 +71,14 @@
     ^-  (list ^odit)
     =/  lin=@  (dec (lent milestonez))
     =<  -  %^  spin  milestonez  [0 fill plej]
-    |=  [mil=mile min=@ fre=cash pre=cash]
+    |=  [mil=mile min=@ fre=@rs pre=@rs]
     =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil))
     =+  end==(min lin)
     =+  fos=?:(!dun cost.mil cash:(need withdrawal.mil))
-    =+  fil=?:(|(end (lte fre fos)) fre fos)
-    =+  pos=?:(!dun (sub fos fil) 0)
-    =+  pej=?:(|(end (lte pre pos)) pre pos)
-    [(filo [cost.mil fil pej ~]) +(min) (sub fre fil) (sub pre pej)]
+    =+  fil=?:(|(end (lte:rs fre fos)) fre fos)
+    =+  pos=?:(!dun (sub:rs fos fil) .0)
+    =+  pej=?:(|(end (lte:rs pre pos)) pre pos)
+    [(filo [cost.mil fil pej ~]) +(min) (sub:rs fre fil) (sub:rs pre pej)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))
@@ -112,15 +106,12 @@
   ++  oath                                       ::  text of assessment contract
     |=  wox=@p
     ^-  tape
-    ::  FIXME: May need to add per-version oath support so that contracts
-    ::  with legacy `oath` formats (e.g. real values) are supported
     =-  "I, {<p.assessment>}, hereby agree to assess the following project proposed by {<wox>}:\0a\0a{-}"
     %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
     %+  weld
       ^-  (list tape)
       :~  "title: {(trip title)}"
-          "oracle: {<p.assessment>} (for {(cash:enjs:format q.assessment)}%)"
-          "currency: {(trip name.currency)} ({(addr:enjs:format addr.currency)}) on eth chain {(bloq:enjs:format chain.currency)}"
+          "oracle: {<p.assessment>} (for {(r-co:co (rlys q.assessment))}%)"
           "summary: {(trip summary)}"
       ==
     %+  turn  (enum:fx milestonez)
@@ -130,7 +121,7 @@
     ^-  (list tape)
     :~  "milestone #{<+(min)>}:"
         "title: {(trip title.mil)}"
-        "cost: {(cash:enjs:format cost.mil)}"
+        "cost: {(r-co:co (rlys cost.mil))}"
         "summary: {(trip summary.mil)}"
     ==
   --

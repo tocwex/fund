@@ -12,10 +12,18 @@
   =>  |%
       ++  trim                                 ::  remove trailing whitespace and \r
         |=  cor=@t
+        ^-  @t
         %-  crip  %-  flop
         %-  skip  :_  |=(c=@t =('\0d' c))
         %+  scan  (flop (trip cor))
         ;~(pfix (star (mask " \0a\0d\09")) (star next))
+      ++  pars                                 ::  parse real number
+        |=  cor=@t
+        ^-  (unit cash:f)
+        ?-  val=(mule |.((cash:dejs:format:fh cor)))
+          [%| *]  ~
+          [%& *]  `+.val
+        ==
       --
   =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
@@ -30,7 +38,7 @@
       %bump-born  ?~(pru 'project does not exist' [%bump %born ~])
     ::
         %init
-      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %toc %toa %ton %tod %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
         :+  %init  ~
         =+  pro=*proj:f  %_  pro
           title       (~(got by p.arz) %nam)
@@ -38,11 +46,19 @@
         ::
             assessment
           :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
-          (fall (rush (~(got by p.arz) %seo) royl-rs:so) .1)
+          (fall (pars (~(got by p.arz) %seo)) 1.000.000)
         ::
             image
           =+  pic=(~(got by p.arz) %pic)
           ?~((rush pic auri:de-purl:html) ~ `pic)
+        ::
+            currency
+          :*  chain=(bloq:dejs:format:fh (~(got by p.arz) %toc))
+              addr=(addr:dejs:format:fh (~(got by p.arz) %toa))
+              name=(~(got by p.arz) %ton)
+              symbol=(~(got by p.arz) %ton)
+              decimals=(bloq:dejs:format:fh (~(got by p.arz) %tod))
+          ==
         ::
             milestones
           ;;  (lest mile:f)
@@ -54,7 +70,7 @@
           =+  mil=*mile:f  %_  mil
             title    u.nam
             summary  (trim (~(gut by p.arz) (crip "m{<ind>}s") ''))
-            cost     (fall (rush (~(gut by p.arz) (crip "m{<ind>}c") '') royl-rs:so) .0)
+            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '')) 0)
           ==
         ==
       ==
@@ -120,6 +136,43 @@
           ==
         ==
         ;div
+          ;div(class "m-1 pt-2 text-3xl w-full"): Funding
+          ;div(class "flex")
+            ;div(class "fund-form-group")
+              ;select.p-2(name "tok")
+                ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
+                    %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
+                    |=  tok=tape
+                    ^-  manx
+                    :_  ; {(cuss tok)}
+                    :-  %option
+                    ;:  welp
+                        [%value tok]~
+                        ?.(=(sym tok) ~ [%selected ~]~)
+                    ==
+              ==
+              ;label(for "tok"): token
+            ==
+            ;div(class "fund-form-group")
+              ;select.p-2(name "net")
+                ::  FIXME: Including the network IDs here is a hack, but
+                ::  this should be fixed by moving chain stuff to the BE
+                ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
+                    %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
+                    |=  [net=tape nid=@ud]
+                    ^-  manx
+                    :_  ; {(caps:fx net)}
+                    :-  %option
+                    ;:  welp
+                        [%value net]~
+                        ?.(=(can nid) ~ [%selected ~]~)
+                    ==
+              ==
+              ;label(for "net"): network
+            ==
+          ==
+        ==
+        ;div
           ;div.text-3xl.pt-2: Milestones
           ;div#milz-well.mx-2
             ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
@@ -141,9 +194,9 @@
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
                         =min  "0"  =max  "100000000"  =step  "0.01"
                         =placeholder  "0"
-                        =value  ?:(=(0 cost.mil) "" (mony:enjs:format:fh cost.mil))
+                        =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil))
                         =x-on-change  "updateMile";
-                      ;label(for "m{<min>}c"): milestone budget ($)
+                      ;label(for "m{<min>}c"): milestone budget (tokens)
                     ==
                   ==
                   ;div(class "fund-form-group")
@@ -177,7 +230,7 @@
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "1"
-                =value  ?~(pru "" (mony:enjs:format:fh q.assessment.u.pru));
+                =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru));
               ;label(for "seo"): fee offer (%)
             ==
           ==
@@ -194,14 +247,14 @@
         ;span: Please note there is a
         ;span(class "font-semibold"):  1% protocol fee
         ;span:  on all successfully completed milestone withdrawals.
-        ;span:  Refund transactions do not incurr any fees.
+        ;span:  Refund transactions do not incur any fees.
       ==
       ;div(class "flex w-full justify-center gap-x-2 mx-auto")
         ;*  |^  ?+  sat  !!  ::  ~[dead-butn drop-butn]
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" ~ ~)
+            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" "saveProj" ~)
             ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
@@ -219,7 +272,7 @@
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{
         proj_cost: 0,
-        mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(mony:enjs:format:fh cost.n)},")))}],
+        mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(cash:enjs:format:fh cost.n)},")))}],
         init() \{
           this.updateProj();
           document.querySelectorAll('textarea').forEach(elem => (
@@ -227,7 +280,17 @@
           ));
         },
         updateProj() \{
-          this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0)}`;
+          this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;
+        },
+        saveProj(event) \{
+          const chain = event.target.form.querySelector('[name=net]').value.toUpperCase();
+          const token = event.target.form.querySelector('[name=tok]').value.toUpperCase();
+          this.sendForm(event, [], () => Promise.resolve(\{
+            toc: this.NETWORK.ID[chain],
+            toa: this.CONTRACT[token].ADDRESS[chain],
+            ton: token.toLowerCase(),
+            tod: this.CONTRACT[token].DECIMALS,
+          }));
         },
         updateTextarea(event) \{
           event.target.parentNode.dataset.replicatedValue = event.target.value;
@@ -257,4 +320,4 @@
     ==
   ==
 --
-::  VERSION: [0 3 0]
+::  VERSION: [0 4 0]

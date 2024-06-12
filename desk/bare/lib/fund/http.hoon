@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
 /-  fd=fund-data
-/+  *fund, fx=fund-xtra
+/+  *fund, format=fund-form, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -190,152 +190,6 @@
     --
   --
 ::
-::  +format: formatting functions between htmx/js-compatible tapes and nouns
-::
-++  format
-  |%
-  +|  %url
-  ++  derl                                       ::  rl-path => noun
-    |%
-    ++  slag                                     ::  (url path) suffix
-      |=  cor=cord  ~+
-      ^-  path
-      =/  [pre=tape suf=tape]  (chop:fx (trip cor) '?')
-      ::  FIXME: A smarter `stab` parser would be better, e.g. something like:
-      ::  `path`(rash '/a/b/' ;~(sfix stap fas))
-      =?  pre  ?=([%'/' *] (flop pre))  (snip pre)
-      (need (decap:rudder /apps/fund (stab (crip pre))))
-    ++  flag                                     ::  (url path) (project) flag
-      |=  cor=cord  ~+
-      ^-  (unit ^flag)
-      ?+  pat=`(pole knot)`(slag cor)  ~
-        [@ sip=@ nam=@ *]  (both (slaw %p sip.pat) (slaw %tas nam.pat))
-      ==
-    --
-  ++  enrl                                       ::  noun => rl-path
-    |%
-    ++  dest                                     ::  des(k) t(ape) (url path)
-      |=  pat=path  ~+
-      ^-  tape
-      (spud [%apps %fund pat])
-    ++  desc                                     ::  des(k) c(ord) (url path)
-      |=  pat=path  ~+
-      ^-  cord
-      (spat [%apps %fund pat])
-    ++  chat                                     ::  cha(t) t(ape) (url path)
-      |=  sip=@p  ~+
-      ^-  tape
-      (spud /apps/groups/dm/(scot %p sip))
-    ++  chac                                     ::  cha(t) c(ord) (url path)
-      |=  sip=@p  ~+
-      ^-  cord
-      (spat /apps/groups/dm/(scot %p sip))
-    ++  flat                                     ::  fla(g) t(ape) (url path)
-      |=  lag=flag  ~+
-      ^-  tape
-      (dest /project/(scot %p p.lag)/[q.lag])
-    ++  flac                                     ::  fla(g) c(ord) (url path)
-      |=  lag=flag  ~+
-      ^-  cord
-      (desc /project/(scot %p p.lag)/[q.lag])
-    --
-
-  +|  %js
-  ++  dejs                                       ::  js-tape => noun
-    |%
-    ++  mony                                     ::  "12.34" => .1.2345e1
-      |=  mon=@t
-      ^-  @rs
-      (rash mon royl-rs:so)
-    ++  bloq                                     ::  "123456..." => 1234.56...
-      |=  boq=@t
-      ^-  ^bloq
-      (rash boq dem)
-    ++  addr                                     ::  "0xabcdef..." => 0xabcd.ef...
-      |=  adr=@t
-      ^-  ^addr
-      (rash adr ;~(pfix (jest '0x') hex))
-    ++  sign                                     ::  "0xabcdef..." => 0xabcd.ef...
-      |=  sig=@t
-      ^-  ^sign
-      (rash sig ;~(pfix (jest '0x') hex))
-    ++  flag                                     ::  "~zod/nam" => [~zod %nam]
-      |=  lag=@t
-      ^-  ^flag
-      (rash lag ;~((glue fas) ;~(pfix sig fed:ag) sym))
-    ++  poke                                     ::  "~zod/nam:typ" => [p=[~zod %nam] q=%typ]
-      |=  pok=@t
-      ^-  (pair ^flag @tas)
-      (rash pok ;~((glue col) ;~((glue fas) ;~(pfix sig fed:ag) sym) sym))
-    --
-  ++  enjs                                       ::  noun => js-tape
-    |%
-    ++  mony                                     ::  .1.2345e1 => "12.34"
-      |=  mon=@rs
-      ^-  tape
-      ?+    mun=(rlys mon)  "?"
-          [%d *]
-        ::  TODO: Need to round off everything past two digits after the decimal
-        ::  TODO: Need to pad with at least two zeroes after the decimal place
-        ::  TODO: Need to insert commas after every three digits before decimal place
-        =/  rep=tape  ?:(s.mun "" "-")
-        =/  f  ((d-co:co 1) a.mun)
-        =^  e  e.mun
-          =/  e=@s  (sun:si (lent f))
-          =/  sci  :(sum:si e.mun e -1)
-          [(sum:si sci --1) --0]
-        (weld rep (ed-co:co e f))
-      ==
-    ++  bloq                                     ::  1234.56... => "123456..."
-      |=  boq=^bloq
-      ^-  tape
-      (a-co:co boq)
-    ++  addr                                     ::  0xabcd.ef... => "0xabcdef..."
-      |=  adr=^addr
-      ^-  tape
-      ['0' 'x' ((x-co:co 40) adr)]
-    ++  sign                                     ::  0xabcd.ef... => "0xabcdef..."
-      |=  sig=^sign
-      ^-  tape
-      ['0' 'x' ((x-co:co 130) sig)]
-    ++  flag                                     ::  [~zod %nam] => "~zod/nam"
-      |=  lag=^flag
-      ^-  tape
-      "{<p.lag>}/{(trip q.lag)}"
-    ++  poke                                     ::  [[~zod %nam] %type ...] => "~zod/name:type"
-      |=  pok=^poke
-      ^-  tape
-      "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(%bump -.q.pok) ~ ['-' (trip +<.q.pok)])}"
-    ++  role                                     ::  %orac => "oracle"
-      |=  rol=^role
-      ^-  tape
-      ?-  rol
-        %work  "worker"
-        %orac  "oracle"
-        %fund  "funder"
-      ==
-    ++  mula                                     ::  [%plej ...] => "pledged"
-      |=  mul=^mula
-      ^-  tape
-      ?-  -.mul
-        %plej  "pledged"
-        %trib  "fulfilled"
-      ==
-    ++  stat                                     ::  %born => "draft"
-      |=  sat=^stat
-      ^-  tape
-      ?-  sat
-        %born  "draft"
-        %prop  "proposed"
-        %lock  "launched"
-        %work  "in-progress"
-        %sess  "in-review"
-        %done  "completed"
-        %dead  "canceled"
-      ==
-    --
-  --
-::
 ::  +htmx: html-related helper functions and data, including css, js, components
 ::
 ++  htmx
@@ -384,10 +238,8 @@
         ==
     ++  hair
       ^-  manx
-      =+  !<(can=@tas (slot:config %chain))
-      =+  cat=?:(=(%mainnet can) "mainnet" "testnet ({(cuss (trip can))})")
       ;div(class "flex justify-center w-full sticky top-0 bg-yellow-200 py-1 px-2 text-sm font-medium")
-        ; ⚠ {(cuss cat)} VERSION ⚠
+        ; ⚠ DEBUG ENABLED ⚠
       ==
     ++  head
       ^-  manx
@@ -452,45 +304,42 @@
     |=  odi=odit
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
-    |^  =+  ovr=(need void:(filo odi))
-        =+  udr=(sig:rs ovr)
-        =?  ovr  !udr  (mul:rs .-1 ovr)
-        =+  tot=`@rs`(add:rs cost.odi ?:(udr .0 ovr))
-        =/  odz=(list @rs)
+    |^  =+  [udr ovr]=(need void:(filo odi))
+        =+  tot=(add cost.odi ?:(udr 0 ovr))
+        =/  caz=(list cash)
           ?:  udr  ~[fill.odi plej.odi ovr]
           =+  [fre=fill.odi pre=plej.odi]
           =+  fos=cost.odi
-          =+  fil=?:((lte:rs fre fos) fre fos)
-          =+  pos=(sub:rs fos fil)
-          =+  pej=?:((lte:rs pre pos) pre pos)
+          =+  fil=?:((lte fre fos) fre fos)
+          =+  pos=(sub fos fil)
+          =+  pej=?:((lte pre pos) pre pos)
           ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
-        =+  caz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
+        =+  kaz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
-        =+  cez=?:((equ:rs .0 tot) `(list @rs)`~[.0 .0 .100] (turn odz (rcen tot)))
+        =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (cury rcen tot)))
         =+  dez=(iron (turn cez cend))
         ;div(class "fund-odit-ther {cas}")
-          ;*  %+  murn  :(izip:fx odz naz caz cez dez)
-              |=  [dol=@rs nam=tape kas=tape cen=@rs den=@ud]
+          ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
+              |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
               ^-  (unit manx)
               ?:  =(0 den)  ~
               :-  ~
-              ;div(title "{(mony:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
-                ; ${(mony:enjs:format dol)}
+              ;div(title "{(real:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
+                ; ${(cash:enjs:format cas)}
               ==
         ==
     ++  rcen                                     ::  odit segment to percentage
-      |=  tot=@rs
-      |=  val=@rs
+      |=  [tot=cash val=cash]
       ^-  @rs
-      (mul:rs .100 (div:rs val tot))
+      (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
     ++  cend                                     ::  odit percentage to decimal
       |=  val=@rs
       ^-  @ud
       ?:  (equ:rs val .0)  0
-      ?:  (lth:rs val .1)  1
-      (abs:si (need (~(toi rs %n) val)))
+      ?:  (lte:rs val .1)  1
+      (abs:si (need (toi:rs val)))
     ++  iron                                     ::  odit decimals ironed to sum 100
       |=  lis=(list @ud)
       ^-  (list @ud)

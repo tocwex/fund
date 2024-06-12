@@ -1,3 +1,4 @@
+/-  pj-1=fund-proj-1
 /+  *fund, config, sss
 |%
 +|  %misc
@@ -27,34 +28,102 @@
   --
 
 +|  %core
-+$  vers  _%1
++$  vers  _%2
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
+  =>  |%
+      ++  cash-1-2  |=(r=@rs `@ud`?+(c=(rlys r) 0 [%d *] (mul a.c (pow 10 (abs:si (sum:si --6 e.c))))))
+      ++  cash-2-1  |=(c=@ud `@rs`(ryls [%d & -6 c]))
+      ++  plej-1-2  |=(p=plej:pj-1 `plej`[ship.p (cash-1-2 cash.p) when.p note.p])
+      ++  trib-1-2  |=(t=trib:pj-1 `trib`[ship.t (cash-1-2 cash.t) when.t note.t])
+      ++  mula-1-2  |=(m=mula:pj-1 `mula`?-(-.m %plej [-.m (plej-1-2 +.m)], %trib [-.m (trib-1-2 +.m)]))
+      ++  proj-1-2
+        |=  pro=proj:pj-1
+        ^-  proj
+        ::  FIXME: Get this information from a Urbit/Hoon-hosted map
+        :*  currency=[1 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 %usdc %usdc 6]
+            title=title.pro
+            summary=summary.pro
+            image=image.pro
+            assessment=[p.assessment.pro (cash-1-2 q.assessment.pro)]
+        ::
+              ^=  milestones
+            ;;  (lest mile)
+            %+  turn  milestones.pro
+            |=  mil=mile:pj-1
+            ^-  mile
+            :*  title=title.mil
+                summary=summary.mil
+                image=image.mil
+                cost=(cash-1-2 cost.mil)
+                status=status.mil
+                withdrawal=(bind withdrawal.mil |=(w=with:pj-1 `with`[xact.w sigm.w (cash-1-2 cash.w)]))
+            ==
+        ::
+              ^=  pledges
+            =<  -  %+  ~(rib by pledges.pro)  *(map ship plej)
+            |=  [[key=ship val=plej:pj-1] acc=(map ship plej)]
+            [(~(put by acc) key (plej-1-2 val)) key val]
+        ::
+            contribs=(turn contribs.pro trib-1-2)
+            contract=contract.pro
+        ==
+      ++  proj-2-1
+        |=  pro=proj
+        ^-  proj:pj-1
+        ::  NOTE: We only need assessment/milestones in 2-to-1 case
+        :*  title=title.pro
+            summary=summary.pro
+            image=image.pro
+            assessment=[p.assessment.pro (cash-2-1 q.assessment.pro)]
+        ::
+              ^=  milestones
+            ;;  (lest mile:pj-1)
+            %+  turn  milestones.pro
+            |=  mil=mile
+            ^-  mile:pj-1
+            :*  title=title.mil
+                summary=summary.mil
+                image=image.mil
+                cost=(cash-2-1 cost.mil)
+                status=status.mil
+                withdrawal=~
+            ==
+        ::
+            pledges=~
+            contribs=~
+            contract=~
+        ==
+      --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
-  +$  vock
-    $%  rock
-    ==
-  +$  wave  [vers =bowl:gall =poke]
-  +$  vave
-    $%  wave
-    ==
+  +$  vock  $%(vock:lake:pj-1 rock)
+  +$  wave  [vers bol=bowl:gall pok=poke]
+  +$  vave  $%(vave:lake:pj-1 wave)
   ++  urck
     |=  voc=vock
     ^-  rock
     ?-  -.voc
-      %1  voc
+      %2  voc
+      %1  $(voc [%2 (proj-1-2 +.voc)])
     ==
   ++  uwve
     |=  vav=vave
     ^-  wave
     ?-  -.vav
-      %1  vav
+      %2  vav
+    ::
+        %1
+      =-  $(vav [%2 -])
+      ?+    +.vav  +.vav
+        [* * %init *]  [bol.vav p.pok.vav %init (bind pro.q.pok.vav proj-1-2)]
+        [* * %mula *]  [bol.vav p.pok.vav %mula (mula-1-2 +.q.pok.vav)]
+      ==
     ==
   ++  wash
     ::  TODO: Add useful error messages to all the various error cases
-    |=  [[vers pro=proj] vers bol=bowl:gall lag=^flag pod=prod]
+    |=  [[vers pro=proj] [vers bol=bowl:gall lag=^flag pod=prod]]
     ^-  rock
     =*  mes  `mess`[src.bol lag pod]
     =*  miz  `(list mile)`milestones.pro
@@ -76,11 +145,11 @@
             =+  niz=(turn miz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
             %+  snoc  (snip niz)
             =+  mil=(rear niz)
-            mil(withdrawal `[~ sigm.oat (sub:rs ~(fill pj pro) ~(take pj pro))])
+            mil(withdrawal `[~ sigm.oat (sub ~(fill pj pro) ~(take pj pro))])
           ==
         --
     =/  sat=stat  ~(stat pj pro)
-    :-  %1
+    :-  *vers
     ?+    -.pod  pro
         %init
       ?>  aver-work
@@ -111,7 +180,8 @@
           ::
               %prop
             =+  sig=sigm:(need oat.pod)
-            ?>  =((trip `@t`p.mesg.sig) (~(oath pj pro) our.bol))
+            ?>  %.  (trip `@t`p.mesg.sig)
+                ~(has in (silt ~[(~(oath pj pro) our.bol) (~(oath pj:pj-1 (proj-2-1 pro)) our.bol)]))
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))
           ::
@@ -150,7 +220,7 @@
     ::
         %mula
       ?<  ?=(?(%born %prop %done %dead) sat)
-      ?>  (gth:rs cash.pod .0)
+      ?>  (gth cash.pod 0)
       ?-    +<.pod
           %plej
         ::  NOTE: This is a sufficient check because we only allow the
@@ -165,8 +235,7 @@
       ::
           %trib
         =/  pol=(unit plej)  ?~(ship.pod ~ (~(get by pledges.pro) (need ship.pod)))
-        ::  TODO: Is this okay or should we require direct equality?
-        ?>  |(?=(~ pol) (equ:rs cash.u.pol cash.pod))
+        ?>  |(?=(~ pol) =(cash.u.pol cash.pod))
         %_    pro
             pledges
           ?~  pol  pledges.pro
@@ -195,7 +264,7 @@
       =/  mod=odit  (snag min ~(odim pj pro))
       ?~  sig.pod  (edit-mile min mil(withdrawal ~))
       ?>  (peer-sigm u.sig.pod)
-      =+  fil=?:(?=(%done status.mil) fill.mod (sub:rs ~(fill pj pro) ~(take pj pro)))
+      =+  fil=?:(?=(%done status.mil) fill.mod (sub ~(fill pj pro) ~(take pj pro)))
       (edit-mile min mil(withdrawal `[~ u.sig.pod fil]))
     ==
   --

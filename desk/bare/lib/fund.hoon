@@ -62,9 +62,14 @@
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
-    %-  turn  :_  |=(n=mile cost.n)
-    %+  skim  milestonez
-    |=(n=mile &(?=(%done status.n) ?=(^ withdrawal.n) ?=(^ xact.u.withdrawal.n)))
+    %+  turn  milestonez
+    |=  mil=mile
+    ?.  ?&  ?=(%done status.mil)
+            ?=(^ withdrawal.mil)
+            ?=(^ xact.u.withdrawal.mil)
+        ==
+      0
+    cash.u.withdrawal.mil
   ++  odit                                       ::  project-wide audit
     ^-  ^odit
     (filo [cost fill plej ~])

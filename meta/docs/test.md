@@ -4,17 +4,20 @@
 
 ### Basic Tests ###
 
+These tests must be run on `~zod` in order to work!
+
 ```
 =f -build-file /=fund=/lib/fund/hoon
 =p *proj:f
 =m *mile:f
 =s *stub:f
 =o *oath:f
+=c `coin:f`[11.155.111 0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38 %usdc %usdc 6]
 =ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
 =ad2 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf
-=miz ~[m(title '1', summary '!', cost .10) m(title '2', summary '@', cost .20) m(title '3', summary '#', cost .30) m(title '4', summary '$', cost .40)]
-=po1 p(title 't', summary 'd', assessment [our .0], milestones miz)
-=sig 0x50.e8f5.4d20.8151.83ac.c95f.3e15.92e8.8110.f09b.1a16.a529.6374.7e80.97e2.3591.130e.72d2.c822.e831.2223.d6ee.aa13.3f8a.60cd.fd62.754f.0218.bd9f.c060.a3ee.2b9e.ae1c
+=miz ~[m(title '1', summary '!', cost 10.000.000) m(title '2', summary '@', cost 20.000.000) m(title '3', summary '#', cost 30.000.000) m(title '4', summary '$', cost 40.000.000)]
+=po1 p(title 't', summary 'd', assessment [our 0], milestones miz, currency c)
+=sig 0x37.77bb.ef64.9e5e.c3e7.8923.e4c1.0b40.5c6c.1ba3.bb02.a201.6ad2.b9da.dd26.68ad.2c2a.4c43.5005.d3ca.e1f5.e59c.bbb8.658f.5431.4505.190c.5fa2.362c.1fb3.d165.ae03.4e1b
 =si1 `sigm:f`[sig ad1 [%& (crip (~(oath pj:f po1) our))]]
 :fund &fund-poke [[our %test] %init ~]
 :fund &fund-poke [[our %test] %init `po1]
@@ -23,20 +26,20 @@
 :fund &fund-poke [[our %test] %bump %prop ~]
 :fund &fund-poke [[our %test] %bump %prop `o(sigm si1)]
 :fund &fund-poke [[our %test] %bump %lock `o(sigm si1, xact [0 0x0], work ad2, orac ad1, safe 0x0)]
-:fund &fund-poke [[our %test] %mula %plej our .9 0 (crip "{<our>} plej")]
-:fund &fund-poke [[our %test] %mula %trib `our .9 s(xact [1 0x0]) (crip "{<our>} fill")]
+:fund &fund-poke [[our %test] %mula %plej our 9.000.000 0 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %mula %trib `our 9.000.000 s(xact [1 0x0]) (crip "{<our>} fill")]
 :fund &fund-poke [[our %test] %bump %work ~]
 :fund &fund-poke [[our %test] %bump %sess ~]
 :fund &fund-poke [[our %test] %bump %done `o(sigm si1)]
 :fund &fund-poke [[our %test] %bump %work ~]
-:fund &fund-poke [[our %test] %mula %trib `our .2 s(xact [2 0x0]) (crip "{<our>} trib")]
-:fund &fund-poke [[our %test] %mula %trib ~ .20 s(xact [3 0x0]) (crip "anon trib")]
-:fund &fund-poke [[our %test] %mula %plej our .1 4 (crip "{<our>} pass")]
-:fund &fund-poke [[our %test] %mula %trib `our .1 s(xact [5 0x0]) '']
-:fund &fund-poke [[our %test] %mula %plej our .50 6 (crip "{<our>} plej")]
+:fund &fund-poke [[our %test] %mula %trib `our 2.000.000 s(xact [2 0x0]) (crip "{<our>} trib")]
+:fund &fund-poke [[our %test] %mula %trib ~ 20.000.000 s(xact [3 0x0]) (crip "anon trib")]
+:fund &fund-poke [[our %test] %mula %plej our 1.000.000 4 (crip "{<our>} pass")]
+:fund &fund-poke [[our %test] %mula %trib `our 1.000.000 s(xact [5 0x0]) '']
+:fund &fund-poke [[our %test] %mula %plej our 50.000.000 6 (crip "{<our>} plej")]
 :fund &fund-poke [[our %test] %draw 0 [7 0x0]]
 :fund &fund-poke [[our %tes2] %init ~]
-:fund &fund-poke [[our %tes2] %init `p(title '5', summary '%', image `'https://picsum.photos/200', assessment [~nec .1], milestones ~[m(title '6', summary '^', cost .1e6)])]
+:fund &fund-poke [[our %tes2] %init `p(title '5', summary '%', image `'https://picsum.photos/200', assessment [~nec 1.000.000], milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
 :fund &fund-poke [[our %tes2] %bump %prop ~]
 ```
 
@@ -44,8 +47,8 @@ After running the above, run the following to test overage behavior:
 
 ```
 =s *stub:f
-:fund &fund-poke [[our %test] %mula %trib `our .50 s(xact [8 0x0]) '']
-:fund &fund-poke [[our %test] %mula %trib ~ .100 s(xact [9 0x0]) '']
+:fund &fund-poke [[our %test] %mula %trib `our 50.000.000 s(xact [8 0x0]) '']
+:fund &fund-poke [[our %test] %mula %trib ~ 100.000.000 s(xact [9 0x0]) '']
 ```
 
 ### Deletion Tests ###
@@ -61,8 +64,8 @@ Only run these commands after running all of the basic test commands.
 Only run these commands after running all of the basic test commands.
 
 ```
-:fund &fund-poke [[our %test] %mula %plej our .30 0 (crip "{<our>} bad plej")]
-:fund &fund-poke [[our %test] %mula %trib `our .10 [1 0x0 0x0] (crip "{<our>} bad cont")]
+:fund &fund-poke [[our %test] %mula %plej our 30.000.000 0 (crip "{<our>} bad plej")]
+:fund &fund-poke [[our %test] %mula %trib `our 10.000.000 [1 0x0 0x0] (crip "{<our>} bad cont")]
 :fund &fund-poke [[our %test] %init ~]
 :fund &fund-poke [[our %test] %bump %born ~]
 :fund &fund-poke [[our %test] %bump %prop ~]

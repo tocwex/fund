@@ -428,8 +428,8 @@
           :(weld "coin_name: '" (trip name.currency.pro) "',")
           :(weld "orac_cut: " (cash:enjs:format:fh q.assessment.pro) ",")
           :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (cash:enjs:format:fh fill.n) ","))) "],")
-          :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) ","))) "],")
-          :(weld "mile_sign: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n)) ","))) "],")
+          :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")
+          :(weld "mile_sign: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n)) "',"))) "],")
           :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n)) ","))) "],")
           "acceptContract(event) \{"
           "  this.sendForm(event, [], () => ("

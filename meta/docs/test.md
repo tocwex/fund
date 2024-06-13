@@ -64,12 +64,12 @@ Only run these commands after running all of the basic test commands.
 Only run these commands after running all of the basic test commands.
 
 ```
-:fund &fund-poke [[our %test] %mula %plej our 30.000.000 0 (crip "{<our>} bad plej")]
-:fund &fund-poke [[our %test] %mula %trib `our 10.000.000 [1 0x0 0x0] (crip "{<our>} bad cont")]
+:fund &fund-poke [[our %test] %mula %plej our 30.000.000 *bloq:f (crip "{<our>} bad plej")]
+:fund &fund-poke [[our %test] %mula %trib `our 10.000.000 *stub:f (crip "{<our>} bad cont")]
 :fund &fund-poke [[our %test] %init ~]
 :fund &fund-poke [[our %test] %bump %born ~]
 :fund &fund-poke [[our %test] %bump %prop ~]
-:fund &fund-poke [[our %test] %bump %lock `[0 0x0 0x0 0x0]]
+:fund &fund-poke [[our %test] %bump %lock `*oath:f]
 ```
 
 ### Permissions Tests ###

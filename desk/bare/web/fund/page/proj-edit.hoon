@@ -275,50 +275,54 @@
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
           :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh cost.n) ","))) "],")
-          "proj_cost: 0,"
-          "init() \{"
-          "  this.updateProj();"
-          "  document.querySelectorAll('textarea').forEach(elem => ("
-          "    this.updateTextarea(\{target: elem})"
-          "  ));"
-          "},"
-          "updateProj() \{"
-          "  this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;"
-          "},"
-          "saveProj(event) \{"
-          "  const chain = event.target.form.querySelector('[name=net]').value.toUpperCase();"
-          "  const token = event.target.form.querySelector('[name=tok]').value.toUpperCase();"
-          "  this.sendForm(event, [], () => Promise.resolve(\{"
-          "    toc: this.NETWORK.ID[chain],"
-          "    toa: this.CONTRACT[token].ADDRESS[chain],"
-          "    ton: token.toLowerCase(),"
-          "    tod: this.CONTRACT[token].DECIMALS,"
-          "  }));"
-          "},"
-          "updateTextarea(event) \{"
-          "  event.target.parentNode.dataset.replicatedValue = event.target.value;"
-          "},"
-          "updateMile(event) \{"
-          "  const min = Number(event.target.getAttribute('name')[1]);"
-          "  const mav = Number(event.target.value);"
-          "  this.mile_cost[min] = (Number.isNaN(mav) ? 0 : mav);"
-          "  this.updateProj();"
-          "},"
-          "appendMile(event) \{"
-          "  const wellDiv = document.querySelector('#milz-well');"
-          "  const wellClone = document.querySelector('#mile-0').cloneNode(true);"
-          "  const wellIndex = this.mile_cost.length;"
-          "  wellClone.querySelector('h3').innerHTML = `Milestone #$\{wellIndex + 1}`;"
-          "  ['m0n', 'm0c', 'm0s'].forEach(fieldName => \{"
-          "    const fieldElem = wellClone.querySelector(`[name=$\{fieldName}]`);"
-          "    fieldElem.setAttribute('name', `m$\{wellIndex}$\{fieldName.at(2)}`);"
-          "    fieldElem.value = '';"
-          "    fieldElem.innerHTML = '';"
-          "  });"
-          "  wellDiv.appendChild(wellClone);"
-          "  this.mile_cost = this.mile_cost.concat([0]);"
-          "},"
-          "})));"
+          ^-  tape  ^~
+          %+  rip  3
+          '''
+          proj_cost: 0,
+          init() {
+            this.updateProj();
+            document.querySelectorAll('textarea').forEach(elem => (
+              this.updateTextarea({target: elem})
+            ));
+          },
+          updateProj() {
+            this.proj_cost = `\$${this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;
+          },
+          saveProj(event) {
+            const chain = event.target.form.querySelector('[name=net]').value.toUpperCase();
+            const token = event.target.form.querySelector('[name=tok]').value.toUpperCase();
+            this.sendForm(event, [], () => Promise.resolve({
+              toc: this.NETWORK.ID[chain],
+              toa: this.CONTRACT[token].ADDRESS[chain],
+              ton: token.toLowerCase(),
+              tod: this.CONTRACT[token].DECIMALS,
+            }));
+          },
+          updateTextarea(event) {
+            event.target.parentNode.dataset.replicatedValue = event.target.value;
+          },
+          updateMile(event) {
+            const min = Number(event.target.getAttribute('name')[1]);
+            const mav = Number(event.target.value);
+            this.mile_cost[min] = (Number.isNaN(mav) ? 0 : mav);
+            this.updateProj();
+          },
+          appendMile(event) {
+            const wellDiv = document.querySelector('#milz-well');
+            const wellClone = document.querySelector('#mile-0').cloneNode(true);
+            const wellIndex = this.mile_cost.length;
+            wellClone.querySelector('h3').innerHTML = `Milestone #${wellIndex + 1}`;
+            ['m0n', 'm0c', 'm0s'].forEach(fieldName => {
+              const fieldElem = wellClone.querySelector(`[name=${fieldName}]`);
+              fieldElem.setAttribute('name', `m${wellIndex}${fieldName.at(2)}`);
+              fieldElem.value = '';
+              fieldElem.innerHTML = '';
+            });
+            wellDiv.appendChild(wellClone);
+            this.mile_cost = this.mile_cost.concat([0]);
+          },
+          })));
+          '''
       ==
     ==
   ==

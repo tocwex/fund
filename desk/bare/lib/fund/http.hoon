@@ -417,8 +417,16 @@
       %done  "green-500"
       %dead  "red-500"
     ==
+  ++  cheq-swix                                  ::  checkbox switch <o->
+    |=  nam=@tas
+    ^-  manx
+    ;label(class "cursor-pointer {cas}")
+      ;input(name (trip nam), type "checkbox", class "sr-only peer");
+      ;div(class "relative w-8 h-4 bg-primary-500 border-2 border-secondary-500 rounded-full peer-checked:after:translate-x-[175%] after:content-[''] after:absolute after:top-[1px] after:bg-secondary-450 peer-checked:after:bg-primary-500 after:rounded-full after:h-2.5 after:w-2.5 after:transition-transform peer-checked:bg-secondary-450");
+    ==
   ++  copy-butn                                  ::  copy project link button
     |=  txt=tape
+    ^-  manx
     :_  ; {txt}
     :-  %button
     :~  [%type "button"]

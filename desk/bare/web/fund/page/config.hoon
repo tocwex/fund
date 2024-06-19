@@ -36,8 +36,8 @@
     Will you help us by sending usage information?
     You can change your decision at any time.
     '''
-  ;=  ;+  (prod-butn:htmx:fh %vita-enable %green "yes ✓" ~ ~)
-      ;+  (prod-butn:htmx:fh %vita-disable %red "no ✗" ~ ~)
+  ;=  ;+  (prod-butn:htmx:fh %vita-enable %true "yes ✓" ~ ~)
+      ;+  (prod-butn:htmx:fh %vita-disable %false "no ✗" ~ ~)
   ==
 --
 ::  VERSION: [0 4 1]

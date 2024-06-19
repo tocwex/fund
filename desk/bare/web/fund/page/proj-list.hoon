@@ -72,7 +72,7 @@
       ;div(class "flex justify-between")
         ;div(class "text-3xl pt-2"): {tyt}
         ;*  ?.  new  ~
-            :_  ~  ;a.self-center.fund-butn-black/"{(dest:enrl:format:fh /create/project)}": New Project +
+            :_  ~  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}": New Project +
       ==
       ;*  ?~  pez
             :~  ;div(class "italics mx-4 text-gray-600")
@@ -101,10 +101,10 @@
             ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
             ;+  (mark-well:htmx:fh (trip summary.pro) |)
             ;div(class "flex gap-x-4")
-              ;a.fund-butn-link/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam])}": view project →
+              ;a.fund-butn-de-m/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam])}": view project →
               ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
                   :_  ~
-                  ;a.fund-butn-link/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam]/edit)}": edit project →
+                  ;a.fund-butn-de-m/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam]/edit)}": edit project →
             ==
           ==
     ==

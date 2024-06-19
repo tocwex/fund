@@ -184,11 +184,11 @@
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
                 ?.  wok
-                  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): send message →
+                  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): send message →
                 ?:  ?=(?(%born %prop) sat)
-                  ;a.fund-butn-link/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
+                  ;a.fund-butn-de-m/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
                 ?.  ?=(?(%done %dead) sat)
-                  (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" "cancelContract" ~)
+                  (prod-butn:htmx:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
                 ;div;
           ==
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
@@ -197,13 +197,13 @@
             ;+  ?:  !=(our.bol src.bol)  ;div;
                 ?:  &(wok ?=(%prop sat))
                   %:  prod-butn:htmx:fh
-                      %bump-lock  %green  "finalize oracle ✓"  "finalizeContract"
+                      %bump-lock  %true  "finalize oracle ✓"  "finalizeContract"
                       ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
                   ==
                 ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
-                  (prod-butn:htmx:fh %bump-dead %red "cancel project ✗" "cancelContract" ~)
+                  (prod-butn:htmx:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
                 ?:  !ora
-                  ;a.fund-butn-link/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
+                  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
                 ;div;
           ==
         ==
@@ -253,14 +253,14 @@
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
                 ;+  %:  prod-butn:htmx:fh
-                        %mula-plej  %black  "pledge only ~"  "plejFunds"
+                        %mula-plej  %action  "pledge only ~"  "plejFunds"
                         ?.  &((auth:fh bol) (plan:fx src.bol))
                           "pledges only available to authenticated planets"
                         ?:  (~(has by pledges.pro) src.bol)
                           "you must fulfill your outstanding pledge"
                         ~
                     ==
-                ;+  (prod-butn:htmx:fh %mula-trib %green "send funds ✓" "sendFunds" ~)
+                ;+  (prod-butn:htmx:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
               ==
             ==
           ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
@@ -291,8 +291,8 @@
                 ==
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
-                ;+  (prod-butn:htmx:fh %bump-born %black "decline ~" ~ ~)
-                ;+  (prod-butn:htmx:fh %bump-prop %green "accept ✓" "acceptContract" ~)
+                ;+  (prod-butn:htmx:fh %bump-born %action "decline ~" ~ ~)
+                ;+  (prod-butn:htmx:fh %bump-prop %true "accept ✓" "acceptContract" ~)
               ==
             ==
           ~  ::  no aside form
@@ -336,44 +336,44 @@
               ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                   ;:    welp
                       ?.  &(cur wok ?=(%lock status.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %bump-work %black "mark in-progress ~" ~ ~)
+                    :_  ~  (prod-butn:htmx:fh %bump-work %action "mark in-progress ~" ~ ~)
                   ::
                       ?.  &(cur wok ?=(%work status.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %bump-sess %black "request review ~" ~ ~)
+                    :_  ~  (prod-butn:htmx:fh %bump-sess %action "request review ~" ~ ~)
                   ::
                       ?.  &(cur ora ?=(%sess status.mil))  ~
-                    :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:htmx:fh %bump-work %black "changes required ~" ~ ~)
-                        (prod-butn:htmx:fh %bump-done %green "approve ✓" "approveMilestone" ~)
+                    :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
+                        (prod-butn:htmx:fh %bump-work %action "changes required ~" ~ ~)
+                        (prod-butn:htmx:fh %bump-done %true "approve ✓" "approveMilestone" ~)
                     ==
                   ::
                   ::
                       ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
-                    :~  ;a.fund-butn-link/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:htmx:fh %wipe-casi %green "reapprove ✓" "approveMilestone" ~)
+                    :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
+                        (prod-butn:htmx:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
                     ==
                   ::
                       ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-cade %red "clear approval ✗" "clearMilestone" ~)
+                    :_  ~  (prod-butn:htmx:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
                   ::
                       ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
                     :_  ~
                     %:  prod-butn:htmx:fh
-                        %draw-done  %green  "claim funds ✓"  "claimMilestone"
+                        %draw-done  %true  "claim funds ✓"  "claimMilestone"
                         ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
                     ==
                   ::
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-resi %green "sign refund ~" "cancelContract" ~)
+                    :_  ~  (prod-butn:htmx:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-rede %red "clear approval ✗" "clearMilestone" ~)
+                    :_  ~  (prod-butn:htmx:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
                     :_  ~
                     %:  prod-butn:htmx:fh
-                        %draw-dead  %green  "refund funds ✓"  "refundContract"
+                        %draw-dead  %true  "refund funds ✓"  "refundContract"
                         ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
                     ==
                   ==

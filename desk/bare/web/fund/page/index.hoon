@@ -34,7 +34,7 @@
       ;div(class "flex flex-col gap-2")
         ;div(class "text-sm text-center"): {sum}
         ;div(class "mx-auto text-center")
-          ;a.fund-butn-link/"{(dest:enrl:format:fh /dashboard/[das])}": view dashboard →
+          ;a.fund-butn-de-m/"{(dest:enrl:format:fh /dashboard/[das])}": view dashboard →
         ==
       ==
     ==

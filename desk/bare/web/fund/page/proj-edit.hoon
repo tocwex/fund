@@ -213,7 +213,7 @@
                 ==
           ==
           ;div.flex.justify-center.mx-auto
-            ;button.fund-butn-black(type "button", x-on-click "appendMile"): New Milestone +
+            ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): New Milestone +
           ==
         ==
         ;div
@@ -254,14 +254,14 @@
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" "saveProj" ~)
-            ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "retract proposal ~" ~ ~)
+            ++  init-butn  (prod-butn:htmx:fh %init %action "save draft ~" "saveProj" ~)
+            ++  croc-butn  (prod-butn:htmx:fh %bump-born %action "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-              (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~ ~)
+              (prod-butn:htmx:fh %drop %false "delete {obj} ✗" ~ ~)
             ::  ++  dead-butn
             ::    %:  prod-butn:htmx:fh
-            ::        %dead  %red  "discontinue project ✗"  ~
+            ::        %dead  %false  "discontinue project ✗"  ~
             ::        ?.(?=(%dead sat) ~ "project has already been discontinued")
             ::    ==
             --

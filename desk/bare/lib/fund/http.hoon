@@ -247,19 +247,19 @@
       =/  pat=(pole knot)  (slag:derl:format url)
       ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
-              ;a.fund-butn-link/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
+              ;a.fund-butn-de-m/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
             ;a.fund-tytl-link/"{(dest:enrl:format /)}": %fund
         ;div(class "flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;*  ?.  =(our src):bol  ~
-              :_  ~  ;a.fund-butn-link/"{(dest:enrl:format /config)}": ⚙️
+              :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": ⚙️
           ;+  ?:  (auth bol)
                 ?:  =(our src):bol
-                  ;div.fund-butn-base.border-black: {<src.bol>}
-                ;a.fund-butn-link/"/~/logout?redirect={(trip url)}": {<src.bol>}
-              ;a.fund-butn-link/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
-          ;button#fund-butn-wallet.fund-butn-effect: …loading…
+                  ;button.fund-butn-de-m(disabled ~): {<src.bol>}
+                ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": {<src.bol>}
+              ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
+          ;button#fund-butn-wallet.fund-butn-co-m: …loading…
         ==
       ==
     ++  foot
@@ -436,23 +436,24 @@
         ?~(dis ~ ~[[%disabled ~] [%title dis]])
         ?.(tab ~ ~[[%target "_blank"]])
         [%href wer]~
-        [%class "fund-butn-link {cas}"]~
+        [%class "fund-butn-de-m {cas}"]~
     ==
   ++  prod-butn                                  ::  prod/poke/action button
-    |=  [pod=@tas clr=?(%red %black %green) txt=tape xon=tape dis=tape]
+    |=  [pod=@tas typ=?(%action %true %false) txt=tape xon=tape diz=tape]
     ^-  manx
+    =/  tip=@tas  (dis typ (dec (bex 16)))
     ::  TODO: Use on-click tooltips in order to allow disabled buttons
     ::  to perform error reporting on mobile
     :_  ; {txt}
     :-  %button
     ;:  welp
-        ?~(dis ~ ~[[%disabled ~] [%title dis]])
+        ?~(diz ~ ~[[%disabled ~] [%title diz]])
         ?~(xon ~ ~[[%x-data ~] [%x-on-click xon]])
         [%id "prod-butn-{(trip pod)}"]~
         [%type "submit"]~
         [%name "dif"]~
         [%value (trip pod)]~
-        [%class "fund-butn-{(trip clr)} {cas}"]~
+        [%class "fund-butn-{(trip tip)}-m {cas}"]~
     ==
   --
 --

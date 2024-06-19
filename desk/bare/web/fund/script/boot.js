@@ -236,9 +236,10 @@ if (window.Alpine === undefined) {
         form.appendChild(button);
 
         const appendInput = ([key, value]) => {
-          const field = document.createElement("input");
+          const useInput = !/\r|\n/.exec(value);
+          const field = document.createElement(useInput ? "input" : "textarea");
           field.name = key;
-          field.value = value;
+          field[useInput ? "value" : "innerHTML"] = value;
           form.appendChild(field);
         };
         Object.entries(formData).forEach(appendInput);

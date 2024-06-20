@@ -153,6 +153,7 @@ if (window.Alpine === undefined) {
     // was loaded by this file or the browser and then injected here
     preflight: twind.css(`
       form { margin: unset; }
+      h1, h2, h3, h4, h5, h6 { @apply font-serif; }
       select { padding: unset; @apply fund-select; }
       textarea,input { padding: unset; @apply fund-input; }
       label { @apply font-light py-1; }
@@ -163,7 +164,7 @@ if (window.Alpine === undefined) {
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)'],
       ['fund-input', 'fund-select read-only:(border-gray-400 bg-gray-400)'],
-      ['fund-tytl-link', 'text-xl font-medium duration-300 hover:text-yellow-500'],
+      ['fund-tytl-link', 'text-xl font-medium duration-300 hover:(cursor-pointer text-tertiary-500)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],

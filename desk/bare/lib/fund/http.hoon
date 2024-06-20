@@ -229,7 +229,9 @@
                 ==
             ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
-          ;body(class "font-serif max-w-screen-2xl min-h-screen mx-auto lg:px-4 {cas}", x-data "fund")
+          ;body
+              =class   "font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 lg:px-4 {cas}"
+              =x-data  "fund"
             ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
             ;+  head
             ;+  bod
@@ -238,7 +240,7 @@
         ==
     ++  hair
       ^-  manx
-      ;div(class "flex justify-center w-full sticky top-0 bg-yellow-200 py-1 px-2 text-sm font-medium")
+      ;div(class "flex justify-center w-full sticky top-0 bg-primary-600 py-1 text-sm")
         ; ⚠ DEBUG ENABLED ⚠
       ==
     ++  head
@@ -248,7 +250,7 @@
       ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
-            ;a.fund-tytl-link/"{(dest:enrl:format /)}": %fund
+            ;h4.fund-tytl-link/"{(dest:enrl:format /)}": %fund
         ;div(class "flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
@@ -266,23 +268,24 @@
       ^-  manx
       ::  NOTE: CSS trick for pushing footer to page bottom
       ::  https://stackoverflow.com/a/71444859
-      ;footer(class "sticky top-[100vh] justify-center border-t-2 p-2 border-black lg:flex lg:p-4 lg:flex-row-reverse lg:items-center lg:justify-between")
+      ;footer(class "sticky top-[100vh] justify-center border-t-2 p-2 border-black lg:flex lg:p-4 lg:items-center lg:justify-between")
+        ;div(class "text-center text-xs pt-1 lg:pt-0 lg:text-base")
+          ;div(class "flex justify-center items-center lg:justify-start hover:underline")
+            ;a/"https://tocwexsyndicate.com"(target "_blank"): crafted by ~tocwex.syndicate
+          ==
+        ==
         ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end")
+          ;a/"https://github.com/tocwex"(target "_blank")
+            ;img@"{(dest:enrl:format /asset/[~.github.svg])}";
+          ==
           ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
             ;img@"{(dest:enrl:format /asset/[~.urbit.svg])}";
           ==
           ;a/"https://x.com/tocwex"(target "_blank")
             ;img@"{(dest:enrl:format /asset/[~.x.svg])}";
           ==
-          ;a/"https://github.com/tocwex"(target "_blank")
-            ;img@"{(dest:enrl:format /asset/[~.github.svg])}";
-          ==
-        ==
-        ;div(class "text-center text-xs pt-1 lg:pt-0 lg:text-base")
-          ;div(class "flex justify-center items-center lg:justify-start hover:underline")
-            ;a/"https://tocwexsyndicate.com"(target "_blank")
-              ; crafted by ~tocwex.syndicate
-            ==
+          ;a/"https://tocwexsyndicate.com"(target "_blank")
+            ;img@"{(dest:enrl:format /asset/[~.globe.svg])}";
           ==
         ==
       ==

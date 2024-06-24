@@ -76,15 +76,17 @@
   ++  odim                                       ::  per-milestone audit
     ^-  (list ^odit)
     =/  lin=@  (dec (lent milestonez))
-    =<  -  %^  spin  milestonez  [0 fill plej]
-    |=  [mil=mile min=@ fre=cash pre=cash]
+    ::  NOTE: Use @sd values since the last milestone can have an overage,
+    ::  which produces negative fill values (reconciled in `+filo`)
+    =<  -  %^  spin  milestonez  [0 (sun:si fill) (sun:si plej)]
+    |=  [mil=mile min=@ fre=@sd pre=@sd]
     =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil))
     =+  end==(min lin)
-    =+  fos=?:(!dun cost.mil cash:(need withdrawal.mil))
-    =+  fil=?:(|(end (lte fre fos)) fre fos)
-    =+  pos=?:(!dun (sub fos fil) 0)
-    =+  pej=?:(|(end (lte pre pos)) pre pos)
-    [(filo [cost.mil fil pej ~]) +(min) (sub fre fil) (sub pre pej)]
+    =+  fos=(sun:si ?:(!dun cost.mil cash:(need withdrawal.mil)))
+    =+  fil=?:(|(end =(-1 (cmp:si fre fos))) fre fos)
+    =+  pos=?:(!dun (dif:si fos fil) --0)
+    =+  pej=?:(|(end =(-1 (cmp:si pre pos))) pre pos)
+    [(filo [cost.mil (abs:si fil) (abs:si pej) ~]) +(min) (dif:si fre fil) (dif:si pre pej)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))

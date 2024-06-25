@@ -31,7 +31,8 @@
 }
 
 /* Auto-add indicators for required fields (https://stackoverflow.com/q/49685336) */
-input[required] + label:after {
+input[required] + label:after,
+select[required] + label:after {
   content: '*';
-  color: red;
+  color: #b80c09; /* text-highlight1-500 */
 }

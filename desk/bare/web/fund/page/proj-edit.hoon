@@ -98,10 +98,10 @@
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div
           ;div(class "flex flex-wrap items-center justify-between")
-            ;div(class "text-3xl"): Project Overview
+            ;h1: Project Overview
             ;div(class "flex items-center gap-x-2")
-              ;div(class "text-xl")
-                ; Funding Goal:
+              ;div(class "uppercase")
+                ; Funding Goal
                 ;span(x-text "proj_cost");
               ==
               ;+  (stat-pill:htmx:fh sat)
@@ -113,82 +113,80 @@
                 ;input.p-1  =name  "nam"  =type  "text"  =required  ~
                   =placeholder  "My Awesome Project"
                   =value  (trip ?~(pru '' title.u.pru));
-                ;label(for "nam"): project title
+                ;label(for "nam"): Project Name
               ==
               ;div(class "fund-form-group")
                 ;input.p-1  =name  "pic"  =type  "url"
                   =placeholder  "https://example.com/example.png"
                   =value  (trip (fall ?~(pru ~ image.u.pru) ''));
-                ;label(for "pic"): project image
+                ;label(for "pic"): Header Image URL
+              ==
+            ==
+            ;div(class "flex")
+              ;div(class "fund-form-group")
+                ;select.p-2(name "net", required ~)
+                  ::  FIXME: Including the network IDs here is a hack, but
+                  ::  this should be fixed by moving chain stuff to the BE
+                  ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
+                      %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
+                      |=  [net=tape nid=@ud]
+                      ^-  manx
+                      :_  ; {(caps:fx net)}
+                      :-  %option
+                      ;:  welp
+                          [%value net]~
+                          ?.(=(can nid) ~ [%selected ~]~)
+                      ==
+                ==
+                ;label(for "net"): Blockchain
+              ==
+              ;div(class "fund-form-group")
+                ;select.p-2(name "tok", required ~)
+                  ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
+                      %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
+                      |=  tok=tape
+                      ^-  manx
+                      :_  ; {(cuss tok)}
+                      :-  %option
+                      ;:  welp
+                          [%value tok]~
+                          ?.(=(sym tok) ~ [%selected ~]~)
+                      ==
+                ==
+                ;label(for "tok"): Token
               ==
             ==
             ;div(class "fund-form-group")
               ;div(class "grow-wrap")
                 ;textarea.p-1  =name  "sum"  =rows  "3"
-                  =placeholder  "Write a worthy description of your project (markdown supported!)"
+                  =placeholder  "Describe your project in detail. Plaintext and markdown inputs both supported."
                   =value  (trip ?~(pru '' summary.u.pru))
                   =x-on-input  "updateTextarea"
                   ; {(trip ?~(pru '' summary.u.pru))}
                 ==
               ==
-              ;label(for "sum"): project description
+              ;label(for "sum"): Project Description
             ==
           ==
         ==
         ;div
-          ;div(class "m-1 pt-2 text-3xl w-full"): Funding
-          ;div(class "flex")
-            ;div(class "fund-form-group")
-              ;select.p-2(name "tok")
-                ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
-                    %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
-                    |=  tok=tape
-                    ^-  manx
-                    :_  ; {(cuss tok)}
-                    :-  %option
-                    ;:  welp
-                        [%value tok]~
-                        ?.(=(sym tok) ~ [%selected ~]~)
-                    ==
-              ==
-              ;label(for "tok"): token
-            ==
-            ;div(class "fund-form-group")
-              ;select.p-2(name "net")
-                ::  FIXME: Including the network IDs here is a hack, but
-                ::  this should be fixed by moving chain stuff to the BE
-                ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
-                    %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
-                    |=  [net=tape nid=@ud]
-                    ^-  manx
-                    :_  ; {(caps:fx net)}
-                    :-  %option
-                    ;:  welp
-                        [%value net]~
-                        ?.(=(can nid) ~ [%selected ~]~)
-                    ==
-              ==
-              ;label(for "net"): network
-            ==
-          ==
-        ==
-        ;div
-          ;div.text-3xl.pt-2: Milestones
+          ;h1.pt-2: Milestones
           ;div#milz-well.mx-2
             ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                 |=  [min=@ mil=mile:f]
                 ^-  manx
                 ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-black rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
-                    ;h3(class "text-3xl"): Milestone #{<+(min)>}
-                    ;+  (stat-pill:htmx:fh status.mil)
+                    ;h3: Milestone #{<+(min)>}
+                    ::  FIXME: Add the ability to remove milestones while editing
+                    ;img.hidden@"{(dest:enrl:format:fh /asset/[~.close.svg])}";
                   ==
                   ;div(class "flex")
                     ;div(class "fund-form-group")
                       ;input.p-1  =name  "m{<min>}n"  =type  "text"
                         =placeholder  "Give your milestone a title"
                         =value  (trip title.mil);
-                      ;label(for "m{<min>}n"): milestone title
+                      ;label(for "m{<min>}n"): Title
                     ==
                     ;div(class "fund-form-group")
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
@@ -196,48 +194,48 @@
                         =placeholder  "0"
                         =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil))
                         =x-on-change  "updateMile";
-                      ;label(for "m{<min>}c"): milestone budget (tokens)
+                      ;label(for "m{<min>}c"): Amount
                     ==
                   ==
                   ;div(class "fund-form-group")
                     ;div(class "grow-wrap")
                       ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
-                        =placeholder  "Describe your milestone in detail (in plain text or markdown), such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
+                        =placeholder  "Describe your milestone in detail. Plaintext and markdown inputs both supported."
                         =value  (trip summary.mil)
                         =x-on-input  "updateTextarea"
                         ; {(trip summary.mil)}
                       ==
                     ==
-                    ;label(for "m{<min>}s"): milestone description
+                    ;label(for "m{<min>}s"): Milestone Description
                   ==
                 ==
           ==
           ;div.flex.justify-center.mx-auto
-            ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): New Milestone +
+            ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): add milestone +
           ==
         ==
         ;div
-          ;div(class "m-1 pt-2 text-3xl w-full"): Trusted Oracle
+          ;h1.pt-2: Trusted Oracle
           ;div(class "flex")
             ;div(class "fund-form-group")
               ;input.p-1  =name  "sea"  =type  "text"
                 =pattern  (trip '(~(([a-z]{3})|([a-z]{6})))?')
                 =placeholder  (scow %p !<(@p (slot:config %point)))
                 =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
-              ;label(for "sea"): oracle identity (star or galaxy)
+              ;label(for "sea"): Trusted Oracle
             ==
             ;div(class "fund-form-group")
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
-                =placeholder  "1"
+                =placeholder  "a % of completed milestones"
                 =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru));
-              ;label(for "seo"): fee offer (%)
+              ;label(for "seo"): Fee Offer
             ==
           ==
         ==
     ==
     ;div(class "flex flex-col gap-y-2 m-1")
-      ;div(class "text-3xl w-full"): Confirm & Launch
+      ;h1: Confirm & Launch
       ;p
         ; Please review your proposal in detail and ensure
         ; your trusted oracle is in mutual agreement on expectations

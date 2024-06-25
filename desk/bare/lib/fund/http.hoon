@@ -250,7 +250,7 @@
       ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
-            ;h4.fund-tytl-link/"{(dest:enrl:format /)}": %fund
+            ;a.fund-tytl-link/"{(dest:enrl:format /)}": %fund
         ;div(class "flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
@@ -295,9 +295,9 @@
     ^-  manx
     ;form#maincontent(method "post", class "p-2 h-[80vh] {cas}")
       ;div(class "flex flex-col h-full flex-wrap justify-center items-center text-center gap-10")
-        ;div(class "text-4xl sm:text-5xl"): {(trip tyt)}
+        ;h1: {(trip tyt)}
         ;*  ?~  txt  ~
-            :_  ~  ;div(class "text-xl sm:text-2xl"): {(trip u.txt)}
+            :_  ~  ;div(class "text-xl"): {(trip u.txt)}
         ;div(class "flex gap-2")
           ;*  buz
         ==
@@ -413,12 +413,13 @@
     ^-  [nam=tape kas=tape]
     =-  [(stat:enjs:format sat) "text-{-} border-{-}"]
     ?-  sat
-      ?(%born %prop)  "gray-500"
-      %lock  "orange-500"
-      %work  "blue-500"
-      %sess  "purple-500"
-      %done  "green-500"
-      %dead  "red-500"
+      %born  "primary-600"
+      %prop  "gray-700"
+      %lock  "tertiary-350"
+      %work  "secondary-300"
+      %sess  "secondary-400"
+      %done  "highlight2-450"
+      %dead  "highlight1-400"
     ==
   ++  cheq-swix                                  ::  checkbox switch <o->
     |=  nam=@tas

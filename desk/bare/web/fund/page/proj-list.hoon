@@ -70,9 +70,9 @@
     ^-  manx
     ;div
       ;div(class "flex justify-between")
-        ;div(class "text-3xl pt-2"): {tyt}
+        ;h1(class "text-3xl pt-2"): {tyt}
         ;*  ?.  new  ~
-            :_  ~  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}": New Project +
+            :_  ~  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}": new project +
       ==
       ;*  ?~  pez
             :~  ;div(class "italics mx-4 text-gray-600")
@@ -83,7 +83,7 @@
           ^-  manx
           ;div(class "flex flex-col gap-y-2 m-1 p-4 border-2 border-black rounded-xl")
             ;div(class "flex flex-wrap items-center justify-between")
-              ;div(class "text-2xl pr-4"): {(trip title.pro)}
+              ;h2(class "text-2xl pr-4"): {(trip title.pro)}
               ;div(class "flex items-center gap-x-2")
                 ;div(class "text-lg")
                   ; Goal

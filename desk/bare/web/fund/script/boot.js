@@ -154,19 +154,23 @@ if (window.Alpine === undefined) {
     preflight: twind.css(`
       form { margin: unset; }
       h1, h2, h3, h4, h5, h6 { @apply font-serif; }
+      h1 { @apply text-3xl; }
+      h2 { @apply text-2xl; }
+      h3 { @apply text-xl; }
+      h4 { @apply text-lg; }
       select { padding: unset; @apply fund-select; }
       textarea,input { padding: unset; @apply fund-input; }
       label { @apply font-light py-1; }
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
-      ['fund-pill', 'text-nowrap px-2 py-1 border-2 rounded-full'],
+      ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-1 rounded-md bg-gray-200 placeholder-gray-400 border-2 border-gray-200 disabled:(border-gray-400 bg-gray-400)'],
+      ['fund-select', 'w-full p-1 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-primary-400)'],
       ['fund-input', 'fund-select read-only:(border-gray-400 bg-gray-400)'],
-      ['fund-tytl-link', 'text-xl font-medium duration-300 hover:(cursor-pointer text-tertiary-500)'],
+      ['fund-tytl-link', 'font-serif font-medium text-xl duration-300 hover:(cursor-pointer text-tertiary-500)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
-      ['fund-butn-base', 'text-nowrap leading-tight tracking-wide rounded-md border-2'],
+      ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       //  ['fund-butn-lorj', 'fund-butn-base text-sm px-3 py-1.5'], // h-8

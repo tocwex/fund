@@ -222,6 +222,7 @@
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ::  FIXME: Make this line legible somehow
             ;link/"https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
+            ;link/"https://unpkg.com/tippy.js@6/dist/tippy.css"(rel "stylesheet");
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
@@ -230,8 +231,8 @@
             ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
           ;body
-              =class   "font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 lg:px-4 {cas}"
               =x-data  "fund"
+              =class   "font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4 {cas}"
             ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
             ;+  head
             ;+  bod
@@ -240,7 +241,7 @@
         ==
     ++  hair
       ^-  manx
-      ;div(class "flex justify-center w-full sticky top-0 bg-primary-600 py-1 text-sm")
+      ;div(class "flex justify-center w-full sticky font-semibold top-0 bg-primary-600 py-1 text-sm")
         ; ⚠ DEBUG ENABLED ⚠
       ==
     ++  head
@@ -251,15 +252,11 @@
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
             ;a.fund-tytl-link/"{(dest:enrl:format /)}": %fund
-        ;div(class "flex gap-x-2")
+        ;div(class "flex inline-flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
-          ;*  ?.  =(our src):bol  ~
-              :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": ⚙️
           ;+  ?:  (auth bol)
-                ?:  =(our src):bol
-                  ;button.fund-butn-de-m(disabled ~): {<src.bol>}
-                ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": {<src.bol>}
+                (ship-agis bol ord)
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-co-m: …loading…
         ==
@@ -406,6 +403,30 @@
         ;span: {?^(alt +.u.alt ?^(src +.u.src (dest:enrl:format /)))}
       ==
     --
+  ++  ship-icon                                  ::  icon for a user ship
+    |=  sip=@p
+    ^-  manx
+    ;img.h-6.rounded-full@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg";
+  ++  ship-agis                                  ::  icon + name for a user ship
+    |=  [bol=bowl:gall ord=order:rudder]
+    ^-  manx
+    =/  url=@t  url.request.ord
+    ;button#fund-agis(class "flex inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550")
+      ;+  (ship-icon src.bol)
+      ;span(class "font-bold"): {<src.bol>}
+      ;img#fund-agis-menu@"{(dest:enrl:format /asset/[~.ellipsis.svg])}";
+      ;div#fund-agis-opts(class "hidden")
+        ;div(class "flex flex-col gap-2")
+          ;*  ?.  =(our src):bol  ~
+              :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": config ⚙️
+          ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": logout ↩️
+        ==
+      ==
+    ==
+  ++  ship-card                                  ::  summary card for user ship
+    |=  sip=@p
+    ^-  manx
+    *manx
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat
     ^-  manx
@@ -435,7 +456,7 @@
     :-  %button
     :~  [%type "button"]
         [%title "copy url"]
-        [%class "fund-butn-effect {cas}"]
+        [%class "fund-butn-ac-m {cas}"]
         [%x-data ~]
         [%x-on-click "copyPURL(); swapText($el, 'copied ✔️');"]
     ==

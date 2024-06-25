@@ -177,9 +177,13 @@
                 ^-  manx
                 ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-black rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
-                    ;h3: Milestone #{<+(min)>}
+                    ;div(class "text-xs text-tertiary-500 font-medium underline uppercase")
+                      ; Milestone #{<+(min)>}
+                    ==
                     ::  FIXME: Add the ability to remove milestones while editing
-                    ;img.hidden@"{(dest:enrl:format:fh /asset/[~.close.svg])}";
+                    ;+  ?:  ?=(%born status.mil)
+                          ;img.hidden@"{(dest:enrl:format:fh /asset/[~.close.svg])}";
+                        (stat-pill:htmx:fh status.mil)
                   ==
                   ;div(class "flex")
                     ;div(class "fund-form-group")

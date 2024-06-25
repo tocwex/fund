@@ -36,3 +36,23 @@ select[required] + label:after {
   content: '*';
   color: #b80c09; /* text-highlight1-500 */
 }
+
+/* Styling for tippy.js elements (https://atomiks.github.io/tippyjs/v6/themes/) */
+.tippy-box[data-theme~='fund'] {
+  background-color: #e4e4d8; /* bg-primary-500 */
+  color: #04080f; /* text-secondary-500 */
+  border-color: #04080f; /* border-secondary-500 */
+  border-width: 1px; /* border */
+}
+.tippy-box[data-theme~='fund'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #04080f; /* border-secondary-500 */
+}
+.tippy-box[data-theme~='fund'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #04080f; /* border-secondary-500 */
+}
+.tippy-box[data-theme~='fund'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #04080f; /* border-secondary-500 */
+}
+.tippy-box[data-theme~='fund'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: #04080f; /* border-secondary-500 */
+}

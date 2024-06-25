@@ -12,7 +12,8 @@ import {
 import { fromHex } from 'https://esm.sh/viem@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
-import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm'
+import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
+import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
@@ -166,19 +167,24 @@ if (window.Alpine === undefined) {
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-1 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-primary-400)'],
-      ['fund-input', 'fund-select read-only:(border-gray-400 bg-gray-400)'],
+      ['fund-select', 'w-full p-1 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
+      ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-tytl-link', 'font-serif font-medium text-xl duration-300 hover:(cursor-pointer text-tertiary-500)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       //  ['fund-butn-lorj', 'fund-butn-base text-sm px-3 py-1.5'], // h-8
-      ['fund-butn-default', 'bg-primary-100 border-secondary-500 text-secondary-500 hover:(bg-primary-250 border-secondary-500 text-secondary-500 shadow) active:(bg-primary-200 border-secondary-400 text-secondary-450 shadow) disabled:(bg-primary-550 border-primary-800 text-primary-750)'],
-      ['fund-butn-action', 'bg-secondary-500 border-secondary-550 text-gray-200 hover:(bg-secondary-450 border-secondary-400 text-primary-100 shadow) active:(bg-secondary-450 border-secondary-350 text-primary-100 shadow) disabled:(bg-gray-500 border-gray-350 text-gray-200)'],
-      ['fund-butn-true', 'bg-highlight2-500 border-highlight2-550 text-primary-100 hover:(bg-highlight2-550 border-highlight2-500 text-primary-100 shadow) active:(bg-highlight2-550 border-highlight2-450 text-primary-100 shadow) disabled:(bg-highlight2-650 border-highlight2-550 text-highlight2-450)'],
-      ['fund-butn-false', 'bg-highlight1-500 border-highlight1-550 text-primary-100 hover:(bg-highlight1-550 border-highlight1-500 text-primary-100 shadow) active:(bg-highlight1-550 border-highlight1-450 text-primary-100 shadow) disabled:(bg-highlight1-650 border-highlight1-550 text-highlight1-450)'],
-      ['fund-butn-conn', 'bg-tertiary-500 border-tertiary-550 text-primary-100 hover:(bg-tertiary-550 border-tertiary-500 text-primary-100 shadow) active:(bg-tertiary-550 border-tertiary-450 text-primary-100 shadow) disabled:(bg-tertiary-650 border-tertiary-550 text-tertiary-450)'],
+      ['fund-butn-default', 'bg-primary-100 border-secondary-500 text-secondary-500 hover:enabled:(bg-primary-250 border-secondary-500 text-secondary-500 shadow) active:(bg-primary-200 border-secondary-400 text-secondary-450 shadow) disabled:(bg-primary-550 border-primary-800 text-primary-750)'],
+      ['fund-butn-action', 'bg-secondary-500 border-secondary-550 text-gray-200 hover:enabled:(bg-secondary-450 border-secondary-400 text-primary-100 shadow) active:(bg-secondary-450 border-secondary-350 text-primary-100 shadow) disabled:(bg-gray-500 border-gray-350 text-gray-200)'],
+      ['fund-butn-true', 'bg-highlight2-500 border-highlight2-550 text-primary-100 hover:enabled:(bg-highlight2-550 border-highlight2-500 text-primary-100 shadow) active:(bg-highlight2-550 border-highlight2-450 text-primary-100 shadow) disabled:(bg-highlight2-650 border-highlight2-550 text-highlight2-450)'],
+      ['fund-butn-false', 'bg-highlight1-500 border-highlight1-550 text-primary-100 hover:enabled:(bg-highlight1-550 border-highlight1-500 text-primary-100 shadow) active:(bg-highlight1-550 border-highlight1-450 text-primary-100 shadow) disabled:(bg-highlight1-650 border-highlight1-550 text-highlight1-450)'],
+      ['fund-butn-conn', 'bg-tertiary-500 border-tertiary-550 text-primary-100 hover:enabled:(bg-tertiary-550 border-tertiary-500 text-primary-100 shadow) active:(bg-tertiary-550 border-tertiary-450 text-primary-100 shadow) disabled:(bg-tertiary-650 border-tertiary-550 text-tertiary-450)'],
+      ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
+      ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
+      ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
+      ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
+      ['fund-butn-co-s', 'fund-butn-conn fund-butn-smol'], // conn
       ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
       ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
       ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
@@ -414,6 +420,7 @@ if (window.Alpine === undefined) {
   // https://turbo.hotwired.dev/reference/events#turbo%3Aload
   document.addEventListener("turbo:load", (event) => {
     setWalletButton(window.Wagmi.state);
+
     document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {
       const { status, current, connections } = window.Wagmi.state;
       const connection = connections.get(current);
@@ -431,6 +438,17 @@ if (window.Alpine === undefined) {
         // removing it?
         disconnect(window.Wagmi, {connector: connection.connector});
       }
+    });
+
+    TippyJs("#fund-agis", {
+      content: document.querySelector("#fund-agis-opts").innerHTML,
+      allowHTML: true,
+      interactive: true,
+      arrow: false,
+      trigger: "click",
+      theme: "fund",
+      // placement: "bottom-end",
+      // triggerTarget: document.querySelector("#fund-agis-menu"),
     });
   });
 

@@ -256,7 +256,7 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;+  ?:  (auth bol)
-                (ship-agis bol ord)
+                (ship-agis bol url)
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-co-m: …loading…
         ==
@@ -408,13 +408,12 @@
     ^-  manx
     ;img.h-6.rounded-full@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg";
   ++  ship-agis                                  ::  icon + name for a user ship
-    |=  [bol=bowl:gall ord=order:rudder]
+    |=  [bol=bowl:gall url=@t]
     ^-  manx
-    =/  url=@t  url.request.ord
-    ;button#fund-agis(class "flex inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550")
+    ;button#fund-agis(class "flex inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550 {cas}")
       ;+  (ship-icon src.bol)
       ;span(class "font-bold"): {<src.bol>}
-      ;img#fund-agis-menu@"{(dest:enrl:format /asset/[~.ellipsis.svg])}";
+      ::  ;img#fund-agis-menu@"{(dest:enrl:format /asset/[~.ellipsis.svg])}";
       ;div#fund-agis-opts(class "hidden")
         ;div(class "flex flex-col gap-2")
           ;*  ?.  =(our src):bol  ~
@@ -427,6 +426,26 @@
     |=  sip=@p
     ^-  manx
     *manx
+  ++  proj-tytl                                  ::  project title line
+    |=  [tyt=tape sat=stat ty2=tape cas=manx]
+    ^-  manx
+    ;div(class "flex flex-wrap items-center justify-between")
+      ;h1: {tyt}
+      ;div(class "flex items-center gap-x-2")
+        ;+  (stat-pill sat)
+        ;+  (cash-bump ty2 cas)
+      ==
+    ==
+  ++  cash-bump                                  ::  bumper for cash amount
+    |=  [tyt=tape cas=manx]
+    ^-  manx
+    =?  tyt  =(~ tyt)  "Funding Goal"
+    ;div(class "flex flex-col justify-start items-end")
+      ;h6(class "leading-none tracking-widest"): {tyt}
+      ;h2(class "leading-loose")
+        ;+  cas
+      ==
+    ==
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat
     ^-  manx

@@ -154,11 +154,14 @@ if (window.Alpine === undefined) {
     // was loaded by this file or the browser and then injected here
     preflight: twind.css(`
       form { margin: unset; }
-      h1, h2, h3, h4, h5, h6 { @apply font-serif; }
+      h1, h2, h3, h4 { @apply font-serif; }
+      h5, h6 { @apply font-sans; }
       h1 { @apply text-3xl; }
       h2 { @apply text-2xl; }
       h3 { @apply text-xl; }
       h4 { @apply text-lg; }
+      h5 { @apply font-medium text-md; }
+      h6 { @apply font-medium text-xs uppercase; }
       select { padding: unset; @apply fund-select; }
       textarea,input { padding: unset; @apply fund-input; }
       label { @apply font-light py-1; }

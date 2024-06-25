@@ -39,7 +39,7 @@ select[required] + label:after {
 
 /* Styling for tippy.js elements (https://atomiks.github.io/tippyjs/v6/themes/) */
 .tippy-box[data-theme~='fund'] {
-  background-color: #e4e4d8; /* bg-primary-500 */
+  background-color: #cdcdb7; /* bg-primary-550 */
   color: #04080f; /* text-secondary-500 */
   border-color: #04080f; /* border-secondary-500 */
   border-width: 1px; /* border */

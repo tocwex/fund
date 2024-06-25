@@ -156,16 +156,8 @@
   %-  render:htmx:fh
   :^  bol  ord  (trip title.pro)
   ;div#maincontent.p-2(x-data "proj_view")
-    ;div(class "flex flex-wrap items-center justify-between")
-      ;div(class "text-4xl sm:text-5xl"): {(trip title.pro)}
-      ;div(class "flex items-center gap-x-2")
-        ;div(class "text-2xl font-medium")
-          ; Goal
-          ;span: ${(cash:enjs:format:fh cost.pod)}
-        ==
-        ;+  (stat-pill:htmx:fh sat)
-      ==
-    ==
+    ::  FIXME: ;div(class "text-4xl sm:text-5xl"): {tyt}
+    ;+  (proj-tytl:htmx:fh (trip title.pro) sat ~ [[%span ~] [[%$ [%$ '$' (cash:enjs:format:fh cost.pod)] ~]~]~])
     ;div(class "flex flex-wrap items-center justify-between")
       ::  FIXME: Need a Hoon-based solution for associating chain
       ::  IDs with human-readable names

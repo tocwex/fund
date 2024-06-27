@@ -222,17 +222,15 @@
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ::  FIXME: Make this line legible somehow
             ;link/"https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
-            ;link/"https://unpkg.com/tippy.js@6/dist/tippy.css"(rel "stylesheet");
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
+            ;link/"{(dest:enrl:format /asset/[~.tipi.css])}"(rel "stylesheet");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)
                 ==
             ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
-          ;body
-              =x-data  "fund"
-              =class   "font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4 {cas}"
+          ;body(class "fund-body {cas}", x-data "fund")
             ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
             ;+  head
             ;+  bod
@@ -412,10 +410,12 @@
     ^-  manx
     ;button#fund-agis(class "flex inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550 {cas}")
       ;+  (ship-icon src.bol)
+      ::  hidden sm:block
       ;span(class "font-bold"): {<src.bol>}
       ::  ;img#fund-agis-menu@"{(dest:enrl:format /asset/[~.ellipsis.svg])}";
       ;div#fund-agis-opts(class "hidden")
         ;div(class "flex flex-col gap-2")
+          ::  ;div: {<src.bol>}
           ;*  ?.  =(our src):bol  ~
               :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": config ⚙️
           ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": logout ↩️

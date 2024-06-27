@@ -296,7 +296,7 @@
           const wellDiv = document.querySelector('#milz-well');
           const wellClone = document.querySelector('#mile-0').cloneNode(true);
           const wellIndex = this.mile_cost.length;
-          wellClone.querySelector('h3').innerHTML = `Milestone #$\{wellIndex + 1}`;
+          wellClone.querySelector('h6').innerHTML = `Milestone #$\{wellIndex + 1}`;
           ['m0n', 'm0c', 'm0s'].forEach(fieldName => \{
             const fieldElem = wellClone.querySelector(`[name=$\{fieldName}]`);
             fieldElem.setAttribute('name', `m$\{wellIndex}$\{fieldName.at(2)}`);

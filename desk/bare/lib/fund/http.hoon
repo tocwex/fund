@@ -19,6 +19,7 @@
 ::
 ::    x-on-* => x-on:*
 ::    xlass => :class
+::    xtyle => :style
 ::
 ++  alix
   |=  man=manx
@@ -28,6 +29,7 @@
   :_  tap
   ?^  man  man
   ?:  =(%xlass man)  ':class'
+  ?:  =(%xtyle man)  ':style'
   ?:  =(%x-on- (dis %x-on- man))
     =+  pre=[3 (met 3 %x-on-)]
     (con 'x-on:' (lsh pre (rsh pre man)))
@@ -358,12 +360,28 @@
   ++  mark-well                                  ::  markdown (github) well
     |=  [txt=tape big=bean]
     ^-  manx
-    =+  kas=?:(big "" "line-clamp-5")
-    ;zero-md(class "w-full {kas} {cas}", xlass "cmd()", no-shadow ~)
-      ;template
-        ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
+    ::  FIXME: This is hacky and wasteful, but attempting to use Alpine.js to
+    ::  just edit in/out the 'line-clamp-5' class doesn't work due to
+    ::  collisions with Twind.js.
+    ;div(class "w-full", x-data "\{expanded: {(trip ?:(big 'true' 'false'))}}")
+      ;zero-md(class "w-full line-clamp-5 {cas}", x-show "!expanded", xlass "cmd()", no-shadow ~)
+        ;template
+          ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
+        ==
+        ;script(type "text/markdown"): {txt}
       ==
-      ;script(type "text/markdown"): {txt}
+      ;zero-md(class "w-full {cas}", x-show "expanded", xlass "cmd()", no-shadow ~)
+        ;template
+          ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
+        ==
+        ;script(type "text/markdown"): {txt}
+      ==
+      ;*  ?:  big  ~
+          :_  ~
+          ;div
+            ;button.fund-butn-ac-s(x-show "expanded", x-on-click "expanded = false"): show less -
+            ;button.fund-butn-ac-s(x-show "!expanded", x-on-click "expanded = true"): show more +
+          ==
     ==
   ++  udon-well                                  ::  udon (hoon-markdown) well
     |=  [txt=tape big=bean]

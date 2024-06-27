@@ -122,7 +122,14 @@
                       %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
                       |=  [net=tape nid=@ud]
                       ^-  manx
-                      :_  ; {(caps:fx net)}
+                      ::  :_  ; {(caps:fx net)}
+                      ::  :_  ^-  manx
+                      ::      ;div(class "flex flex-row gap-2");
+                      :_  :_  ~
+                          ;div(class "flex flex-row gap-2")
+                            ;img@"{(dest:enrl:format:fh /asset/[(crip (weld net (trip '.svg')))])}";
+                            ;span: {(caps:fx net)}
+                          ==
                       :-  %option
                       ;:  welp
                           [%value net]~
@@ -169,9 +176,11 @@
                 ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-black rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
                     ;h6(class "text-tertiary-500 underline"): Milestone #{<+(min)>}
-                    ::  FIXME: Add the ability to remove milestones while editing
                     ;+  ?:  ?=(%born status.mil)
-                          ;img.hidden@"{(dest:enrl:format:fh /asset/[~.close.svg])}";
+                          ::  FIXME: Using the X SVG causes a weird pop-in effect
+                          ::  for new milestones, so we just use raw text for now
+                          ;button(class "font-light", type "button", x-on-click "deleteMile"): ❌
+                          ::  ;img@"{(dest:enrl:format:fh /asset/[~.close.svg])}";
                         (stat-pill:htmx:fh status.mil)
                   ==
                   ;div(class "flex")
@@ -296,6 +305,7 @@
           const wellDiv = document.querySelector('#milz-well');
           const wellClone = document.querySelector('#mile-0').cloneNode(true);
           const wellIndex = this.mile_cost.length;
+          wellClone.setAttribute('id', `mile-$\{wellIndex}`);
           wellClone.querySelector('h6').innerHTML = `Milestone #$\{wellIndex + 1}`;
           ['m0n', 'm0c', 'm0s'].forEach(fieldName => \{
             const fieldElem = wellClone.querySelector(`[name=$\{fieldName}]`);
@@ -305,6 +315,33 @@
           });
           wellDiv.appendChild(wellClone);
           this.mile_cost = this.mile_cost.concat([0]);
+        },
+        deleteMile(event) \{
+          var mileElem = event.target.parentElement;
+          while (mileElem !== undefined && !/mile-\\d+/.test(mileElem.id)) \{
+            mileElem = mileElem.parentElement;
+          }
+          const mileId = mileElem.id.match(/\\d+/)[0];
+
+          const wellDiv = document.querySelector('#milz-well');
+          const wellMilz = Array.from(wellDiv.children);
+          if (wellMilz.length > 1) \{
+            wellMilz.splice(mileId, 1);
+            this.mile_cost.splice(mileId, 1);
+            wellDiv.removeChild(mileElem);
+
+            wellMilz.forEach((mileElem, mileIndex) => \{
+              const oldId = mileElem.id.match(/\\d+/)[0];
+              mileElem.setAttribute('id', `mile-$\{mileIndex}`);
+              mileElem.querySelector('h6').innerHTML = `Milestone #$\{mileIndex + 1}`;
+              [`m$\{oldId}n`, `m$\{oldId}c`, `m$\{oldId}s`].forEach(fieldName => \{
+                const fieldElem = mileElem.querySelector(`[name=$\{fieldName}]`);
+                fieldElem.setAttribute('name', `m$\{mileIndex}$\{fieldName.at(2)}`);
+              });
+            });
+          }
+
+          this.updateProj();
         },
       })));
       """

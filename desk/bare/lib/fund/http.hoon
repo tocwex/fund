@@ -225,7 +225,6 @@
             ::  FIXME: Make this line legible somehow
             ;link/"https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
-            ;link/"{(dest:enrl:format /asset/[~.tipi.css])}"(rel "stylesheet");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)
@@ -364,6 +363,9 @@
     ::  just edit in/out the 'line-clamp-5' class doesn't work due to
     ::  collisions with Twind.js.
     ;div(class "w-full", x-data "\{expanded: {(trip ?:(big 'true' 'false'))}}")
+      ::  FIXME: Attempting to apply a "to transparent" graident, but
+      ::  it's not working...
+      ::  after:bg-gradient-to-b after:from-inherit
       ;zero-md(class "w-full line-clamp-5 {cas}", x-show "!expanded", xlass "cmd()", no-shadow ~)
         ;template
           ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");

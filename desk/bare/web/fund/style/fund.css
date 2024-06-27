@@ -30,14 +30,93 @@
   grid-area: 1 / 1 / 2 / 2;
 }
 
+
 /* Auto-add indicators for required fields (https://stackoverflow.com/q/49685336) */
 input[required] + label:after,
-select[required] + label:after {
+select[required] + label:after,
+div.ts-wrapper + label:after {
   content: '*';
   color: #b80c09; /* text-highlight1-500 */
 }
 
+
 /* Styling for tippy.js elements (https://atomiks.github.io/tippyjs/v6/themes/) */
+/* https://unpkg.com/tippy.js@6.3.7/dist/tippy.css */
+.tippy-box[data-animation=fade][data-state=hidden] {
+  opacity:0;
+}
+[data-tippy-root]{
+  max-width:calc(100vw - 10px);
+}
+.tippy-box{
+  position:relative;
+  background-color:#333;
+  color:#fff;
+  border-radius:4px;
+  font-size:14px;
+  line-height:1.4;
+  white-space:normal;
+  outline:0;
+  transition-property:transform,visibility,opacity;
+}
+.tippy-box[data-placement^=top] > .tippy-arrow {
+  bottom:0;
+}
+.tippy-box[data-placement^=top] > .tippy-arrow:before {
+  bottom:-7px;
+  left:0;
+  border-width:8px 8px 0;
+  border-top-color:initial;
+  transform-origin:center top;
+}
+.tippy-box[data-placement^=bottom] > .tippy-arrow {
+  top:0;
+}
+.tippy-box[data-placement^=bottom] > .tippy-arrow:before {
+  top:-7px;
+  left:0;
+  border-width:0 8px 8px;
+  border-bottom-color:initial;transform-origin:center bottom;
+}
+.tippy-box[data-placement^=left] > .tippy-arrow {
+  right:0;
+}
+.tippy-box[data-placement^=left] > .tippy-arrow:before {
+  border-width:8px 0 8px 8px;
+  border-left-color:initial;
+  right:-7px;
+  transform-origin:center left;
+}
+.tippy-box[data-placement^=right] > .tippy-arrow{
+  left:0;
+}
+.tippy-box[data-placement^=right] > .tippy-arrow:before {
+  left:-7px;
+  border-width:8px 8px 8px 0;
+  border-right-color:initial;
+  transform-origin:center right;
+}
+.tippy-box[data-inertia][data-state=visible] {
+  transition-timing-function:cubic-bezier(.54,1.5,.38,1.11);
+}
+.tippy-arrow {
+  width:16px;
+  height:16px;
+  color:#333;
+}
+.tippy-arrow:before {
+  content:"";
+  position:absolute;
+  border-color:transparent;
+  border-style:solid;
+}
+.tippy-content{
+  position:relative;
+  padding:5px 9px;
+  z-index:1;
+}
+
+/* custom tippy styling */
 .tippy-box[data-theme~='fund'] {
   background-color: #cdcdb7; /* bg-primary-550 */
   color: #04080f; /* text-secondary-500 */
@@ -56,3 +135,308 @@ select[required] + label:after {
 .tippy-box[data-theme~='fund'][data-placement^='right'] > .tippy-arrow::before {
   border-right-color: #04080f; /* border-secondary-500 */
 }
+
+/* Styling for tom-select.js (https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css) */
+/**
+ * tom-select.css (v2.3.1)
+ * Copyright (c) contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+ * ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ *
+ */
+.ts-control {
+  padding: 0.25rem 0.25rem;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  box-shadow: none;
+  border-radius: 0.375rem; /* rounded-md */
+  display: flex;
+  flex-wrap: wrap;
+}
+.ts-wrapper.multi.has-items .ts-control {
+  padding: calc(8px - 2px - 0) 8px calc(8px - 2px - 3px - 0);
+}
+.full .ts-control {
+  background-color: #f5f5f0; /* bg-primary-250 */
+}
+.disabled .ts-control, .disabled .ts-control * {
+  cursor: default !important;
+  background-color: #a0a0a0; /* bg-gray-400 */
+}
+.focus .ts-control {
+  box-shadow: none;
+}
+/*.ts-control > * {
+  vertical-align: baseline;
+  display: inline-block;
+}*/
+.ts-wrapper.multi .ts-control > div {
+  cursor: pointer;
+  margin: 0 3px 3px 0;
+  padding: 2px 6px;
+  background: #f2f2f2;
+  border: 0 solid #d0d0d0;
+}
+.ts-wrapper.multi .ts-control > div.active {
+  background: #e8e8e8;
+  border: 0 solid #cacaca;
+}
+.ts-wrapper.multi.disabled .ts-control > div, .ts-wrapper.multi.disabled .ts-control > div.active {
+  background: white;
+  border: 0 solid white;
+}
+.ts-control > input {
+  flex: 1 1 auto;
+  min-width: 7rem;
+  display: inline-block !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  text-indent: 0 !important;
+  border: 0 none !important;
+  background: none !important;
+  line-height: inherit !important;
+  -webkit-user-select: auto !important;
+     -moz-user-select: auto !important;
+      -ms-user-select: auto !important;
+          user-select: auto !important;
+  box-shadow: none !important;
+}
+.ts-control > input::-ms-clear {
+  display: none;
+}
+.ts-control > input:focus {
+  outline: none !important;
+}
+.has-items .ts-control > input {
+  margin: 0 4px !important;
+}
+.ts-control.rtl {
+  text-align: right;
+}
+.ts-control.rtl.single .ts-control:after {
+  left: 15px;
+  right: auto;
+}
+.ts-control.rtl .ts-control > input {
+  margin: 0 4px 0 -2px !important;
+}
+.disabled .ts-control {
+  background-color: #a0a0a0; /* bg-gray-400 */
+}
+.input-hidden .ts-control > input {
+  opacity: 0;
+  position: absolute;
+  left: -10000px;
+}
+
+.ts-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background: #f5f5f0; /* bg-primary-250 */
+  margin: 0.25rem 0 0;
+  border-top: 0 none;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem; /* rounded-md */
+}
+.ts-dropdown [data-selectable] {
+  cursor: pointer;
+  overflow: hidden;
+}
+.ts-dropdown [data-selectable] .highlight {
+  background: #b6b696; /* bg-primary-600 */
+  border-radius: 0.375rem; /* rounded-md */
+}
+.ts-dropdown .option,
+.ts-dropdown .optgroup-header,
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+  padding: 5px 8px;
+}
+.ts-dropdown .option, .ts-dropdown [data-disabled], .ts-dropdown [data-disabled] [data-selectable].option {
+  cursor: inherit;
+  opacity: 0.5;
+}
+.ts-dropdown [data-selectable].option {
+  opacity: 1;
+  cursor: pointer;
+}
+.ts-dropdown .optgroup:first-child .optgroup-header {
+  border-top: 0 none;
+}
+.ts-dropdown .optgroup-header {
+  background: #fff;
+  cursor: default;
+}
+.ts-dropdown .active {
+  background-color: #cdcdb7; /* bg-primary-550 */
+}
+/*.ts-dropdown .active.create {
+  color: #495c68;
+}
+.ts-dropdown .create {
+  color: rgba(48, 48, 48, 0.5);
+}*/
+.ts-dropdown .spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin: 5px 8px;
+}
+.ts-dropdown .spinner::after {
+  content: " ";
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 3px;
+  border-radius: 50%;
+  border: 5px solid #d0d0d0;
+  border-color: #d0d0d0 transparent #d0d0d0 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.ts-dropdown-content {
+  overflow: hidden auto;
+  max-height: 200px;
+  scroll-behavior: smooth;
+}
+
+.ts-wrapper.plugin-drag_drop .ts-dragging {
+  color: transparent !important;
+}
+.ts-wrapper.plugin-drag_drop .ts-dragging > * {
+  visibility: hidden !important;
+}
+
+.plugin-checkbox_options:not(.rtl) .option input {
+  margin-right: 0.5rem;
+}
+
+.plugin-checkbox_options.rtl .option input {
+  margin-left: 0.5rem;
+}
+
+/* stylelint-disable function-name-case */
+.plugin-clear_button {
+  --ts-pr-clear-button: 1em;
+}
+.plugin-clear_button .clear-button {
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(8px - 6px);
+  margin-right: 0 !important;
+  background: transparent !important;
+  transition: opacity 0.5s;
+  cursor: pointer;
+}
+.plugin-clear_button.form-select .clear-button, .plugin-clear_button.single .clear-button {
+  right: max(var(--ts-pr-caret), 8px);
+}
+.plugin-clear_button.focus.has-items .clear-button, .plugin-clear_button:not(.disabled):hover.has-items .clear-button {
+  opacity: 1;
+}
+
+.ts-wrapper .dropdown-header {
+  position: relative;
+  padding: 10px 8px;
+  border-bottom: 1px solid #d0d0d0;
+  background: color-mix(#fff, #d0d0d0, 85%);
+  border-radius: 3px 3px 0 0;
+}
+.ts-wrapper .dropdown-header-close {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  color: inherit;
+  opacity: 0.4;
+  margin-top: -12px;
+  line-height: 20px;
+  font-size: inherit;
+}
+.ts-wrapper .dropdown-header-close:hover {
+  color: black;
+}
+
+:root {
+  --ts-pr-clear-button: 0;
+  --ts-pr-caret: 0;
+  --ts-pr-min: .75rem;
+}
+
+.ts-wrapper.single .ts-control, .ts-wrapper.single .ts-control input {
+  cursor: pointer;
+}
+
+.ts-control:not(.rtl) {
+  padding-right: max(var(--ts-pr-min), var(--ts-pr-clear-button) + var(--ts-pr-caret)) !important;
+}
+
+.ts-control.rtl {
+  padding-left: max(var(--ts-pr-min), var(--ts-pr-clear-button) + var(--ts-pr-caret)) !important;
+}
+
+.ts-wrapper {
+  position: relative;
+}
+
+.ts-dropdown,
+.ts-control,
+.ts-control input {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.ts-control,
+.ts-wrapper.single.input-active .ts-control {
+  background: #f5f5f0; /* bg-primary-250 */
+  cursor: text;
+}
+
+.ts-hidden-accessible {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  -webkit-clip-path: inset(50%) !important;
+          clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+}
+
+/* https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.css */
+.ts-wrapper:not(.form-control, .form-select).single .ts-control {
+  background-image: url("/apps/fund/asset/chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position: right 0.50rem center;
+  background-size: 20px 20px;
+}
+/*# sourceMappingURL=tom-select.css.map */

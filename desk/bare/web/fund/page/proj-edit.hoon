@@ -115,31 +115,25 @@
             ==
             ;div(class "flex")
               ;div(class "fund-form-group")
-                ;select.p-2(name "net", required ~)
+                ;select#proj-chain(name "net", required ~)
                   ::  FIXME: Including the network IDs here is a hack, but
                   ::  this should be fixed by moving chain stuff to the BE
                   ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
                       %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
                       |=  [net=tape nid=@ud]
                       ^-  manx
-                      ::  :_  ; {(caps:fx net)}
-                      ::  :_  ^-  manx
-                      ::      ;div(class "flex flex-row gap-2");
-                      :_  :_  ~
-                          ;div(class "flex flex-row gap-2")
-                            ;img@"{(dest:enrl:format:fh /asset/[(crip (weld net (trip '.svg')))])}";
-                            ;span: {(caps:fx net)}
-                          ==
+                      :_  ; {(caps:fx net)}
                       :-  %option
                       ;:  welp
                           [%value net]~
+                          [%data-image (dest:enrl:format:fh /asset/[(crip (weld net (trip '.svg')))])]~
                           ?.(=(can nid) ~ [%selected ~]~)
                       ==
                 ==
                 ;label(for "net"): Blockchain
               ==
               ;div(class "fund-form-group")
-                ;select.p-2(name "tok", required ~)
+                ;select#proj-token(name "tok", required ~)
                   ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
                       %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
                       |=  tok=tape
@@ -148,6 +142,7 @@
                       :-  %option
                       ;:  welp
                           [%value tok]~
+                          [%data-image (dest:enrl:format:fh /asset/[(crip (weld tok (trip '.svg')))])]~
                           ?.(=(sym tok) ~ [%selected ~]~)
                       ==
                 ==
@@ -271,6 +266,7 @@
       ;+  ;/
       """
       document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{
+        proj_born: {?:(=(%born sat) "true" "false")},
         proj_cost: 0,
         mile_cost: [{(roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] (weld a "{(cash:enjs:format:fh cost.n)},")))}],
         init() \{
@@ -278,6 +274,27 @@
           document.querySelectorAll('textarea').forEach(elem => (
             this.updateTextarea(\{target: elem})
           ));
+
+          const selectRender = (data, escape) => (`
+            <div class='flex flex-row items-center gap-x-1'>
+              <img class='h-5 bg-contain bg-white rounded-full' src='$\{data.image}' />
+              <span>$\{data.text}</span>
+            </div>
+          `);
+          const selectOpts = \{
+            allowEmptyOption: false,
+            controlInput: null,
+            render: \{
+              option(data, escape) \{ return selectRender(data, escape); },
+              item(data, escape) \{ return selectRender(data, escape); },
+            },
+          };
+          const chainSelect = new this.TomSelect('#proj-chain', selectOpts);
+          const tokenSelect =  new this.TomSelect('#proj-token', selectOpts);
+          if (!this.proj_born) \{
+            chainSelect.disable();
+            tokenSelect.disable();
+          }
         },
         updateProj() \{
           this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;

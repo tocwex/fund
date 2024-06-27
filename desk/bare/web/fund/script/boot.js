@@ -14,6 +14,7 @@ import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
 import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
+import TomSelect from 'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/+esm';
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
@@ -170,7 +171,7 @@ if (window.Alpine === undefined) {
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-1 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
+      ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-tytl-link', 'font-serif font-medium text-xl duration-300 hover:(cursor-pointer text-tertiary-500)'],
@@ -296,6 +297,7 @@ if (window.Alpine === undefined) {
     swapText: swapContent,
     sendForm: submitForm,
     checkWallet,
+    TomSelect,
     CONTRACT,
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts

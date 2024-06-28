@@ -153,6 +153,9 @@
   ::  http pokes  ::
       %handle-http-request
     =+  !<(ord=order:rudder vas)
+    ::  TODO: Add a card here to send a `%keen` to `src.bol` if it's a
+    ::  real remote ship to get and cache its remote URL:
+    ::  -keen [src.bol /e/x/(scot %da now.bol)//eauth/url]
     =/  vaz=(list card)
       ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
       [(active:vita-client bol)]~

@@ -199,26 +199,15 @@
   ++  render                                     ::  render page w/ head/foot/styles/etc.
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
+    =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
     =-  (alix -)
     |^  ;html(class "!block", style "display: none;")  ::  NOTE: https://twind.style/installation
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
-            ::  OpenGraph Meta Tags
-            ;meta(property "og:type", content "website");
-            ;meta(property "og:title", content (trip !<(@t (slot:config %meta-tytl))));
-            ;meta(property "og:description", content (trip !<(@t (slot:config %meta-desc))));
-            ;meta(property "og:url", content (trip !<(@t (slot:config %site-corp))));
-            ;meta(property "og:image", content (trip !<(@t (slot:config %meta-logo))));
-            ::  Twitter/X Meta Tags
-            ;meta(name "twitter:card", content "summary_large_image");
-            ;meta(property "twitter:domain", content (trip !<(@t (slot:config %site-base))));
-            ;meta(property "twitter:url", content (trip !<(@t (slot:config %site-corp))));
-            ;meta(name "twitter:title", content (trip !<(@t (slot:config %meta-tytl))));
-            ;meta(name "twitter:description", content (trip !<(@t (slot:config %meta-desc))));
-            ;meta(name "twitter:image", content (trip !<(@t (slot:config %meta-logo))));
+            ;*  meta
             ::  Website Meta Data/Libraries
-            ;title: {(weld "%fund - " ?~(tyt "home" tyt))}
+            ;title: {tyt}
             ;link/"{(dest:enrl:format /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
             ;link/"https://fonts.googleapis.com"(rel "preconnect");
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
@@ -232,16 +221,48 @@
             ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
           ==
           ;body(class "fund-body {cas}", x-data "fund")
-            ;*  ?.(!<(bean (slot:config %debug)) ~ [hair]~)
+            ;*  ?.  !<(bean (slot:config %debug))  ~
+                :_  ~  ;div(class "fund-note"): ⚠ DEBUG ENABLED ⚠
             ;+  head
             ;+  bod
             ;+  foot
           ==
         ==
-    ++  hair
-      ^-  manx
-      ;div(class "flex justify-center w-full sticky font-semibold top-0 bg-primary-600 py-1 text-sm")
-        ; ⚠ DEBUG ENABLED ⚠
+    ++  meta
+      ^-  marl
+      ::  TODO: Remove these unused lines that could be used to check if
+      ::  this is actually a %proj-view page
+      ::  =/  loc=place:rudder  (need (route -:(purse:rudder url.request.ord)))
+      ::  =/  vue=bean          &(?=(%page -.loc) =(%proj-view nom.loc))
+      =+  eru=.^((unit @t) %ex /(scot %p our.bol)//(scot %da now.bol)/eauth/url)
+      =/  erl=(unit tape)  (bind eru |=(t=@t (scaj:fx (lent "/~/eauth") (trip t))))
+      =/  mep=(map @t @t)
+        %-  ~(pre-fold mu bod)
+        |=  [[man=mane mat=mart] dat=(map @t @t)]
+        ?.  ?=(%data man)  dat
+        ?~  mid=(find:fx mat |=([m=mane tape] =(%id m)))  dat
+        ?~  mal=(find:fx mat |=([m=mane tape] =(%value m)))  dat
+        ?.  =("fund-meta-" (scag (lent "fund-meta-") v.u.mid))  dat
+        (~(put by dat) (crip (slag (lent "fund-meta-") v.u.mid)) (crip v.u.mal))
+      =/  des=tape  (scag 160 (trip (~(gut by mep) %desc !<(@t (slot:config %meta-desc)))))
+      =/  pic=tape  (trip (~(gut by mep) %logo !<(@t (slot:config %meta-logo))))
+      =/  url=tape
+        ?~  erl  (trip !<(@t (slot:config %meta-site)))
+        "{u.erl}/apps/fund/project/{(trip (~(gut by mep) %flag %error))}"
+      =/  dom=tape  (trip !<(@t (slot:config %meta-base)))  ::  FIXME: Derive from url
+      ;=  ::  OpenGraph Meta Tags
+          ;meta(property "og:type", content "website");
+          ;meta(property "og:title", content tyt);
+          ;meta(property "og:description", content des);
+          ;meta(property "og:url", content url);
+          ;meta(property "og:image", content pic);
+          ::  Twitter/X Meta Tags
+          ;meta(name "twitter:card", content "summary_large_image");
+          ;meta(name "twitter:title", content tyt);
+          ;meta(name "twitter:description", content des);
+          ;meta(property "twitter:url", content url);
+          ;meta(name "twitter:image", content pic);
+          ;meta(property "twitter:domain", content dom);
       ==
     ++  head
       ^-  manx
@@ -255,7 +276,7 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;+  ?:  (auth bol)
-                (ship-agis bol url)
+                (ship-agis src.bol our.bol url)
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-co-m: …loading…
         ==
@@ -424,19 +445,30 @@
   ++  ship-icon                                  ::  icon for a user ship
     |=  sip=@p
     ^-  manx
-    ;img.h-6.rounded-full@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg";
+    =+  kas="h-6 rounded-full"
+    ?-    (clan:title sip)
+        %pawn
+      ;svg(class "{kas} {cas}", viewBox "0 0 24 24", xmlns "http://www.w3.org/2000/svg")
+        ;rect(width "24", height "24", style "fill: rgb(0, 0, 0);");
+      ==
+    ::
+        %earl
+      ;img@"https://azimuth.network/erc721/{(bloq:enjs:format `@`(end 5 sip))}.svg"(class "{kas} {cas}");
+    ::
+        *
+      ;img@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg"(class "{kas} {cas}");
+    ==
   ++  ship-agis                                  ::  icon + name for a user ship
-    |=  [bol=bowl:gall url=@t]
+    |=  [sip=@p our=@p url=@t]
     ^-  manx
     ;button#fund-agis(class "flex inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550 {cas}")
-      ;+  (ship-icon src.bol)
+      ;+  (ship-icon sip)
       ::  hidden sm:block
-      ;span(class "font-bold"): {<src.bol>}
+      ;span(class "font-bold"): {<sip>}
       ::  ;img#fund-agis-menu@"{(dest:enrl:format /asset/[~.ellipsis.svg])}";
       ;div#fund-agis-opts(class "hidden")
         ;div(class "flex flex-col gap-2")
-          ::  ;div: {<src.bol>}
-          ;*  ?.  =(our src):bol  ~
+          ;*  ?.  =(our sip)  ~
               :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": config ⚙️
           ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": logout ↩️
         ==

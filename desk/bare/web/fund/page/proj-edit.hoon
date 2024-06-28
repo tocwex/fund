@@ -215,10 +215,22 @@
           ;h1.pt-2: Trusted Oracle
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;input.p-1  =name  "sea"  =type  "text"
-                =pattern  (trip '(~(([a-z]{3})|([a-z]{6})))?')
-                =placeholder  (scow %p !<(@p (slot:config %point)))
-                =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
+              ;select#proj-oracle(name "sea")
+                ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
+                    =+  dad=(sein:title our.bol now.bol our.bol)
+                    ::  FIXME: These options are hard-coded from the
+                    ::  ~tocwex.syndicate group's oracle directory
+                    %+  turn  ~[!<(@p (slot:config %point)) dad ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur]
+                    |=  ora=@p
+                    ^-  manx
+                    :_  ; {<ora>}
+                    :-  %option
+                    ;:  welp
+                        [%value "{<ora>}"]~
+                        [%data-image "https://azimuth.network/erc721/{(bloq:enjs:format:fh `@`ora)}.svg"]~
+                        ?.(=(ses ora) ~ [%selected ~]~)
+                    ==
+              ==
               ;label(for "sea"): Trusted Oracle
             ==
             ;div(class "fund-form-group")
@@ -289,12 +301,10 @@
               item(data, escape) \{ return selectRender(data, escape); },
             },
           };
-          const chainSelect = new this.TomSelect('#proj-chain', selectOpts);
-          const tokenSelect =  new this.TomSelect('#proj-token', selectOpts);
-          if (!this.proj_born) \{
-            chainSelect.disable();
-            tokenSelect.disable();
-          }
+          ['#proj-chain', '#proj-token', '#proj-oracle'].forEach(selectId => \{
+            const selectElem = new this.TomSelect(selectId, selectOpts);
+            !this.proj_born && selectElem.disable();
+          });
         },
         updateProj() \{
           this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;

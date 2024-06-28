@@ -400,10 +400,16 @@
             ==
           ==
     ==
-    ::  FIXME: We use inline HTML instead of inline JS in order to
-    ::  circumvent the need for text escaping (e.g. ', ", and `).
     ;div.hidden
+      ::  FIXME: We use inline HTML instead of inline JS in order to
+      ::  circumvent the need for text escaping (e.g. ', ", and `).
       ;data#fund-proj-oath(value (~(oath pj:f pro) p.lag));
+      ::  FIXME: These fields are embedded on the page so that they can
+      ::  be used to inform page metadata
+      ;data#fund-meta-desc(value (trip summary.pro));
+      ;data#fund-meta-flag(value (flag:enjs:format:fh lag));
+      ;*  ?~  image.pro  ~
+          :_  ~  ;data#fund-meta-logo(value (trip u.image.pro));
     ==
     ;script
       ;+  ;/

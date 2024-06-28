@@ -35,8 +35,8 @@
   :^  bol  ord  (trip title.pro)
   ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
     =/  syt
-      :*  hep=(trip !<(@t (slot:config %site-help)))
-          hos=(trip !<(@t (slot:config %site-host)))
+      :*  hep=(trip !<(@t (slot:config %meta-help)))
+          hos=(trip !<(@t (slot:config %meta-host)))
           pro=(dest:enrl:format:fh pat(- %project, +>+ ~))
       ==
     =/  btn

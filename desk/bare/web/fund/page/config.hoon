@@ -31,11 +31,7 @@
   :^  bol  ord  "config"
   %^    hero-plaq:ui:fh
       ?.(init.dat "Thanks for installing %fund!" "Update your preferences?")
-    :-  ~
-    """
-    Will you help us by sending usage information?
-    You can change your decision at any time.
-    """
+    "Will you help us by sending usage information? You can change your decision at any time."
   ;=  ;+  (prod-butn:ui:fh %vita-enable %true "yes ✓" ~ ~)
       ;+  (prod-butn:ui:fh %vita-disable %false "no ✗" ~ ~)
   ==

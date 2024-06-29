@@ -97,7 +97,8 @@
   ;form#maincontent.p-2(method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div
-          ;+  (proj-tytl:ui:fh "Project Overview" sat ~ [%span [%x-text "proj_cost"]~]~)
+          ;+  %^  work-tytl:ui:fh  "Project Overview"  sat
+              ;span(x-text "proj_cost");
           ;div
             ;div(class "flex")
               ;div(class "fund-form-group")
@@ -168,7 +169,7 @@
             ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                 |=  [min=@ mil=mile:f]
                 ^-  manx
-                ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-black rounded-xl")
+                ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-secondary-500 rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
                     ;h6(class "text-tertiary-500 underline"): Milestone #{<+(min)>}
                     ;+  ?:  ?=(%born status.mil)

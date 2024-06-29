@@ -80,11 +80,10 @@
         ==
       ::
           %clear
-        :-  :-  ~
-          """
-          If you would like to make direct connections with the worker that you
-          are funding, or other contributors to the project, click 'get urbit' below.
-          """
+        :-  """
+            If you would like to make direct connections with the worker that you
+            are funding, or other contributors to the project, click 'get urbit' below.
+            """
         :~  (copy-butn:ui:fh bol lag "share project")
             pro.btn
             hep.btn

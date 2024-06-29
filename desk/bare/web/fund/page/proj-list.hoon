@@ -75,20 +75,23 @@
             :_  ~  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}": new project +
       ==
       ;div(class "w-full flex flex-col gap-4")
-        ;*  ?~  pez  :_  ~  ;div(class "italics mx-4 text-gray-600"): No projects found.
+        ;*  ?~  pez  :_  ~  ;p(class "fund-warn"): No projects found.
             %+  turn  pez
             |=  [[sip=@p nam=@tas] pro=proj:f liv=?]
             ^-  manx
             =+  url=(dest:enrl:format:fh /project/(scot %p sip)/[nam])
             ;div(class "w-full flex flex-col p-6 rounded-2xl border-2 border-secondary-500 gap-3")
               ;div(class "w-full flex flex-col gap-3")
-                ;+  (odit-ther:ui:fh ~(odit pj:f pro))
+                ;+  (proj-ther:ui:fh pro |)
                 ;div(class "inline-flex self-stretch justify-start items-center gap-3")
                   ;h1: {(trip title.pro)}
                   ;+  (copy-butn:ui:fh bol [sip nam] "🔗")
                   ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
                       :_  ~  ;a.fund-butn-de-m/"{url}/edit": ✏️
                 ==
+                ;*  ?~  image.pro  ~
+                    :_  ~
+                    ;img.bg-contain.bg-center@"{(trip u.image.pro)}";
                 ;div(class "flex flex-col gap-1 self-stretch")
                   ;div(class "flex flex-row gap-6 pl-3")
                     ;+  (ship-bump "Project Worker" sip)

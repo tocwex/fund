@@ -173,7 +173,8 @@ if (window.Alpine === undefined) {
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
-      ['fund-note', 'w-full flex justify-center sticky font-semibold top-0 bg-primary-600 py-1 text-sm'],
+      ['fund-note', 'w-full flex justify-center sticky font-semibold top-0 z-50 bg-primary-600 py-1 text-sm'],
+      ['fund-warn', 'italics mx-4 text-gray-600'],
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-tytl-link', 'font-serif font-medium text-xl duration-300 hover:(cursor-pointer text-tertiary-500)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
@@ -199,8 +200,8 @@ if (window.Alpine === undefined) {
       ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
-      ['fund-odit-ther', 'w-full flex h-8 text-white border-2 border-black'],
-      ['fund-odit-sect', 'h-full flex justify-center items-center text-center'],
+      ['fund-odit-ther', 'w-full rounded-md flex h-8 text-primary-700'], // FIXME: text-primary-600
+      ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
     ],
   });
 

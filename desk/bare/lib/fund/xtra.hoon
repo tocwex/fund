@@ -99,6 +99,41 @@
   |=  who=@p
   ^-  bean
   (gte 4 (met 3 who))
+::
+::  +perc: perc(entage) of value relative to given total
+::
+++  perc
+  |=  [val=@ tot=@]
+  ^-  @rs
+  ?:  =(0 tot)  .100  ::  FIXME: Probably should be NaN instead
+  (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
+::
+::  +flot: render decimal float as tape (optionally decimal-truncated
+::  and/or padded)
+::
+++  flot
+  |=  [val=dn dex=(unit [min=@ max=@])]
+  ^-  tape
+  ?-    val
+    [%n *]  "NaN"
+    [%i *]  ?:(s.val "" "-")
+  ::
+      [%d *]
+    =-  %+  weld  ?:(s.fin "" "-")
+        ::  TODO: insert commas after every three digits before decimal place
+        =/  int=tape  ((d-co:co 1) a.fin)
+        =/  exp=@s    (sum:si e.fin (sun:si (lent int)))
+        (ed-co:co exp int)
+    ^-  fin=[%d s=? e=@s a=@u]
+    ?~  dex  val
+    ?:  =(--1 (cmp:si e.val --0))  val
+    =-  val(e (dif:si e.val sha), a (?:((syn:si sha) mul div) a.val (pow 10 (abs:si sha))))
+    ^-  sha=@sd
+    =+  vel=(abs:si e.val)
+    ?:  (gth vel max.u.dex)  (dif:si (sun:si max.u.dex) (sun:si vel))
+    ?:  (lth vel min.u.dex)  (dif:si (sun:si min.u.dex) (sun:si vel))
+    --0
+  ==
 
 +|  %arvo
 ::

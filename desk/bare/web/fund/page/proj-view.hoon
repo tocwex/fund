@@ -155,178 +155,157 @@
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  (trip title.pro)
-  ;div#maincontent.p-2(x-data "proj_view")
-    ::  FIXME: ;div(class "text-4xl sm:text-5xl"): {tyt}
-    ;+  (proj-tytl:ui:fh (trip title.pro) sat ~ [[%span ~] [[%$ [%$ '$' (cash:enjs:format:fh cost.pod)] ~]~]~])
-    ;div(class "flex flex-wrap items-center justify-between")
-      ::  FIXME: Need a Hoon-based solution for associating chain
-      ::  IDs with human-readable names
-      ;div: {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
-      ;div: {(cuss (trip name.currency.pro))}
-    ==
+  ;div#maincontent(class "p-2 flex flex-col gap-1", x-data "proj_view")
+    ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
+        ;span: ${(cash:enjs:format:fh cost.pod)}
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
     ::      :_  ~  ;div(class "text-red-500 text-center"): {(trip txt.u.msg)}
     ;*  ?~  image.pro  ~
-        :_  ~  ;img@"{(trip u.image.pro)}"(class "w-full my-2");
-    ;div(class "lg:flex lg:justify-between")
-      ;div(class "lg:flex-1 sm:gap-x-10")
-        ;div(class "flex flex-col gap-4")
-          ;+  (ship-card:ui:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
-          ;+  (ship-card:ui:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
-        ==
-        ;form(method "post", class "flex justify-between mx-auto sm:justify-normal sm:gap-x-16")
-          ;div(class "flex flex-col justify-normal p-1 gap-0.5")
-            ;div(class "text-sm font-light underline"): project worker
-            ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
-            ;+  ?:  !=(our.bol src.bol)  ;div;
-                ?.  wok
-                  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): send message →
-                ?:  ?=(?(%born %prop) sat)
-                  ;a.fund-butn-de-m/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
-                ?.  ?=(?(%done %dead) sat)
-                  (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
-                ;div;
-          ==
-          ;div(class "flex flex-col justify-normal p-1 gap-0.5")
-            ;div(class "text-sm font-light underline"): trusted oracle
-            ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
-            ;+  ?:  !=(our.bol src.bol)  ;div;
-                ?:  &(wok ?=(%prop sat))
-                  %:  prod-butn:ui:fh
-                      %bump-lock  %true  "finalize oracle ✓"  "finalizeContract"
-                      ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
-                  ==
-                ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
-                  (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
-                ?:  !ora
-                  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
-                ;div;
-          ==
-        ==
-        ;+  (mark-well:ui:fh (trip summary.pro) &)
-        ;*  ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
-            :_  ~  (copy-butn:ui:fh bol lag "share 🔗")
-      ==
-      ;*  ?:  ?=(?(%born %done %dead) sat)  ~
-          =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"
-          ?.  ?=(%prop sat)  ::  contribute aside form
-            :_  ~
-            ;form(method "post", autocomplete "off", class cas)
-              ;div(class "p-2 text-3xl w-full")
-                ;+  ?~  pej=(~(get by pledges.pro) src.bol)
-                      ;span: Contribute
-                    ;span: Fulfill Pledge
-              ==
-              ;div(class "flex gap-2")
-                ;div(class "fund-form-group")
-                  ;+  :_  ~  :-  %input
-                      ;:  welp
-                          [%name "sum"]~
-                          [%type "number"]~
-                          [%required ~]~
-                          [%min "0.01"]~
-                          [%max "100000000"]~
-                          [%step "0.01"]~
-                          [%placeholder "10"]~
-                          [%class "p-2"]~
-                          ?~  pej=(~(get by pledges.pro) src.bol)  ~
-                          ~[[%readonly ~] [%value (cash:enjs:format:fh cash.u.pej)]]
-                      ==
-                  ;label(for "sum"): amount (tokens)
-                ==
-                ;div(class "fund-form-group")
-                  ;select.p-2(name "tok")
-                    ;option(value (trip name.currency.pro))
-                      ; {(cuss (trip name.currency.pro))}
-                    ==
-                  ==
-                  ;label(for "tok"): token
-                ==
-              ==
-              ;div(class "fund-form-group")
-                ;input.p-2(name "msg", type "text", placeholder "awesome work!");
-                ;label(for "msg"): public message
-              ==
-              ;div(class "p-2 flex justify-end gap-x-2")
-                ;+  %:  prod-butn:ui:fh
-                        %mula-plej  %action  "pledge only ~"  "plejFunds"
-                        ?.  &((auth:fh bol) (plan:fx src.bol))
-                          "pledges only available to authenticated planets"
-                        ?:  (~(has by pledges.pro) src.bol)
-                          "you must fulfill your outstanding pledge"
-                        ~
-                    ==
-                ;+  (prod-butn:ui:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
-              ==
-            ==
-          ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
-            :_  ~
-            ;form(method "post", class cas)
-              ;div(class "p-2 text-3xl w-full"): Review Request
-              ;div(class "gap-2")
-                ;div(class "p-2")
-                  ;span(class "font-mono font-medium"): {(scow %p p.lag)}
-                  ;span:  has requested your services as an trusted oracle for this project.
-                ==
-                ;div(class "p-2")
-                  ;span(class "font-mono font-medium"): {(scow %p p.lag)}
-                  ;span:  is offering the following compensation for your services:
-                ==
-                ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
-                  ;span(class "font-medium"): {(cash:enjs:format:fh q.assessment.pro)}%
-                  ;span:  of each milestone payout upon completed assessment
-                ==
-                ;div(class "p-2")
-                  ; Accepting this review request means that you will have the
-                  ; responsibility to review each project milestone and release
-                  ; funds to the project worker upon successful completion.
-                ==
-                ;div(class "p-2")
-                  ; If you pinky promise to assess this project, click the button
-                  ; below to confirm your particpation.
-                ==
-              ==
-              ;div(class "p-2 flex justify-end gap-x-2")
-                ;+  (prod-butn:ui:fh %bump-born %action "decline ~" ~ ~)
-                ;+  (prod-butn:ui:fh %bump-prop %true "accept ✓" "acceptContract" ~)
-              ==
-            ==
-          ~  ::  no aside form
+        :_  ~  ;img@"{(trip u.image.pro)}"(class "w-full");
+    ;div(class "flex flex-col gap-1")
+      ;h1: Funding Tracker
+      ;+  (proj-ther:ui:fh pro &)
     ==
-    ;div
-      ;div(class "text-3xl pt-2"): Contribution Tracker
-      ;div(class "flex flex-col gap-2")
-        ;div(class "flex justify-between")
-          ;div(class "flex gap-2")
-            ; Milestone Progress
-            ;span(class "font-medium"): {<nin>}/{<(lent milestones.pro)>}
-          ==
-          ;div(class "flex gap-2")
-            ; Goal
-            ;span(class "font-medium"): ${(cash:enjs:format:fh cost.pod)}
-          ==
-        ==
-        ;+  (odit-ther:ui:fh pod)
-      ==
+    ;div(class "flex flex-col gap-1")
+      ;h1: Project Overview
+      ;+  (mark-well:ui:fh (trip summary.pro) |)
+      ::  ;*  ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
+      ::      :_  ~  (copy-butn:ui:fh bol lag "share 🔗")
     ==
-    ;div
-      ;div(class "text-3xl pt-2"): Milestone Overview
+    ::  FIXME: Reimplement this as a modal if possible
+    ::
+    ::  ;div(class "lg:flex lg:justify-between")
+    ::    ;div(class "lg:flex-1 sm:gap-x-10")
+    ::      ;div(class "flex flex-col gap-4")
+    ::        ;+  (ship-card:ui:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
+    ::        ;+  (ship-card:ui:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
+    ::      ==
+    ::      ;form(method "post", class "flex justify-between mx-auto sm:justify-normal sm:gap-x-16")
+    ::        ;div(class "flex flex-col justify-normal p-1 gap-0.5")
+    ::          ;div(class "text-sm font-light underline"): project worker
+    ::          ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
+    ::          ;+  ?:  !=(our.bol src.bol)  ;div;
+    ::              ?.  wok
+    ::                ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): send message →
+    ::              ?:  ?=(?(%born %prop) sat)
+    ::                ;a.fund-butn-de-m/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
+    ::              ?.  ?=(?(%done %dead) sat)
+    ::                (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
+    ::              ;div;
+    ::        ==
+    ::        ;div(class "flex flex-col justify-normal p-1 gap-0.5")
+    ::          ;div(class "text-sm font-light underline"): trusted oracle
+    ::          ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
+    ::          ;+  ?:  !=(our.bol src.bol)  ;div;
+    ::              ?:  &(wok ?=(%prop sat))
+    ::                %:  prod-butn:ui:fh
+    ::                    %bump-lock  %true  "finalize oracle ✓"  "finalizeContract"
+    ::                    ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+    ::                ==
+    ::              ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
+    ::                (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
+    ::              ?:  !ora
+    ::                ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
+    ::              ;div;
+    ::        ==
+    ::      ==
+    ::    ==
+    ::    ;*  ?:  ?=(?(%born %done %dead) sat)  ~
+    ::        =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"
+    ::        ?.  ?=(%prop sat)  ::  contribute aside form
+    ::          :_  ~
+    ::          ;form(method "post", autocomplete "off", class cas)
+    ::            ;div(class "p-2 text-3xl w-full")
+    ::              ;+  ?~  pej=(~(get by pledges.pro) src.bol)
+    ::                    ;span: Contribute
+    ::                  ;span: Fulfill Pledge
+    ::            ==
+    ::            ;div(class "flex gap-2")
+    ::              ;div(class "fund-form-group")
+    ::                ;+  :_  ~  :-  %input
+    ::                    ;:  welp
+    ::                        [%name "sum"]~
+    ::                        [%type "number"]~
+    ::                        [%required ~]~
+    ::                        [%min "0.01"]~
+    ::                        [%max "100000000"]~
+    ::                        [%step "0.01"]~
+    ::                        [%placeholder "10"]~
+    ::                        [%class "p-2"]~
+    ::                        ?~  pej=(~(get by pledges.pro) src.bol)  ~
+    ::                        ~[[%readonly ~] [%value (cash:enjs:format:fh cash.u.pej)]]
+    ::                    ==
+    ::                ;label(for "sum"): amount (tokens)
+    ::              ==
+    ::              ;div(class "fund-form-group")
+    ::                ;select.p-2(name "tok")
+    ::                  ;option(value (trip name.currency.pro))
+    ::                    ; {(cuss (trip name.currency.pro))}
+    ::                  ==
+    ::                ==
+    ::                ;label(for "tok"): token
+    ::              ==
+    ::            ==
+    ::            ;div(class "fund-form-group")
+    ::              ;input.p-2(name "msg", type "text", placeholder "awesome work!");
+    ::              ;label(for "msg"): public message
+    ::            ==
+    ::            ;div(class "p-2 flex justify-end gap-x-2")
+    ::              ;+  %:  prod-butn:ui:fh
+    ::                      %mula-plej  %action  "pledge only ~"  "plejFunds"
+    ::                      ?.  &((auth:fh bol) (plan:fx src.bol))
+    ::                        "pledges only available to authenticated planets"
+    ::                      ?:  (~(has by pledges.pro) src.bol)
+    ::                        "you must fulfill your outstanding pledge"
+    ::                      ~
+    ::                  ==
+    ::              ;+  (prod-butn:ui:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
+    ::            ==
+    ::          ==
+    ::        ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
+    ::          :_  ~
+    ::          ;form(method "post", class cas)
+    ::            ;div(class "p-2 text-3xl w-full"): Review Request
+    ::            ;div(class "gap-2")
+    ::              ;div(class "p-2")
+    ::                ;span(class "font-mono font-medium"): {(scow %p p.lag)}
+    ::                ;span:  has requested your services as an trusted oracle for this project.
+    ::              ==
+    ::              ;div(class "p-2")
+    ::                ;span(class "font-mono font-medium"): {(scow %p p.lag)}
+    ::                ;span:  is offering the following compensation for your services:
+    ::              ==
+    ::              ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
+    ::                ;span(class "font-medium"): {(cash:enjs:format:fh q.assessment.pro)}%
+    ::                ;span:  of each milestone payout upon completed assessment
+    ::              ==
+    ::              ;div(class "p-2")
+    ::                ; Accepting this review request means that you will have the
+    ::                ; responsibility to review each project milestone and release
+    ::                ; funds to the project worker upon successful completion.
+    ::              ==
+    ::              ;div(class "p-2")
+    ::                ; If you pinky promise to assess this project, click the button
+    ::                ; below to confirm your particpation.
+    ::              ==
+    ::            ==
+    ::            ;div(class "p-2 flex justify-end gap-x-2")
+    ::              ;+  (prod-butn:ui:fh %bump-born %action "decline ~" ~ ~)
+    ::              ;+  (prod-butn:ui:fh %bump-prop %true "accept ✓" "acceptContract" ~)
+    ::            ==
+    ::          ==
+    ::        ~  ::  no aside form
+    ::  ==
+    ;div(class "flex flex-col gap-2")
+      ;h1: Milestone Details
       ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
           |=  [min=@ mil=mile:f]
           ^-  manx
           =/  oil=odit:f  (snag min moz)
-          ;form(method "post", class "flex flex-col gap-y-2 my-4 p-2 lg:p-4 border-2 border-black rounded-xl", x-data "\{ mile_idex: {<min>} }")
-            ;div(class "flex flex-wrap justify-between items-center gap-2")
-              ;div(class "sm:text-nowrap text-2xl"): Milestone {<+(min)>}: {(trip title.mil)}
-              ;div(class "flex items-center gap-x-2")
-                ;div(class "text-lg")
-                  ; Goal
-                  ;span: ${(cash:enjs:format:fh cost.mil)}
-                ==
-                ;+  (stat-pill:ui:fh status.mil)
-              ==
-            ==
-            ;+  (odit-ther:ui:fh oil)
+          ;form(method "post", class "flex flex-col gap-2 px-2 py-4 lg:px-4 lg:py-6 border-2 border-secondary-500 rounded-xl", x-data "\{ mile_idex: {<min>} }")
+            ;h6(class "text-tertiary-500 underline"): Milestone #{<+(min)>}
+            ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
+                ;span: ${(cash:enjs:format:fh cost.mil)}
             ;+  (mark-well:ui:fh (trip summary.mil) &)
             ;div(class "flex flex-wrap items-center justify-end gap-2")
               ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
@@ -376,32 +355,22 @@
             ==
           ==
     ==
-    ;div
-      ;div(class "text-3xl pt-2"): Project Funders
+    ;div(class "flex flex-col gap-2")
+      ;h1: Project Participants
+      ;+  (ship-card:ui:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
+      ;+  (ship-card:ui:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
+    ==
+    ;div(class "flex flex-col gap-2")
+      ;h1: Fund Contributors
       ;*  =/  muz=(list mula:f)  ~(mula pj:f pro)
-          ?~  muz
-            :~  ;div(class "italics mx-4 text-gray-600")
-                  ; No contributors found.
-            ==  ==
+          ?~  muz  :_  ~  ;p(class "fund-warn"): No contributors found.
           %+  turn  muz
           |=  mul=mula:f
           ^-  manx
-          =/  [wut=tape who=tape cas=tape]
-            ?:  ?=(%plej -.mul)
-              ["pledged" (scow %p ship.mul) "border-yellow-500 text-yellow-500"]
-            :-  "fulfilled"  :_  "border-green-500 text-green-500"
-            ?~(ship.mul "anonymous" (scow %p u.ship.mul))
-          ;div(class "my-2 p-2 border-2 border-black flex items-center justify-between gap-x-2 rounded-md")
-            ;div(class "flex flex-wrap sm:flex-nowrap sm:items-center gap-x-2")
-              ;div(class "p-1 font-mono text-nowrap"): {who}
-              ;div(class "p-1"): {(trip note.mul)}
-            ==
-            ;div(class "flex flex-wrap sm:flex-nowrap items-center")
-              ;div(class "mx-auto p-1 font-semibold"): ${(cash:enjs:format:fh cash.mul)}
-              ;div(class "mx-auto p-1 flex")
-                ;div(class "text-nowrap py-1 px-2 border-2 rounded-full font-medium {cas}"): {wut}
-              ==
-            ==
+          ;div(class "p-2.5 border-2 border-secondary-500 flex flex-col gap-y-2 rounded-md")
+            ;+  (mula-tytl:ui:fh mul)
+            ;+  ?:  =('' note.mul)  ;p(class "fund-warn"): No message included.
+                ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
           ==
     ==
     ;div.hidden

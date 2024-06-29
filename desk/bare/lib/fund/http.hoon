@@ -367,7 +367,7 @@
       ==
       ;*  ?:  big  ~
           :_  ~
-          ;div
+          ;div(class "flex justify-center")
             ;button.fund-butn-ac-s(x-show "expanded", x-on-click "expanded = false"): show less -
             ;button.fund-butn-ac-s(x-show "!expanded", x-on-click "expanded = true"): show more +
           ==
@@ -408,9 +408,34 @@
         ;span: {?^(alt +.u.alt ?^(src +.u.src (dest:enrl:format /)))}
       ==
     --
-  ::  TODO: Add "extended" or "detailed" option to this component
-  ++  odit-ther                                  ::  funding thermometer element
-    |=  odi=odit
+  ++  proj-ther                                  ::  project funding thermometer
+    |=  [pro=proj big=bean]
+    ^-  manx
+    =+  pod=~(odit pj pro)
+    =+  [udr ovr]=(need void:(filo pod))
+    =+  tot=(add cost.pod ?:(udr 0 ovr))
+    =+  cen=(srel:enjs:format (perc:fx (add fill.pod plej.pod) tot))
+    ;div(class "w-full flex flex-row items-center gap-3")
+      ;div(class "w-full min-w-0 flex-1 flex flex-col gap-1")
+        ;div(class "w-full min-w-0 flex-1 flex flex-row gap-1")
+          ;*  %+  turn  (enum:fx ~(odim pj pro))
+              |=  [min=@ mod=odit]
+              (mile-ther mod ?.(big ~ "Milestone {<+(min)>}"))
+        ==
+        ;*  ?.  big  ~
+            :_  ~
+            ;div(class "flex flex-row gap-2")
+              ;h3(class "text-tertiary-500 tracking-tight font-bold"): ${(cash:enjs:format fill.pod)}
+              ;h3(class "text-tertiary-400 tracking-tight"): /
+              ;h3(class "text-tertiary-400 tracking-tight"): ${(cash:enjs:format plej.pod)}
+            ==
+      ==
+      ;+  ?.  big  ;h6: {cen}% funded
+          %+  cash-bump  "{cen}% raised of"
+          ;span: ${(cash:enjs:format cost.pod)}
+    ==
+  ++  mile-ther                                  ::  milestone funding thermometer
+    |=  [odi=odit tyt=tape]
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
     |^  =+  [udr ovr]=(need void:(filo odi))
@@ -424,29 +449,28 @@
           =+  pej=?:((lte pre pos) pre pos)
           ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
-        =+  kaz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
+        =+  kaz=`(list tape)`~["bg-tertiary-500" "bg-tertiary-300" ?:(udr "bg-primary-250" "bg-tertiary-700")]
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
-        =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (cury rcen tot)))
+        =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (curr perc:fx tot)))
         =+  dez=(iron (turn cez cend))
-        ;div(class "w-full flex flex-row gap-3")
-          ;div(class "fund-odit-ther {cas}")
-            ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
-                |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
-                ^-  (unit manx)
-                ?:  =(0 den)  ~
-                :-  ~
-                ;div(title "{(real:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
-                  ; ${(cash:enjs:format cas)}
-                ==
-          ==
-          ;h6: {(real:enjs:format (rcen tot (add fill.odi plej.odi)))}% funded
+        ;div(class "fund-odit-ther relative {cas}")
+          ::  FIXME: Need to make the rounded corners work here for the
+          ::  last element... see boot.js twind styling for details
+          ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
+              |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
+              ^-  (unit manx)
+              ?:  =(0 den)  ~
+              :-  ~
+              ;div  =title  "{(real:enjs:format cen)}% {nam}"
+                =class  "fund-odit-sect w-[{<den>}%] {kas}";
+          ;*  ?~  tyt  ~
+              :_  ~
+              ::  NOTE: https://stackoverflow.com/a/1777282/837221
+              ;div(class "absolute left-[50%] pt-1.5 font-medium text-nowrap")
+                ;div(class "relative left-[-50%]"): {tyt}
+              ==
         ==
-    ++  rcen                                     ::  odit segment to percentage
-      |=  [tot=cash val=cash]
-      ^-  @rs
-      ?:  =(0 tot)  .100
-      (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
     ++  cend                                     ::  odit percentage to decimal
       |=  val=@rs
       ^-  @ud
@@ -471,26 +495,41 @@
       ==
     --
   ++  hero-plaq                                  ::  full-page notification w/ buttons
-    |=  [tyt=tape txt=(unit tape) buz=marl]
+    |=  [tyt=tape txt=tape buz=marl]
     ^-  manx
     ;form#maincontent(method "post", class "p-2 h-[80vh] {cas}")
       ;div(class "h-full flex flex-col flex-wrap justify-center items-center text-center gap-10")
         ;h1: {tyt}
         ;*  ?~  txt  ~
-            :_  ~  ;div(class "text-xl"): {u.txt}
+            :_  ~  ;div(class "text-xl"): {txt}
         ;div(class "flex gap-2")
           ;*  buz
         ==
       ==
     ==
-  ++  proj-tytl                                  ::  project title line
-    |=  [tyt=tape sat=stat ty2=tape cas=manx]
+  ++  work-tytl                                  ::  work unit (project/milestone) title
+    |=  [tyt=tape sat=stat man=manx]
     ^-  manx
-    ;div(class "flex flex-wrap items-center justify-between")
-      ;h1: {tyt}
+    ;div(class "flex flex-wrap items-center justify-between {cas}")
+      ::  FIXME: ;div(class "text-4xl sm:text-5xl"): {tyt}
+      ;h1(class "text-4xl"): {tyt}
       ;div(class "flex items-center gap-x-2")
         ;+  (stat-pill sat)
-        ;+  (cash-bump ty2 cas)
+        ;+  (cash-bump "Funding Goal" man)
+      ==
+    ==
+  ++  mula-tytl                                  ::  mula (pledge/contribution) title
+    |=  mul=mula
+    ^-  manx
+    =/  sip=@p  ?-(-.mul %plej ship.mul, %trib ?^(ship.mul u.ship.mul `@p`(pow 2 128)))
+    ;div(class "flex flex-wrap items-center justify-between {cas}")
+      ;div(class "flex items-center gap-x-2")
+        ;+  (ship-icon sip)
+        ;h5: {<sip>}
+      ==
+      ;div(class "flex items-center gap-x-2")
+        ;p(class "font-serif leading-tight"): ${(cash:enjs:format cash.mul)}
+        ;+  (mula-pill mul)
       ==
     ==
   ++  ship-icon                                  ::  icon for a user ship
@@ -510,14 +549,24 @@
       ;img@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg"(class "{kas} {cas}");
     ==
   ++  cash-bump                                  ::  bumper for cash amount
-    |=  [tyt=tape cas=manx]
+    |=  [tyt=tape man=manx]
     ^-  manx
     =?  tyt  =(~ tyt)  "Funding Goal"
-    ;div(class "flex flex-col justify-start items-end")
+    ;div(class "flex flex-col justify-start items-end {cas}")
       ;h6(class "leading-none tracking-widest"): {tyt}
       ;h2(class "leading-loose")
-        ;+  cas
+        ;+  man
       ==
+    ==
+  ++  mula-pill                                  ::  mula pill element
+    |=  mul=mula
+    ^-  manx
+    =-  ;div(class "fund-pill {kas} {cas}"): {nam}
+    ^-  [nam=tape kas=tape]
+    =-  [(mula:enjs:format mul) "text-{-} border-{-}"]
+    ?-  -.mul
+      %plej  "yellow-500"
+      %trib  "green-500"
     ==
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat

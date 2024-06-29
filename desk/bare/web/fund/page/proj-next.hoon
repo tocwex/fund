@@ -31,7 +31,7 @@
   =/  roz=(list role:f)
     (sort ~(tap in (~(rols pj:f -.pro) p.lag src.bol)) gth)
   :-  %page
-  %-  render:htmx:fh
+  %-  html:ui:fh
   :^  bol  ord  (trip title.pro)
   ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
     =/  syt
@@ -40,55 +40,55 @@
           pro=(dest:enrl:format:fh pat(- %project, +>+ ~))
       ==
     =/  btn
-      :*  hep=(link-butn:htmx:fh hep.syt %& "what is %fund?" ~)
-          pro=(link-butn:htmx:fh pro.syt %| "view project" ~)
+      :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~)
+          pro=(link-butn:ui:fh pro.syt %| "view project" ~)
           ^=  das  |=  rol=role:f
           =+  roc=(role:enjs:format:fh rol)
           =+  rul=(dest:enrl:format:fh /dashboard/[(crip roc)])
-          (link-butn:htmx:fh rul %| "{roc} dashboard" ~)
+          (link-butn:ui:fh rul %| "{roc} dashboard" ~)
       ==
     ?+    typ.pat  !!
         %bump
-      %^  hero-plaq:htmx:fh  'Your project action has been submitted.'  ~
+      %^  hero-plaq:ui:fh  "Your project action has been submitted."  ~
       [pro.btn (turn (skip roz |=(r=role:f =(%fund r))) das.btn)]
     ::
         %edit
-      %^  hero-plaq:htmx:fh  'Your changes have been saved!'  ~
-      :~  (prod-butn:htmx:fh %bump-prop %true "request oracle ✓" ~ ~)
+      %^  hero-plaq:ui:fh  "Your changes have been saved!"  ~
+      :~  (prod-butn:ui:fh %bump-prop %true "request oracle ✓" ~ ~)
           =+  (dest:enrl:format:fh pat(- %project))
-            (link-butn:htmx:fh - %| "continue editing" ~)
+            (link-butn:ui:fh - %| "continue editing" ~)
           pro.btn
       ==
     ::
         %mula
-      %+  hero-plaq:htmx:fh  'Thank you for your contribution!'
+      %+  hero-plaq:ui:fh  "Thank you for your contribution!"
       ?-  aut
           %admin
         :-  ~
         ;:  welp
-            ?.(=(our.bol p.lag) ~ [(copy-butn:htmx:fh bol lag "share project")]~)
+            ?.(=(our.bol p.lag) ~ [(copy-butn:ui:fh bol lag "share project")]~)
             [pro.btn]~
             [(das.btn %fund)]~
         ==
       ::
           %eauth
         :-  ~
-        :~  (copy-butn:htmx:fh bol lag "share project")
+        :~  (copy-butn:ui:fh bol lag "share project")
             pro.btn
             hep.btn
-            (link-butn:htmx:fh "{hep.syt}/#installing-fund" %& "download %fund" ~)
+            (link-butn:ui:fh "{hep.syt}/#installing-fund" %& "download %fund" ~)
         ==
       ::
           %clear
         :-  :-  ~
-          '''
+          """
           If you would like to make direct connections with the worker that you
-          are funding, or other contributors to the project, click "get urbit" below.
-          '''
-        :~  (copy-butn:htmx:fh bol lag "share project")
+          are funding, or other contributors to the project, click 'get urbit' below.
+          """
+        :~  (copy-butn:ui:fh bol lag "share project")
             pro.btn
             hep.btn
-            (link-butn:htmx:fh hos.syt %& "get urbit" ~)
+            (link-butn:ui:fh hos.syt %& "get urbit" ~)
         ==
       ==
     ==

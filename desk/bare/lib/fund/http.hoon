@@ -201,11 +201,11 @@
     --
   --
 ::
-::  +htmx: html-related helper functions and data, including css, js, components
+::  +ui: ui-related rendering functions and data
 ::
-++  htmx
+++  ui
   |_  cas=tape
-  ++  render                                     ::  render page w/ head/foot/styles/etc.
+  ++  html                                     ::  render html page w/ head/foot/styles/etc.
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
@@ -283,7 +283,17 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;+  ?:  (auth bol)
-                (ship-agis src.bol our.bol url)
+                ;button#fund-agis(class "inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550")
+                  ;+  (ship-icon src.bol)
+                  ;span(class "font-bold"): {<src.bol>}
+                  ;div#fund-agis-opts(class "hidden")
+                    ;div(class "flex flex-col gap-2")
+                      ;*  ?.  =(our src):bol  ~
+                          :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": config ⚙️
+                      ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": logout ↩️
+                    ==
+                  ==
+                ==
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-co-m: …loading…
         ==
@@ -314,81 +324,25 @@
         ==
       ==
     --
-  ++  hero-plaq                                  ::  full-page notification w/ buttons
-    |=  [tyt=@t txt=(unit @t) buz=marl]
+  ++  ship-card                                  ::  summary card for user ship
+    |=  [sip=@p tyt=tape adr=addr]
     ^-  manx
-    ;form#maincontent(method "post", class "p-2 h-[80vh] {cas}")
-      ;div(class "flex flex-col h-full flex-wrap justify-center items-center text-center gap-10")
-        ;h1: {(trip tyt)}
-        ;*  ?~  txt  ~
-            :_  ~  ;div(class "text-xl"): {(trip u.txt)}
-        ;div(class "flex gap-2")
-          ;*  buz
+    ;div(class "flex flex-col items-start p-3 rounded-md border-2 border-secondary-450 gap-1")
+      ;h6(class "leading-none tracking-widest"): {tyt}
+      ;div(class "inline-flex self-stretch justify-start items-center gap-2")
+        ;+  (~(ship-icon ..$ "h-20") sip)
+        ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
+          ;h3(class "leading-7 tracking-tight"): {<sip>}
+          ;h5(title (addr:enjs:format adr), class "font-normal leading-normal tracking-wide")
+            ; {(sadr:enjs:format adr)}
+          ==
+          ;div(class "self-stretch justify-between items-center inline-flex")
+            ;h5(class "font-normal leading-normal tracking-wide"): AZP: {<`@`sip>}
+            ;a.fund-butn-ac-s/"{(chat:enrl:format sip)}"(target "_blank"): 💬
+          ==
         ==
       ==
     ==
-  ::  TODO: Add "extended" or "detailed" option to this component
-  ++  odit-ther                                  ::  funding thermometer element
-    |=  odi=odit
-    ^-  manx
-    ::  TODO: Clean up the overage handling code in here.
-    |^  =+  [udr ovr]=(need void:(filo odi))
-        =+  tot=(add cost.odi ?:(udr 0 ovr))
-        =/  caz=(list cash)
-          ?:  udr  ~[fill.odi plej.odi ovr]
-          =+  [fre=fill.odi pre=plej.odi]
-          =+  fos=cost.odi
-          =+  fil=?:((lte fre fos) fre fos)
-          =+  pos=(sub fos fil)
-          =+  pej=?:((lte pre pos) pre pos)
-          ~[fil pej ovr]
-        =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
-        =+  kaz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
-        ::  FIXME: Funding percentage calculations aren't right when there
-        ::  are overages (since we renormalize to overage amount).
-        =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (cury rcen tot)))
-        =+  dez=(iron (turn cez cend))
-        ;div(class "w-full flex flex-row gap-3")
-          ;div(class "fund-odit-ther {cas}")
-            ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
-                |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
-                ^-  (unit manx)
-                ?:  =(0 den)  ~
-                :-  ~
-                ;div(title "{(real:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
-                  ; ${(cash:enjs:format cas)}
-                ==
-          ==
-          ;h6: {(real:enjs:format (rcen tot (add fill.odi plej.odi)))}% funded
-        ==
-    ++  rcen                                     ::  odit segment to percentage
-      |=  [tot=cash val=cash]
-      ^-  @rs
-      ?:  =(0 tot)  .100
-      (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
-    ++  cend                                     ::  odit percentage to decimal
-      |=  val=@rs
-      ^-  @ud
-      ?:  (equ:rs val .0)  0
-      ?:  (lte:rs val .1)  1
-      (abs:si (need (toi:rs val)))
-    ++  iron                                     ::  odit decimals ironed to sum 100
-      |=  lis=(list @ud)
-      ^-  (list @ud)
-      =+  sum=(roll lis add)
-      =+  dif=(dif:si (sun:si sum) --100)
-      ?+  cmp=(cmp:si dif --0)  lis
-          %-1   ::  sum < 100; give lacking to lowest value
-        =-  (snap lis -(+ (add -> (abs:si dif))))
-        %+  roll  (enum:fx lis)
-        |:([n=[0 0] a=[0 200]] ?:(&(!=(0 +.n) (lth +.n +.a)) n a))
-      ::
-          %--1  ::  sum > 100; take excess from highest value
-        =-  (snap lis -(+ (sub -> (abs:si dif))))
-        %+  roll  (enum:fx lis)
-        |:([n=[0 0] a=[0 1]] ?:((gth +.n +.a) n a))
-      ==
-    --
   ++  mark-well                                  ::  markdown (github) well
     |=  [txt=tape big=bean]
     ^-  manx
@@ -454,6 +408,91 @@
         ;span: {?^(alt +.u.alt ?^(src +.u.src (dest:enrl:format /)))}
       ==
     --
+  ::  TODO: Add "extended" or "detailed" option to this component
+  ++  odit-ther                                  ::  funding thermometer element
+    |=  odi=odit
+    ^-  manx
+    ::  TODO: Clean up the overage handling code in here.
+    |^  =+  [udr ovr]=(need void:(filo odi))
+        =+  tot=(add cost.odi ?:(udr 0 ovr))
+        =/  caz=(list cash)
+          ?:  udr  ~[fill.odi plej.odi ovr]
+          =+  [fre=fill.odi pre=plej.odi]
+          =+  fos=cost.odi
+          =+  fil=?:((lte fre fos) fre fos)
+          =+  pos=(sub fos fil)
+          =+  pej=?:((lte pre pos) pre pos)
+          ~[fil pej ovr]
+        =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
+        =+  kaz=`(list tape)`~["bg-green-500" "bg-yellow-500" ?:(udr "bg-gray-500" "bg-blue-500")]
+        ::  FIXME: Funding percentage calculations aren't right when there
+        ::  are overages (since we renormalize to overage amount).
+        =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (cury rcen tot)))
+        =+  dez=(iron (turn cez cend))
+        ;div(class "w-full flex flex-row gap-3")
+          ;div(class "fund-odit-ther {cas}")
+            ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
+                |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
+                ^-  (unit manx)
+                ?:  =(0 den)  ~
+                :-  ~
+                ;div(title "{(real:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
+                  ; ${(cash:enjs:format cas)}
+                ==
+          ==
+          ;h6: {(real:enjs:format (rcen tot (add fill.odi plej.odi)))}% funded
+        ==
+    ++  rcen                                     ::  odit segment to percentage
+      |=  [tot=cash val=cash]
+      ^-  @rs
+      ?:  =(0 tot)  .100
+      (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
+    ++  cend                                     ::  odit percentage to decimal
+      |=  val=@rs
+      ^-  @ud
+      ?:  (equ:rs val .0)  0
+      ?:  (lte:rs val .1)  1
+      (abs:si (need (toi:rs val)))
+    ++  iron                                     ::  odit decimals ironed to sum 100
+      |=  lis=(list @ud)
+      ^-  (list @ud)
+      =+  sum=(roll lis add)
+      =+  dif=(dif:si (sun:si sum) --100)
+      ?+  cmp=(cmp:si dif --0)  lis
+          %-1   ::  sum < 100; give lacking to lowest value
+        =-  (snap lis -(+ (add -> (abs:si dif))))
+        %+  roll  (enum:fx lis)
+        |:([n=[0 0] a=[0 200]] ?:(&(!=(0 +.n) (lth +.n +.a)) n a))
+      ::
+          %--1  ::  sum > 100; take excess from highest value
+        =-  (snap lis -(+ (sub -> (abs:si dif))))
+        %+  roll  (enum:fx lis)
+        |:([n=[0 0] a=[0 1]] ?:((gth +.n +.a) n a))
+      ==
+    --
+  ++  hero-plaq                                  ::  full-page notification w/ buttons
+    |=  [tyt=tape txt=(unit tape) buz=marl]
+    ^-  manx
+    ;form#maincontent(method "post", class "p-2 h-[80vh] {cas}")
+      ;div(class "h-full flex flex-col flex-wrap justify-center items-center text-center gap-10")
+        ;h1: {tyt}
+        ;*  ?~  txt  ~
+            :_  ~  ;div(class "text-xl"): {u.txt}
+        ;div(class "flex gap-2")
+          ;*  buz
+        ==
+      ==
+    ==
+  ++  proj-tytl                                  ::  project title line
+    |=  [tyt=tape sat=stat ty2=tape cas=manx]
+    ^-  manx
+    ;div(class "flex flex-wrap items-center justify-between")
+      ;h1: {tyt}
+      ;div(class "flex items-center gap-x-2")
+        ;+  (stat-pill sat)
+        ;+  (cash-bump ty2 cas)
+      ==
+    ==
   ++  ship-icon                                  ::  icon for a user ship
     |=  sip=@p
     ^-  manx
@@ -469,52 +508,6 @@
     ::
         *
       ;img@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg"(class "{kas} {cas}");
-    ==
-  ::  TODO: inline this function; it will only be used in header
-  ++  ship-agis                                  ::  icon + name for a user ship
-    |=  [sip=@p our=@p url=@t]
-    ^-  manx
-    ;button#fund-agis(class "flex inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550 {cas}")
-      ;+  (ship-icon sip)
-      ::  hidden sm:block
-      ;span(class "font-bold"): {<sip>}
-      ::  ;img#fund-agis-menu@"{(dest:enrl:format /asset/[~.ellipsis.svg])}";
-      ;div#fund-agis-opts(class "hidden")
-        ;div(class "flex flex-col gap-2")
-          ;*  ?.  =(our sip)  ~
-              :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": config ⚙️
-          ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": logout ↩️
-        ==
-      ==
-    ==
-  ++  ship-card                                  ::  summary card for user ship
-    |=  [sip=@p tyt=tape adr=addr]
-    ^-  manx
-    ;div(class "flex flex-col items-start p-3 rounded-md border-2 border-secondary-450 gap-1")
-      ;h6(class "leading-none tracking-widest"): {tyt}
-      ;div(class "inline-flex self-stretch justify-start items-center gap-2")
-        ;+  (~(ship-icon ..$ "h-20") sip)
-        ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
-          ;h3(class "leading-7 tracking-tight"): {<sip>}
-          ;h5(title (addr:enjs:format adr), class "font-normal leading-normal tracking-wide")
-            ; {(sadr:enjs:format adr)}
-          ==
-          ;div(class "self-stretch justify-between items-center inline-flex")
-            ;h5(class "font-normal leading-normal tracking-wide"): AZP: {<`@`sip>}
-            ;a.fund-butn-ac-s/"{(chat:enrl:format sip)}"(target "_blank"): 💬
-          ==
-        ==
-      ==
-    ==
-  ++  proj-tytl                                  ::  project title line
-    |=  [tyt=tape sat=stat ty2=tape cas=manx]
-    ^-  manx
-    ;div(class "flex flex-wrap items-center justify-between")
-      ;h1: {tyt}
-      ;div(class "flex items-center gap-x-2")
-        ;+  (stat-pill sat)
-        ;+  (cash-bump ty2 cas)
-      ==
     ==
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tyt=tape cas=manx]
@@ -544,10 +537,17 @@
   ++  cheq-swix                                  ::  checkbox switch <o->
     |=  nam=@tas
     ^-  manx
-    ;label(class "cursor-pointer {cas}")
-      ;input(name (trip nam), type "checkbox", class "sr-only peer");
-      ;div(class "relative w-8 h-4 bg-primary-500 border-2 border-secondary-500 rounded-full peer-checked:after:translate-x-[175%] after:content-[''] after:absolute after:top-[1px] after:bg-secondary-450 peer-checked:after:bg-primary-500 after:rounded-full after:h-2.5 after:w-2.5 after:transition-transform peer-checked:bg-secondary-450");
-    ==
+    =-  ;label(class "cursor-pointer {cas}")
+          ;input(name (trip nam), type "checkbox", class "sr-only peer");
+          ;div(class kas);
+        ==
+    ^=  kas
+    """
+    relative w-8 h-4 bg-primary-500 border-2 border-secondary-500 rounded-full
+    peer-checked:bg-secondary-450 peer-checked:after:translate-x-[175%] peer-checked:after:bg-primary-500
+    after:content-[''] after:absolute after:top-[1px] after:bg-secondary-450 after:rounded-full
+    after:h-2.5 after:w-2.5 after:transition-transform
+    """
   ++  copy-butn                                  ::  copy project link button
     |=  [bol=bowl:gall lag=flag txt=tape]
     ^-  manx

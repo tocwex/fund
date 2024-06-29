@@ -205,13 +205,6 @@ if (window.Alpine === undefined) {
   });
 
   window.Alpine = Alpine;
-  function tws(parts) {
-    const styles = Object.entries(parts).reduce((obj, [part, value]) => {
-      obj[`&::part(${part})`] = {'@apply': value};
-      return obj;
-    }, {});
-    return css(styles);
-  }
   function cmd() {
     // https://twind.run/junior-crazy-mummy?file=script
     return twind.css({
@@ -291,7 +284,6 @@ if (window.Alpine === undefined) {
   });
 
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
-    tws,
     cmd,
     copyText,
     swapText,

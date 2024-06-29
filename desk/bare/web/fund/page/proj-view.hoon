@@ -153,11 +153,11 @@
   =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
   :-  %page
-  %-  render:htmx:fh
+  %-  html:ui:fh
   :^  bol  ord  (trip title.pro)
   ;div#maincontent.p-2(x-data "proj_view")
     ::  FIXME: ;div(class "text-4xl sm:text-5xl"): {tyt}
-    ;+  (proj-tytl:htmx:fh (trip title.pro) sat ~ [[%span ~] [[%$ [%$ '$' (cash:enjs:format:fh cost.pod)] ~]~]~])
+    ;+  (proj-tytl:ui:fh (trip title.pro) sat ~ [[%span ~] [[%$ [%$ '$' (cash:enjs:format:fh cost.pod)] ~]~]~])
     ;div(class "flex flex-wrap items-center justify-between")
       ::  FIXME: Need a Hoon-based solution for associating chain
       ::  IDs with human-readable names
@@ -171,8 +171,8 @@
     ;div(class "lg:flex lg:justify-between")
       ;div(class "lg:flex-1 sm:gap-x-10")
         ;div(class "flex flex-col gap-4")
-          ;+  (ship-card:htmx:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
-          ;+  (ship-card:htmx:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
+          ;+  (ship-card:ui:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
+          ;+  (ship-card:ui:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
         ==
         ;form(method "post", class "flex justify-between mx-auto sm:justify-normal sm:gap-x-16")
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
@@ -184,7 +184,7 @@
                 ?:  ?=(?(%born %prop) sat)
                   ;a.fund-butn-de-m/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
                 ?.  ?=(?(%done %dead) sat)
-                  (prod-butn:htmx:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
+                  (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
                 ;div;
           ==
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
@@ -192,20 +192,20 @@
             ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
             ;+  ?:  !=(our.bol src.bol)  ;div;
                 ?:  &(wok ?=(%prop sat))
-                  %:  prod-butn:htmx:fh
+                  %:  prod-butn:ui:fh
                       %bump-lock  %true  "finalize oracle ✓"  "finalizeContract"
                       ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
                   ==
                 ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
-                  (prod-butn:htmx:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
+                  (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
                 ?:  !ora
                   ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
                 ;div;
           ==
         ==
-        ;+  (mark-well:htmx:fh (trip summary.pro) &)
+        ;+  (mark-well:ui:fh (trip summary.pro) &)
         ;*  ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
-            :_  ~  (copy-butn:htmx:fh bol lag "share 🔗")
+            :_  ~  (copy-butn:ui:fh bol lag "share 🔗")
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~
           =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"
@@ -248,7 +248,7 @@
                 ;label(for "msg"): public message
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
-                ;+  %:  prod-butn:htmx:fh
+                ;+  %:  prod-butn:ui:fh
                         %mula-plej  %action  "pledge only ~"  "plejFunds"
                         ?.  &((auth:fh bol) (plan:fx src.bol))
                           "pledges only available to authenticated planets"
@@ -256,7 +256,7 @@
                           "you must fulfill your outstanding pledge"
                         ~
                     ==
-                ;+  (prod-butn:htmx:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
+                ;+  (prod-butn:ui:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
               ==
             ==
           ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
@@ -287,8 +287,8 @@
                 ==
               ==
               ;div(class "p-2 flex justify-end gap-x-2")
-                ;+  (prod-butn:htmx:fh %bump-born %action "decline ~" ~ ~)
-                ;+  (prod-butn:htmx:fh %bump-prop %true "accept ✓" "acceptContract" ~)
+                ;+  (prod-butn:ui:fh %bump-born %action "decline ~" ~ ~)
+                ;+  (prod-butn:ui:fh %bump-prop %true "accept ✓" "acceptContract" ~)
               ==
             ==
           ~  ::  no aside form
@@ -306,7 +306,7 @@
             ;span(class "font-medium"): ${(cash:enjs:format:fh cost.pod)}
           ==
         ==
-        ;+  (odit-ther:htmx:fh pod)
+        ;+  (odit-ther:ui:fh pod)
       ==
     ==
     ;div
@@ -323,52 +323,52 @@
                   ; Goal
                   ;span: ${(cash:enjs:format:fh cost.mil)}
                 ==
-                ;+  (stat-pill:htmx:fh status.mil)
+                ;+  (stat-pill:ui:fh status.mil)
               ==
             ==
-            ;+  (odit-ther:htmx:fh oil)
-            ;+  (mark-well:htmx:fh (trip summary.mil) &)
+            ;+  (odit-ther:ui:fh oil)
+            ;+  (mark-well:ui:fh (trip summary.mil) &)
             ;div(class "flex flex-wrap items-center justify-end gap-2")
               ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                   ;:    welp
                       ?.  &(cur wok ?=(%lock status.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %bump-work %action "mark in-progress ~" ~ ~)
+                    :_  ~  (prod-butn:ui:fh %bump-work %action "mark in-progress ~" ~ ~)
                   ::
                       ?.  &(cur wok ?=(%work status.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %bump-sess %action "request review ~" ~ ~)
+                    :_  ~  (prod-butn:ui:fh %bump-sess %action "request review ~" ~ ~)
                   ::
                       ?.  &(cur ora ?=(%sess status.mil))  ~
                     :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:htmx:fh %bump-work %action "changes required ~" ~ ~)
-                        (prod-butn:htmx:fh %bump-done %true "approve ✓" "approveMilestone" ~)
+                        (prod-butn:ui:fh %bump-work %action "changes required ~" ~ ~)
+                        (prod-butn:ui:fh %bump-done %true "approve ✓" "approveMilestone" ~)
                     ==
                   ::
                   ::
                       ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
                     :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:htmx:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
+                        (prod-butn:ui:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
                     ==
                   ::
                       ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
+                    :_  ~  (prod-butn:ui:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
                   ::
                       ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
                     :_  ~
-                    %:  prod-butn:htmx:fh
+                    %:  prod-butn:ui:fh
                         %draw-done  %true  "claim funds ✓"  "claimMilestone"
                         ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
                     ==
                   ::
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
+                    :_  ~  (prod-butn:ui:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:htmx:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
+                    :_  ~  (prod-butn:ui:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
                   ::
                       ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
                     :_  ~
-                    %:  prod-butn:htmx:fh
+                    %:  prod-butn:ui:fh
                         %draw-dead  %true  "refund funds ✓"  "refundContract"
                         ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
                     ==

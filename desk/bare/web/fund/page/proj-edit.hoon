@@ -92,12 +92,12 @@
   ?.  |(?=(~ pru) ?=(?(%born %prop) sat))
     [%next (flac:enrl:format:fh (need lau)) 'project cannot be edited after locking']
   :-  %page
-  %-  render:htmx:fh
+  %-  html:ui:fh
   :^  bol  ord  "project edit"
   ;form#maincontent.p-2(method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div
-          ;+  (proj-tytl:htmx:fh "Project Overview" sat ~ [%span [%x-text "proj_cost"]~]~)
+          ;+  (proj-tytl:ui:fh "Project Overview" sat ~ [%span [%x-text "proj_cost"]~]~)
           ;div
             ;div(class "flex")
               ;div(class "fund-form-group")
@@ -176,7 +176,7 @@
                           ::  for new milestones, so we just use raw text for now
                           ;button(class "font-light", type "button", x-on-click "deleteMile"): ❌
                           ::  ;img@"{(dest:enrl:format:fh /asset/[~.close.svg])}";
-                        (stat-pill:htmx:fh status.mil)
+                        (stat-pill:ui:fh status.mil)
                   ==
                   ;div(class "flex")
                     ;div(class "fund-form-group")
@@ -261,13 +261,13 @@
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:htmx:fh %init %action "save draft ~" "saveProj" ~)
-            ++  croc-butn  (prod-butn:htmx:fh %bump-born %action "retract proposal ~" ~ ~)
+            ++  init-butn  (prod-butn:ui:fh %init %action "save draft ~" "saveProj" ~)
+            ++  croc-butn  (prod-butn:ui:fh %bump-born %action "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-              (prod-butn:htmx:fh %drop %false "delete {obj} ✗" ~ ~)
+              (prod-butn:ui:fh %drop %false "delete {obj} ✗" ~ ~)
             ::  ++  dead-butn
-            ::    %:  prod-butn:htmx:fh
+            ::    %:  prod-butn:ui:fh
             ::        %dead  %false  "discontinue project ✗"  ~
             ::        ?.(?=(%dead sat) ~ "project has already been discontinued")
             ::    ==

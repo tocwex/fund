@@ -15,7 +15,7 @@
   ?:  &(=(%oracle dyp) !(star:fx src.bol))
     [%code 404 'oracle dashboard only available to stars and galaxies']
   :-  %page
-  %-  render:htmx:fh
+  %-  html:ui:fh
   :^  bol  ord  "{(trip dyp)} dashboard"
   |^  ?+    dyp  !!
           %worker
@@ -82,10 +82,10 @@
             =+  url=(dest:enrl:format:fh /project/(scot %p sip)/[nam])
             ;div(class "w-full flex flex-col p-6 rounded-2xl border-2 border-secondary-500 gap-3")
               ;div(class "w-full flex flex-col gap-3")
-                ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
+                ;+  (odit-ther:ui:fh ~(odit pj:f pro))
                 ;div(class "inline-flex self-stretch justify-start items-center gap-3")
                   ;h1: {(trip title.pro)}
-                  ;+  (copy-butn:htmx:fh bol [sip nam] "🔗")
+                  ;+  (copy-butn:ui:fh bol [sip nam] "🔗")
                   ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
                       :_  ~  ;a.fund-butn-de-m/"{url}/edit": ✏️
                 ==
@@ -94,7 +94,7 @@
                     ;+  (ship-bump "Project Worker" sip)
                     ;+  (ship-bump "Trusted Oracle" p.assessment.pro)
                   ==
-                  ;+  (mark-well:htmx:fh (trip summary.pro) |)
+                  ;+  (mark-well:ui:fh (trip summary.pro) |)
                 ==
               ==
               ;div(class "inline-flex justify-between items-end self-stretch pl-3")
@@ -120,7 +120,7 @@
     ;div(class "flex flex-col justify-center gap-1")
       ;h6(class "leading-none tracking-widest"): {tyt}
       ;div(class "inline-flex items-center gap-2")
-        ;+  (~(ship-icon htmx:fh "h-8") sip)
+        ;+  (~(ship-icon ui:fh "h-8") sip)
         ;h5(class "font-semibold leading-tight tracking-tight"): {<sip>}
       ==
     ==

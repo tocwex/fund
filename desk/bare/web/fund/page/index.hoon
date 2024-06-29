@@ -12,7 +12,7 @@
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   :-  %page
-  %-  render:htmx:fh
+  %-  html:ui:fh
   :^  bol  ord  ~
   |^  ;div#maincontent(class "flex flex-col py-2 gap-2 mx-auto")
         ;+  %^  dash-well  %funder

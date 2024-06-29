@@ -170,6 +170,10 @@
         :_  ~  ;img@"{(trip u.image.pro)}"(class "w-full my-2");
     ;div(class "lg:flex lg:justify-between")
       ;div(class "lg:flex-1 sm:gap-x-10")
+        ;div(class "flex flex-col gap-4")
+          ;+  (ship-card:htmx:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
+          ;+  (ship-card:htmx:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
+        ==
         ;form(method "post", class "flex justify-between mx-auto sm:justify-normal sm:gap-x-16")
           ;div(class "flex flex-col justify-normal p-1 gap-0.5")
             ;div(class "text-sm font-light underline"): project worker
@@ -201,7 +205,7 @@
         ==
         ;+  (mark-well:htmx:fh (trip summary.pro) &)
         ;*  ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
-            :_  ~  (copy-butn:htmx:fh "share 🔗")
+            :_  ~  (copy-butn:htmx:fh bol lag "share 🔗")
       ==
       ;*  ?:  ?=(?(%born %done %dead) sat)  ~
           =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"

@@ -47,6 +47,14 @@
     |=  lag=flag  ~+
     ^-  cord
     (desc /project/(scot %p p.lag)/[q.lag])
+  ++  aset                                     ::  as(s)e(t) t(ape) (url path)
+    |=  ast=@t  ~+
+    ^-  tape
+    (dest /asset/[(crip "{(trip ast)}.svg")])
+  ++  asec                                     ::  as(s)e(t) c(ord) (url path)
+    |=  ast=@t  ~+
+    ^-  cord
+    (desc /asset/[(crip "{(trip ast)}.svg")])
   --
 
 +|  %js
@@ -128,6 +136,11 @@
     |=  adr=^addr
     ^-  tape
     ['0' 'x' ((x-co:co 40) adr)]
+  ++  sadr                                     ::  0xabcd.ef... => "0xabc...def"
+    |=  adr=^addr
+    ^-  tape
+    =+  bas=(addr adr)
+    :(weld (scag 5 bas) "…" (slaj:fx 4 bas))
   ++  sign                                     ::  0xabcd.ef... => "0xabcdef..."
     |=  sig=^sign
     ^-  tape

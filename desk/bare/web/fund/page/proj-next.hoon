@@ -66,14 +66,14 @@
           %admin
         :-  ~
         ;:  welp
-            ?.(=(our.bol p.lag) ~ [(copy-butn:htmx:fh "share project")]~)
+            ?.(=(our.bol p.lag) ~ [(copy-butn:htmx:fh bol lag "share project")]~)
             [pro.btn]~
             [(das.btn %fund)]~
         ==
       ::
           %eauth
         :-  ~
-        :~  (copy-butn:htmx:fh "share project")
+        :~  (copy-butn:htmx:fh bol lag "share project")
             pro.btn
             hep.btn
             (link-butn:htmx:fh "{hep.syt}/#installing-fund" %& "download %fund" ~)
@@ -85,7 +85,7 @@
           If you would like to make direct connections with the worker that you
           are funding, or other contributors to the project, click "get urbit" below.
           '''
-        :~  (copy-butn:htmx:fh "share project")
+        :~  (copy-butn:htmx:fh bol lag "share project")
             pro.btn
             hep.btn
             (link-butn:htmx:fh hos.syt %& "get urbit" ~)

@@ -126,7 +126,7 @@
                       :-  %option
                       ;:  welp
                           [%value net]~
-                          [%data-image (dest:enrl:format:fh /asset/[(crip (weld net (trip '.svg')))])]~
+                          [%data-image (aset:enrl:format:fh (crip net))]~
                           ?.(=(can nid) ~ [%selected ~]~)
                       ==
                 ==
@@ -142,7 +142,7 @@
                       :-  %option
                       ;:  welp
                           [%value tok]~
-                          [%data-image (dest:enrl:format:fh /asset/[(crip (weld tok (trip '.svg')))])]~
+                          [%data-image (aset:enrl:format:fh (crip tok))]~
                           ?.(=(sym tok) ~ [%selected ~]~)
                       ==
                 ==

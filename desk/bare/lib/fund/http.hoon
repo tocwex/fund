@@ -15,6 +15,15 @@
       (~(has by peers) src.bol)
   ==
 ::
+::  +burl: b(ase) url (full url path to this ship, eauth or local)
+::
+++  burl
+  |=  bol=bowl:gall  ~+
+  ^-  tape
+  =+  erl=.^((unit @t) %ex /(scot %p our.bol)//(scot %da now.bol)/eauth/url)
+  ?^  erl  (scaj:fx (lent "/~/eauth") (trip u.erl))
+  (head:en-purl:html .^(hart:eyre %e /(scot %p our.bol)/host/(scot %da now.bol)))
+::
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
 ::
 ::    x-on-* => x-on:*
@@ -234,8 +243,6 @@
       ::  this is actually a %proj-view page
       ::  =/  loc=place:rudder  (need (route -:(purse:rudder url.request.ord)))
       ::  =/  vue=bean          &(?=(%page -.loc) =(%proj-view nom.loc))
-      =+  eru=.^((unit @t) %ex /(scot %p our.bol)//(scot %da now.bol)/eauth/url)
-      =/  erl=(unit tape)  (bind eru |=(t=@t (scaj:fx (lent "/~/eauth") (trip t))))
       =/  mep=(map @t @t)
         %-  ~(pre-fold mu bod)
         |=  [[man=mane mat=mart] dat=(map @t @t)]
@@ -247,8 +254,8 @@
       =/  des=tape  (scag 160 (trip (~(gut by mep) %desc !<(@t (slot:config %meta-desc)))))
       =/  pic=tape  (trip (~(gut by mep) %logo !<(@t (slot:config %meta-logo))))
       =/  url=tape
-        ?~  erl  (trip !<(@t (slot:config %meta-site)))
-        "{u.erl}/apps/fund/project/{(trip (~(gut by mep) %flag %error))}"
+        ?~  lag=(~(get by mep) %flag)  (trip !<(@t (slot:config %meta-site)))
+        "{(burl bol)}/apps/fund/project/{(trip u.lag)}"
       =/  dom=tape  (trip !<(@t (slot:config %meta-base)))  ::  FIXME: Derive from url
       ;=  ::  OpenGraph Meta Tags
           ;meta(property "og:type", content "website");
@@ -458,6 +465,7 @@
         *
       ;img@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg"(class "{kas} {cas}");
     ==
+  ::  TODO: inline this function; it will only be used in header
   ++  ship-agis                                  ::  icon + name for a user ship
     |=  [sip=@p our=@p url=@t]
     ^-  manx
@@ -475,9 +483,24 @@
       ==
     ==
   ++  ship-card                                  ::  summary card for user ship
-    |=  sip=@p
+    |=  [sip=@p tyt=tape adr=addr]
     ^-  manx
-    *manx
+    ;div(class "flex flex-col items-start p-3 rounded-md border-2 border-secondary-450 gap-1")
+      ;h6(class "leading-none tracking-widest"): {tyt}
+      ;div(class "inline-flex self-stretch justify-start items-center gap-2")
+        ;+  (~(ship-icon ..$ "h-20") sip)
+        ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
+          ;h3(class "leading-7 tracking-tight"): {<sip>}
+          ;h5(title (addr:enjs:format adr), class "font-normal leading-normal tracking-wide")
+            ; {(sadr:enjs:format adr)}
+          ==
+          ;div(class "self-stretch justify-between items-center inline-flex")
+            ;h5(class "font-normal leading-normal tracking-wide"): AZP: {<`@`sip>}
+            ;a.fund-butn-ac-s/"{(chat:enrl:format sip)}"(target "_blank"): 💬
+          ==
+        ==
+      ==
+    ==
   ++  proj-tytl                                  ::  project title line
     |=  [tyt=tape sat=stat ty2=tape cas=manx]
     ^-  manx
@@ -521,7 +544,7 @@
       ;div(class "relative w-8 h-4 bg-primary-500 border-2 border-secondary-500 rounded-full peer-checked:after:translate-x-[175%] after:content-[''] after:absolute after:top-[1px] after:bg-secondary-450 peer-checked:after:bg-primary-500 after:rounded-full after:h-2.5 after:w-2.5 after:transition-transform peer-checked:bg-secondary-450");
     ==
   ++  copy-butn                                  ::  copy project link button
-    |=  txt=tape
+    |=  [bol=bowl:gall lag=flag txt=tape]
     ^-  manx
     :_  ; {txt}
     :-  %button
@@ -529,7 +552,11 @@
         [%title "copy url"]
         [%class "fund-butn-ac-m {cas}"]
         [%x-data ~]
-        [%x-on-click "copyPURL(); swapText($el, 'copied ✔️');"]
+        :-  %x-on-click
+        """
+        copyText('{(burl bol)}{(flat:enrl:format lag)}');
+        swapText($el, '✔️');
+        """
     ==
   ++  link-butn                                  ::  hyperlink/redirect button
     |=  [wer=tape tab=bean txt=tape dis=tape]

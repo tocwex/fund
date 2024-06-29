@@ -65,46 +65,95 @@
           ::      *(list [flag:f prej:f])
         ==
       ==
+  ++  ship-bump
+    |=  [tyt=tape sip=@p]
+    ^-  manx
+    ;div(class "flex flex-col justify-center items-start gap-1")
+      ;h6: {tyt}
+      ;div(class "justify-start items-center gap-2 inline-flex")
+        ;+  (~(ship-icon htmx:fh "h-8") sip)
+        ;h5(class "font-semibold"): {<sip>}
+      ==
+    ==
   ++  prez-welz
     |=  [tyt=tape new=bean pez=(list [flag:f prej:f])]
     ^-  manx
     ;div
       ;div(class "flex justify-between")
-        ;h1(class "text-3xl pt-2"): {tyt}
+        ;h1.pt-2: {tyt}
         ;*  ?.  new  ~
             :_  ~  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}": new project +
       ==
-      ;*  ?~  pez
-            :~  ;div(class "italics mx-4 text-gray-600")
-                  ; No projects found.
-            ==  ==
+      ;*  ?~  pez  :_  ~  ;div(class "italics mx-4 text-gray-600"): No projects found.
           %+  turn  pez
           |=  [[sip=@p nam=@tas] pro=proj:f liv=?]
           ^-  manx
-          ;div(class "flex flex-col gap-y-2 m-1 p-4 border-2 border-black rounded-xl")
-            ;div(class "flex flex-wrap items-center justify-between")
-              ;h2(class "text-2xl pr-4"): {(trip title.pro)}
-              ;div(class "flex items-center gap-x-2")
-                ;div(class "text-lg")
-                  ; Goal
-                  ;span#proj-cost: ${(cash:enjs:format:fh ~(cost pj:f pro))}
+          =+  url=(dest:enrl:format:fh /project/(scot %p sip)/[nam])
+          ::  ;div(class "flex flex-col gap-y-2 m-1 p-4 border-2 border-black rounded-xl")
+          ::    ;div(class "flex flex-wrap items-center justify-between")
+          ::      ;h2(class "text-2xl pr-4"): {(trip title.pro)}
+          ::      ;div(class "flex items-center gap-x-2")
+          ::        ;div(class "text-lg")
+          ::          ; Goal
+          ::          ;span#proj-cost: ${(cash:enjs:format:fh ~(cost pj:f pro))}
+          ::        ==
+          ::        ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
+          ::      ==
+          ::    ==
+          ::    ;div(class "flex flex-wrap items-center justify-between")
+          ::      ::  FIXME: Need a Hoon-based solution for associating chain
+          ::      ::  IDs with human-readable names
+          ::      ;div: {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
+          ::      ;div: {(cuss (trip name.currency.pro))}
+          ::    ==
+          ::    ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
+          ::    ;+  (mark-well:htmx:fh (trip summary.pro) |)
+          ::    ;div(class "flex gap-x-4")
+          ::      ;a.fund-butn-de-m/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam])}": view project →
+          ::      ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
+          ::          :_  ~
+          ::          ;a.fund-butn-de-m/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam]/edit)}": edit project →
+          ::    ==
+          ::  ==
+          ;div(class "flex flex-col p-6 rounded-2xl border-2 border-secondary-500 gap-3")
+            ;div(class "flex flex-col self-stretch justify-end items-end gap-3")
+              ;div(class "flex flex-col self-stretch justify-start items-start gap-3")
+                ;div(class "flex flex-col self-stretch justify-center items-center gap-3")
+                  ;div(class "flex grow shrink basis-0 justify-center items-center gap-3")
+                    ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
+                    ;h6: 32% funded
+                  ==
                 ==
-                ;+  (stat-pill:htmx:fh ~(stat pj:f pro))
+                ;div(class "self-stretch justify-start items-center gap-3 inline-flex")
+                  ;h1: {(trip title.pro)}
+                  ;+  (copy-butn:htmx:fh bol [sip nam] "🔗")
+                  ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
+                      :_  ~  ;a.fund-butn-de-m/"{url}/edit": ✏️
+                ==
+                ;div(class "flex flex-col justify-start items-start gap-1 self-stretch")
+                  ;div(class "self-stretch pl-3 justify-start items-center gap-6 inline-flex")
+                    ;div(class "justify-start items-start gap-6 flex")
+                      ;+  (ship-bump "Project Worker" sip)
+                      ;+  (ship-bump "Trusted Oracle" p.assessment.pro)
+                    ==
+                  ==
+                  ;+  (mark-well:htmx:fh (trip summary.pro) |)
+                ==
               ==
-            ==
-            ;div(class "flex flex-wrap items-center justify-between")
-              ::  FIXME: Need a Hoon-based solution for associating chain
-              ::  IDs with human-readable names
-              ;div: {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
-              ;div: {(cuss (trip name.currency.pro))}
-            ==
-            ;+  (odit-ther:htmx:fh ~(odit pj:f pro))
-            ;+  (mark-well:htmx:fh (trip summary.pro) |)
-            ;div(class "flex gap-x-4")
-              ;a.fund-butn-de-m/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam])}": view project →
-              ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
-                  :_  ~
-                  ;a.fund-butn-de-m/"{(dest:enrl:format:fh /project/(scot %p sip)/[nam]/edit)}": edit project →
+              ;div(class "self-stretch pl-3 justify-between items-end inline-flex")
+                ;div(class "flex flex-row gap-2 item-center")
+                  ;img.h-12@"{(aset:enrl:format:fh name.currency.pro)}";
+                  ::  FIXME: Need a Hoon-based solution for associating chain
+                  ::  IDs with human-readable names
+                  ;div(class "flex-col justify-center items-start inline-flex")
+                    ;h1: {(cash:enjs:format:fh ~(cost pj:f pro))} ${(cuss (trip name.currency.pro))}
+                    ;h6(class "text-right leading-none tracking-widest")
+                      ; Deployed On {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
+                    ==
+                  ==
+                ==
+                ;a.fund-butn-de-m/"{url}": view project →
+              ==
             ==
           ==
     ==

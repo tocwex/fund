@@ -293,10 +293,9 @@ if (window.Alpine === undefined) {
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     tws,
     cmd,
-    copyText: copyTextToClipboard,
-    copyPURL: copyProjectURL,
-    swapText: swapContent,
-    sendForm: submitForm,
+    copyText,
+    swapText,
+    sendForm,
     checkWallet,
     TomSelect,
     CONTRACT,
@@ -304,7 +303,7 @@ if (window.Alpine === undefined) {
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 
-  function swapContent(elem, text) {
+  function swapText(elem, text) {
     if (elem.getAttribute("data-text") === null) {
       elem.setAttribute("data-text", elem.innerText);
     }
@@ -312,14 +311,7 @@ if (window.Alpine === undefined) {
     setTimeout(() => {elem.innerText = elem.getAttribute("data-text");}, 2000);
   }
 
-  function copyProjectURL() {
-    copyTextToClipboard(window.location.toString().replace(
-      /\/((project)|(next))\/(~[^\/]+)\/([^\/]+).*/,
-      "/project/$4/$5",
-    ));
-  }
-
-  function fallbackCopyTextToClipboard(text) {
+  function fallbackCopyText(text) {
     var textArea = document.createElement("textarea");
     textArea.value = text;
 
@@ -343,9 +335,9 @@ if (window.Alpine === undefined) {
     document.body.removeChild(textArea);
   }
 
-  function copyTextToClipboard(text) {
+  function copyText(text) {
     if (!navigator.clipboard) {
-      fallbackCopyTextToClipboard(text);
+      fallbackCopyText(text);
       return;
     }
     navigator.clipboard.writeText(text).then(function() {
@@ -355,7 +347,7 @@ if (window.Alpine === undefined) {
     });
   }
 
-  function submitForm(event, checks = [], action = Promise.resolve(undefined)) {
+  function sendForm(event, checks = [], action = Promise.resolve(undefined)) {
     event.preventDefault();
     if ((event.target.form !== undefined) && !event.target.form.reportValidity()) {
       return Promise.resolve(undefined);

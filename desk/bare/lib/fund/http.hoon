@@ -327,6 +327,7 @@
         ==
       ==
     ==
+  ::  TODO: Add "extended" or "detailed" option to this component
   ++  odit-ther                                  ::  funding thermometer element
     |=  odi=odit
     ^-  manx
@@ -347,19 +348,23 @@
         ::  are overages (since we renormalize to overage amount).
         =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (cury rcen tot)))
         =+  dez=(iron (turn cez cend))
-        ;div(class "fund-odit-ther {cas}")
-          ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
-              |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
-              ^-  (unit manx)
-              ?:  =(0 den)  ~
-              :-  ~
-              ;div(title "{(real:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
-                ; ${(cash:enjs:format cas)}
-              ==
+        ;div(class "w-full flex flex-row gap-3")
+          ;div(class "fund-odit-ther {cas}")
+            ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
+                |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
+                ^-  (unit manx)
+                ?:  =(0 den)  ~
+                :-  ~
+                ;div(title "{(real:enjs:format cen)}% {nam}", class "fund-odit-sect w-[{<den>}%] {kas}")
+                  ; ${(cash:enjs:format cas)}
+                ==
+          ==
+          ;h6: {(real:enjs:format (rcen tot (add fill.odi plej.odi)))}% funded
         ==
     ++  rcen                                     ::  odit segment to percentage
       |=  [tot=cash val=cash]
       ^-  @rs
+      ?:  =(0 tot)  .100
       (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
     ++  cend                                     ::  odit percentage to decimal
       |=  val=@rs
@@ -546,17 +551,14 @@
   ++  copy-butn                                  ::  copy project link button
     |=  [bol=bowl:gall lag=flag txt=tape]
     ^-  manx
+    =+  url=(weld (burl bol) (flat:enrl:format lag))
     :_  ; {txt}
     :-  %button
     :~  [%type "button"]
         [%title "copy url"]
         [%class "fund-butn-ac-m {cas}"]
         [%x-data ~]
-        :-  %x-on-click
-        """
-        copyText('{(burl bol)}{(flat:enrl:format lag)}');
-        swapText($el, '✔️');
-        """
+        [%x-on-click "copyText('{url}'); swapText($el, '✔️');"]
     ==
   ++  link-butn                                  ::  hyperlink/redirect button
     |=  [wer=tape tab=bean txt=tape dis=tape]

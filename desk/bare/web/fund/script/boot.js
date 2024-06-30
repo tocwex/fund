@@ -7,7 +7,8 @@ import presetLineClamp from 'https://cdn.jsdelivr.net/npm/@twind/preset-line-cla
 import presetAutoPrefix from 'https://cdn.jsdelivr.net/npm/@twind/preset-autoprefix@1.0.7/+esm';
 import {
   http, createConfig, injected,
-  connect, disconnect, reconnect, getAccount,
+  connect, disconnect, reconnect,
+  getAccount, getEnsName,
 } from 'https://esm.sh/@wagmi/core@2.x';
 import { fromHex } from 'https://esm.sh/viem@2.x';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
@@ -172,9 +173,13 @@ if (window.Alpine === undefined) {
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
+      ['fund-head', 'sticky top-0 z-50'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
-      ['fund-note', 'w-full flex justify-center sticky font-semibold top-0 z-50 bg-primary-600 py-1 text-sm'],
+      ['fund-note', 'fund-head fixed w-full flex justify-center font-semibold bg-primary-600 py-1 text-sm'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
+      ['fund-addr', 'font-normal leading-normal tracking-wide'],
+      ['fund-addr-raw', 'fund-addr']
+      ['fund-addr-ens', 'fund-addr'],
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-tytl-link', 'font-serif font-medium text-xl duration-300 hover:(cursor-pointer text-tertiary-500)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
@@ -435,6 +440,16 @@ if (window.Alpine === undefined) {
       }
     });
 
+    document.querySelectorAll(".fund-addr-ens").forEach(ensElem => {
+      const rawElem = ensElem.parentElement?.querySelector(".fund-addr-raw");
+      if (rawElem) {
+        const rawAddr = rawElem.innerHTML;
+        getEnsName(window.Wagmi, {address: rawAddr}).then(ensName => {
+          ensElem.innerHTML = ensName ?? "no ens found";
+        });
+      }
+    });
+
     TippyJs("#fund-agis", {
       content: document.querySelector("#fund-agis-opts").innerHTML,
       allowHTML: true,
@@ -442,8 +457,6 @@ if (window.Alpine === undefined) {
       arrow: false,
       trigger: "click",
       theme: "fund",
-      // placement: "bottom-end",
-      // triggerTarget: document.querySelector("#fund-agis-menu"),
     });
   });
 

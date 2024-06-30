@@ -325,17 +325,23 @@
       ==
     --
   ++  ship-card                                  ::  summary card for user ship
+    ::  TODO: Consider changing the signature to take a (unit addr) for
+    ::  cases when the address isn't yet available (e.g. project in
+    ::  draft form)
     |=  [sip=@p tyt=tape adr=addr]
     ^-  manx
-    ;div(class "flex flex-col items-start p-3 rounded-md border-2 border-secondary-450 gap-1")
-      ;h6(class "leading-none tracking-widest"): {tyt}
+    ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1", x-data "\{ens: false}")
+      ;div(class "flex flex-row justify-between items-center")
+        ;h6(class "leading-none tracking-widest"): {tyt}
+        ;+  %-  ~(apply-elem mu (cheq-swix "ens"))
+            |=([n=mane t=mart] [n ?.(=(%input n) t [[%x-model "ens"] t])])
+      ==
       ;div(class "inline-flex self-stretch justify-start items-center gap-2")
         ;+  (~(ship-icon ..$ "h-20") sip)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;h3(class "leading-7 tracking-tight"): {<sip>}
-          ;h5(title (addr:enjs:format adr), class "font-normal leading-normal tracking-wide")
-            ; {(sadr:enjs:format adr)}
-          ==
+          ;h5.fund-addr-ens(title (addr:enjs:format adr), x-show "ens"): …loading…
+          ;h5.fund-addr-raw(title (addr:enjs:format adr), x-show "!ens"): {(sadr:enjs:format adr)}
           ;div(class "self-stretch justify-between items-center inline-flex")
             ;h5(class "font-normal leading-normal tracking-wide"): AZP: {<`@`sip>}
             ;a.fund-butn-ac-s/"{(chat:enrl:format sip)}"(target "_blank"): 💬
@@ -584,10 +590,10 @@
       %dead  "highlight1-400"
     ==
   ++  cheq-swix                                  ::  checkbox switch <o->
-    |=  nam=@tas
+    |=  nam=tape
     ^-  manx
     =-  ;label(class "cursor-pointer {cas}")
-          ;input(name (trip nam), type "checkbox", class "sr-only peer");
+          ;input(name nam, type "checkbox", class "sr-only peer");
           ;div(class kas);
         ==
     ^=  kas

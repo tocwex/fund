@@ -34,6 +34,10 @@ if (window.Alpine === undefined) {
         mono: ['Ubuntu Mono', 'mono'],
       },
       extend: {
+        fontSize: {
+          '3xs': ['0.25rem', {lineHeight: '0.5rem'}],
+          '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
+        },
         colors: {
           primary: {
             100: '#ffffff',
@@ -166,16 +170,19 @@ if (window.Alpine === undefined) {
       h6 { @apply font-medium text-xs uppercase; }
       select { padding: unset; @apply fund-select; }
       textarea,input { padding: unset; @apply fund-input; }
-      label { @apply font-light py-1; }
+      label { @apply font-light; }
+      code { @apply font-mono text-tertiary-150 bg-tertiary-850 rounded-md py-0.5 px-1.5; }
+      blockquote { @apply p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800; }
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
-      ['fund-head', 'sticky top-0 z-50'],
+      ['fund-flot', 'sticky z-50 fixed w-full flex justify-center'],
+      ['fund-head', 'fund-flot top-0 bg-primary-600 font-semibold py-1 text-sm'],
+      ['fund-foot', 'fund-flot bottom-0'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
-      ['fund-note', 'fund-head fixed w-full flex justify-center font-semibold bg-primary-600 py-1 text-sm'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
       ['fund-addr', 'font-normal leading-normal tracking-wide'],
       ['fund-addr-raw', 'fund-addr']
@@ -205,7 +212,8 @@ if (window.Alpine === undefined) {
       ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
-      ['fund-odit-ther', 'w-full rounded-md flex h-8 text-primary-700'], // FIXME: text-primary-600
+      ['fund-aset-circ', 'h-5 bg-contain bg-white rounded-full'],
+      ['fund-odit-ther', 'w-full rounded-md flex h-8 text-primary-700'], // FIXME: h-4 sm:h-8 text-primary-600
       ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
     ],
   });
@@ -226,9 +234,6 @@ if (window.Alpine === undefined) {
       '& ol,ul': {'padding': 'unset', 'padding-inline-start': '1.5rem', '@apply': 'list-outside'},
       '& ul': {'@apply': 'list-disc'},
       '& ol': {'@apply': 'list-decimal'},
-      // NOTE: These two segments should debatably be hoisted into 'preflight'.
-      '& blockquote': {'@apply': 'p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800'},
-      '& code': {'@apply': 'font-mono text-tertiary-150 bg-tertiary-850 rounded-md py-0.5 px-1.5'},
     });
   }
 
@@ -295,7 +300,6 @@ if (window.Alpine === undefined) {
     swapText,
     sendForm,
     checkWallet,
-    TomSelect,
     CONTRACT,
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
@@ -405,6 +409,15 @@ if (window.Alpine === undefined) {
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
 
+  function renderSelector(data, escape) {
+    return `
+      <div class='flex flex-row items-center gap-x-1'>
+        <img class='fund-aset-circ' src='${data.image}' />
+        <span>${data.text}</span>
+      </div>
+    `;
+  };
+
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
     connectors: [injected()],
@@ -450,13 +463,28 @@ if (window.Alpine === undefined) {
       }
     });
 
-    TippyJs("#fund-agis", {
-      content: document.querySelector("#fund-agis-opts").innerHTML,
-      allowHTML: true,
-      interactive: true,
-      arrow: false,
-      trigger: "click",
-      theme: "fund",
+    document.querySelectorAll(".fund-tsel").forEach(selElem => {
+      const telElem = new TomSelect(`#${selElem.id}`, {
+        allowEmptyOption: false,
+        controlInput: null,
+        render: {
+          option(data, escape) { return renderSelector(data, escape); },
+          item(data, escape) { return renderSelector(data, escape); },
+        },
+      });
+      selElem.matches(":disabled") && telElem.disable();
+    });
+
+    document.querySelectorAll(".fund-tipi").forEach(tipElem => {
+      const tipElemId = `#${tipElem.id}`;
+      TippyJs(tipElemId, {
+        content: document.querySelector(`${tipElemId}-opts`).innerHTML,
+        allowHTML: true,
+        interactive: true,
+        arrow: false,
+        trigger: "click",
+        theme: "fund",
+      });
     });
   });
 

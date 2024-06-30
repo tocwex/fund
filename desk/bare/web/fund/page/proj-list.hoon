@@ -17,60 +17,53 @@
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  "{(trip dyp)} dashboard"
-  |^  ?+    dyp  !!
-          %worker
-        =/  my-prez  ~(tap by ~(mine conn:proj:fd bol +.dat))
-        ;div#maincontent
-          ;+  %^  prez-welz  "My Draft Proposals"  &
-              %+  skim  my-prez
-              |=([* pro=proj:f liv=?] ?=(?(%born %prop) ~(stat pj:f pro)))
-          ;+  %^  prez-welz  "My Open Projects"  |
-              %+  skim  my-prez
-              |=([* pro=proj:f liv=?] ?=(?(%lock %work %sess) ~(stat pj:f pro)))
-          ;+  %^  prez-welz  "My Project Archive"  |
-              %+  skim  my-prez
-              |=([* pro=proj:f liv=?] ?=(?(%dead %done) ~(stat pj:f pro)))
-        ==
-      ::
-          %oracle
-        =/  us-sess
-          %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
-          |=  [[sip=@p *] pro=proj:f liv=?]
-          (~(has in (~(rols pj:f pro) sip our.bol)) %orac)
-        ;div#maincontent
-          ;+  %^  prez-welz  "Requests for My Services"  |
-              %+  skim  us-sess
-              |=([* pro=proj:f liv=?] ?=(%prop ~(stat pj:f pro)))
-          ;+  %^  prez-welz  "My Open Assessment Projects"  |
-              %+  skim  us-sess
-              |=([* pro=proj:f liv=?] ?=(?(%lock %work %sess) ~(stat pj:f pro)))
-          ;+  %^  prez-welz  "My Assessment Archive"  |
-              %+  skim  us-sess
-              |=([* pro=proj:f liv=?] ?=(?(%dead %done) ~(stat pj:f pro)))
-        ==
-      ::
-          %funder
-        =/  us-fund
-          %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
-          |=  [[sip=@p *] pro=proj:f liv=?]
-          (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
-        ;div#maincontent
-          ;+  %^  prez-welz  "My Open Pledges"  |
-              %+  skim  us-fund
-              |=([* pro=proj:f liv=?] (~(has by pledges.pro) our.bol))
-          ;+  %^  prez-welz  "Projects I Funded"  |
-              %+  skim  us-fund
-              |=([* pro=proj:f liv=?] (lien contribs.pro |=(t=trib:f ?~(ship.t | =(our.bol u.ship.t)))))
-          ::  ;+  %^  prez-welz  "Projects from %pals"  |
-          ::      *(list [flag:f prej:f])
-        ==
+  |^  ;div#maincontent(class "flex flex-col p-2 gap-y-2")
+        ;*  %-  turn  :_  prez-welz
+            ?+    dyp  !!
+                %worker
+              =/  myn  ~(tap by ~(mine conn:proj:fd bol +.dat))
+              :~  :+  "My Draft Proposals"  &
+                    (skim myn |=([* p=proj:f *] ?=(?(%born %prop) ~(stat pj:f p))))
+                  :+  "My Open Projects"  |
+                    (skim myn |=([* p=proj:f *] ?=(?(%lock %work %sess) ~(stat pj:f p))))
+                  :+  "My Project Archive"  |
+                    (skim myn |=([* p=proj:f *] ?=(?(%dead %done) ~(stat pj:f p))))
+              ==
+            ::
+                %oracle
+              =/  orz
+                %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
+                |=  [[sip=@p *] pro=proj:f liv=?]
+                (~(has in (~(rols pj:f pro) sip our.bol)) %orac)
+              :~  :+  "Requests for My Services"  |
+                    (skim orz |=([* p=proj:f *] ?=(%prop ~(stat pj:f p))))
+                  :+  "My Open Assessment Projects"  |
+                    (skim orz |=([* p=proj:f *] ?=(?(%lock %work %sess) ~(stat pj:f p))))
+                  :+  "My Assessment Archive"  |
+                    (skim orz |=([* p=proj:f *] ?=(?(%dead %done) ~(stat pj:f p))))
+              ==
+            ::
+                %funder
+              =/  fuz
+                %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
+                |=  [[sip=@p *] pro=proj:f liv=?]
+                (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
+              :~  :+  "My Open Pledges"  |
+                    (skim fuz |=([* p=proj:f *] (~(has by pledges.p) our.bol)))
+                  :+  "Projects I Funded"  |
+                    %+  skim  fuz
+                    |=([* p=proj:f *] (lien contribs.p |=(t=trib:f ?~(ship.t | =(our.bol u.ship.t)))))
+                  ::  :+  "Projects from %pals"  |
+                  ::    *(list [flag:f prej:f])
+              ==
+            ==
       ==
   ++  prez-welz
     |=  [tyt=tape new=bean pez=(list [flag:f prej:f])]
     ^-  manx
-    ;div
-      ;div(class "flex justify-between pb-2")
-        ;h1.pt-2: {tyt}
+    ;div(class "flex flex-col gap-y-2")
+      ;div(class "flex justify-between")
+        ;h1: {tyt}
         ;*  ?.  new  ~
             :_  ~  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}": new project +
       ==

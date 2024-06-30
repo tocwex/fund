@@ -56,6 +56,19 @@
     ^-  cord
     (desc /asset/[(crip "{(trip ast)}.svg")])
   --
+  ++  surt                                     ::  s(hip) ur(l) t(ape) (url path)
+    |=  sip=@p  ~+
+    ^-  tape
+    ::  TODO: Comets should use the URL to a pure black image
+    ?-    (clan:title sip)
+      %pawn  "https://azimuth.network/erc721/{(bloq:enjs 0)}.svg"
+      %earl  "https://azimuth.network/erc721/{(bloq:enjs `@`(end 5 sip))}.svg"
+      *      "https://azimuth.network/erc721/{(bloq:enjs `@`sip)}.svg"
+    ==
+  ++  surc                                     ::  s(hip) ur(l) c(ord) (url path)
+    |=  sip=@p  ~+
+    ^-  cord
+    (crip (surt sip))
 
 +|  %js
 ++  dejs                                       ::  js-tape => noun

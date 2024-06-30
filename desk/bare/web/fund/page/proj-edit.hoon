@@ -116,7 +116,7 @@
             ==
             ;div(class "flex")
               ;div(class "fund-form-group")
-                ;select#proj-chain(name "net", required ~)
+                ;select#proj-chain.fund-tsel(name "net", required ~)
                   ::  FIXME: Including the network IDs here is a hack, but
                   ::  this should be fixed by moving chain stuff to the BE
                   ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
@@ -134,7 +134,7 @@
                 ;label(for "net"): Blockchain
               ==
               ;div(class "fund-form-group")
-                ;select#proj-token(name "tok", required ~)
+                ;select#proj-token.fund-tsel(name "tok", required ~)
                   ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
                       %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
                       |=  tok=tape
@@ -176,7 +176,6 @@
                           ::  FIXME: Using the X SVG causes a weird pop-in effect
                           ::  for new milestones, so we just use raw text for now
                           ;button(class "font-light", type "button", x-on-click "deleteMile"): ❌
-                          ::  ;img@"{(dest:enrl:format:fh /asset/[~.close.svg])}";
                         (stat-pill:ui:fh status.mil)
                   ==
                   ;div(class "flex")
@@ -214,9 +213,15 @@
         ==
         ;div
           ;h1.pt-2: Trusted Oracle
+          ;p.pt-2
+            ; Chose a service provider who will assess work completion
+            ; and settle disputes. The fee percentage is paid to the
+            ; oracle as a cut of the completed milestone upon withdrawal
+            ; of funds.
+          ==
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;select#proj-oracle(name "sea")
+              ;select#proj-oracle.fund-tsel(name "sea")
                 ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
                     =+  dad=(sein:title our.bol now.bol our.bol)
                     ::  FIXME: These options are hard-coded from the
@@ -237,7 +242,7 @@
             ;div(class "fund-form-group")
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
-                =placeholder  "a % of completed milestones"
+                =placeholder  "1%"
                 =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru));
               ;label(for "seo"): Fee Offer
             ==
@@ -287,25 +292,6 @@
           document.querySelectorAll('textarea').forEach(elem => (
             this.updateTextarea(\{target: elem})
           ));
-
-          const selectRender = (data, escape) => (`
-            <div class='flex flex-row items-center gap-x-1'>
-              <img class='h-5 bg-contain bg-white rounded-full' src='$\{data.image}' />
-              <span>$\{data.text}</span>
-            </div>
-          `);
-          const selectOpts = \{
-            allowEmptyOption: false,
-            controlInput: null,
-            render: \{
-              option(data, escape) \{ return selectRender(data, escape); },
-              item(data, escape) \{ return selectRender(data, escape); },
-            },
-          };
-          ['#proj-chain', '#proj-token', '#proj-oracle'].forEach(selectId => \{
-            const selectElem = new this.TomSelect(selectId, selectOpts);
-            !this.proj_born && selectElem.disable();
-          });
         },
         updateProj() \{
           this.proj_cost = `\\$$\{this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;

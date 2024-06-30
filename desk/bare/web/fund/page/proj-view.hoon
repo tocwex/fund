@@ -151,7 +151,13 @@
   =+  [tym=|(wok ora) pyr=|(wok ora arb)]
   =/  pod=odit:f  ~(odit pj:f pro)
   =/  moz=(list odit:f)  ~(odim pj:f pro)
+  =/  muz=(list mula:f)  ~(mula pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
+  =/  ioz=manx
+    %-  icon-stax:ui:fh
+    :~  (aset:enrl:format:fh name.currency.pro)
+        (aset:enrl:format:fh ?:(=(1 chain.currency.pro) %mainnet %sepolia))
+    ==
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  (trip title.pro)
@@ -162,140 +168,43 @@
     ::      :_  ~  ;div(class "text-red-500 text-center"): {(trip txt.u.msg)}
     ;*  ?~  image.pro  ~
         :_  ~  ;img@"{(trip u.image.pro)}"(class "w-full");
+    ;*  =-  ?~  buz  ~
+            :_  ~
+            ;form(method "post", class "flex flex-row justify-between")
+              ;*  buz
+            ==
+        ^-  buz=marl
+        ;:    welp
+            ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
+          :_  ~  (copy-butn:ui:fh bol lag "share 🔗")
+        ::
+            ?.  &(wok ?=(?(%born %prop) sat))  ~
+          :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format:fh (snoc pat %edit))}": edit ✏️
+        ::
+            ?.  &(wok ?=(%prop sat))  ~
+          :_  ~
+          %:  prod-butn:ui:fh
+              %bump-lock  %true  "launch ✔️"  "finalizeContract"
+              ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+          ==
+        ::
+            ?.  &(tym ?=(?(%lock %work %sess) sat))  ~
+          :_  ~  (prod-butn:ui:fh %bump-dead %false "cancel ❌" "cancelContract" ~)
+        ==
     ;div(class "flex flex-col gap-1")
-      ;h1: Funding Tracker
+      ;div(class "flex flex-row justify-between items-center")
+        ;h1: Funding Tracker
+        ;div(class "flex flex-wrap gap-1 items-center")
+          ;h6(class "leading-none tracking-widest"): Funded via
+          ;+  ioz
+        ==
+      ==
       ;+  (proj-ther:ui:fh pro &)
     ==
     ;div(class "flex flex-col gap-1")
       ;h1: Project Overview
       ;+  (mark-well:ui:fh (trip summary.pro) |)
-      ::  ;*  ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
-      ::      :_  ~  (copy-butn:ui:fh bol lag "share 🔗")
     ==
-    ::  FIXME: Reimplement this as a modal if possible
-    ::
-    ::  ;div(class "lg:flex lg:justify-between")
-    ::    ;div(class "lg:flex-1 sm:gap-x-10")
-    ::      ;div(class "flex flex-col gap-4")
-    ::        ;+  (ship-card:ui:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
-    ::        ;+  (ship-card:ui:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
-    ::      ==
-    ::      ;form(method "post", class "flex justify-between mx-auto sm:justify-normal sm:gap-x-16")
-    ::        ;div(class "flex flex-col justify-normal p-1 gap-0.5")
-    ::          ;div(class "text-sm font-light underline"): project worker
-    ::          ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.lag)}
-    ::          ;+  ?:  !=(our.bol src.bol)  ;div;
-    ::              ?.  wok
-    ::                ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): send message →
-    ::              ?:  ?=(?(%born %prop) sat)
-    ::                ;a.fund-butn-de-m/"{(dest:enrl:format:fh (snoc pat %edit))}": edit project →
-    ::              ?.  ?=(?(%done %dead) sat)
-    ::                (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
-    ::              ;div;
-    ::        ==
-    ::        ;div(class "flex flex-col justify-normal p-1 gap-0.5")
-    ::          ;div(class "text-sm font-light underline"): trusted oracle
-    ::          ;div(class "px-1 text-lg font-mono text-nowrap"): {(scow %p p.assessment.pro)}
-    ::          ;+  ?:  !=(our.bol src.bol)  ;div;
-    ::              ?:  &(wok ?=(%prop sat))
-    ::                %:  prod-butn:ui:fh
-    ::                    %bump-lock  %true  "finalize oracle ✓"  "finalizeContract"
-    ::                    ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
-    ::                ==
-    ::              ?:  &(ora ?!(?=(?(%born %prop %done %dead) sat)))
-    ::                (prod-butn:ui:fh %bump-dead %false "cancel project ✗" "cancelContract" ~)
-    ::              ?:  !ora
-    ::                ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): send message →
-    ::              ;div;
-    ::        ==
-    ::      ==
-    ::    ==
-    ::    ;*  ?:  ?=(?(%born %done %dead) sat)  ~
-    ::        =+  cas="m-2 p-2 border-2 border-black rounded-xl lg:w-1/4"
-    ::        ?.  ?=(%prop sat)  ::  contribute aside form
-    ::          :_  ~
-    ::          ;form(method "post", autocomplete "off", class cas)
-    ::            ;div(class "p-2 text-3xl w-full")
-    ::              ;+  ?~  pej=(~(get by pledges.pro) src.bol)
-    ::                    ;span: Contribute
-    ::                  ;span: Fulfill Pledge
-    ::            ==
-    ::            ;div(class "flex gap-2")
-    ::              ;div(class "fund-form-group")
-    ::                ;+  :_  ~  :-  %input
-    ::                    ;:  welp
-    ::                        [%name "sum"]~
-    ::                        [%type "number"]~
-    ::                        [%required ~]~
-    ::                        [%min "0.01"]~
-    ::                        [%max "100000000"]~
-    ::                        [%step "0.01"]~
-    ::                        [%placeholder "10"]~
-    ::                        [%class "p-2"]~
-    ::                        ?~  pej=(~(get by pledges.pro) src.bol)  ~
-    ::                        ~[[%readonly ~] [%value (cash:enjs:format:fh cash.u.pej)]]
-    ::                    ==
-    ::                ;label(for "sum"): amount (tokens)
-    ::              ==
-    ::              ;div(class "fund-form-group")
-    ::                ;select.p-2(name "tok")
-    ::                  ;option(value (trip name.currency.pro))
-    ::                    ; {(cuss (trip name.currency.pro))}
-    ::                  ==
-    ::                ==
-    ::                ;label(for "tok"): token
-    ::              ==
-    ::            ==
-    ::            ;div(class "fund-form-group")
-    ::              ;input.p-2(name "msg", type "text", placeholder "awesome work!");
-    ::              ;label(for "msg"): public message
-    ::            ==
-    ::            ;div(class "p-2 flex justify-end gap-x-2")
-    ::              ;+  %:  prod-butn:ui:fh
-    ::                      %mula-plej  %action  "pledge only ~"  "plejFunds"
-    ::                      ?.  &((auth:fh bol) (plan:fx src.bol))
-    ::                        "pledges only available to authenticated planets"
-    ::                      ?:  (~(has by pledges.pro) src.bol)
-    ::                        "you must fulfill your outstanding pledge"
-    ::                      ~
-    ::                  ==
-    ::              ;+  (prod-butn:ui:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
-    ::            ==
-    ::          ==
-    ::        ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
-    ::          :_  ~
-    ::          ;form(method "post", class cas)
-    ::            ;div(class "p-2 text-3xl w-full"): Review Request
-    ::            ;div(class "gap-2")
-    ::              ;div(class "p-2")
-    ::                ;span(class "font-mono font-medium"): {(scow %p p.lag)}
-    ::                ;span:  has requested your services as an trusted oracle for this project.
-    ::              ==
-    ::              ;div(class "p-2")
-    ::                ;span(class "font-mono font-medium"): {(scow %p p.lag)}
-    ::                ;span:  is offering the following compensation for your services:
-    ::              ==
-    ::              ;div(class "m-2 p-2 font-mono bg-gray-300 text-black rounded-md")
-    ::                ;span(class "font-medium"): {(cash:enjs:format:fh q.assessment.pro)}%
-    ::                ;span:  of each milestone payout upon completed assessment
-    ::              ==
-    ::              ;div(class "p-2")
-    ::                ; Accepting this review request means that you will have the
-    ::                ; responsibility to review each project milestone and release
-    ::                ; funds to the project worker upon successful completion.
-    ::              ==
-    ::              ;div(class "p-2")
-    ::                ; If you pinky promise to assess this project, click the button
-    ::                ; below to confirm your particpation.
-    ::              ==
-    ::            ==
-    ::            ;div(class "p-2 flex justify-end gap-x-2")
-    ::              ;+  (prod-butn:ui:fh %bump-born %action "decline ~" ~ ~)
-    ::              ;+  (prod-butn:ui:fh %bump-prop %true "accept ✓" "acceptContract" ~)
-    ::            ==
-    ::          ==
-    ::        ~  ::  no aside form
-    ::  ==
     ;div(class "flex flex-col gap-2")
       ;h1: Milestone Details
       ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
@@ -357,13 +266,138 @@
     ==
     ;div(class "flex flex-col gap-2")
       ;h1: Project Participants
-      ;+  (ship-card:ui:fh p.lag "Project Worker" ?~(contract.pro 0x0 work.u.contract.pro))
-      ;+  (ship-card:ui:fh p.assessment.pro "Trusted Oracle" ?~(contract.pro 0x0 from.sigm.u.contract.pro))
+      ;+  %:  ship-card:ui:fh
+              p.lag
+              "Project Worker"
+              ?~(contract.pro 0x0 work.u.contract.pro)
+              ;*  ?.  &(=(our src):bol !wok)  ~
+                  :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): 💬
+          ==
+      ;+  %:  ship-card:ui:fh
+              p.assessment.pro
+              "Trusted Oracle"
+              ?~(contract.pro 0x0 from.sigm.u.contract.pro)
+              ;*  ?.  &(=(our src):bol !ora)  ~
+                  :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): 💬
+          ==
     ==
-    ;div(class "flex flex-col gap-2")
+    ::  NOTE: This section has no outer wrapper to allow for page-wide
+    ::  stickiness for the "contribute" modal button
+    ;div(class "flex flex-row justify-between items-center")
       ;h1: Fund Contributors
-      ;*  =/  muz=(list mula:f)  ~(mula pj:f pro)
-          ?~  muz  :_  ~  ;p(class "fund-warn"): No contributors found.
+      ;div(class "flex flex-wrap items-center gap-1")
+        ;*  =-  :~  (icon-stax:ui:fh (scag 3 (turn ~(tap in siz) surt:enrl:format:fh)))
+                    ;h6: {<~(wyt in siz)>} total
+                ==
+            ^-  siz=(set @p)
+            %+  roll  muz
+            |=  [mul=mula:f siz=(set @p)]
+            =/  sip=(unit @p)  ?-(-.mul %plej `ship.mul, %trib ship.mul)
+            ?~(sip siz (~(put in siz) u.sip))
+      ==
+    ==
+    ;*  ?:  ?=(?(%born %done %dead) sat)  ~
+        =+  cas="bg-primary-500 border-2 border-secondary-500"
+        =-  ?~  fom  ~
+            :_  ~
+            ;div(class "fund-foot")
+              ;div(class "flex gap-2 items-center p-2 mb-2 rounded-md {cas}")
+                ;button#fund-mula.fund-tipi.fund-butn-de-m: {txt}
+                ;+  ioz
+                ;div#fund-mula-opts(class "hidden")
+                  ;form  =method  "post"
+                      =autocomplete  "off"
+                      =class  "flex flex-col gap-y-2 p-4 lg:p-6 rounded-2xl {cas}"
+                    ;*  fom
+                  ==
+                ==
+              ==
+            ==
+        ^-  [txt=tape fom=marl]
+        ?.  ?=(%prop sat)  ::  contribute aside form
+          =+  pej=(~(get by pledges.pro) src.bol)
+          :-  "contribute 💸"
+          :~  ;h1: {?~(pej "Contribute" "Fulfill Pledge")}
+              ;div(class "flex gap-2")
+                ;div(class "fund-form-group")
+                  ;+  :_  ~  :-  %input
+                      ;:  welp
+                          [%name "sum"]~
+                          [%type "number"]~
+                          [%required ~]~
+                          [%min "0.01"]~
+                          [%max "100000000"]~
+                          [%step "0.01"]~
+                          [%placeholder "10"]~
+                          [%class "p-1"]~  ::  FIXME: Needed to match <select> sibling
+                          ?~(pej ~ ~[[%readonly ~] [%value (cash:enjs:format:fh cash.u.pej)]])
+                      ==
+                  ;label(for "sum"): amount (tokens)
+                ==
+                ;div(class "fund-form-group")
+                  ;+  :-  :-  %select
+                          ;:  welp
+                              [%id "proj-token"]~
+                              [%name "tok"]~
+                              [%class "fund-tsel"]~
+                              ?~(pej ~ [%disabled ~]~)
+                          ==
+                      :_  ~
+                      ;option
+                          =value  (trip name.currency.pro)
+                          =data-image  (aset:enrl:format:fh name.currency.pro)
+                        ; {(cuss (trip name.currency.pro))}
+                      ==
+                  ;label(for "tok"): token
+                ==
+              ==
+              ;div(class "fund-form-group")
+                ;input(name "msg", type "text", placeholder "awesome work!");
+                ;label(for "msg"): public message
+              ==
+              ;div(class "flex justify-end pt-2 gap-x-2")
+                ;+  %:  prod-butn:ui:fh
+                        %mula-plej  %action  "pledge only ~"  "plejFunds"
+                        ?.  &((auth:fh bol) (plan:fx src.bol))
+                          "pledges only available to authenticated planets"
+                        ?:  (~(has by pledges.pro) src.bol)
+                          "you must fulfill your outstanding pledge"
+                        ~
+                    ==
+                ;+  (prod-butn:ui:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
+          ==  ==
+        ?:  &((~(has in roz) %orac) ?=(~ contract.pro))  ::  oracle acceptance form
+          :-  "sign off ✔️"
+          :~  ;h1: Review Request
+              ;p
+                ;span(class "font-mono font-bold"): {(scow %p p.lag)}
+                ;span:  has requested your services as a trusted oracle for this project.
+              ==
+              ;p
+                ;span(class "font-mono font-bold"): {(scow %p p.lag)}
+                ;span:  is offering the following compensation for your services:
+              ==
+              ;code
+                ;span(class "font-bold"): {(cash:enjs:format:fh q.assessment.pro)}%
+                ;span:  of each milestone payout upon completed assessment
+              ==
+              ;p
+                ; Accepting this review request means that you will have the
+                ; responsibility to review each project milestone and release
+                ; funds to the project worker upon successful completion.
+              ==
+              ;p
+                ; If you pinky promise to assess this project, click the button
+                ; below to confirm your particpation.
+              ==
+              ;div(class "flex justify-end gap-x-2")
+                ;+  (prod-butn:ui:fh %bump-born %action "decline ~" ~ ~)
+                ;+  (prod-butn:ui:fh %bump-prop %true "accept ✓" "acceptContract" ~)
+              ==
+          ==
+        [~ ~]  ::  no aside form
+    ;div(class "flex flex-col gap-2")
+      ;*  ?~  muz  :_  ~  ;p(class "fund-warn"): No contributors found.
           %+  turn  muz
           |=  mul=mula:f
           ^-  manx

@@ -126,7 +126,7 @@
         (ed-co:co exp int)
     ^-  fin=[%d s=? e=@s a=@u]
     ?~  dex  val
-    ?:  =(--1 (cmp:si e.val --0))  val
+    ?:  =(--1 (cmp:si e.val --0))  val  ::  e.val > 0
     =-  val(e (dif:si e.val sha), a (?:((syn:si sha) mul div) a.val (pow 10 (abs:si sha))))
     ^-  sha=@sd
     =+  vel=(abs:si e.val)

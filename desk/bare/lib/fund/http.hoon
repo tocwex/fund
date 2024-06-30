@@ -231,7 +231,7 @@
           ==
           ;body(class "fund-body {cas}", x-data "fund")
             ;*  ?.  !<(bean (slot:config %debug))  ~
-                :_  ~  ;div(class "fund-note"): ⚠ DEBUG ENABLED ⚠
+                :_  ~  ;div(class "fund-head"): ⚠ DEBUG ENABLED ⚠
             ;+  head
             ;+  bod
             ;+  foot
@@ -283,7 +283,7 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;+  ?:  (auth bol)
-                ;button#fund-agis(class "inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550")
+                ;button#fund-agis(class "fund-tipi inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550")
                   ;+  (ship-icon src.bol)
                   ;span(class "font-bold"): {<src.bol>}
                   ;div#fund-agis-opts(class "hidden")
@@ -328,13 +328,16 @@
     ::  TODO: Consider changing the signature to take a (unit addr) for
     ::  cases when the address isn't yet available (e.g. project in
     ::  draft form)
-    |=  [sip=@p tyt=tape adr=addr]
+    |=  [sip=@p tyt=tape adr=addr buz=marl]
     ^-  manx
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1", x-data "\{ens: false}")
       ;div(class "flex flex-row justify-between items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}
-        ;+  %-  ~(apply-elem mu (cheq-swix "ens"))
-            |=([n=mane t=mart] [n ?.(=(%input n) t [[%x-model "ens"] t])])
+        ;div(class "flex flex-row items-center gap-1")
+          ;h6: ENS
+          ;+  %-  ~(apply-elem mu (cheq-swix "ens"))
+              |=([n=mane t=mart] [n ?.(=(%input n) t [[%x-model "ens"] t])])
+        ==
       ==
       ;div(class "inline-flex self-stretch justify-start items-center gap-2")
         ;+  (~(ship-icon ..$ "h-20") sip)
@@ -344,7 +347,9 @@
           ;h5.fund-addr-raw(title (addr:enjs:format adr), x-show "!ens"): {(sadr:enjs:format adr)}
           ;div(class "self-stretch justify-between items-center inline-flex")
             ;h5(class "font-normal leading-normal tracking-wide"): AZP: {<`@`sip>}
-            ;a.fund-butn-ac-s/"{(chat:enrl:format sip)}"(target "_blank"): 💬
+            ;div(class "inline-flex gap-1")
+              ;*  buz
+            ==
           ==
         ==
       ==
@@ -541,19 +546,7 @@
   ++  ship-icon                                  ::  icon for a user ship
     |=  sip=@p
     ^-  manx
-    =+  kas="h-6 rounded-full"
-    ?-    (clan:title sip)
-        %pawn
-      ;svg(class "{kas} {cas}", viewBox "0 0 24 24", xmlns "http://www.w3.org/2000/svg")
-        ;rect(width "24", height "24", style "fill: rgb(0, 0, 0);");
-      ==
-    ::
-        %earl
-      ;img@"https://azimuth.network/erc721/{(bloq:enjs:format `@`(end 5 sip))}.svg"(class "{kas} {cas}");
-    ::
-        *
-      ;img@"https://azimuth.network/erc721/{(bloq:enjs:format `@`sip)}.svg"(class "{kas} {cas}");
-    ==
+    (icon-circ (surt:enrl:format sip))
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tyt=tape man=manx]
     ^-  manx
@@ -589,6 +582,19 @@
       %done  "highlight2-450"
       %dead  "highlight1-400"
     ==
+  ++  icon-stax                                  ::  stack of icons (leftmost on top)
+    |=  liz=(list tape)
+    ^-  manx
+    ;div(class "flex flex-row-reverse h-6 {cas}")
+      ;*  %+  turn  (enum:fx (flop liz))
+          |=  [lid=@ lin=tape]
+          =+  lim=?:(=(0 lid) "" "-mr-3")
+          (~(icon-circ ..$ "relative h-full {lim}") lin)
+    ==
+  ++  icon-circ                                  ::  single icon circle
+    |=  lin=tape
+    ^-  manx
+    ;img@"{lin}"(class "fund-aset-circ {cas}");
   ++  cheq-swix                                  ::  checkbox switch <o->
     |=  nam=tape
     ^-  manx

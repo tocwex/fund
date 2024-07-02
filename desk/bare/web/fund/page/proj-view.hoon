@@ -161,7 +161,7 @@
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  (trip title.pro)
-  ;div#maincontent(class "p-2 flex flex-col gap-1", x-data "proj_view")
+  ;div#maincontent(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
         ;span: ${(cash:enjs:format:fh cost.pod)}
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
@@ -201,113 +201,129 @@
       ==
       ;+  (proj-ther:ui:fh pro &)
     ==
-    ;div(class "flex flex-col gap-1")
-      ;h1: Project Overview
-      ;+  (mark-well:ui:fh (trip summary.pro) |)
-    ==
-    ;div(class "flex flex-col gap-2")
-      ;h1: Milestone Details
-      ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
-          |=  [min=@ mil=mile:f]
-          ^-  manx
-          =/  oil=odit:f  (snag min moz)
-          ;form(method "post", class "flex flex-col gap-2 px-2 py-4 lg:px-4 lg:py-6 border-2 border-secondary-500 rounded-xl", x-data "\{ mile_idex: {<min>} }")
-            ;h6(class "text-tertiary-500 underline"): Milestone #{<+(min)>}
-            ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
-                ;span: ${(cash:enjs:format:fh cost.mil)}
-            ;+  (mark-well:ui:fh (trip summary.mil) &)
-            ;div(class "flex flex-wrap items-center justify-end gap-2")
-              ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
-                  ;:    welp
-                      ?.  &(cur wok ?=(%lock status.mil))  ~
-                    :_  ~  (prod-butn:ui:fh %bump-work %action "mark in-progress ~" ~ ~)
-                  ::
-                      ?.  &(cur wok ?=(%work status.mil))  ~
-                    :_  ~  (prod-butn:ui:fh %bump-sess %action "request review ~" ~ ~)
-                  ::
-                      ?.  &(cur ora ?=(%sess status.mil))  ~
-                    :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:ui:fh %bump-work %action "changes required ~" ~ ~)
-                        (prod-butn:ui:fh %bump-done %true "approve ✓" "approveMilestone" ~)
-                    ==
-                  ::
-                  ::
-                      ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
-                    :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                        (prod-butn:ui:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
-                    ==
-                  ::
-                      ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:ui:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
-                  ::
-                      ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
-                    :_  ~
-                    %:  prod-butn:ui:fh
-                        %draw-done  %true  "claim funds ✓"  "claimMilestone"
-                        ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
-                    ==
-                  ::
-                  ::
-                      ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                    :_  ~  (prod-butn:ui:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
-                  ::
-                      ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                    :_  ~  (prod-butn:ui:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
-                  ::
-                      ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
-                    :_  ~
-                    %:  prod-butn:ui:fh
-                        %draw-dead  %true  "refund funds ✓"  "refundContract"
-                        ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
-                    ==
-                  ==
+    ;div(class "grid grid-cols-1 sm:grid-cols-2 gap-x-8")
+      ;div(class "col-span-1 flex flex-col gap-1")
+        ;div(class "flex flex-col gap-1")
+          ;h1: Project Overview
+          ;+  (mark-well:ui:fh (trip summary.pro) |)
+        ==
+        ;div(class "flex flex-col gap-2")
+          ;h1: Milestone Details
+          ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
+              |=  [min=@ mil=mile:f]
+              ^-  manx
+              =/  oil=odit:f  (snag min moz)
+              ;form  =method  "post"
+                  =x-data  "\{ mile_idex: {<min>} }"
+                  =class  "fund-card flex flex-col gap-2 px-2 py-4 lg:px-4 lg:py-6"
+                ;h6(class "text-tertiary-500 underline"): Milestone #{<+(min)>}
+                ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
+                    ;span: ${(cash:enjs:format:fh cost.mil)}
+                ;+  (mark-well:ui:fh (trip summary.mil) &)
+                ;div(class "flex flex-wrap items-center justify-end gap-2")
+                  ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
+                      ;:    welp
+                          ?.  &(cur wok ?=(%lock status.mil))  ~
+                        :_  ~  (prod-butn:ui:fh %bump-work %action "mark in-progress ~" ~ ~)
+                      ::
+                          ?.  &(cur wok ?=(%work status.mil))  ~
+                        :_  ~  (prod-butn:ui:fh %bump-sess %action "request review ~" ~ ~)
+                      ::
+                          ?.  &(cur ora ?=(%sess status.mil))  ~
+                        :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
+                            (prod-butn:ui:fh %bump-work %action "changes required ~" ~ ~)
+                            (prod-butn:ui:fh %bump-done %true "approve ✓" "approveMilestone" ~)
+                        ==
+                      ::
+                      ::
+                          ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
+                        :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
+                            (prod-butn:ui:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
+                        ==
+                      ::
+                          ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
+                        :_  ~  (prod-butn:ui:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
+                      ::
+                          ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
+                        :_  ~
+                        %:  prod-butn:ui:fh
+                            %draw-done  %true  "claim funds ✓"  "claimMilestone"
+                            ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
+                        ==
+                      ::
+                      ::
+                          ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
+                        :_  ~  (prod-butn:ui:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
+                      ::
+                          ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
+                        :_  ~  (prod-butn:ui:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
+                      ::
+                          ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
+                        :_  ~
+                        %:  prod-butn:ui:fh
+                            %draw-dead  %true  "refund funds ✓"  "refundContract"
+                            ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
+                        ==
+                      ==
+                ==
+              ==
+        ==
+      ==
+      ;div(class "col-span-1 flex flex-col gap-1")
+        ;div(class "flex flex-col gap-2")
+          ;h1: Project Participants
+          ;+  %:  ship-card:ui:fh
+                  p.lag
+                  "Project Worker"
+                  ?~(contract.pro 0x0 work.u.contract.pro)
+                  ;*  ?.  &(=(our src):bol !wok)  ~
+                      :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): 💬
+              ==
+          ;+  %:  ship-card:ui:fh
+                  p.assessment.pro
+                  "Trusted Oracle"
+                  ?~(contract.pro 0x0 from.sigm.u.contract.pro)
+                  ;*  ?.  &(=(our src):bol !ora)  ~
+                      :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): 💬
+              ==
+        ==
+        ;div(class "flex flex-col gap-2")
+          ;div(class "flex flex-row justify-between items-center")
+            ;h1: Fund Contributors
+            ;div(class "flex flex-wrap items-center gap-1")
+              ;*  =-  :~  (icon-stax:ui:fh (scag 3 (turn ~(tap in siz) surt:enrl:format:fh)))
+                          ;h6: {<~(wyt in siz)>} total
+                      ==
+                  ^-  siz=(set @p)
+                  %+  roll  muz
+                  |=  [mul=mula:f siz=(set @p)]
+                  =/  sip=(unit @p)  ?-(-.mul %plej `ship.mul, %trib ship.mul)
+                  ?~(sip siz (~(put in siz) u.sip))
             ==
           ==
-    ==
-    ;div(class "flex flex-col gap-2")
-      ;h1: Project Participants
-      ;+  %:  ship-card:ui:fh
-              p.lag
-              "Project Worker"
-              ?~(contract.pro 0x0 work.u.contract.pro)
-              ;*  ?.  &(=(our src):bol !wok)  ~
-                  :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): 💬
-          ==
-      ;+  %:  ship-card:ui:fh
-              p.assessment.pro
-              "Trusted Oracle"
-              ?~(contract.pro 0x0 from.sigm.u.contract.pro)
-              ;*  ?.  &(=(our src):bol !ora)  ~
-                  :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): 💬
-          ==
-    ==
-    ::  NOTE: This section has no outer wrapper to allow for page-wide
-    ::  stickiness for the "contribute" modal button
-    ;div(class "flex flex-row justify-between items-center")
-      ;h1: Fund Contributors
-      ;div(class "flex flex-wrap items-center gap-1")
-        ;*  =-  :~  (icon-stax:ui:fh (scag 3 (turn ~(tap in siz) surt:enrl:format:fh)))
-                    ;h6: {<~(wyt in siz)>} total
-                ==
-            ^-  siz=(set @p)
-            %+  roll  muz
-            |=  [mul=mula:f siz=(set @p)]
-            =/  sip=(unit @p)  ?-(-.mul %plej `ship.mul, %trib ship.mul)
-            ?~(sip siz (~(put in siz) u.sip))
+          ;*  ?~  muz  :_  ~  ;p(class "fund-warn"): No contributors found.
+              %+  turn  muz
+              |=  mul=mula:f
+              ^-  manx
+              ;div(class "p-2.5 flex flex-col gap-y-2 fund-card")
+                ;+  (mula-tytl:ui:fh mul)
+                ;+  ?:  =('' note.mul)  ;p(class "fund-warn"): No message included.
+                    ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
+              ==
+        ==
       ==
     ==
     ;*  ?:  ?=(?(%born %done %dead) sat)  ~
-        =+  cas="bg-primary-500 border-2 border-secondary-500"
         =-  ?~  fom  ~
             :_  ~
             ;div(class "fund-foot")
-              ;div(class "flex gap-2 items-center p-2 mb-2 rounded-md {cas}")
+              ;div(class "fund-card flex gap-2 items-center p-2 mb-1")
                 ;button#fund-mula.fund-tipi.fund-butn-de-m: {txt}
                 ;+  ioz
                 ;div#fund-mula-opts(class "hidden")
                   ;form  =method  "post"
                       =autocomplete  "off"
-                      =class  "flex flex-col gap-y-2 p-4 lg:p-6 rounded-2xl {cas}"
+                      =class  "fund-card flex flex-col gap-y-2 p-4 lg:p-6 rounded-2xl"
                     ;*  fom
                   ==
                 ==
@@ -396,17 +412,6 @@
               ==
           ==
         [~ ~]  ::  no aside form
-    ;div(class "flex flex-col gap-2")
-      ;*  ?~  muz  :_  ~  ;p(class "fund-warn"): No contributors found.
-          %+  turn  muz
-          |=  mul=mula:f
-          ^-  manx
-          ;div(class "p-2.5 border-2 border-secondary-500 flex flex-col gap-y-2 rounded-md")
-            ;+  (mula-tytl:ui:fh mul)
-            ;+  ?:  =('' note.mul)  ;p(class "fund-warn"): No message included.
-                ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
-          ==
-    ==
     ;div.hidden
       ::  FIXME: We use inline HTML instead of inline JS in order to
       ::  circumvent the need for text escaping (e.g. ', ", and `).

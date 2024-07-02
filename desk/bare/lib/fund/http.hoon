@@ -231,7 +231,7 @@
           ==
           ;body(class "fund-body {cas}", x-data "fund")
             ;*  ?.  !<(bean (slot:config %debug))  ~
-                :_  ~  ;div(class "fund-head"): ⚠ DEBUG ENABLED ⚠
+                :_  ~  ;div(class "fund-head bg-primary-600 font-semibold p-1"): ⚠ DEBUG ENABLED ⚠
             ;+  head
             ;+  bod
             ;+  foot
@@ -283,9 +283,10 @@
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
           ;+  ?:  (auth bol)
-                ;button#fund-agis(class "fund-tipi inline-flex p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550")
+                ;button  =id  "fund-agis"
+                    =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550"
                   ;+  (ship-icon src.bol)
-                  ;span(class "font-bold"): {<src.bol>}
+                  ;span(class "hidden sm:block font-bold"): {<src.bol>}
                   ;div#fund-agis-opts(class "hidden")
                     ;div(class "flex flex-col gap-2")
                       ;*  ?.  =(our src):bol  ~
@@ -431,7 +432,8 @@
         ;div(class "w-full min-w-0 flex-1 flex flex-row gap-1")
           ;*  %+  turn  (enum:fx ~(odim pj pro))
               |=  [min=@ mod=odit]
-              (mile-ther mod ?.(big ~ "Milestone {<+(min)>}"))
+              %-  ~(mile-ther ..$ ?:(big ~ "sm:h-4"))
+              [mod ?.(big ~ "Milestone {<+(min)>}")]
         ==
         ;*  ?.  big  ~
             :_  ~
@@ -466,15 +468,15 @@
         =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (curr perc:fx tot)))
         =+  dez=(iron (turn cez cend))
         ;div(class "fund-odit-ther relative {cas}")
-          ::  FIXME: Need to make the rounded corners work here for the
-          ::  last element... see boot.js twind styling for details
-          ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
-              |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
-              ^-  (unit manx)
-              ?:  =(0 den)  ~
-              :-  ~
-              ;div  =title  "{(real:enjs:format cen)}% {nam}"
-                =class  "fund-odit-sect w-[{<den>}%] {kas}";
+          ;div(class "h-full w-full flex relative")
+            ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
+                |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
+                ^-  (unit manx)
+                ?:  =(0 den)  ~
+                :-  ~
+                ;div  =title  "{(real:enjs:format cen)}% {nam}"
+                  =class  "fund-odit-sect w-[{<den>}%] {kas}";
+          ==
           ;*  ?~  tyt  ~
               :_  ~
               ::  NOTE: https://stackoverflow.com/a/1777282/837221

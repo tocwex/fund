@@ -179,10 +179,11 @@ if (window.Alpine === undefined) {
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
-      ['fund-flot', 'sticky z-50 fixed w-full flex justify-center'],
-      ['fund-head', 'fund-flot top-0 bg-primary-600 font-semibold py-1 text-sm'],
-      ['fund-foot', 'fund-flot bottom-0'],
+      ['fund-flot', 'sticky fixed w-full flex justify-center'],
+      ['fund-head', 'fund-flot z-50 top-0'],
+      ['fund-foot', 'fund-flot z-40 bottom-0'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
+      ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
       ['fund-addr', 'font-normal leading-normal tracking-wide'],
       ['fund-addr-raw', 'fund-addr']
@@ -213,7 +214,7 @@ if (window.Alpine === undefined) {
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
       ['fund-aset-circ', 'h-5 bg-contain bg-white rounded-full'],
-      ['fund-odit-ther', 'w-full rounded-md flex h-8 text-primary-700'], // FIXME: h-4 sm:h-8 text-primary-600
+      ['fund-odit-ther', 'w-full rounded-md flex h-4 sm:h-8 text-primary-700'], // FIXME: text-primary-600
       ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
     ],
   });

@@ -94,7 +94,7 @@
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  "project edit"
-  ;form#maincontent.p-2(method "post", autocomplete "off", x-data "proj_edit")
+  ;form.p-2(method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div
           ;+  %^  work-tytl:ui:fh  "Project Overview"  sat
@@ -171,7 +171,7 @@
                 ^-  manx
                 ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-secondary-500 rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
-                    ;h6(class "text-tertiary-500 underline"): Milestone #{<+(min)>}
+                    ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
                     ;+  ?:  ?=(%born status.mil)
                           ::  FIXME: Using the X SVG causes a weird pop-in effect
                           ::  for new milestones, so we just use raw text for now
@@ -214,7 +214,7 @@
         ;div
           ;h1.pt-2: Trusted Oracle
           ;p.pt-2
-            ; Chose a service provider who will assess work completion
+            ; Choose a service provider who will assess work completion
             ; and settle disputes. The fee percentage is paid to the
             ; oracle as a cut of the completed milestone upon withdrawal
             ; of funds.
@@ -244,7 +244,7 @@
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "1%"
                 =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru));
-              ;label(for "seo"): Fee Offer
+              ;label(for "seo"): Fee Offer (%)
             ==
           ==
         ==
@@ -320,7 +320,7 @@
           const wellClone = document.querySelector('#mile-0').cloneNode(true);
           const wellIndex = this.mile_cost.length;
           wellClone.setAttribute('id', `mile-$\{wellIndex}`);
-          wellClone.querySelector('h6').innerHTML = `Milestone #$\{wellIndex + 1}`;
+          wellClone.querySelector('h6').innerHTML = `Milestone $\{wellIndex + 1}`;
           ['m0n', 'm0c', 'm0s'].forEach(fieldName => \{
             const fieldElem = wellClone.querySelector(`[name=$\{fieldName}]`);
             fieldElem.setAttribute('name', `m$\{wellIndex}$\{fieldName.at(2)}`);
@@ -347,7 +347,7 @@
             wellMilz.forEach((mileElem, mileIndex) => \{
               const oldId = mileElem.id.match(/\\d+/)[0];
               mileElem.setAttribute('id', `mile-$\{mileIndex}`);
-              mileElem.querySelector('h6').innerHTML = `Milestone #$\{mileIndex + 1}`;
+              mileElem.querySelector('h6').innerHTML = `Milestone $\{mileIndex + 1}`;
               [`m$\{oldId}n`, `m$\{oldId}c`, `m$\{oldId}s`].forEach(fieldName => \{
                 const fieldElem = mileElem.querySelector(`[name=$\{fieldName}]`);
                 fieldElem.setAttribute('name', `m$\{mileIndex}$\{fieldName.at(2)}`);

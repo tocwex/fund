@@ -14,7 +14,7 @@
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  ~
-  |^  ;div#maincontent(class "flex flex-col py-2 gap-2 mx-auto")
+  |^  ;div(class "flex flex-col py-2 gap-2 mx-auto")
         ;+  %^  dash-well  %funder
               "project funder"
             "fulfill your pledges and follow active projects"

@@ -161,7 +161,7 @@
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  (trip title.pro)
-  ;div#maincontent(class "flex flex-col gap-1 p-2", x-data "proj_view")
+  ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
         ;span: ${(cash:enjs:format:fh cost.pod)}
     ::  ;*  ?:  |(?=(~ msg) gud.u.msg)  ~
@@ -201,11 +201,11 @@
       ==
       ;+  (proj-ther:ui:fh pro &)
     ==
-    ;div(class "grid grid-cols-1 sm:grid-cols-2 gap-x-8")
-      ;div(class "col-span-1 flex flex-col gap-1")
+    ;div(class "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8")
+      ;div(class "sm:col-span-1 lg:col-span-2 flex flex-col gap-1")
         ;div(class "flex flex-col gap-1")
           ;h1: Project Overview
-          ;+  (mark-well:ui:fh (trip summary.pro) |)
+          ;+  (mark-well:ui:fh (trip summary.pro) %togl)
         ==
         ;div(class "flex flex-col gap-2")
           ;h1: Milestone Details
@@ -216,10 +216,10 @@
               ;form  =method  "post"
                   =x-data  "\{ mile_idex: {<min>} }"
                   =class  "fund-card flex flex-col gap-2 px-2 py-4 lg:px-4 lg:py-6"
-                ;h6(class "text-tertiary-500 underline"): Milestone #{<+(min)>}
+                ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
                 ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
                     ;span: ${(cash:enjs:format:fh cost.mil)}
-                ;+  (mark-well:ui:fh (trip summary.mil) &)
+                ;+  (mark-well:ui:fh (trip summary.mil) %togl)
                 ;div(class "flex flex-wrap items-center justify-end gap-2")
                   ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                       ;:    welp

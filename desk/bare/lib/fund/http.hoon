@@ -209,19 +209,23 @@
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
+    =+  ape=(trip !<(@t (slot:config %meta-aset)))
     =-  (alix -)
     |^  ;html(class "!block", style "display: none;")  ::  NOTE: https://twind.style/installation
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
             ;*  meta
-            ::  Website Meta Data/Libraries
             ;title: {tyt}
             ;link/"{(dest:enrl:format /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
             ;link/"https://fonts.googleapis.com"(rel "preconnect");
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
-            ::  FIXME: Make this line legible somehow
-            ;link/"https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Emoji:wght@300..700&display=swap"(as "style", rel "stylesheet preload", crossorigin ~);
+            ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
+              =href  "https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@300..700&display=swap";
+            ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
+              =href  "{ape}/f1719727743303x447523347489316540/Chaney%20Wide.css";
+            ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
+              =href  "{ape}/f1719608058163x825753518615514200/Safiro%20Medium.css";
             ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
@@ -256,7 +260,11 @@
       =/  url=tape
         ?~  lag=(~(get by mep) %flag)  (trip !<(@t (slot:config %meta-site)))
         "{(burl bol)}/apps/fund/project/{(trip u.lag)}"
-      =/  dom=tape  (trip !<(@t (slot:config %meta-base)))  ::  FIXME: Derive from url
+      =/  dom=tape
+        =+  sin=(bind (find "//" url) (cury add (lent "//")))
+        =+  ein=(bind (find ".com" url) (cury add (lent ".com")))
+        ?:  |(?=(~ sin) ?=(~ ein))  url
+        (swag [u.sin (sub u.ein u.sin)] url)
       ;=  ::  OpenGraph Meta Tags
           ;meta(property "og:type", content "website");
           ;meta(property "og:title", content tyt);
@@ -278,7 +286,10 @@
       ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
-            ;a.fund-tytl-link/"{(dest:enrl:format /)}": %fund
+            =+  dst=?:(=(our src):bol (dest:enrl:format /) (trip !<(@t (slot:config %meta-site))))
+            ;a/"{dst}"(class "rounded-2xl hover:bg-primary-550")
+              ;img.h-8.object-contain@"{(dest:enrl:format /asset/[~.fund.svg])}";
+            ==
         ;div(class "flex inline-flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
           ::  in the current tab causes issues with turbojs in-place loading
@@ -331,21 +342,15 @@
     ::  draft form)
     |=  [sip=@p tyt=tape adr=addr buz=marl]
     ^-  manx
-    ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1", x-data "\{ens: false}")
-      ;div(class "flex flex-row justify-between items-center")
-        ;h6(class "leading-none tracking-widest"): {tyt}
-        ;div(class "flex flex-row items-center gap-1")
-          ;h6: ENS
-          ;+  %-  ~(apply-elem mu (cheq-swix "ens"))
-              |=([n=mane t=mart] [n ?.(=(%input n) t [[%x-model "ens"] t])])
-        ==
-      ==
+    ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
+      ;h6(class "leading-none tracking-widest"): {tyt}
       ;div(class "inline-flex self-stretch justify-start items-center gap-2")
         ;+  (~(ship-icon ..$ "h-20") sip)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;h3(class "leading-7 tracking-tight"): {<sip>}
-          ;h5.fund-addr-ens(title (addr:enjs:format adr), x-show "ens"): …loading…
-          ;h5.fund-addr-raw(title (addr:enjs:format adr), x-show "!ens"): {(sadr:enjs:format adr)}
+          ;h5.fund-addr.fund-addr-ens(title (addr:enjs:format adr), data-addr (addr:enjs:format adr))
+            …loading…
+          ==
           ;div(class "self-stretch justify-between items-center inline-flex")
             ;h5(class "font-normal leading-normal tracking-wide"): AZP: {<`@`sip>}
             ;div(class "inline-flex gap-1")
@@ -356,32 +361,29 @@
       ==
     ==
   ++  mark-well                                  ::  markdown (github) well
-    |=  [txt=tape big=bean]
+    |=  [txt=tape typ=?(%ters %togl %verb)]
     ^-  manx
     ::  FIXME: This is hacky and wasteful, but attempting to use Alpine.js to
     ::  just edit in/out the 'line-clamp-5' class doesn't work due to
     ::  collisions with Twind.js.
-    ;div(class "w-full", x-data "\{expanded: {(trip ?:(big 'true' 'false'))}}")
+    ;div(class "w-full", x-data "\{expanded: {(trip ?:(?=(%verb typ) 'true' 'false'))}}")
       ::  FIXME: Attempting to apply a "to transparent" graident, but
       ::  it's not working...
       ::  after:bg-gradient-to-b after:from-inherit
-      ;zero-md(class "w-full line-clamp-5 {cas}", x-show "!expanded", xlass "cmd()", no-shadow ~)
-        ;template
-          ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
-        ==
-        ;script(type "text/markdown"): {txt}
-      ==
-      ;zero-md(class "w-full {cas}", x-show "expanded", xlass "cmd()", no-shadow ~)
-        ;template
-          ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
-        ==
-        ;script(type "text/markdown"): {txt}
-      ==
-      ;*  ?:  big  ~
+      ;*  %+  turn  ~[["!expanded" "line-clamp-5"] ["expanded" ""]]
+          |=  [sow=tape kas=tape]
+          ;zero-md(class "w-full {kas} {cas}", x-show sow, xlass "cmd()", no-shadow ~)
+            ;template
+              ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
+            ==
+            ;script(type "text/markdown"): {txt}
+          ==
+      ;*  ?.  ?=(%togl typ)  ~
           :_  ~
           ;div(class "flex justify-center")
-            ;button.fund-butn-ac-s(x-show "expanded", x-on-click "expanded = false"): show less -
-            ;button.fund-butn-ac-s(x-show "!expanded", x-on-click "expanded = true"): show more +
+            ;*  %+  turn  ~[["!expanded" "true" "show more +"] ["expanded" "false" "show less -"]]
+                |=  [sow=tape qiq=tape txt=tape]
+                ;button.fund-butn-ac-s(type "button", x-show sow, x-on-click "expanded = {qiq}"): {txt}
           ==
     ==
   ++  udon-well                                  ::  udon (hoon-markdown) well
@@ -510,7 +512,7 @@
   ++  hero-plaq                                  ::  full-page notification w/ buttons
     |=  [tyt=tape txt=tape buz=marl]
     ^-  manx
-    ;form#maincontent(method "post", class "p-2 h-[80vh] {cas}")
+    ;form(method "post", class "p-2 h-[80vh] {cas}")
       ;div(class "h-full flex flex-col flex-wrap justify-center items-center text-center gap-10")
         ;h1: {tyt}
         ;*  ?~  txt  ~

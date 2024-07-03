@@ -29,8 +29,8 @@ if (window.Alpine === undefined) {
     ],
     theme: {
       fontFamily: {
-        serif: ['Lora', 'Noto Emoji', 'serif'],
-        sans: ['Inter', 'Noto Emoji', 'sans-serif'],
+        serif: ['Chaney Wide', 'Noto Emoji', 'serif'],
+        sans: ['Safiro Medium', 'Noto Emoji', 'sans-serif'],
         mono: ['Ubuntu Mono', 'mono'],
       },
       extend: {
@@ -186,10 +186,7 @@ if (window.Alpine === undefined) {
       ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
       ['fund-addr', 'font-normal leading-normal tracking-wide'],
-      ['fund-addr-raw', 'fund-addr']
-      ['fund-addr-ens', 'fund-addr'],
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
-      ['fund-tytl-link', 'font-serif font-medium text-xl duration-300 hover:(cursor-pointer text-tertiary-500)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
@@ -454,14 +451,13 @@ if (window.Alpine === undefined) {
       }
     });
 
-    document.querySelectorAll(".fund-addr-ens").forEach(ensElem => {
-      const rawElem = ensElem.parentElement?.querySelector(".fund-addr-raw");
-      if (rawElem) {
-        const rawAddr = rawElem.innerHTML;
-        getEnsName(window.Wagmi, {address: rawAddr}).then(ensName => {
-          ensElem.innerHTML = ensName ?? "no ens found";
-        });
-      }
+    document.querySelectorAll(".fund-addr-ens").forEach(adrElem => {
+      const rawAddr = adrElem.dataset.addr;
+      getEnsName(window.Wagmi, {address: rawAddr}).then(ensName => {
+        adrElem.innerHTML = ensName
+          ? ensName
+          : `${rawAddr.slice(0, 5)}…${rawAddr.slice(-4)}`;
+      });
     });
 
     document.querySelectorAll(".fund-tsel").forEach(selElem => {
@@ -485,6 +481,7 @@ if (window.Alpine === undefined) {
         arrow: false,
         trigger: "click",
         theme: "fund",
+        offset: [0, 5],
       });
     });
   });

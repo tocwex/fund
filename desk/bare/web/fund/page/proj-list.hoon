@@ -17,7 +17,7 @@
   :-  %page
   %-  html:ui:fh
   :^  bol  ord  "{(trip dyp)} dashboard"
-  |^  ;div#maincontent(class "flex flex-col p-2 gap-y-2")
+  |^  ;div(class "flex flex-col p-2 gap-y-2 max-w-[640px] mx-auto")
         ;*  %-  turn  :_  prez-welz
             ?+    dyp  !!
                 %worker
@@ -90,7 +90,7 @@
                     ;+  (ship-bump "Project Worker" sip)
                     ;+  (ship-bump "Trusted Oracle" p.assessment.pro)
                   ==
-                  ;+  (mark-well:ui:fh (trip summary.pro) |)
+                  ;+  (mark-well:ui:fh (trip summary.pro) %ters)
                 ==
               ==
               ;div(class "inline-flex justify-between items-end self-stretch pl-3")

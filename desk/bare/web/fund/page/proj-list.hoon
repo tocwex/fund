@@ -15,7 +15,7 @@
   ?:  &(=(%oracle dyp) !(star:fx src.bol))
     [%code 404 'oracle dashboard only available to stars and galaxies']
   :-  %page
-  %-  html:ui:fh
+  %-  page:ui:fh
   :^  bol  ord  "{(trip dyp)} dashboard"
   |^  ;div(class "flex flex-col p-2 gap-y-2 max-w-[640px] mx-auto")
         ;*  %-  turn  :_  prez-welz
@@ -70,24 +70,22 @@
       ;div(class "w-full flex flex-col gap-4")
         ;*  ?~  pez  :_  ~  ;p(class "fund-warn"): No projects found.
             %+  turn  pez
-            |=  [[sip=@p nam=@tas] pro=proj:f liv=?]
+            |=  [lag=flag:f pro=proj:f liv=?]
             ^-  manx
-            =+  url=(dest:enrl:format:fh /project/(scot %p sip)/[nam])
             ;div(class "w-full flex flex-col p-6 rounded-2xl border-2 border-secondary-500 gap-3")
               ;div(class "w-full flex flex-col gap-3")
                 ;+  (proj-ther:ui:fh pro |)
                 ;div(class "inline-flex self-stretch justify-start items-center gap-3")
                   ;h1: {(trip title.pro)}
-                  ;+  (copy-butn:ui:fh bol [sip nam] "🔗")
-                  ;*  ?.  &(=(sip our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
-                      :_  ~  ;a.fund-butn-de-m/"{url}/edit": ✏️
+                  ;+  (pink-butn:ui:fh bol lag)
+                  ;+  (edit-butn:ui:fh lag)
                 ==
                 ;*  ?~  image.pro  ~
                     :_  ~
-                    ;img.bg-contain.bg-center@"{(trip u.image.pro)}";
+                    ;img@"{(trip u.image.pro)}"(class "max-w-full max-h-[40vh] mx-auto");
                 ;div(class "flex flex-col gap-1 self-stretch")
                   ;div(class "flex flex-row gap-6 pl-3")
-                    ;+  (ship-bump "Project Worker" sip)
+                    ;+  (ship-bump "Project Worker" p.lag)
                     ;+  (ship-bump "Trusted Oracle" p.assessment.pro)
                   ==
                   ;+  (mark-well:ui:fh (trip summary.pro) %ters)
@@ -105,7 +103,7 @@
                     ==
                   ==
                 ==
-                ;a.fund-butn-de-m/"{url}": view project →
+                ;a.fund-butn-de-m/"{(flat:enrl:format:fh lag)}": view project →
               ==
             ==
       ==

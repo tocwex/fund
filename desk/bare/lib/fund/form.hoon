@@ -151,7 +151,7 @@
   ++  poke                                     ::  [[~zod %nam] %type ...] => "~zod/name:type"
     |=  pok=^poke
     ^-  tape
-    "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(%bump -.q.pok) ~ ['-' (trip +<.q.pok)])}"
+    "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(?(%bump %mula) -.q.pok) ~ ['-' (trip +<.q.pok)])}"
   ++  role                                     ::  %orac => "oracle"
     |=  rol=^role
     ^-  tape
@@ -160,12 +160,12 @@
       %orac  "oracle"
       %fund  "funder"
     ==
-  ++  mula                                     ::  [%plej ...] => "pledged"
+  ++  mula                                     ::  [%plej ...] => "pledge"
     |=  mul=^mula
     ^-  tape
     ?-  -.mul
-      %plej  "pledged"
-      %trib  "fulfilled"
+      %plej  "pledge"
+      %trib  "contribution"
     ==
   ++  stat                                     ::  %born => "draft"
     |=  sat=^stat

@@ -205,7 +205,7 @@
 ::
 ++  ui
   |_  cas=tape
-  ++  html                                     ::  render html page w/ head/foot/styles/etc.
+  ++  page                                     ::  render page w/ head/foot/styles/etc.
     |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
     ^-  manx
     =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
@@ -235,7 +235,10 @@
           ==
           ;body(class "fund-body {cas}", x-data "fund")
             ;*  ?.  !<(bean (slot:config %debug))  ~
-                :_  ~  ;div(class "fund-head bg-primary-600 font-semibold p-1"): ⚠ DEBUG ENABLED ⚠
+                :_  ~
+                ;div(class "fund-head w-full text-center bg-primary-600 font-semibold p-1")
+                  ; ⚠ DEBUG ENABLED ⚠
+                ==
             ;+  head
             ;+  bod
             ;+  foot
@@ -439,15 +442,19 @@
         ==
         ;*  ?.  big  ~
             :_  ~
-            ;div(class "flex flex-row gap-2")
+            ;div(class "hidden sm:(flex flex-row gap-2)")
               ;h3(class "text-tertiary-500 tracking-tight font-bold"): ${(cash:enjs:format fill.pod)}
               ;h3(class "text-tertiary-400 tracking-tight"): /
               ;h3(class "text-tertiary-400 tracking-tight"): ${(cash:enjs:format plej.pod)}
             ==
       ==
       ;+  ?.  big  ;h6: {cen}% funded
-          %+  cash-bump  "{cen}% raised of"
-          ;span: ${(cash:enjs:format cost.pod)}
+          %+  cash-bump
+            ;span(class "inline-flex gap-1")
+              ; {cen}% raised
+              ;span(class "hidden sm:block"): of
+            ==
+          ;span(class "hidden sm:block"): ${(cash:enjs:format cost.pod)}
     ==
   ++  mile-ther                                  ::  milestone funding thermometer
     |=  [odi=odit tyt=tape]
@@ -482,7 +489,7 @@
           ;*  ?~  tyt  ~
               :_  ~
               ::  NOTE: https://stackoverflow.com/a/1777282/837221
-              ;div(class "absolute left-[50%] pt-1.5 font-medium text-nowrap")
+              ;div(class "hidden sm:(block absolute left-[50%] pt-1.5 font-medium text-nowrap)")
                 ;div(class "relative left-[-50%]"): {tyt}
               ==
         ==
@@ -530,7 +537,8 @@
       ;h1(class "text-4xl"): {tyt}
       ;div(class "flex items-center gap-x-2")
         ;+  (stat-pill sat)
-        ;+  (cash-bump "Funding Goal" man)
+        ;+  %-  cash-bump  :_  man
+            ;span: Funding Goal
       ==
     ==
   ++  mula-tytl                                  ::  mula (pledge/contribution) title
@@ -552,13 +560,14 @@
     ^-  manx
     (icon-circ (surt:enrl:format sip))
   ++  cash-bump                                  ::  bumper for cash amount
-    |=  [tyt=tape man=manx]
+    |=  [tan=manx ban=manx]
     ^-  manx
-    =?  tyt  =(~ tyt)  "Funding Goal"
     ;div(class "flex flex-col justify-start items-end {cas}")
-      ;h6(class "leading-none tracking-widest"): {tyt}
+      ;h6(class "leading-none tracking-widest")
+        ;+  tan
+      ==
       ;h2(class "leading-loose")
-        ;+  man
+        ;+  ban
       ==
     ==
   ++  mula-pill                                  ::  mula pill element
@@ -566,7 +575,7 @@
     ^-  manx
     =-  ;div(class "fund-pill {kas} {cas}"): {nam}
     ^-  [nam=tape kas=tape]
-    =-  [(mula:enjs:format mul) "text-{-} border-{-}"]
+    =-  [?-(-.mul %plej "pledged", %trib "fulfilled") "text-{-} border-{-}"]
     ?-  -.mul
       %plej  "yellow-500"
       %trib  "green-500"
@@ -613,18 +622,23 @@
     after:content-[''] after:absolute after:top-[1px] after:bg-secondary-450 after:rounded-full
     after:h-2.5 after:w-2.5 after:transition-transform
     """
-  ++  copy-butn                                  ::  copy project link button
-    |=  [bol=bowl:gall lag=flag txt=tape]
+  ++  edit-butn                                  ::  project edit link button
+    |=  lag=flag
     ^-  manx
-    =+  url=(weld (burl bol) (flat:enrl:format lag))
-    :_  ; {txt}
-    :-  %button
-    :~  [%type "button"]
-        [%title "copy url"]
-        [%class "fund-butn-ac-m {cas}"]
-        [%x-data ~]
-        [%x-on-click "copyText('{url}'); swapText($el, '✔️');"]
+    ;a/"{(flat:enrl:format lag)}/edit"(class cas)
+      ;img.fund-butn-icon@"{(aset:enrl:format %edit)}";
     ==
+  ++  pink-butn                                  ::  project link copy button
+    |=  [bol=bowl:gall lag=flag]
+    ^-  manx
+    =-  ;button(type "button", class cas, x-data ~, x-on-click xoc)
+          ;img.fund-butn-icon@"{(aset:enrl:format %share)}";
+        ==
+    ^=  xoc
+    """
+    copyText('{(weld (burl bol) (flat:enrl:format lag))}');
+    alert('project url copied to clipboard');
+    """
   ++  link-butn                                  ::  hyperlink/redirect button
     |=  [wer=tape tab=bean txt=tape dis=tape]
     ^-  manx
@@ -634,7 +648,8 @@
         ?~(dis ~ ~[[%disabled ~] [%title dis]])
         ?.(tab ~ ~[[%target "_blank"]])
         [%href wer]~
-        [%class "fund-butn-de-m {cas}"]~
+        ::  FIXME: Hack b/c post-hoc replacement doesn't work
+        [%class ?~(cas "fund-butn-de-m" cas)]~
     ==
   ++  prod-butn                                  ::  prod/poke/action button
     |=  [pod=@tas typ=?(%action %true %false) txt=tape xon=tape diz=tape]

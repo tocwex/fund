@@ -171,17 +171,20 @@ if (window.Alpine === undefined) {
       select { padding: unset; @apply fund-select; }
       textarea,input { padding: unset; @apply fund-input; }
       label { @apply font-light; }
+      ol,ul { padding: unset; padding-inline-start: 1.5rem; list-style-position: outside; }
+      ul { @apply: list-disc; }
+      ol { @apply: list-decimal; }
       code { @apply font-mono text-tertiary-150 bg-tertiary-850 rounded-md py-0.5 px-1.5; }
       blockquote { @apply p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800; }
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
+      ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
-      ['fund-flot', 'sticky fixed w-full flex justify-center'],
-      ['fund-head', 'fund-flot z-50 top-0'],
-      ['fund-foot', 'fund-flot z-40 bottom-0'],
+      ['fund-head', 'sticky fixed z-50 top-0'],
+      ['fund-foot', 'sticky fixed z-40 bottom-0'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
       ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
@@ -189,6 +192,7 @@ if (window.Alpine === undefined) {
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
+      ['fund-butn-icon', 'p-1 rounded-full text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       //  ['fund-butn-lorj', 'fund-butn-base text-sm px-3 py-1.5'], // h-8
@@ -229,9 +233,6 @@ if (window.Alpine === undefined) {
       '& h5': {'@apply': 'underline font-medium italic'},
       '& h6': {'@apply': 'underline italic'},
       '& a': {'color': '-webkit-link', 'text-decoration': 'underline'},
-      '& ol,ul': {'padding': 'unset', 'padding-inline-start': '1.5rem', '@apply': 'list-outside'},
-      '& ul': {'@apply': 'list-disc'},
-      '& ol': {'@apply': 'list-decimal'},
     });
   }
 
@@ -295,7 +296,7 @@ if (window.Alpine === undefined) {
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     cmd,
     copyText,
-    swapText,
+    swapHTML,
     sendForm,
     checkWallet,
     CONTRACT,
@@ -303,12 +304,12 @@ if (window.Alpine === undefined) {
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 
-  function swapText(elem, text) {
-    if (elem.getAttribute("data-text") === null) {
-      elem.setAttribute("data-text", elem.innerText);
+  function swapHTML(elem, html) {
+    if (elem.getAttribute("data-html") === null) {
+      elem.setAttribute("data-html", elem.innerHTML);
     }
-    elem.innerText = text;
-    setTimeout(() => {elem.innerText = elem.getAttribute("data-text");}, 2000);
+    elem.innerHTML = html;
+    setTimeout(() => {elem.innerHTML = elem.dataset.html;}, 2000);
   }
 
   function fallbackCopyText(text) {

@@ -27,7 +27,7 @@
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   :-  %page
-  %-  html:ui:fh
+  %-  page:ui:fh
   :^  bol  ord  "config"
   %^    hero-plaq:ui:fh
       ?.(init.dat "Thanks for installing %fund!" "Update your preferences?")

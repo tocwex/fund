@@ -92,7 +92,7 @@
   ?.  |(?=(~ pru) ?=(?(%born %prop) sat))
     [%next (flac:enrl:format:fh (need lau)) 'project cannot be edited after locking']
   :-  %page
-  %-  html:ui:fh
+  %-  page:ui:fh
   :^  bol  ord  "project edit"
   ;form.p-2(method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]

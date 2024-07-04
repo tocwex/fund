@@ -432,154 +432,161 @@
     ==
     ;script
       ;+  ;/
-      """
-      document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{
-        safe_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro))}',
-        safe_bloq: {(bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro))},
-        work_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro))}',
-        orac_addr: '{(addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro))}',
-        coin_chain: {(bloq:enjs:format:fh chain.currency.pro)},
-        coin_name: '{(trip name.currency.pro)}',
-        orac_cut: {(cash:enjs:format:fh q.assessment.pro)},
-        mile_fill: [{(roll moz |=([n=odit:f a=tape] (weld a "{(cash:enjs:format:fh fill.n)},")))}],
-        mile_whom: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n))},")))}],
-        mile_sign: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "'{(sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n))}',")))}],
-        mile_take: [{(roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] (weld a "{(cash:enjs:format:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n))},")))}],
-        acceptContract(event) \{
-          this.sendForm(event, [], () => (
-            this.safeSignDeploy(\{
-              projectChain: this.coin_chain,
-              projectContent: document.querySelector("#fund-proj-oath").value,
-            }).then(([address, signature]) => (\{
-              oas: signature,
-              oaa: address,
-            }))
-          ));
-        },
-        finalizeContract(event) \{
-          this.sendForm(event, [], () => (
-            this.safeExecDeploy(\{
-              projectChain: this.coin_chain,
-              oracleAddress: this.orac_addr,
-            }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => \{
-              console.log(`safe creation successful; view at: $\{this.safeGetURL(safeAddress)}`);
-              return \{
-                sxb: xblock,
-                sxa: xhash,
-                swa: workerAddress,
-                soa: oracleAddress,
-                ssa: safeAddress,
-              };
-            })
-          ));
-        },
-        plejFunds(event) \{
-          this.sendForm(event, [], () => (
-            this.safeGetBlock().then((block) => (\{mxb: block}))
-          ));
-        },
-        sendFunds(event) \{
-          this.sendForm(event, [], () => (
-            this.safeExecDeposit(\{
-              projectChain: this.coin_chain,
-              safeAddress: this.safe_addr,
-              fundAmount: event.target.form.querySelector("[name=sum]").value,
-              // fundToken: event.target.form.querySelector("[name=tok]").value,
-              fundToken: this.coin_name,
-            }).then(([address, xblock, xhash]) => \{
-              console.log(`contribution successful; view at: $\{this.txnGetURL(xhash)}`);
-              return \{
-                mad: address,
-                mxb: xblock,
-                mxa: xhash,
-              };
-            })
-          ));
-        },
-        approveMilestone(event) \{
-          this.sendForm(event, [() => this.checkWallet([this.orac_addr], "oracle")], () => (
-            this.safeSignClaim(\{
-              projectChain: this.coin_chain,
-              safeAddress: this.safe_addr,
-              workerAddress: this.work_addr,
-              oracleCut: this.orac_cut,
-              fundAmount: this.mile_fill[this.mile_idex],
-              fundToken: this.coin_name,
-            }).then(([address, signature, payload]) => (\{
-              mii: this.mile_idex,
-              mia: address,
-              mis: signature,
-              mit: payload,
-            }))
-          ));
-        },
-        clearMilestone(event) \{
-          this.sendForm(event, [], () => (
-            Promise.resolve(\{mii: this.mile_idex})
-          ));
-        },
-        claimMilestone(event) \{
-          this.sendForm(event, [() => this.checkWallet([this.work_addr], "worker")], () => (
-            this.safeExecClaim(\{
-              projectChain: this.coin_chain,
-              safeAddress: this.safe_addr,
-              fundAmount: this.mile_take[this.mile_idex],
-              fundToken: this.coin_name,
-              oracleSignature: this.mile_sign[this.mile_idex],
-              oracleAddress: this.orac_addr,
-              oracleCut: this.orac_cut,
-            }).then(([xblock, xhash]) => \{
-              console.log(`claim successful; view at: $\{this.txnGetURL(xhash)}`);
-              return \{
-                mii: this.mile_idex,
-                mib: xblock,
-                mih: xhash,
-              };
-            })
-          ));
-        },
-        cancelContract(event) \{
-          this.sendForm(event,
-            [() => this.checkWallet([this.work_addr, this.orac_addr], "worker/oracle")],
-            () => (
-              this.safeSignRefund(\{
+      ::  FIXME: Hack to reduce build times and fix build stack overflows
+      ::  on some ships
+      %-  zing  %+  join  "\0a"
+      ^-  (list tape)
+      :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_view', () => (\{"
+          :(weld "safe_addr: '" (addr:enjs:format:fh ?~(contract.pro 0x0 safe.u.contract.pro)) "',")
+          :(weld "safe_bloq: " (bloq:enjs:format:fh ?~(contract.pro 0 p.xact.u.contract.pro)) ",")
+          :(weld "work_addr: '" (addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro)) "',")
+          :(weld "orac_addr: '" (addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)) "',")
+          :(weld "coin_chain: " (bloq:enjs:format:fh chain.currency.pro) ",")
+          :(weld "coin_name: '" (trip name.currency.pro) "',")
+          :(weld "orac_cut: " (cash:enjs:format:fh q.assessment.pro) ",")
+          :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (cash:enjs:format:fh fill.n) ","))) "],")
+          :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")
+          :(weld "mile_sign: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n)) "',"))) "],")
+          :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n)) ","))) "],")
+          ^-  tape  ^~
+          %+  rip  3
+          '''
+          acceptContract(event) {
+            this.sendForm(event, [], () => (
+              this.safeSignDeploy({
                 projectChain: this.coin_chain,
-                fundToken: this.coin_name,
-                safeAddress: this.safe_addr,
-                safeInitBlock: this.safe_bloq,
-              }).then(([address, signature, payload]) => (\{
-                des: signature,
-                dea: address,
-                det: payload,
+                projectContent: document.querySelector('#fund-proj-oath').value,
+              }).then(([address, signature]) => ({
+                oas: signature,
+                oaa: address,
               }))
-            )
-          );
-        },
-        refundContract(event) \{
-          this.sendForm(event,
-            // FIXME: Should disallow the prior signer, i.e. `this.mile_whom[this.mile_idex]`
-            [() => this.checkWallet([this.work_addr, this.orac_addr], "worker/oracle")],
-            () => (
-              this.safeExecRefund(\{
+            ));
+          },
+          finalizeContract(event) {
+            this.sendForm(event, [], () => (
+              this.safeExecDeploy({
                 projectChain: this.coin_chain,
-                fundToken: this.coin_name,
+                oracleAddress: this.orac_addr,
+              }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
+                console.log(`safe creation successful; view at: ${this.safeGetURL(safeAddress)}`);
+                return {
+                  sxb: xblock,
+                  sxa: xhash,
+                  swa: workerAddress,
+                  soa: oracleAddress,
+                  ssa: safeAddress,
+                };
+              })
+            ));
+          },
+          plejFunds(event) {
+            this.sendForm(event, [], () => (
+              this.safeGetBlock().then((block) => ({mxb: block}))
+            ));
+          },
+          sendFunds(event) {
+            this.sendForm(event, [], () => (
+              this.safeExecDeposit({
+                projectChain: this.coin_chain,
                 safeAddress: this.safe_addr,
-                safeInitBlock: this.safe_bloq,
-                oracleAddress: this.mile_whom[this.mile_idex],
+                fundAmount: event.target.form.querySelector('[name=sum]').value,
+                // fundToken: event.target.form.querySelector('[name=tok]').value,
+                fundToken: this.coin_name,
+              }).then(([address, xblock, xhash]) => {
+                console.log(`contribution successful; view at: ${this.txnGetURL(xhash)}`);
+                return {
+                  mad: address,
+                  mxb: xblock,
+                  mxa: xhash,
+                };
+              })
+            ));
+          },
+          approveMilestone(event) {
+            this.sendForm(event, [() => this.checkWallet([this.orac_addr], 'oracle')], () => (
+              this.safeSignClaim({
+                projectChain: this.coin_chain,
+                safeAddress: this.safe_addr,
+                workerAddress: this.work_addr,
+                oracleCut: this.orac_cut,
+                fundAmount: this.mile_fill[this.mile_idex],
+                fundToken: this.coin_name,
+              }).then(([address, signature, payload]) => ({
+                mii: this.mile_idex,
+                mia: address,
+                mis: signature,
+                mit: payload,
+              }))
+            ));
+          },
+          clearMilestone(event) {
+            this.sendForm(event, [], () => (
+              Promise.resolve({mii: this.mile_idex})
+            ));
+          },
+          claimMilestone(event) {
+            this.sendForm(event, [() => this.checkWallet([this.work_addr], 'worker')], () => (
+              this.safeExecClaim({
+                projectChain: this.coin_chain,
+                safeAddress: this.safe_addr,
+                fundAmount: this.mile_take[this.mile_idex],
+                fundToken: this.coin_name,
                 oracleSignature: this.mile_sign[this.mile_idex],
-              }).then(([xblock, xhash]) => \{
-                console.log(`refund successful; view at: $\{this.txnGetURL(xhash)}`);
-                return \{
+                oracleAddress: this.orac_addr,
+                oracleCut: this.orac_cut,
+              }).then(([xblock, xhash]) => {
+                console.log(`claim successful; view at: ${this.txnGetURL(xhash)}`);
+                return {
+                  mii: this.mile_idex,
                   mib: xblock,
                   mih: xhash,
                 };
               })
-            )
-          );
-        },
-      })));
-      """
+            ));
+          },
+          cancelContract(event) {
+            this.sendForm(event,
+              [() => this.checkWallet([this.work_addr, this.orac_addr], 'worker/oracle')],
+              () => (
+                this.safeSignRefund({
+                  projectChain: this.coin_chain,
+                  fundToken: this.coin_name,
+                  safeAddress: this.safe_addr,
+                  safeInitBlock: this.safe_bloq,
+                }).then(([address, signature, payload]) => ({
+                  des: signature,
+                  dea: address,
+                  det: payload,
+                }))
+              )
+            );
+          },
+          refundContract(event) {
+            this.sendForm(event,
+              // FIXME: Should disallow the prior signer, i.e. `this.mile_whom[this.mile_idex]`
+              [() => this.checkWallet([this.work_addr, this.orac_addr], 'worker/oracle')],
+              () => (
+                this.safeExecRefund({
+                  projectChain: this.coin_chain,
+                  fundToken: this.coin_name,
+                  safeAddress: this.safe_addr,
+                  safeInitBlock: this.safe_bloq,
+                  oracleAddress: this.mile_whom[this.mile_idex],
+                  oracleSignature: this.mile_sign[this.mile_idex],
+                }).then(([xblock, xhash]) => {
+                  console.log(`refund successful; view at: ${this.txnGetURL(xhash)}`);
+                  return {
+                    mib: xblock,
+                    mih: xhash,
+                  };
+                })
+              )
+            );
+          },
+          })));
+          '''
+      ==
     ==
   ==
 --
-::  VERSION: [0 4 1]
+::  VERSION: [0 4 2]

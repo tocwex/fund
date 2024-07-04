@@ -324,7 +324,7 @@
                 ;+  (mark-well:ui:fh (trip summary.mil) %togl)
                 ;*  =-  ?~  buz  ~
                         :_  ~
-                        ;div(class "fund-head flex flex-row justify-end")
+                        ;div(class "flex flex-wrap items-center justify-end gap-2")
                           ;*  buz
                         ==
                     ^-  buz=marl

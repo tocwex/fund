@@ -44,7 +44,7 @@
       :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~)
           pro=(link-butn:ui:fh pro.syt %| "back to project" ~)
           tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~)
-          pin=(pink-butn:ui:fh bol lag)
+          joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~)
       ::
             ^=  das
           |=  rol=role:f
@@ -58,7 +58,17 @@
       [pro.btn (turn (skip roz |=(r=role:f =(%fund r))) das.btn)]
     ::
         %edit
-      %^  hero-plaq:ui:fh  "Your changes have been saved!"  ~
+      %^      hero-plaq:ui:fh
+          "Your changes have been saved!"
+        ^-  tape  ^~
+        %+  rip  3
+        '''
+        If you are ready to launch your project, click "Request Oracle"
+        below to send a request to your chosen oracle. We do not
+        currently support in-app notifications, so we suggest you also
+        send them a direct message via the Tlon application to let them
+        know they have a pending service request!
+        '''
       :~  (prod-butn:ui:fh %bump-prop %true "request oracle ✓" ~ ~)
           =+  (dest:enrl:format:fh pat(- %project))
             (link-butn:ui:fh - %| "continue editing" ~)
@@ -73,7 +83,8 @@
             ;div(class "flex flex-row gap-x-3")
               ;+  pro.btn
               ;+  but
-              ;+  (pink-butn:ui:fh bol lag)
+              ;*  ?.  =(our.bol p.lag)  ~
+                  :_  ~  (pink-butn:ui:fh bol lag)
             ==
             ;+  bod
             ;p
@@ -83,13 +94,13 @@
               ; network at ~tocwex/syndicate-public or click the button below.
             ==
             ;div(class "flex flex-row gap-x-3")
-              ;+  tlo.btn
+              ;+  ?:(?=(%clear aut) joi.btn tlo.btn)
             ==
           ==
       ^=  [but=manx hed=manx bod=manx]
       :*    ^=  but
           ?-    aut
-            %clear  (~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~)
+            %clear  joi.btn
             %eauth  (~(link-butn ui:fh "fund-butn-ac-m") "{hep.syt}/#installing-fund" %& "get %fund ~" ~)
             %admin  tlo.btn
           ==
@@ -109,24 +120,30 @@
             ;+  =-  ;p: {-}
                 ?-    aut
                     %clear
-                  """
+                  ^-  tape  ^~
+                  %+  rip  3
+                  '''
                   Sign up below with ~tocwex.syndicate’s hosting partner,
                   Red Horizon, to get a free Urbit ID with a hosted instance
                   and preinstalled version of %fund. And of course share
                   this project with your community if you think they might
                   be interested in what it has to offer!
-                  """
+                  '''
                 ::
                     %eauth
                   ?:  ?=(%trib typ.pat)
-                    """
+                    ^-  tape  ^~
+                    %+  rip  3
+                    '''
                     Download `%fund` below to track your contributions,
                     discover new projects, and even run your own
                     crowdfunding campaigns. And of course share this
                     project with your community if you think they might
                     be interested in what it has to offer!
-                    """
-                  """
+                    '''
+                  ^-  tape  ^~
+                  %+  rip  3
+                  '''
                   In order to best follow through on your pledge, we
                   recommend downloading `%fund` below. This will give
                   you a list of past pledges requiring fulfillment, as
@@ -135,24 +152,28 @@
                   crowdfunding campaigns. And of course share this
                   project with your community if you think they might be
                   interested in what it has to offer!
-                  """
+                  '''
                 ::
                     %admin
                   ?:  ?=(%trib typ.pat)
-                    """
+                    ^-  tape  ^~
+                    %+  rip  3
+                    '''
                     Share this project with your community if you think
                     they might be interested in what it has to offer! If
                     you have any questions or need support of any kind,
                     join other %fund users on the network at
                     ~tocwex/syndicate-public or click the button below.
-                    """
-                  """
+                    '''
+                  ^-  tape  ^~
+                  %+  rip  3
+                  '''
                   Go to your project funder dashboard to see a list of
                   projects with open pledges requiring a fulfillment
                   transaction. And of course share this project with
                   your community if you think they might be interested
                   in what it has to offer!
-                  """
+                  '''
                 ==
           ==
       ::
@@ -169,7 +190,9 @@
                 ^=  [ext=marl tyt=tape txt=tape]
                 :_  ?:  ?=(%trib typ.pat)
                       :-  "Curious how this works?"
-                      """
+                      ^-  tape  ^~
+                      %+  rip  3
+                      '''
                       Your funds are now committed to backing this project.
                       In the event the trusted oracle or project worker
                       cancels the project, an on-chain refund will be
@@ -177,9 +200,11 @@
                       funds. If partial work completion occurs, your refund
                       will be proportional to your relative commitment and
                       the total amount returned to funders.
-                      """
+                      '''
                     :-  "Curious how pledges work in `%fund`?"
-                    """
+                    ^-  tape  ^~
+                    %+  rip  3
+                    '''
                     Your pledge is a cryptographically attested promise to
                     contribute the associated amount to the project’s smart
                     contract. Other network participants will be able to see
@@ -195,7 +220,7 @@
                     economic network will develop a subjective understanding
                     of your reputation from their perspective. Every urbit
                     becomes it’s own credit rating agency.
-                    """
+                    '''
                 ?-    aut
                     %clear
                   :~  ;p(class "font-semibold")

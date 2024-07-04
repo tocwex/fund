@@ -111,6 +111,14 @@
   --
 ++  enjs                                       ::  noun => js-tape
   |%
+  ++  mony                                     ::  [12.345.000 [1 0x1 %wstr %wstr 6]] => "12.34 $WSTR"
+    |=  [cas=^cash con=^coin]
+    ^-  tape
+    ?-  symbol.con
+      %usdc   "${(cash cas)}"
+      *       "{(cash cas)} {(coin con)}"
+    ==
+
   ++  cash                                     ::  12.345.000 => "12.34"
     =+  exp=6
     |=  cas=^cash
@@ -152,6 +160,10 @@
     |=  pok=^poke
     ^-  tape
     "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(?(%bump %mula) -.q.pok) ~ ['-' (trip +<.q.pok)])}"
+  ++  coin                                     ::  [1 0x1 %wstr %wstr 6] => "$WSTR"
+    |=  con=^coin
+    ^-  tape
+    "${(cuss (trip name.con))}"
   ++  role                                     ::  %orac => "oracle"
     |=  rol=^role
     ^-  tape

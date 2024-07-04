@@ -445,9 +445,13 @@
         ;*  ?.  big  ~
             :_  ~
             ;div(class "hidden sm:(flex flex-row gap-2)")
-              ;h3(class "text-tertiary-500 tracking-tight font-bold"): ${(cash:enjs:format fill.pod)}
+              ;h3(class "text-tertiary-500 tracking-tight font-bold")
+                ; {(mony:enjs:format fill.pod currency.pro)}
+              ==
               ;h3(class "text-tertiary-400 tracking-tight"): /
-              ;h3(class "text-tertiary-400 tracking-tight"): ${(cash:enjs:format plej.pod)}
+              ;h3(class "text-tertiary-400 tracking-tight")
+                ; {(mony:enjs:format plej.pod currency.pro)}
+              ==
             ==
       ==
       ;+  ?.  big  ;h6: {cen}% funded
@@ -456,7 +460,7 @@
               ; {cen}% raised
               ;span(class "hidden sm:block"): of
             ==
-          ;span(class "hidden sm:block"): ${(cash:enjs:format cost.pod)}
+          ;span(class "hidden sm:block"): {(mony:enjs:format cost.pod currency.pro)}
     ==
   ++  mile-ther                                  ::  milestone funding thermometer
     |=  [odi=odit tyt=tape]
@@ -544,16 +548,20 @@
       ==
     ==
   ++  mula-tytl                                  ::  mula (pledge/contribution) title
-    |=  mul=mula
+    |=  [mul=mula con=coin]
     ^-  manx
-    =/  sip=@p  ?-(-.mul %plej ship.mul, %trib ?^(ship.mul u.ship.mul `@p`(pow 2 64)))
+    =/  [sip=@p nam=tape]
+      ?-    -.mul
+        %plej  [ship.mul "{<ship.mul>}"]
+        %trib  ?^(ship.mul [u.ship.mul "{<u.ship.mul>}"] [`@p`(pow 2 64) "anonymous"])
+      ==
     ;div(class "flex flex-wrap items-center justify-between {cas}")
       ;div(class "flex items-center gap-x-2")
         ;+  (ship-icon sip)
-        ;h5: {<sip>}
+        ;h5: {nam}
       ==
       ;div(class "flex items-center gap-x-2")
-        ;p(class "font-serif leading-tight"): ${(cash:enjs:format cash.mul)}
+        ;p(class "font-serif leading-tight"): {(mony:enjs:format cash.mul con)}
         ;+  (mula-pill mul)
       ==
     ==

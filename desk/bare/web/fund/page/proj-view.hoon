@@ -164,7 +164,7 @@
   :^  bol  ord  (trip title.pro)
   ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
-        ;span: ${(cash:enjs:format:fh cost.pod)}
+        ;span: {(mony:enjs:format:fh cost.pod currency.pro)}
     ;*  ?~  image.pro  ~
         :_  ~  ;img@"{(trip u.image.pro)}"(class "w-full");
     ;*  =-  ?~  buz  ~
@@ -320,7 +320,7 @@
                   =class  "fund-card flex flex-col gap-2 px-2 py-4 lg:px-4 lg:py-6"
                 ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
                 ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
-                    ;span: ${(cash:enjs:format:fh cost.mil)}
+                    ;span: {(mony:enjs:format:fh cost.mil currency.pro)}
                 ;+  (mark-well:ui:fh (trip summary.mil) %togl)
                 ;*  =-  ?~  buz  ~
                         :_  ~
@@ -412,7 +412,7 @@
               |=  mul=mula:f
               ^-  manx
               ;div(class "p-2.5 flex flex-col gap-y-2 fund-card")
-                ;+  (mula-tytl:ui:fh mul)
+                ;+  (mula-tytl:ui:fh mul currency.pro)
                 ;+  ?:  =('' note.mul)  ;p(class "fund-warn"): No message included.
                     ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
               ==

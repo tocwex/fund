@@ -134,7 +134,9 @@
                 ;label(for "net"): Blockchain
               ==
               ;div(class "fund-form-group")
-                ;select#proj-token.fund-tsel(name "tok", required ~)
+                ;select#proj-token.fund-tsel  =name  "tok"  =required  ~
+                    =x-model  "proj_stok"
+                    =x-on-change  "updateProj"
                   ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
                       %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
                       |=  tok=tape
@@ -191,7 +193,10 @@
                         =placeholder  "0"
                         =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil))
                         =x-on-change  "updateMile";
-                      ;label(for "m{<min>}c"): Amount
+                      ;label(for "m{<min>}c")
+                        ; Amount
+                        ;span(x-text "'($' + proj_stok.toUpperCase() + ')'");
+                      ==
                     ==
                   ==
                   ;div(class "fund-form-group")
@@ -287,6 +292,7 @@
       %-  zing  %+  join  "\0a"
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
+          :(weld "proj_stok: '" ?~(pru "usdc" (trip symbol.currency.u.pru)) "',")
           :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh cost.n) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
@@ -298,7 +304,10 @@
             ));
           },
           updateProj() {
-            this.proj_cost = `\$${this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;
+            const amount = this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2);
+            this.proj_cost = (this.proj_stok === 'usdc')
+              ? `\$${amount}`
+              : `${amount} \$${this.proj_stok.toUpperCase()}`;
           },
           saveProj(event) {
             const chain = event.target.form.querySelector('[name=net]').value.toUpperCase();

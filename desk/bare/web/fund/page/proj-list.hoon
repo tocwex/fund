@@ -112,7 +112,7 @@
                   ::  FIXME: Need a Hoon-based solution for associating chain
                   ::  IDs with human-readable names
                   ;div(class "flex flex-col justify-center items-start")
-                    ;h1: {(cash:enjs:format:fh ~(cost pj:f pro))} ${(cuss (trip name.currency.pro))}
+                    ;h1: {(mony:enjs:format:fh ~(cost pj:f pro) currency.pro)}
                     ;h6(class "leading-none tracking-widest")
                       ; Deployed On {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
                     ==

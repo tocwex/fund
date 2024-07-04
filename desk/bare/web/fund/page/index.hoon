@@ -29,8 +29,8 @@
           ;+  %-  ~(link-butn ui:fh "fund-butn-de-s")
               ["{(burl:fh bol)}/apps/landscape/" & "explore urbit" ~]
           ;+  %-  ~(link-butn ui:fh "fund-butn-de-s")
-              :^  "{(burl:fh bol)}/apps/groups/groups/~tocwex/syndicate-public"
-              &  "view %fund chat"  ~
+              :_  [& "view %fund chat" ~]
+              "{(burl:fh bol)}/apps/groups/groups/~tocwex/syndicate-public"
         ==
       ==
   ++  dash-well

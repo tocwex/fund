@@ -14,7 +14,7 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  ~
-  |^  ;div(class "flex flex-col py-2 gap-2 mx-auto")
+  |^  ;div(class "flex flex-col py-2 gap-2 mx-auto max-w-[256px]")
         ;+  %^  dash-well  %funder
               "project funder"
             "fulfill your pledges and follow active projects"
@@ -25,11 +25,18 @@
             :_  ~  %^  dash-well  %oracle
               "trusted oracle"
             "get paid as a trusted arbiter for community projects"
+        ;div(class "flex flex-row justify-between")
+          ;+  %-  ~(link-butn ui:fh "fund-butn-de-s")
+              ["{(burl:fh bol)}/apps/landscape/" & "explore urbit" ~]
+          ;+  %-  ~(link-butn ui:fh "fund-butn-de-s")
+              :^  "{(burl:fh bol)}/apps/groups/groups/~tocwex/syndicate-public"
+              &  "view %fund chat"  ~
+        ==
       ==
   ++  dash-well
     |=  [das=@tas tyt=tape sum=tape]
     ^-  manx
-    ;div(class "p-2 pb-3 mx-auto border-2 border-black rounded-md max-w-[256px]")
+    ;div(class "p-2 pb-3 border-2 border-black rounded-md")
       ;h2(class "text-2xl text-center"): {tyt}
       ;div(class "flex flex-col gap-2")
         ;div(class "text-sm text-center"): {sum}

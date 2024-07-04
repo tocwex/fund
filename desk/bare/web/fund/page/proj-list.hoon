@@ -19,14 +19,15 @@
   :^  bol  ord  "{(trip dyp)} dashboard"
   |^  ;div(class "flex flex-col p-2 gap-y-2 max-w-[640px] mx-auto")
         ;*  %-  turn  :_  prez-welz
+            ^-  (list [tape welz-type (list [flag:f prej:f])])
             ?+    dyp  !!
                 %worker
               =/  myn  ~(tap by ~(mine conn:proj:fd bol +.dat))
-              :~  :+  "My Draft Proposals"  &
+              :~  :+  "My Draft Proposals"  %anew
                     (skim myn |=([* p=proj:f *] ?=(?(%born %prop) ~(stat pj:f p))))
-                  :+  "My Open Projects"  |
+                  :+  "My Open Projects"  %none
                     (skim myn |=([* p=proj:f *] ?=(?(%lock %work %sess) ~(stat pj:f p))))
-                  :+  "My Project Archive"  |
+                  :+  "My Project Archive"  %none
                     (skim myn |=([* p=proj:f *] ?=(?(%dead %done) ~(stat pj:f p))))
               ==
             ::
@@ -35,11 +36,11 @@
                 %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
                 |=  [[sip=@p *] pro=proj:f liv=?]
                 (~(has in (~(rols pj:f pro) sip our.bol)) %orac)
-              :~  :+  "Requests for My Services"  |
+              :~  :+  "Requests for My Services"  %none
                     (skim orz |=([* p=proj:f *] ?=(%prop ~(stat pj:f p))))
-                  :+  "My Open Assessment Projects"  |
+                  :+  "My Open Assessment Projects"  %none
                     (skim orz |=([* p=proj:f *] ?=(?(%lock %work %sess) ~(stat pj:f p))))
-                  :+  "My Assessment Archive"  |
+                  :+  "My Assessment Archive"  %none
                     (skim orz |=([* p=proj:f *] ?=(?(%dead %done) ~(stat pj:f p))))
               ==
             ::
@@ -48,27 +49,40 @@
                 %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
                 |=  [[sip=@p *] pro=proj:f liv=?]
                 (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
-              :~  :+  "My Open Pledges"  |
+              :~  :+  "My Open Pledges"  %none
                     (skim fuz |=([* p=proj:f *] (~(has by pledges.p) our.bol)))
-                  :+  "Projects I Funded"  |
+                  :+  "Projects I Funded"  %find
                     %+  skim  fuz
                     |=([* p=proj:f *] (lien contribs.p |=(t=trib:f ?~(ship.t | =(our.bol u.ship.t)))))
-                  ::  :+  "Projects from %pals"  |
+                  ::  :+  "Projects from %pals"  %none
                   ::    *(list [flag:f prej:f])
               ==
             ==
       ==
   ++  prez-welz
-    |=  [tyt=tape new=bean pez=(list [flag:f prej:f])]
+    |=  [tyt=tape typ=welz-type pez=(list [flag:f prej:f])]
     ^-  manx
     ;div(class "flex flex-col gap-y-2")
       ;div(class "flex justify-between")
         ;h1: {tyt}
-        ;*  ?.  new  ~
-            :_  ~  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}": new project +
+        ;*  ?.  ?=(%anew typ)  ~
+            :_  ~
+            ;a.self-center.fund-butn-ac-m/"{(dest:enrl:format:fh /create/project)}"
+              ; new project +
+            ==
       ==
       ;div(class "w-full flex flex-col gap-4")
-        ;*  ?~  pez  :_  ~  ;p(class "fund-warn"): No projects found.
+        ;*  ?~  pez
+              :_  ~
+              ;p.fund-warn
+                ; No projects found.
+                ;*  ?.  ?=(%find typ)  ~
+                    :_  ~
+                    ;span
+                      ; Check out the
+                      ;a.text-link/"{(burl:fh bol)}/apps/groups/groups/~tocwex/syndicate-public/channels/heap/~tocwex/bulletin-board": ~tocwex.syndicate %tlon group
+                      ;span:  to discover more projects.
+              ==    ==
             %+  turn  pez
             |=  [lag=flag:f pro=proj:f liv=?]
             ^-  manx
@@ -78,7 +92,8 @@
                 ;div(class "inline-flex self-stretch justify-start items-center gap-3")
                   ;h1: {(trip title.pro)}
                   ;+  (pink-butn:ui:fh bol lag)
-                  ;+  (edit-butn:ui:fh lag)
+                  ;*  ?.  &(=(p.lag our.bol) ?=(?(%born %prop) ~(stat pj:f pro)))  ~
+                      :_  ~  (edit-butn:ui:fh lag)
                 ==
                 ;*  ?~  image.pro  ~
                     :_  ~
@@ -118,6 +133,7 @@
         ;h5(class "font-semibold leading-tight tracking-tight"): {<sip>}
       ==
     ==
+  +$  welz-type  ?(%anew %find %none)
   --
 --
 ::  VERSION: [0 4 1]

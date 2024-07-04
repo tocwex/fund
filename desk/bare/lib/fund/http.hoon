@@ -221,6 +221,8 @@
             ;link/"https://fonts.googleapis.com"(rel "preconnect");
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
+              =href  "https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900";
+            ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
               =href  "https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@300..700&display=swap";
             ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
               =href  "{ape}/f1719727743303x447523347489316540/Chaney%20Wide.css";
@@ -290,8 +292,8 @@
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
             =+  dst=?:(=(our src):bol (dest:enrl:format /) (trip !<(@t (slot:config %meta-site))))
-            ;a/"{dst}"(class "rounded-2xl hover:bg-primary-550")
-              ;img.h-8.object-contain@"{(dest:enrl:format /asset/[~.fund.svg])}";
+            ;a/"{dst}"(class "h-10 p-2 rounded-2xl hover:bg-primary-550")
+              ;img.h-full@"{(dest:enrl:format /asset/[~.fund.svg])}";
             ==
         ;div(class "flex inline-flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
@@ -327,7 +329,7 @@
           ;a/"https://github.com/tocwex"(target "_blank")
             ;img@"{(dest:enrl:format /asset/[~.github.svg])}";
           ==
-          ;a/"https://tlon.network/lure/~tocwex/syndicate-public"(target "_blank")
+          ;a/"{(trip !<(@t (slot:config %meta-tlon)))}"(target "_blank")
             ;img@"{(dest:enrl:format /asset/[~.urbit.svg])}";
           ==
           ;a/"https://x.com/tocwex"(target "_blank")
@@ -383,7 +385,7 @@
           ==
       ;*  ?.  ?=(%togl typ)  ~
           :_  ~
-          ;div(class "flex justify-center")
+          ;div(class "flex justify-center pt-2")
             ;*  %+  turn  ~[["!expanded" "true" "show more +"] ["expanded" "false" "show less -"]]
                 |=  [sow=tape qiq=tape txt=tape]
                 ;button.fund-butn-ac-s(type "button", x-show sow, x-on-click "expanded = {qiq}"): {txt}
@@ -544,7 +546,7 @@
   ++  mula-tytl                                  ::  mula (pledge/contribution) title
     |=  mul=mula
     ^-  manx
-    =/  sip=@p  ?-(-.mul %plej ship.mul, %trib ?^(ship.mul u.ship.mul `@p`(pow 2 128)))
+    =/  sip=@p  ?-(-.mul %plej ship.mul, %trib ?^(ship.mul u.ship.mul `@p`(pow 2 64)))
     ;div(class "flex flex-wrap items-center justify-between {cas}")
       ;div(class "flex items-center gap-x-2")
         ;+  (ship-icon sip)

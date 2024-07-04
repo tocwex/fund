@@ -192,7 +192,7 @@ if (window.Alpine === undefined) {
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
-      ['fund-butn-icon', 'p-1 rounded-full text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
+      ['fund-butn-icon', 'p-1 max-w-none rounded-full text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       //  ['fund-butn-lorj', 'fund-butn-base text-sm px-3 py-1.5'], // h-8
@@ -200,7 +200,7 @@ if (window.Alpine === undefined) {
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
       ['fund-butn-default', 'bg-primary-100 border-secondary-500 text-secondary-500 hover:(bg-primary-250 border-secondary-500 text-secondary-500 shadow) active:(bg-primary-200 border-secondary-400 text-secondary-450 shadow) disabled:(bg-primary-550 border-primary-800 text-primary-750)'],
-      ['fund-butn-action', 'bg-secondary-500 border-secondary-550 text-gray-200 hover:(bg-secondary-450 border-secondary-400 text-primary-100 shadow) active:(bg-secondary-450 border-secondary-350 text-primary-100 shadow) disabled:(bg-gray-500 border-gray-350 text-gray-200)'],
+      ['fund-butn-action', 'bg-secondary-500 border-secondary-550 text-primary-100 hover:(bg-secondary-450 border-secondary-400 text-primary-100 shadow) active:(bg-secondary-450 border-secondary-350 text-primary-100 shadow) disabled:(bg-gray-500 border-gray-350 text-gray-200)'],
       ['fund-butn-true', 'bg-highlight2-500 border-highlight2-550 text-primary-100 hover:(bg-highlight2-550 border-highlight2-500 text-primary-100 shadow) active:(bg-highlight2-550 border-highlight2-450 text-primary-100 shadow) disabled:(bg-highlight2-650 border-highlight2-550 text-highlight2-450)'],
       ['fund-butn-false', 'bg-highlight1-500 border-highlight1-550 text-primary-100 hover:(bg-highlight1-550 border-highlight1-500 text-primary-100 shadow) active:(bg-highlight1-550 border-highlight1-450 text-primary-100 shadow) disabled:(bg-highlight1-650 border-highlight1-550 text-highlight1-450)'],
       ['fund-butn-conn', 'bg-tertiary-500 border-tertiary-550 text-primary-100 hover:(bg-tertiary-550 border-tertiary-500 text-primary-100 shadow) active:(bg-tertiary-550 border-tertiary-450 text-primary-100 shadow) disabled:(bg-tertiary-650 border-tertiary-550 text-tertiary-450)'],

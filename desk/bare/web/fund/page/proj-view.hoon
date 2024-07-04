@@ -322,52 +322,56 @@
                 ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
                     ;span: ${(cash:enjs:format:fh cost.mil)}
                 ;+  (mark-well:ui:fh (trip summary.mil) %togl)
-                ;div(class "flex flex-wrap items-center justify-end gap-2")
-                  ;*  =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
-                      ;:    welp
-                          ?.  &(cur wok ?=(%lock status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %bump-work %action "mark in-progress ~" ~ ~)
-                      ::
-                          ?.  &(cur wok ?=(%work status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %bump-sess %action "request review ~" ~ ~)
-                      ::
-                          ?.  &(cur ora ?=(%sess status.mil))  ~
-                        :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %bump-work %action "changes required ~" ~ ~)
-                            (prod-butn:ui:fh %bump-done %true "approve ✓" "approveMilestone" ~)
-                        ==
-                      ::
-                      ::
-                          ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
-                        :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
-                        ==
-                      ::
-                          ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
-                      ::
-                          ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
+                ;*  =-  ?~  buz  ~
                         :_  ~
-                        %:  prod-butn:ui:fh
-                            %draw-done  %true  "claim funds ✓"  "claimMilestone"
-                            ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
+                        ;div(class "fund-head flex flex-row justify-end")
+                          ;*  buz
                         ==
-                      ::
-                      ::
-                          ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
-                      ::
-                          ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
-                      ::
-                          ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
-                        :_  ~
-                        %:  prod-butn:ui:fh
-                            %draw-dead  %true  "refund funds ✓"  "refundContract"
-                            ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
-                        ==
+                    ^-  buz=marl
+                    =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
+                    ;:    welp
+                        ?.  &(cur wok ?=(%lock status.mil))  ~
+                      :_  ~  (prod-butn:ui:fh %bump-work %action "mark in-progress ~" ~ ~)
+                    ::
+                        ?.  &(cur wok ?=(%work status.mil))  ~
+                      :_  ~  (prod-butn:ui:fh %bump-sess %action "request review ~" ~ ~)
+                    ::
+                        ?.  &(cur ora ?=(%sess status.mil))  ~
+                      :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
+                          (prod-butn:ui:fh %bump-work %action "changes required ~" ~ ~)
+                          (prod-butn:ui:fh %bump-done %true "approve ✓" "approveMilestone" ~)
                       ==
-                ==
+                    ::
+                    ::
+                        ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
+                      :~  ;a.fund-butn-de-m/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): message worker →
+                          (prod-butn:ui:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
+                      ==
+                    ::
+                        ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
+                      :_  ~  (prod-butn:ui:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
+                    ::
+                        ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
+                      :_  ~
+                      %:  prod-butn:ui:fh
+                          %draw-done  %true  "claim funds ✓"  "claimMilestone"
+                          ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
+                      ==
+                    ::
+                    ::
+                        ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
+                      :_  ~  (prod-butn:ui:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
+                    ::
+                        ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
+                      :_  ~  (prod-butn:ui:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
+                    ::
+                        ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
+                      :_  ~
+                      %:  prod-butn:ui:fh
+                          %draw-dead  %true  "refund funds ✓"  "refundContract"
+                          ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
+                      ==
+                    ==
               ==
         ==
       ==

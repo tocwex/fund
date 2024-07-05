@@ -92,103 +92,100 @@
   ?.  |(?=(~ pru) ?=(?(%born %prop) sat))
     [%next (flac:enrl:format:fh (need lau)) 'project cannot be edited after locking']
   :-  %page
-  %-  render:htmx:fh
+  %-  page:ui:fh
   :^  bol  ord  "project edit"
-  ;form#maincontent.p-2(method "post", autocomplete "off", x-data "proj_edit")
+  ;form.p-2(method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div
-          ;div(class "flex flex-wrap items-center justify-between")
-            ;div(class "text-3xl"): Project Overview
-            ;div(class "flex items-center gap-x-2")
-              ;div(class "text-xl")
-                ; Funding Goal:
-                ;span(x-text "proj_cost");
-              ==
-              ;+  (stat-pill:htmx:fh sat)
-            ==
-          ==
+          ;+  %^  work-tytl:ui:fh  "Project Overview"  sat
+              ;span(x-text "proj_cost");
           ;div
             ;div(class "flex")
               ;div(class "fund-form-group")
                 ;input.p-1  =name  "nam"  =type  "text"  =required  ~
                   =placeholder  "My Awesome Project"
                   =value  (trip ?~(pru '' title.u.pru));
-                ;label(for "nam"): project title
+                ;label(for "nam"): Project Name
               ==
               ;div(class "fund-form-group")
                 ;input.p-1  =name  "pic"  =type  "url"
                   =placeholder  "https://example.com/example.png"
                   =value  (trip (fall ?~(pru ~ image.u.pru) ''));
-                ;label(for "pic"): project image
+                ;label(for "pic"): Header Image URL
+              ==
+            ==
+            ;div(class "flex")
+              ;div(class "fund-form-group")
+                ;select#proj-chain.fund-tsel(name "net", required ~)
+                  ::  FIXME: Including the network IDs here is a hack, but
+                  ::  this should be fixed by moving chain stuff to the BE
+                  ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
+                      %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
+                      |=  [net=tape nid=@ud]
+                      ^-  manx
+                      :_  ; {(caps:fx net)}
+                      :-  %option
+                      ;:  welp
+                          [%value net]~
+                          [%data-image (aset:enrl:format:fh (crip net))]~
+                          ?.(=(can nid) ~ [%selected ~]~)
+                      ==
+                ==
+                ;label(for "net"): Blockchain
+              ==
+              ;div(class "fund-form-group")
+                ;select#proj-token.fund-tsel  =name  "tok"  =required  ~
+                    =x-model  "proj_stok"
+                    =x-on-change  "updateProj"
+                  ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
+                      %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
+                      |=  tok=tape
+                      ^-  manx
+                      :_  ; {(cuss tok)}
+                      :-  %option
+                      ;:  welp
+                          [%value tok]~
+                          [%data-image (aset:enrl:format:fh (crip tok))]~
+                          ?.(=(sym tok) ~ [%selected ~]~)
+                      ==
+                ==
+                ;label(for "tok"): Token
               ==
             ==
             ;div(class "fund-form-group")
               ;div(class "grow-wrap")
                 ;textarea.p-1  =name  "sum"  =rows  "3"
-                  =placeholder  "Write a worthy description of your project (markdown supported!)"
+                  =placeholder  "Describe your project in detail. Plaintext and markdown inputs both supported."
                   =value  (trip ?~(pru '' summary.u.pru))
                   =x-on-input  "updateTextarea"
                   ; {(trip ?~(pru '' summary.u.pru))}
                 ==
               ==
-              ;label(for "sum"): project description
+              ;label(for "sum"): Project Description
             ==
           ==
         ==
         ;div
-          ;div(class "m-1 pt-2 text-3xl w-full"): Funding
-          ;div(class "flex")
-            ;div(class "fund-form-group")
-              ;select.p-2(name "tok")
-                ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
-                    %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
-                    |=  tok=tape
-                    ^-  manx
-                    :_  ; {(cuss tok)}
-                    :-  %option
-                    ;:  welp
-                        [%value tok]~
-                        ?.(=(sym tok) ~ [%selected ~]~)
-                    ==
-              ==
-              ;label(for "tok"): token
-            ==
-            ;div(class "fund-form-group")
-              ;select.p-2(name "net")
-                ::  FIXME: Including the network IDs here is a hack, but
-                ::  this should be fixed by moving chain stuff to the BE
-                ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
-                    %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
-                    |=  [net=tape nid=@ud]
-                    ^-  manx
-                    :_  ; {(caps:fx net)}
-                    :-  %option
-                    ;:  welp
-                        [%value net]~
-                        ?.(=(can nid) ~ [%selected ~]~)
-                    ==
-              ==
-              ;label(for "net"): network
-            ==
-          ==
-        ==
-        ;div
-          ;div.text-3xl.pt-2: Milestones
+          ;h1.pt-2: Milestones
           ;div#milz-well.mx-2
             ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                 |=  [min=@ mil=mile:f]
                 ^-  manx
-                ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-black rounded-xl")
+                ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-secondary-500 rounded-xl")
                   ;div(class "flex flex-wrap items-center justify-between")
-                    ;h3(class "text-3xl"): Milestone #{<+(min)>}
-                    ;+  (stat-pill:htmx:fh status.mil)
+                    ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
+                    ;+  ?:  ?=(%born status.mil)
+                          ::  FIXME: Using the X SVG causes a weird pop-in effect
+                          ::  for new milestones, so we just use raw text for now
+                          ;button(class "font-light", type "button", x-on-click "deleteMile"): ❌
+                        (stat-pill:ui:fh status.mil)
                   ==
                   ;div(class "flex")
                     ;div(class "fund-form-group")
                       ;input.p-1  =name  "m{<min>}n"  =type  "text"
                         =placeholder  "Give your milestone a title"
                         =value  (trip title.mil);
-                      ;label(for "m{<min>}n"): milestone title
+                      ;label(for "m{<min>}n"): Title
                     ==
                     ;div(class "fund-form-group")
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
@@ -196,48 +193,69 @@
                         =placeholder  "0"
                         =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil))
                         =x-on-change  "updateMile";
-                      ;label(for "m{<min>}c"): milestone budget (tokens)
+                      ;label(for "m{<min>}c")
+                        ; Amount
+                        ;span(x-text "'($' + proj_stok.toUpperCase() + ')'");
+                      ==
                     ==
                   ==
                   ;div(class "fund-form-group")
                     ;div(class "grow-wrap")
                       ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
-                        =placeholder  "Describe your milestone in detail (in plain text or markdown), such that both project funders and your oracle can understand the work you are doing—and everyone can reasonably agree when it is completed."
+                        =placeholder  "Describe your milestone in detail. Plaintext and markdown inputs both supported."
                         =value  (trip summary.mil)
                         =x-on-input  "updateTextarea"
                         ; {(trip summary.mil)}
                       ==
                     ==
-                    ;label(for "m{<min>}s"): milestone description
+                    ;label(for "m{<min>}s"): Milestone Description
                   ==
                 ==
           ==
           ;div.flex.justify-center.mx-auto
-            ;button.fund-butn-black(type "button", x-on-click "appendMile"): New Milestone +
+            ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): add milestone +
           ==
         ==
         ;div
-          ;div(class "m-1 pt-2 text-3xl w-full"): Trusted Oracle
+          ;h1.pt-2: Trusted Oracle
+          ;p.pt-2
+            ; Choose a service provider who will assess work completion
+            ; and settle disputes. The fee percentage is paid to the
+            ; oracle as a cut of the completed milestone upon withdrawal
+            ; of funds.
+          ==
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;input.p-1  =name  "sea"  =type  "text"
-                =pattern  (trip '(~(([a-z]{3})|([a-z]{6})))?')
-                =placeholder  (scow %p !<(@p (slot:config %point)))
-                =value  (trip ?~(pru '' (scot %p p.assessment.u.pru)));
-              ;label(for "sea"): oracle identity (star or galaxy)
+              ;select#proj-oracle.fund-tsel(name "sea")
+                ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
+                    =+  dad=(sein:title our.bol now.bol our.bol)
+                    ::  FIXME: These options are hard-coded from the
+                    ::  ~tocwex.syndicate group's oracle directory
+                    %+  turn  ~[!<(@p (slot:config %point)) dad ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur]
+                    |=  ora=@p
+                    ^-  manx
+                    :_  ; {<ora>}
+                    :-  %option
+                    ;:  welp
+                        [%value "{<ora>}"]~
+                        [%data-image "https://azimuth.network/erc721/{(bloq:enjs:format:fh `@`ora)}.svg"]~
+                        ?.(=(ses ora) ~ [%selected ~]~)
+                    ==
+              ==
+              ;label(for "sea"): Trusted Oracle
             ==
             ;div(class "fund-form-group")
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
-                =placeholder  "1"
+                =placeholder  "1%"
                 =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru));
-              ;label(for "seo"): fee offer (%)
+              ;label(for "seo"): Fee Offer (%)
             ==
           ==
         ==
     ==
     ;div(class "flex flex-col gap-y-2 m-1")
-      ;div(class "text-3xl w-full"): Confirm & Launch
+      ;h1: Confirm & Launch
       ;p
         ; Please review your proposal in detail and ensure
         ; your trusted oracle is in mutual agreement on expectations
@@ -254,14 +272,14 @@
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:htmx:fh %init %black "save draft ~" "saveProj" ~)
-            ++  croc-butn  (prod-butn:htmx:fh %bump-born %black "retract proposal ~" ~ ~)
+            ++  init-butn  (prod-butn:ui:fh %init %action "save draft ~" "saveProj" ~)
+            ++  croc-butn  (prod-butn:ui:fh %bump-born %action "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-              (prod-butn:htmx:fh %drop %red "delete {obj} ✗" ~ ~)
+              (prod-butn:ui:fh %drop %false "delete {obj} ✗" ~ ~)
             ::  ++  dead-butn
-            ::    %:  prod-butn:htmx:fh
-            ::        %dead  %red  "discontinue project ✗"  ~
+            ::    %:  prod-butn:ui:fh
+            ::        %dead  %false  "discontinue project ✗"  ~
             ::        ?.(?=(%dead sat) ~ "project has already been discontinued")
             ::    ==
             --
@@ -274,11 +292,11 @@
       %-  zing  %+  join  "\0a"
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
+          :(weld "proj_stok: '" ?~(pru "usdc" (trip symbol.currency.u.pru)) "',")
           :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh cost.n) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''
-          proj_cost: 0,
           init() {
             this.updateProj();
             document.querySelectorAll('textarea').forEach(elem => (
@@ -286,7 +304,10 @@
             ));
           },
           updateProj() {
-            this.proj_cost = `\$${this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2)}`;
+            const amount = this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2);
+            this.proj_cost = (this.proj_stok === 'usdc')
+              ? `\$${amount}`
+              : `${amount} \$${this.proj_stok.toUpperCase()}`;
           },
           saveProj(event) {
             const chain = event.target.form.querySelector('[name=net]').value.toUpperCase();
@@ -311,7 +332,8 @@
             const wellDiv = document.querySelector('#milz-well');
             const wellClone = document.querySelector('#mile-0').cloneNode(true);
             const wellIndex = this.mile_cost.length;
-            wellClone.querySelector('h3').innerHTML = `Milestone #${wellIndex + 1}`;
+            wellClone.setAttribute('id', `mile-${wellIndex}`);
+            wellClone.querySelector('h6').innerHTML = `Milestone ${wellIndex + 1}`;
             ['m0n', 'm0c', 'm0s'].forEach(fieldName => {
               const fieldElem = wellClone.querySelector(`[name=${fieldName}]`);
               fieldElem.setAttribute('name', `m${wellIndex}${fieldName.at(2)}`);
@@ -321,10 +343,37 @@
             wellDiv.appendChild(wellClone);
             this.mile_cost = this.mile_cost.concat([0]);
           },
+          deleteMile(event) {
+            var mileElem = event.target.parentElement;
+            while (mileElem !== undefined && !/mile-\d+/.test(mileElem.id)) {
+              mileElem = mileElem.parentElement;
+            }
+            const mileId = mileElem.id.match(/\d+/)[0];
+
+            const wellDiv = document.querySelector('#milz-well');
+            const wellMilz = Array.from(wellDiv.children);
+            if (wellMilz.length > 1) {
+              wellMilz.splice(mileId, 1);
+              this.mile_cost.splice(mileId, 1);
+              wellDiv.removeChild(mileElem);
+
+              wellMilz.forEach((mileElem, mileIndex) => {
+                const oldId = mileElem.id.match(/\d+/)[0];
+                mileElem.setAttribute('id', `mile-${mileIndex}`);
+                mileElem.querySelector('h6').innerHTML = `Milestone ${mileIndex + 1}`;
+                [`m${oldId}n`, `m${oldId}c`, `m${oldId}s`].forEach(fieldName => {
+                  const fieldElem = mileElem.querySelector(`[name=${fieldName}]`);
+                  fieldElem.setAttribute('name', `m${mileIndex}${fieldName.at(2)}`);
+                });
+              });
+            }
+
+            this.updateProj();
+          },
           })));
           '''
       ==
     ==
   ==
 --
-::  VERSION: [0 4 2]
+::  VERSION: [1 0 0]

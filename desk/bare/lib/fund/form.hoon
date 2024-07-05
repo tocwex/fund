@@ -47,7 +47,28 @@
     |=  lag=flag  ~+
     ^-  cord
     (desc /project/(scot %p p.lag)/[q.lag])
+  ++  aset                                     ::  as(s)e(t) t(ape) (url path)
+    |=  ast=@t  ~+
+    ^-  tape
+    (dest /asset/[(crip "{(trip ast)}.svg")])
+  ++  asec                                     ::  as(s)e(t) c(ord) (url path)
+    |=  ast=@t  ~+
+    ^-  cord
+    (desc /asset/[(crip "{(trip ast)}.svg")])
   --
+  ++  surt                                     ::  s(hip) ur(l) t(ape) (url path)
+    |=  sip=@p  ~+
+    ^-  tape
+    ::  TODO: Comets should use the URL to a pure black image
+    ?-    (clan:title sip)
+      %pawn  "https://azimuth.network/erc721/{(bloq:enjs 0)}.svg"
+      %earl  "https://azimuth.network/erc721/{(bloq:enjs `@`(end 5 sip))}.svg"
+      *      "https://azimuth.network/erc721/{(bloq:enjs `@`sip)}.svg"
+    ==
+  ++  surc                                     ::  s(hip) ur(l) c(ord) (url path)
+    |=  sip=@p  ~+
+    ^-  cord
+    (crip (surt sip))
 
 +|  %js
 ++  dejs                                       ::  js-tape => noun
@@ -64,9 +85,9 @@
     %-  abs:si  %-  need  %-  toi:fl  %-  grd:fl
     caf(e (sum:si e.caf (sun:si exp)))
   ++  real                                     ::  "12.345" => .1.2345e1
-    |=  mon=@t
+    |=  rel=@t
     ^-  @rs
-    (rash mon royl-rs:so)
+    (rash rel royl-rs:so)
   ++  bloq                                     ::  "123456..." => 1234.56...
     |=  boq=@t
     ^-  ^bloq
@@ -90,36 +111,30 @@
   --
 ++  enjs                                       ::  noun => js-tape
   |%
-  ++  cash                                     ::  12.345.000 => "12.345"
+  ++  mony                                     ::  [12.345.000 [1 0x1 %wstr %wstr 6]] => "12.34 $WSTR"
+    |=  [cas=^cash con=^coin]
+    ^-  tape
+    ?-  symbol.con
+      %usdc   "${(cash cas)}"
+      *       "{(cash cas)} {(coin con)}"
+    ==
+
+  ++  cash                                     ::  12.345.000 => "12.34"
     =+  exp=6
     |=  cas=^cash
     ^-  tape
-    ::  TODO: Need to round off everything past two digits after the decimal
-    ::  TODO: Need to pad with at least two zeroes after the decimal place
-    ::  TODO: Need to insert commas after every three digits before decimal place
     =+  cax=(drg:fl (sun:fl cas))
     ?>  ?=(%d -.cax)
-    =+  caf=cax(e (dif:si e.cax (sun:si exp)))
-    =/  rep=tape  ?:(s.caf "" "-")
-    =/  f  ((d-co:co 1) a.caf)
-    =^  e  e.caf
-      =/  e=@s  (sun:si (lent f))
-      =/  sci  :(sum:si e.caf e -1)
-      [(sum:si sci --1) --0]
-    (weld rep (ed-co:co e f))
-  ++  real                                     ::  .1.2345e1 => "12.345"
+    =.  e.cax  (dif:si e.cax (sun:si exp))
+    (flot:fx cax `[2 2])
+  ++  real                                     ::  .1.2345e1 => "12.34"
     |=  rel=@rs
     ^-  tape
-    ?+    ryl=(rlys rel)  "?"
-        [%d *]
-      =/  rep=tape  ?:(s.ryl "" "-")
-      =/  f  ((d-co:co 1) a.ryl)
-      =^  e  e.ryl
-        =/  e=@s  (sun:si (lent f))
-        =/  sci  :(sum:si e.ryl e -1)
-        [(sum:si sci --1) --0]
-      (weld rep (ed-co:co e f))
-    ==
+    (flot:fx (rlys rel) `[0 2])
+  ++  srel                                     ::  .1.2345e1 => "12"
+    |=  rel=@rs
+    ^-  tape
+    (flot:fx (rlys rel) `[0 0])
   ++  bloq                                     ::  1234.56... => "123456..."
     |=  boq=^bloq
     ^-  tape
@@ -128,6 +143,11 @@
     |=  adr=^addr
     ^-  tape
     ['0' 'x' ((x-co:co 40) adr)]
+  ++  sadr                                     ::  0xabcd.ef... => "0xabc…def"
+    |=  adr=^addr
+    ^-  tape
+    =+  bas=(addr adr)
+    :(weld (scag 5 bas) "…" (slaj:fx 4 bas))
   ++  sign                                     ::  0xabcd.ef... => "0xabcdef..."
     |=  sig=^sign
     ^-  tape
@@ -139,7 +159,11 @@
   ++  poke                                     ::  [[~zod %nam] %type ...] => "~zod/name:type"
     |=  pok=^poke
     ^-  tape
-    "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(%bump -.q.pok) ~ ['-' (trip +<.q.pok)])}"
+    "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(?(%bump %mula) -.q.pok) ~ ['-' (trip +<.q.pok)])}"
+  ++  coin                                     ::  [1 0x1 %wstr %wstr 6] => "$WSTR"
+    |=  con=^coin
+    ^-  tape
+    "${(cuss (trip name.con))}"
   ++  role                                     ::  %orac => "oracle"
     |=  rol=^role
     ^-  tape
@@ -148,12 +172,12 @@
       %orac  "oracle"
       %fund  "funder"
     ==
-  ++  mula                                     ::  [%plej ...] => "pledged"
+  ++  mula                                     ::  [%plej ...] => "pledge"
     |=  mul=^mula
     ^-  tape
     ?-  -.mul
-      %plej  "pledged"
-      %trib  "fulfilled"
+      %plej  "pledge"
+      %trib  "contribution"
     ==
   ++  stat                                     ::  %born => "draft"
     |=  sat=^stat

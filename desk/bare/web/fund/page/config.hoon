@@ -27,17 +27,13 @@
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   :-  %page
-  %-  render:htmx:fh
+  %-  page:ui:fh
   :^  bol  ord  "config"
-  %^    hero-plaq:htmx:fh
-      ?.(init.dat 'Thanks for installing %fund!' 'Update your preferences?')
-    :-  ~
-    '''
-    Will you help us by sending usage information?
-    You can change your decision at any time.
-    '''
-  ;=  ;+  (prod-butn:htmx:fh %vita-enable %green "yes ✓" ~ ~)
-      ;+  (prod-butn:htmx:fh %vita-disable %red "no ✗" ~ ~)
+  %^    hero-plaq:ui:fh
+      ?.(init.dat "Thanks for installing %fund!" "Update your preferences?")
+    "Will you help us by sending usage information? You can change your decision at any time."
+  ;=  ;+  (prod-butn:ui:fh %vita-enable %true "yes ✓" ~ ~)
+      ;+  (prod-butn:ui:fh %vita-disable %false "no ✗" ~ ~)
   ==
 --
-::  VERSION: [0 4 2]
+::  VERSION: [1 0 0]

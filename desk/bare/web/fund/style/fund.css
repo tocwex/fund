@@ -118,7 +118,7 @@ div.ts-wrapper + label:after {
 
 /* custom tippy styling */
 .tippy-box[data-theme~='fund'] {
-  background-color: #e4e4d8; /* bg-primary-500 */
+  background-color: #e8e8e8; /* bg-primary-500 */
   color: #04080f; /* text-secondary-500 */
   border-color: #04080f; /* border-secondary-500 */
   border-width: 1px; /* border */
@@ -250,7 +250,7 @@ div.ts-wrapper + label:after {
   left: 0;
   width: 100%;
   z-index: 10;
-  background: #f5f5f0; /* bg-primary-250 */
+  background: #f6f6f6; /* bg-primary-250 */
   margin: 0.25rem 0 0;
   border-top: 0 none;
   box-sizing: border-box;
@@ -262,7 +262,7 @@ div.ts-wrapper + label:after {
   overflow: hidden;
 }
 .ts-dropdown [data-selectable] .highlight {
-  background: #b6b696; /* bg-primary-600 */
+  background: #a2a2a2; /* bg-primary-600 */
   border-radius: 0.375rem; /* rounded-md */
 }
 .ts-dropdown .option,
@@ -287,7 +287,7 @@ div.ts-wrapper + label:after {
   cursor: default;
 }
 .ts-dropdown .active {
-  background-color: #cdcdb7; /* bg-primary-550 */
+  background-color: #bababa; /* bg-primary-550 */
 }
 /*.ts-dropdown .active.create {
   color: #495c68;
@@ -418,7 +418,7 @@ div.ts-wrapper + label:after {
 
 .ts-control,
 .ts-wrapper.single.input-active .ts-control {
-  background: #f5f5f0; /* bg-primary-250 */
+  background: #f6f6f6; /* bg-primary-250 */
   cursor: text;
 }
 

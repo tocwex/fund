@@ -383,14 +383,16 @@
                   "Project Worker"
                   ?~(contract.pro 0x0 work.u.contract.pro)
                   ;*  ?.  &(=(our src):bol !wok)  ~
-                      :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): 💬
+                      :_  ~
+                      ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.lag)}"(target "_blank"): 💬
               ==
           ;+  %:  ship-card:ui:fh
                   p.assessment.pro
                   "Trusted Oracle"
                   ?~(contract.pro 0x0 from.sigm.u.contract.pro)
                   ;*  ?.  &(=(our src):bol !ora)  ~
-                      :_  ~  ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): 💬
+                      :_  ~
+                      ;a.fund-butn-ac-s/"{(chat:enrl:format:fh p.assessment.pro)}"(target "_blank"): 💬
               ==
         ==
         ;div(class "flex flex-col gap-2")

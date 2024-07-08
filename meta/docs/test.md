@@ -156,12 +156,25 @@ need to be accounted for:
 
 # Ethereum Testing #
 
+Here are some of the basic queries that can be submitted to `%scanner` (a
+gentle fork of `%eth-watcher`):
+
 ```
-=rpc 'https://eth.drpc.org'
-=rpc 'https://sepolia.drpc.org'
-=bloq .^(@udblocknumber %gx /=eth-watcher=/block/azimuth/noun)
-=addr …
-:eth-watcher &eth-watcher-poke [%watch path=/fund/xact/[addr] config=[rpc ~m1 ~m5 bloq ~ [addr]~ ~ ~]]
+=s -build-file /=fund=/sur/scanner/hoon
+.^((set path) %gx /=scanner=/dogs/noun)
+.^((map path config:s) %gx /=scanner=/dogs/configs/noun)
+.^(@ %gx /=scanner=/block/…/noun)
+```
+
+Here are some basic commands to track Ethereum contract interactions:
+
+```
+::  track all %fund usdc transactions on Sepolia
+:scanner &scanner-poke [%watch path=/fund/usdc config=['https://sepolia.drpc.org' | ~s10 ~m1 5.621.625 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~]]
+::  track all %fund usdc transactions to a specific safe
+:scanner &scanner-poke [%watch path=/fund/safe config=['https://sepolia.drpc.org' | ~s10 ~m1 6.227.269 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~[0x0 0x0 0x1117.bfea.1e43.d16b.a9c2.6d06.1a77.a347.3908.330e]]]
+::  cancel the tracking for a specific path
+:scanner &scanner-poke [%clear path=/fund/test]
 ```
 
 # Markdown Testing #

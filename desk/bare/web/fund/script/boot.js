@@ -386,6 +386,9 @@ if (window.Alpine === undefined) {
         if (event.target.form !== undefined) {
           [...(new FormData(event.target.form).entries())].forEach(appendInput);
         }
+        // NOTE: Safari doesn't recognize the form attributes of the
+        // `requestSubmit` button, so we redundantly include them as a field
+        appendInput([button.getAttribute("name"), button.getAttribute("value")]);
 
         document.body.appendChild(form);
         form.requestSubmit(button);
@@ -431,15 +434,6 @@ if (window.Alpine === undefined) {
   );
   // https://turbo.hotwired.dev/reference/events#turbo%3Aload
   document.addEventListener("turbo:load", (event) => {
-    // TODO: Remove after fixing Safari
-    // NOTE: https://stackoverflow.com/a/23522755/837221
-    if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-      const header = document.createElement("div");
-      header.classList.add("fund-head", "w-full", "text-center", "bg-primary-600", "font-semibold", "p-1");
-      header.innerHTML = "CHROMIUM-BASED BROWSER RECOMMENDED";
-      document.body.prepend(header);
-    }
-
     setWalletButton(window.Wagmi.state);
 
     document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {

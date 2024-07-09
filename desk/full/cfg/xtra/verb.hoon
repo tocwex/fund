@@ -1,0 +1,1 @@
+../../../bare/cfg/xtra/verb.hoon

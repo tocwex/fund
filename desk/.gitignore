@@ -1,8 +1,4 @@
 /*
 !/.git*
 !/bare
-/bare/cfg/*
-!/bare/cfg/base.hoon
 !/full
-/full/cfg/*
-!/full/cfg/base.hoon

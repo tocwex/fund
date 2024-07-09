@@ -2,7 +2,7 @@
     info+'A sovereign P2P work completion funder/tracker with on-chain settlement.'
     color+0x11.1111
     image+'https://sfo3.digitaloceanspaces.com/sarlev-sarsen/sarlev-sarsen/2024.4.29..23.58.31..2b02.0c49.ba5e.353f-IMG_4726.jpeg'
-    version+[1 0 0]
+    version+[1 0 1]
     website+'https://www.tocwexsyndicate.com/'
     license+'GNU GPLv3'
     base+'fund'

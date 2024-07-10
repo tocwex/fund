@@ -116,18 +116,24 @@
     ^-  tape
     %*($ vath wox wox)
   ++  vath                                       ::  versioned text of assessment contract
-    |=  [wox=@p ver=?(%v0-4-0 %v1-0-0)]
+    |=  [wox=@p ver=?(%v0-4-0 %v1-0-0 %v1-1-0)]
     ^-  tape
-    ::  TODO: For version 1.1, need to manipulate currency values (use
-    ::  symbol for both name and symbol, and make it all lowercase)
-    =+  cash-enjs=?+(ver cash:enjs:format %v0-4-0 cash:enjs:format-0)
+    =/  cash-enjs=$-([cash @ud] tape)
+      ?+  ver    cash:enjs:format
+        %v0-4-0  |=([c=cash d=@ud] (cash:enjs:format-0 c))
+        %v1-0-0  |=([c=cash d=@ud] (cash:enjs:format c 6))
+      ==
+    =/  coin-enjs=$-(coin tape)
+      ?+  ver   coin:enjs:format
+        ?(%v0-4-0 %v1-0-0)  |=(c=coin (trip name.currency))
+      ==
     =-  "I, {<p.assessment>}, hereby agree to assess the following project proposed by {<wox>}:\0a\0a{-}"
     %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
     %+  weld
       ^-  (list tape)
       :~  "title: {(trip title)}"
-          "oracle: {<p.assessment>} (for {(cash-enjs q.assessment)}%)"
-          "currency: {(trip name.currency)} ({(addr:enjs:format addr.currency)}) on eth chain {(bloq:enjs:format chain.currency)}"
+          "oracle: {<p.assessment>} (for {(cash-enjs q.assessment 6)}%)"
+          "currency: {(coin-enjs currency)} ({(addr:enjs:format addr.currency)}) on eth chain {(bloq:enjs:format chain.currency)}"
           "summary: {(trip summary)}"
       ==
     %+  turn  (enum:fx milestonez)
@@ -137,7 +143,7 @@
     ^-  (list tape)
     :~  "milestone #{<+(min)>}:"
         "title: {(trip title.mil)}"
-        "cost: {(cash-enjs cost.mil)}"
+        "cost: {(cash-enjs cost.mil decimals.currency)}"
         "summary: {(trip summary.mil)}"
     ==
   --

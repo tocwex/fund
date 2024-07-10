@@ -18,9 +18,9 @@
         %+  scan  (flop (trip cor))
         ;~(pfix (star (mask " \0a\0d\09")) (star next))
       ++  pars                                 ::  parse real number
-        |=  cor=@t
+        |=  [cor=@t dex=@ud]
         ^-  (unit cash:f)
-        ?-  val=(mule |.((cash:dejs:format:fh cor)))
+        ?-  val=(mule |.((cash:dejs:format:fh cor dex)))
           [%| *]  ~
           [%& *]  `+.val
         ==
@@ -40,25 +40,25 @@
         %init
       ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %toc %toa %ton %tod %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
         :+  %init  ~
-        =+  pro=*proj:f  %_  pro
-          title       (~(got by p.arz) %nam)
-          summary     (trim (~(got by p.arz) %sum))
-        ::
-            assessment
-          :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
-          (fall (pars (~(got by p.arz) %seo)) 1.000.000)
-        ::
-            image
-          =+  pic=(~(got by p.arz) %pic)
-          ?~((rush pic auri:de-purl:html) ~ `pic)
-        ::
-            currency
+        =/  con=coin:f
           :*  chain=(bloq:dejs:format:fh (~(got by p.arz) %toc))
               addr=(addr:dejs:format:fh (~(got by p.arz) %toa))
               name=(~(got by p.arz) %ton)
               symbol=(~(got by p.arz) %ton)
               decimals=(bloq:dejs:format:fh (~(got by p.arz) %tod))
           ==
+        =+  pro=*proj:f  %_  pro
+          currency    con
+          title       (~(got by p.arz) %nam)
+          summary     (trim (~(got by p.arz) %sum))
+        ::
+            assessment
+          :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
+          (fall (pars (~(got by p.arz) %seo) 6) 1.000.000)
+        ::
+            image
+          =+  pic=(~(got by p.arz) %pic)
+          ?~((rush pic auri:de-purl:html) ~ `pic)
         ::
             milestones
           ;;  (lest mile:f)
@@ -70,7 +70,7 @@
           =+  mil=*mile:f  %_  mil
             title    u.nam
             summary  (trim (~(gut by p.arz) (crip "m{<ind>}s") ''))
-            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '')) 0)
+            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '') decimals.con) 0)
           ==
         ==
       ==
@@ -168,7 +168,8 @@
         ;div
           ;h1.pt-2: Milestones
           ;div#milz-well.mx-2
-            ;*  %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
+            ;*  =+  dex=?~(pru 6 decimals.currency.u.pru)
+                %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                 |=  [min=@ mil=mile:f]
                 ^-  manx
                 ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-secondary-500 rounded-xl")
@@ -191,7 +192,7 @@
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
                         =min  "0"  =max  "100000000"  =step  "0.01"
                         =placeholder  "0"
-                        =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil))
+                        =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil dex))
                         =x-on-change  "updateMile";
                       ;label(for "m{<min>}c")
                         ; Amount
@@ -248,7 +249,7 @@
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "1%"
-                =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru));
+                =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru 6));
               ;label(for "seo"): Fee Offer (%)
             ==
           ==
@@ -293,7 +294,7 @@
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
           :(weld "proj_stok: '" ?~(pru "usdc" (trip symbol.currency.u.pru)) "',")
-          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh cost.n) ","))) "],")
+          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh cost.n ?~(pru 6 decimals.currency.u.pru)) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''

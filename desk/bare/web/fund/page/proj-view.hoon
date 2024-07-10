@@ -112,7 +112,7 @@
       ?+  arz=(parz:fh bod (sy ~[%mxb %sum %msg]))  p.arz  [%| *]
         =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
         =/  wen=@ud  (bloq:dejs:format:fh (~(got by p.arz) %mxb))
-        =/  sum=cash:f  (cash:dejs:format:fh (~(got by p.arz) %sum))
+        =/  sum=cash:f  (cash:dejs:format:fh (~(got by p.arz) %sum) decimals.currency.pro)
         =/  msg=@t  (~(got by p.arz) %msg)
         ?-  dif
           %mula-plej  [%mula %plej (need who) sum wen msg]
@@ -210,7 +210,7 @@
                             [%step "0.01"]~
                             [%placeholder "10"]~
                             [%class "p-1"]~  ::  FIXME: Needed to match <select> sibling
-                            ?~(pej ~ ~[[%readonly ~] [%value (cash:enjs:format:fh cash.u.pej)]])
+                            ?~(pej ~ ~[[%readonly ~] [%value (cash:enjs:format:fh cash.u.pej decimals.currency.pro)]])
                         ==
                     ;label(for "sum"): amount
                   ==
@@ -258,7 +258,7 @@
                   ;span:  is offering the following compensation for your services:
                 ==
                 ;code
-                  ;span(class "font-bold"): {(cash:enjs:format:fh q.assessment.pro)}%
+                  ;span(class "font-bold"): {(cash:enjs:format:fh q.assessment.pro 6)}%
                   ;span:  of each milestone payout upon completed assessment
                 ==
                 ;p
@@ -445,11 +445,11 @@
           :(weld "orac_addr: '" (addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)) "',")
           :(weld "coin_chain: " (bloq:enjs:format:fh chain.currency.pro) ",")
           :(weld "coin_name: '" (trip name.currency.pro) "',")
-          :(weld "orac_cut: " (cash:enjs:format:fh q.assessment.pro) ",")
-          :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (cash:enjs:format:fh fill.n) ","))) "],")
+          :(weld "orac_cut: " (cash:enjs:format:fh q.assessment.pro 6) ",")
+          :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (cash:enjs:format:fh fill.n decimals.currency.pro) ","))) "],")
           :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")
           :(weld "mile_sign: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (sign:enjs:format:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n)) "',"))) "],")
-          :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n)) ","))) "],")
+          :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n) decimals.currency.pro) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''

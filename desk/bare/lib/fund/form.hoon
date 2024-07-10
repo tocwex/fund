@@ -74,8 +74,7 @@
 ++  dejs                                       ::  js-tape => noun
   |%
   ++  cash                                     ::  "12.345" => 12.345.000
-    =+  exp=6
-    |=  cas=@t
+    |=  [cas=@t dex=@ud]
     ^-  ^cash
     ::  FIXME: `royl-rn:so` crashes on values w/o leading 0s (e.g. '.1')
     =+  tas=(trip cas)
@@ -83,7 +82,7 @@
     =+  caf=(rash cas (cook royl-cell:so royl-rn:so))
     ?>  ?=(%d -.caf)
     %-  abs:si  %-  need  %-  toi:fl  %-  grd:fl
-    caf(e (sum:si e.caf (sun:si exp)))
+    caf(e (sum:si e.caf (sun:si dex)))
   ++  real                                     ::  "12.345" => .1.2345e1
     |=  rel=@t
     ^-  @rs
@@ -111,21 +110,19 @@
   --
 ++  enjs                                       ::  noun => js-tape
   |%
-  ++  mony                                     ::  [12.345.000 [1 0x1 %wstr %wstr 6]] => "12.34 $WSTR"
+  ++  mony                                     ::  [12.345.000 [1 0x0 %wstr %wstr 6]] => "12.34 $WSTR"
     |=  [cas=^cash con=^coin]
     ^-  tape
     ?-  symbol.con
-      %usdc   "${(cash cas)}"
-      *       "{(cash cas)} {(coin con)}"
+      %usdc   "${(cash cas decimals.con)}"
+      *       "{(cash cas decimals.con)} {(coin con)}"
     ==
-
   ++  cash                                     ::  12.345.000 => "12.34"
-    =+  exp=6
-    |=  cas=^cash
+    |=  [cas=^cash dex=@ud]
     ^-  tape
     =+  cax=(drg:fl (sun:fl cas))
     ?>  ?=(%d -.cax)
-    =.  e.cax  (dif:si e.cax (sun:si exp))
+    =.  e.cax  (dif:si e.cax (sun:si dex))
     (flot:fx cax `[2 2])
   ++  real                                     ::  .1.2345e1 => "12.34"
     |=  rel=@rs
@@ -163,7 +160,7 @@
   ++  coin                                     ::  [1 0x1 %wstr %wstr 6] => "$WSTR"
     |=  con=^coin
     ^-  tape
-    "${(cuss (trip name.con))}"
+    "${(cuss (trip symbol.con))}"
   ++  role                                     ::  %orac => "oracle"
     |=  rol=^role
     ^-  tape

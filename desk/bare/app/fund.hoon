@@ -246,6 +246,7 @@
           %fact
         ?.  ?=(%scanner-diff p.cage.syn)  cor
         =+  !<(dif=diff:fc q.cage.syn)
+        ::  transfer amount: `@ud`(addr:dejs:format:fh data.dif)
         ~&  >>  dif
         ::  TODO: Apply the eth history diff to the project
         ::  TODO: Figure out how to store history locally and

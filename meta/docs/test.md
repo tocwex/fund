@@ -17,7 +17,7 @@ These tests must be run on `~zod` in order to work!
 =ad2 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf
 =miz ~[m(title '1', summary '!', cost 10.000.000) m(title '2', summary '@', cost 20.000.000) m(title '3', summary '#', cost 30.000.000) m(title '4', summary '$', cost 40.000.000)]
 =po1 p(title 't', summary 'd', assessment [our 0], milestones miz, currency c)
-=sig 0x37.77bb.ef64.9e5e.c3e7.8923.e4c1.0b40.5c6c.1ba3.bb02.a201.6ad2.b9da.dd26.68ad.2c2a.4c43.5005.d3ca.e1f5.e59c.bbb8.658f.5431.4505.190c.5fa2.362c.1fb3.d165.ae03.4e1b
+=sig 0x74.cce9.43e5.905f.80c1.c1da.3174.a047.4634.7f8b.250c.0d35.78e9.bd89.36d1.dad7.6145.a679.41e2.e01c.d3cf.6aa1.fb1a.88a9.6b27.93e1.8830.550e.20f9.d615.3e98.d4c6.161b
 =si1 `sigm:f`[sig ad1 [%& (crip (~(oath pj:f po1) our))]]
 :fund &fund-poke [[our %test] %init ~]
 :fund &fund-poke [[our %test] %init `po1]

@@ -26,6 +26,6 @@
   ;<  caj=cage  bind:m  (take-fact:io sat)
   =+  !<(nex=diff:scanner q.caj)
   ;<  tym=@da  bind:m  get-time:io
-  ~&  >>  "-watch {<idx>} ({<tym>}): {(trip -.nex)}"
+  ~&  >>  "-scan {<idx>} ({<tym>}): {(trip -.nex)}"
   $(cur [nex cur])
 (pure:m !>(diz))

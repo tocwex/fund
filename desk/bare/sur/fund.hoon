@@ -44,6 +44,14 @@
       from=addr
   ==
 ::
+::  $xeta: blockchain metadata
+::
++$  xeta
+  $:  id=@ud
+      tag=@tas
+      rpc=@t
+  ==
+::
 ::  $coin: blockchain token information
 ::
 +$  coin

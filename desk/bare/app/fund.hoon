@@ -1,6 +1,6 @@
 /-  fd=fund-data
 /-  fd-0=fund-data-0
-/+  f=fund, fh=fund-http
+/+  f=fund, fh=fund-http, fc=fund-chain
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -217,13 +217,46 @@
     ?>  ?=(%poke-ack -.syn)
     ?~  p.syn  cor(init.state &)
     ((slog u.p.syn) cor)
-  ::  proxy response  ::
-      [%fund %proj sip=@ nam=@ ~]
-    ?>  ?=(%poke-ack -.syn)
+  ::  proj responses  ::
+      [%fund %proj sip=@ nam=@ pat=*]
     =/  sip=@p    (slav %p sip.pat)
     =/  nam=@tas  ?:(=(~ nam.pat) %$ (slav %tas nam.pat))
-    ?~  p.syn  cor
-    ((slog u.p.syn) cor)
+    ?+    pat.pat  cor
+    ::  proxy response  ::
+        ~
+      ?>  ?=(%poke-ack -.syn)
+      ?~  p.syn  cor
+      ((slog u.p.syn) cor)
+    ::  scan response  ::
+        [%scan typ=@ ~]
+      ?+    -.syn  cor
+      ::  init response  ::
+          %poke-ack
+        ?^  p.syn  ((slog u.p.syn) cor)
+        %-  emit
+        :*  %pass   pat
+            %agent  [our.bol %scanner]
+            %watch  [%logs pat]
+        ==
+      ::  watch response  ::
+          %watch-ack
+        ?~  p.syn  cor
+        ((slog u.p.syn) cor)
+      ::  watch update response  ::
+          %fact
+        ?.  ?=(%scanner-diff p.cage.syn)  cor
+        =+  !<(dif=diff:fc q.cage.syn)
+        ~&  >>  dif
+        ::  TODO: Apply the eth history diff to the project
+        ::  TODO: Figure out how to store history locally and
+        ::  use it to calculate project data (maybe just keep
+        ::  latest block id per project to indicate how up-to-date
+        ::  it is? then can reset this if something wonky happens...
+        ::  just apply new scanner data if it's newer than the newest
+        ::  project block)
+        cor
+      ==
+    ==
   ==
 ::
 ++  arvo
@@ -246,6 +279,7 @@
   ++  po-is-src  =(our.bol src.bol)
   ++  po-is-new  !(~(has by us-pez) lag)
   ++  po-pj-pat  `path`/fund/proj/(scot %p p.lag)/[q.lag]
+  ++  po-pj-pax  |=(p=path (welp po-pj-pat p))
   ++  po-du-pat  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  po-da-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
   ::
@@ -319,10 +353,21 @@
                 %bump
               =+  ses=p.assessment.pro
               ?+  sat.pod  ~
-                %prop  [(po-mk-car ses [%lure ses %orac])]~
                 ::  TODO: If this was sent by the user, also send cards to
                 ::  close the project path to the retracted oracle
                 %born  ?:(=(our.bol ses) ~ ~)
+                %prop  [(po-mk-car ses [%lure ses %orac])]~
+              ::
+                  %lock
+                ?~  oat.pod  ~
+                %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
+                |=  [pat=path cfg=config:fc]
+                =/  pax=path  (po-pj-pax pat)
+                ^-  card
+                :*  %pass   pax
+                    %agent  [our.bol %scanner]
+                    %poke   scanner-poke+!>([%watch pax cfg])
+                ==
               ==
             ::
                 %mula

@@ -136,4 +136,4 @@
   +$  welz-type  ?(%anew %find %none)
   --
 --
-::  VERSION: [1 0 1]
+::  VERSION: [1 0 2]

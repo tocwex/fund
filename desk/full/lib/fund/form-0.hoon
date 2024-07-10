@@ -1,0 +1,1 @@
+../../../bare/lib/fund/form-0.hoon

@@ -1,5 +1,5 @@
 /-  *fund
-/+  format=fund-form, fx=fund-xtra, tx=naive-transactions
+/+  format=fund-form, format-0=fund-form-0, fx=fund-xtra, tx=naive-transactions
 |%
 ::
 ::  +filo: fill in an $odit by calculating `void` (if required)
@@ -114,14 +114,19 @@
   ++  oath                                       ::  text of assessment contract
     |=  wox=@p
     ^-  tape
-    ::  FIXME: May need to add per-version oath support so that contracts
-    ::  with legacy `oath` formats (e.g. real values) are supported
+    %*($ vath wox wox)
+  ++  vath                                       ::  versioned text of assessment contract
+    |=  [wox=@p ver=?(%v0-4-0 %v1-0-0)]
+    ^-  tape
+    ::  TODO: For version 1.1, need to manipulate currency values (use
+    ::  symbol for both name and symbol, and make it all lowercase)
+    =+  cash-enjs=?+(ver cash:enjs:format %v0-4-0 cash:enjs:format-0)
     =-  "I, {<p.assessment>}, hereby agree to assess the following project proposed by {<wox>}:\0a\0a{-}"
     %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
     %+  weld
       ^-  (list tape)
       :~  "title: {(trip title)}"
-          "oracle: {<p.assessment>} (for {(cash:enjs:format q.assessment)}%)"
+          "oracle: {<p.assessment>} (for {(cash-enjs q.assessment)}%)"
           "currency: {(trip name.currency)} ({(addr:enjs:format addr.currency)}) on eth chain {(bloq:enjs:format chain.currency)}"
           "summary: {(trip summary)}"
       ==
@@ -132,7 +137,7 @@
     ^-  (list tape)
     :~  "milestone #{<+(min)>}:"
         "title: {(trip title.mil)}"
-        "cost: {(cash:enjs:format cost.mil)}"
+        "cost: {(cash-enjs cost.mil)}"
         "summary: {(trip summary.mil)}"
     ==
   --

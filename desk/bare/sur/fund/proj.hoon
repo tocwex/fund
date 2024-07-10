@@ -181,7 +181,12 @@
               %prop
             =+  sig=sigm:(need oat.pod)
             ?>  %.  (trip `@t`p.mesg.sig)
-                ~(has in (silt ~[(~(oath pj pro) our.bol) (~(oath pj:pj-1 (proj-2-1 pro)) our.bol)]))
+                %~  has  in
+                %-  silt
+                :~  (~(vath pj pro) our.bol %v1-0-0)
+                    (~(vath pj pro) our.bol %v0-4-0)
+                    (~(oath pj:pj-1 (proj-2-1 pro)) our.bol)
+                ==
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))
           ::

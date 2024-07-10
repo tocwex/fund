@@ -1,7 +1,6 @@
 ::  /lib/fund/xtra/hoon: miscellaneous helper functions
 ::
 |%
-+|  %hoon
 ::
 ::  +enum: given a list [l1, …, lN], return an index-enumerated list
 ::  [[0 l1], …, [N-1 lN]]
@@ -134,38 +133,4 @@
     ?:  (lth vel min.u.dex)  (dif:si (sun:si min.u.dex) (sun:si vel))
     --0
   ==
-
-+|  %arvo
-::
-::  +read-file: use %clay to read the latest version of a file in this
-::  desk at a given path
-::
-++  read-file
-  |=  [=bowl:gall =path]  ~+
-  ^-  tape
-  %-  trip
-  .^(@t %cx (weld /(scot %p our.bowl)/[dap.bowl]/(scot %da now.bowl) path))
-
-+|  %ethereum
-::
-::  +curr-bloq: the current blockchain block
-::
-++  curr-bloq
-  ^-  @ud
-  ?:  .^(? %j /=fake=)  20.000.000
-  .^(@ud %gx /=eth-watcher=/block/azimuth/noun)
-::
-::  +time-bloq: the estimated number of blocks for a time frame
-::
-++  time-bloq
-  |=  time=@dr
-  ^-  @ud
-  0
-::
-::  +bloq-time: the estimated time frame for a number of blocks
-::
-++  bloq-time
-  |=  bloq=@ud
-  ^-  @dr
-  *@dr
 --

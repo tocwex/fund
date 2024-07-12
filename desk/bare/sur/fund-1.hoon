@@ -44,17 +44,11 @@
       from=addr
   ==
 ::
-::  $xeta: blockchain metadata
-::
-+$  xeta
-  $:  id=@ud
-      tag=@tas
-      rpc=@t
-  ==
-::
 ::  $coin: blockchain token information
 ::
 +$  coin
+  ::  TODO: Consider using $~ to make this default to a specific coin,
+  ::  e.g. mainnet usdc
   $:  chain=@ud
       =addr
       name=@t
@@ -69,23 +63,6 @@
   $?  %boss  ::  admin action
       %peer  ::  worker action
       %peon  ::  viewer action
-  ==
-::
-::  $blot: identifier for display-style action
-::
-+$  blot
-  $~  %hide
-  $?  %hide  ::  hide by default
-      %show  ::  show by default
-      %drop  ::  remove from data structure
-  ==
-::
-::  $view: interpretation of outstanding pledge
-::
-+$  view
-  $~  %okay
-  $?  %stif  ::  negative view; "welched"
-      %okay  ::  positive view; "forgiven"
   ==
 ::
 ::  $role: peer role relative to a work unit
@@ -126,16 +103,7 @@
       note=@t
   ==
 ::
-::  $depo: blockchain attestation of contribution
-::
-+$  depo
-  $:  ship=~
-      =cash
-      when=stub
-      note=%''
-  ==
-::
-::  $trib: ship attestation of contribution
+::  $trib: actualization of contribution
 ::
 +$  trib
   $:  ship=(unit @p)
@@ -144,19 +112,10 @@
       note=@t
   ==
 ::
-::  $treb: record of contribution (with metadata)
-::
-+$  treb
-  $:  trib
-      plej=(unit plej)
-      claim=(unit bloq)
-  ==
-::
-::  $mula: investment via pledge ($plej), deposit ($depo), or contribution ($trib)
+::  $mula: investment via pledge ($plej) or contribution ($trib)
 ::
 +$  mula
   $%  [%plej plej]
-      [%depo depo]
       [%trib trib]
   ==
 ::
@@ -189,20 +148,6 @@
 
 +|  %core
 ::
-::  $deta: display metadata (for visible + addressable items)
-::
-+$  deta
-  $:  id=@
-      hide=?
-  ==
-::
-::  $peta: display metadata and interpretation (deta + optional view)
-::
-+$  peta
-  $:  view=(unit view)
-      deta
-  ==
-::
 ::  $mile: segment of work (milestone) within a project
 ::
 +$  mile
@@ -217,34 +162,15 @@
 ::  $proj: collection of work (milestones) requesting funding
 ::
 ++  proj
-  ::
-  ::  - on %mula submission: put this onto the `claims` list; if there's
-  ::  a matching `stuc` entry, then merge and put into `contribs`; else,
-  ::  just put it into the `(list trib)`
-  ::
-  ::  - on %scanner update: produce `(pair stub cash)` for each `loglist` entry and
-  ::  look for `claims` `trib` associations (take first matching entry),
-  ::  producing merged entries from `claims` and `pleges` into `contribs`
-  ::    - if there isn't a `trib` entry for a new `(pair stub cash)`, we
-  ::      still want to list this as a contribution (only `trib` first
-  ::      should not be listed)... just include it as a `trec` without a
-  ::      fill, to be filled in later (potentially) by an on-Urbit claim
-  ::
-  ::  NOTE: Can maybe just use `contribs` for everything:
-  ::  - tribs w/o claim: from chain only; no urbit claim
-  ::  - tribs w/o stub, i.e. `=(0x0 from.when.trib)`: from urbit
-  ::    only; no chain data
-  ::
-  $:  title=@t
+  $:  currency=coin
+      title=@t
       summary=@t
       image=(unit @t)
       assessment=sess
-      currency=coin
       milestones=(lest mile)
+      pledges=(map ship plej)
+      contribs=(list trib)
       contract=(unit oath)
-      latest=bloq
-      pledges=(map ship [plej peta])
-      contribs=(list [treb deta])
   ==
 ::
 ::  $proz: collection of projects keyed by id (host/term)
@@ -269,10 +195,9 @@
       [%drop ~]
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
-      [%blot mid=@ dif=blot]
+      ::  [%blot ...mula-like...]
       [%draw min=@ dif=xact]
       [%wipe min=@ sig=(unit sigm)]
-      ::  [%load ~]  ::  reload ethereum state
       ::  meta prods  ::
       [%join ~]
       [%exit ~]

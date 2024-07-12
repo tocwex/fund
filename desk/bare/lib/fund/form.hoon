@@ -174,6 +174,7 @@
     ^-  tape
     ?-  -.mul
       %plej  "pledge"
+      %depo  "deposit"
       %trib  "contribution"
     ==
   ++  stat                                     ::  %born => "draft"

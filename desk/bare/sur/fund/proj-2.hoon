@@ -1,5 +1,5 @@
-/-  pold=fund-proj-2
-/+  *fund, config, sss
+/-  pj-1=fund-proj-1
+/+  *fund-1, config, sss
 |%
 +|  %misc
 ++  flag
@@ -28,58 +28,97 @@
   --
 
 +|  %core
-+$  vers  _%3
++$  vers  _%2
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
   =>  |%
-      ++  proj-next
-        |=  pro=proj:pold
+      ++  cash-1-2  |=(r=@rs `@ud`?+(c=(rlys r) 0 [%d *] (mul a.c (pow 10 (abs:si (sum:si --6 e.c))))))
+      ++  cash-2-1  |=(c=@ud `@rs`(ryls [%d & -6 c]))
+      ++  plej-1-2  |=(p=plej:pj-1 `plej`[ship.p (cash-1-2 cash.p) when.p note.p])
+      ++  trib-1-2  |=(t=trib:pj-1 `trib`[ship.t (cash-1-2 cash.t) when.t note.t])
+      ++  mula-1-2  |=(m=mula:pj-1 `mula`?-(-.m %plej [-.m (plej-1-2 +.m)], %trib [-.m (trib-1-2 +.m)]))
+      ++  proj-1-2
+        |=  pro=proj:pj-1
         ^-  proj
+        ::  FIXME: Get this information from a Urbit/Hoon-hosted map
+        :*  currency=[1 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 %usdc %usdc 6]
+            title=title.pro
+            summary=summary.pro
+            image=image.pro
+            assessment=[p.assessment.pro (cash-1-2 q.assessment.pro)]
+        ::
+              ^=  milestones
+            ;;  (lest mile)
+            %+  turn  milestones.pro
+            |=  mil=mile:pj-1
+            ^-  mile
+            :*  title=title.mil
+                summary=summary.mil
+                image=image.mil
+                cost=(cash-1-2 cost.mil)
+                status=status.mil
+                withdrawal=(bind withdrawal.mil |=(w=with:pj-1 `with`[xact.w sigm.w (cash-1-2 cash.w)]))
+            ==
+        ::
+              ^=  pledges
+            =<  -  %+  ~(rib by pledges.pro)  *(map ship plej)
+            |=  [[key=ship val=plej:pj-1] acc=(map ship plej)]
+            [(~(put by acc) key (plej-1-2 val)) key val]
+        ::
+            contribs=(turn contribs.pro trib-1-2)
+            contract=contract.pro
+        ==
+      ++  proj-2-1
+        |=  pro=proj
+        ^-  proj:pj-1
+        ::  NOTE: We only need assessment/milestones in 2-to-1 case
         :*  title=title.pro
             summary=summary.pro
             image=image.pro
-            assessment=assessment.pro
-            currency=currency.pro
-            milestones=milestones.pro
-            contract=contract.pro
-            latest=0
+            assessment=[p.assessment.pro (cash-2-1 q.assessment.pro)]
         ::
-              ^=  pledges
-            =<  -<  %+  ~(rib by pledges.pro)  *[(map ship [plej peta]) @ud]
-            |=  [[key=ship val=plej:pold] acc=[ma=(map ship [plej peta]) id=@ud]]
-            =-  [[(~(put by ma.acc) key -) +(id.acc)] key val]
-            [`plej`val ~ id.acc |]
+              ^=  milestones
+            ;;  (lest mile:pj-1)
+            %+  turn  milestones.pro
+            |=  mil=mile
+            ^-  mile:pj-1
+            :*  title=title.mil
+                summary=summary.mil
+                image=image.mil
+                cost=(cash-2-1 cost.mil)
+                status=status.mil
+                withdrawal=~
+            ==
         ::
-              ^=  contribs
-            =<  -  %+  reel  contribs.pro
-            |=  [nex=trib:pold acc=[li=(list [treb deta]) id=@ud]]
-            =-  [[- li.acc] +(id.acc)]
-            [[`trib`nex ~ ~] id.acc |]
+            pledges=~
+            contribs=~
+            contract=~
         ==
       --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
-  +$  vock  $%(vock:lake:pold rock)
+  +$  vock  $%(vock:lake:pj-1 rock)
   +$  wave  [vers bol=bowl:gall pok=poke]
-  +$  vave  $%(vave:lake:pold wave)
+  +$  vave  $%(vave:lake:pj-1 wave)
   ++  urck
     |=  voc=vock
     ^-  rock
-    ?+  -.voc     $(voc (urck:lake:pold voc))
-      vers        voc
-      vers:pold   $(voc [*vers (proj-next +.voc)])
+    ?-  -.voc
+      %2  voc
+      %1  $(voc [%2 (proj-1-2 +.voc)])
     ==
   ++  uwve
     |=  vav=vave
     ^-  wave
-    ?+  -.vav     $(vav (uwve:lake:pold vav))
-      vers        vav
+    ?-  -.vav
+      %2  vav
     ::
-        vers:pold
-      =-  $(vav [*vers -])
-      ?+    +.vav      +.vav
-        [* * %init *]  [bol.vav p.pok.vav %init (bind pro.q.pok.vav proj-next)]
+        %1
+      =-  $(vav [%2 -])
+      ?+    +.vav  +.vav
+        [* * %init *]  [bol.vav p.pok.vav %init (bind pro.q.pok.vav proj-1-2)]
+        [* * %mula *]  [bol.vav p.pok.vav %mula (mula-1-2 +.q.pok.vav)]
       ==
     ==
   ++  wash
@@ -142,11 +181,12 @@
               %prop
             =+  sig=sigm:(need oat.pod)
             ?>  %.  (trip `@t`p.mesg.sig)
-                %~  has  in  %-  silt
+                %~  has  in
+                %-  silt
                 :~  (~(vath pj pro) our.bol %v1-1-0)
                     (~(vath pj pro) our.bol %v1-0-0)
                     (~(vath pj pro) our.bol %v0-4-0)
-                    (~(vath pj pro) our.bol %v0-0-0)
+                    (~(oath pj:pj-1 (proj-2-1 pro)) our.bol)
                 ==
             ?>  (csig sig)
             =+(o=*oath `o(sigm sig))

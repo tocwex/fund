@@ -229,6 +229,7 @@
       ((slog u.p.syn) cor)
     ::  scan response  ::
         [%scan typ=@ ~]
+      ?>  =(our.bol sip.pat)
       ?+    -.syn  cor
       ::  init response  ::
           %poke-ack
@@ -246,16 +247,31 @@
           %fact
         ?.  ?=(%scanner-diff p.cage.syn)  cor
         =+  !<(dif=diff:fc q.cage.syn)
-        ::  transfer amount: `@ud`(addr:dejs:format:fh data.dif)
-        ~&  >>  dif
-        ::  TODO: Apply the eth history diff to the project
-        ::  TODO: Figure out how to store history locally and
-        ::  use it to calculate project data (maybe just keep
-        ::  latest block id per project to indicate how up-to-date
-        ::  it is? then can reset this if something wonky happens...
-        ::  just apply new scanner data if it's newer than the newest
-        ::  project block)
-        cor
+        ::  TODO: Handle the %disavow case properly
+        =/  loz=loglist:fc  ?+(-.dif loglist.dif %disavow ~)
+        ?+    typ.pat.pat  cor
+            %with
+          ::  TODO: If we see a withdrawal, try to map it onto an
+          ::  existing milestone. In the case of ambiguity, take
+          ::  whichever one has been approved; it won't ultimately
+          ::  matter if we pick the wrong one here
+          cor
+        ::
+            %depo
+          ::  TODO: Currently assuming that all deposits are completely
+          ::  new and not de-duping
+          %-  emil
+          %-  turn  :_  |=(p=prod:f (po-mk-car:(po-abed:po-core sip.pat nam.pat) sip.pat p))
+          %+  turn  loz
+          |=  log=event-log:rpc:ethereum:fc
+          ^-  prod:f
+          :+  %mula  %depo
+          :*  ship=~
+              cash=`@ud`(addr:dejs:format:fh data.log)
+              when=[[block-number block-hash]:(need mined.log) (snag 1 topics.log)]
+              note=%$
+          ==
+        ==
       ==
     ==
   ==

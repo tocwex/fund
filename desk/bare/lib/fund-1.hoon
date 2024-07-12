@@ -1,5 +1,5 @@
-/-  *fund
-/+  format=fund-form, fx=fund-xtra, tx=naive-transactions
+/-  *fund-1
+/+  format=fund-form, format-0=fund-form-0, fx=fund-xtra, tx=naive-transactions
 |%
 ::
 ::  +filo: fill in an $odit by calculating `void` (if required)
@@ -21,7 +21,6 @@
   ^-  bloq
   ?-  -.mul
     %plej  when.mul
-    %depo  p.xact.when.mul
     %trib  p.xact.when.mul
   ==
 ::
@@ -56,10 +55,10 @@
   ++  plej                                       ::  summed pledge amounts
     ^-  cash
     %+  roll  ~(val by pledges)
-    |=([[n=^plej *] a=cash] (add a cash.n))
+    |=([n=^plej a=cash] (add a cash.n))
   ++  fill                                       ::  project-wide cost fill
     ^-  cash
-    (roll (turn contribs |=([t=treb *] cash.t)) add)
+    (roll (turn contribs |=(t=trib cash.t)) add)
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
@@ -91,8 +90,8 @@
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))
-    %+  welp  (turn contribs |=([t=treb *] `^mula`[%trib -.t]))
-    (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
+    %+  welp  (turn contribs |=(t=trib `^mula`[%trib t]))
+    (turn ~(val by pledges) |=(p=^plej `^mula`[%plej p]))
   ++  next                                       ::  next active milestone
     ^-  [min=@ mil=mile]
     ::  NOTE: Provide index past last milestone when all are completed
@@ -107,7 +106,7 @@
         ?.(=(wox who) ~ [%work]~)
         ?.(=(p.assessment who) ~ [%orac]~)
         ?.  ?|  (~(has by pledges) who)
-                (lien contribs |=([t=treb *] ?~(ship.t | =(u.ship.t who))))
+                (lien contribs |=(t=trib ?~(ship.t | =(u.ship.t who))))
             ==
           ~
         [%fund]~
@@ -117,50 +116,35 @@
     ^-  tape
     %*($ vath wox wox)
   ++  vath                                       ::  versioned text of assessment contract
-    |=  [wox=@p ver=?(%v0-0-0 %v0-4-0 %v1-0-0 %v1-1-0)]
+    |=  [wox=@p ver=?(%v0-4-0 %v1-0-0 %v1-1-0)]
     ^-  tape
-    |^  =-  "I, {<ses>}, hereby agree to assess the following project proposed by {<wox>}:\0a\0a{txt}"
-        ^-  [ses=@p txt=tape]
-        :-  p.assessment
-        %-  zing  %+  join  "\0a"
-        %-  skip  :_  |=(t=tape =(~ t))
-        %+  weld
-          ^-  (list tape)
-          :~  "title: {(trip title)}"
-              "oracle: {<p.assessment>} (for {(cash-enjs q.assessment 6)}%)"
-              (coin-enjs currency)
-              "summary: {(trip summary)}"
-          ==
-        %+  turn  (enum:fx milestonez)
-        |=  [min=@ mil=mile]
-        ^-  tape
-        %-  zing  %+  join  "\0a\09"
-        ^-  (list tape)
-        :~  "milestone #{<+(min)>}:"
-            "title: {(trip title.mil)}"
-            "cost: {(cash-enjs cost.mil decimals.currency)}"
-            "summary: {(trip summary.mil)}"
-        ==
-    ++  cash-enjs
-      |=  [cas=cash dex=@ud]
-      ^-  tape
-      ?+  ver    (cash:enjs:format cas dex)
-        %v1-0-0  (cash:enjs:format cas 6)
-        %v0-0-0  (r-co:co [%d & -6 cas])
-      ::
-          %v0-4-0
-        =+  cax=(drg:fl (sun:fl cas))
-        ?>  ?=(%d -.cax)
-        (flot:fx cax(e (dif:si e.cax --6)) ~)
+    =/  cash-enjs=$-([cash @ud] tape)
+      ?+  ver    cash:enjs:format
+        %v0-4-0  |=([c=cash d=@ud] (cash:enjs:format-0 c))
+        %v1-0-0  |=([c=cash d=@ud] (cash:enjs:format c 6))
       ==
-    ++  coin-enjs
-      |=  con=coin
-      ^-  tape
-      ?:  ?=(%v0-0-0 ver)  ~
-      =-  "currency: {-} ({(addr:enjs:format addr.con)}) on eth chain {(bloq:enjs:format chain.con)}"
-      ?+  ver               (coin:enjs:format con)
-        ?(%v1-0-0 %v0-4-0)  (trip name.con)
+    =/  coin-enjs=$-(coin tape)
+      ?+  ver   coin:enjs:format
+        ?(%v0-4-0 %v1-0-0)  |=(c=coin (trip name.currency))
       ==
-    --
+    =-  "I, {<p.assessment>}, hereby agree to assess the following project proposed by {<wox>}:\0a\0a{-}"
+    %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a" n)))
+    %+  weld
+      ^-  (list tape)
+      :~  "title: {(trip title)}"
+          "oracle: {<p.assessment>} (for {(cash-enjs q.assessment 6)}%)"
+          "currency: {(coin-enjs currency)} ({(addr:enjs:format addr.currency)}) on eth chain {(bloq:enjs:format chain.currency)}"
+          "summary: {(trip summary)}"
+      ==
+    %+  turn  (enum:fx milestonez)
+    |=  [min=@ mil=mile]
+    ^-  tape
+    %-  roll  :_  |=([n=tape a=tape] ?~(a n :(welp a "\0a\09" n)))
+    ^-  (list tape)
+    :~  "milestone #{<+(min)>}:"
+        "title: {(trip title.mil)}"
+        "cost: {(cash-enjs cost.mil decimals.currency)}"
+        "summary: {(trip summary.mil)}"
+    ==
   --
 --

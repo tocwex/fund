@@ -1,4 +1,5 @@
 /-  *scanner, *fund
+/+  fund-config=config
 |%
 ++  xeta                                         ::  chain metadata core
   |%
@@ -42,12 +43,12 @@
   :-  /scan/[act]
   :*  url=rpc.u.can
       eager=|
-      refresh-rate=~s10
-      timeout-time=~m1
+      refresh-rate=!<(@dr (slot:fund-config %scan-herz))
+      timeout-time=!<(@dr (slot:fund-config %scan-tout))
       from=p.xact.oat
       to=~
       contracts=[addr.u.con]~
-      confirms=`6
+      confirms=`!<(@ud (slot:fund-config %scan-bloq))
       topics=[0x0 ?:(=(%depo act) ~[0x0 safe.oat] ~[safe.oat 0x0])]
   ==
 --

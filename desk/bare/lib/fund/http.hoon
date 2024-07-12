@@ -550,15 +550,18 @@
   ++  mula-tytl                                  ::  mula (pledge/contribution) title
     |=  [mul=mula con=coin]
     ^-  manx
-    =/  [sip=@p nam=tape]
-      ?-    -.mul
-        %plej  [ship.mul "{<ship.mul>}"]
-        %trib  ?^(ship.mul [u.ship.mul "{<u.ship.mul>}"] [`@p`(pow 2 64) "anonymous"])
-      ==
     ;div(class "flex flex-wrap items-center justify-between {cas}")
       ;div(class "flex items-center gap-x-2")
-        ;+  (ship-icon sip)
-        ;h5: {nam}
+        ;*  =-  ~[(icon-circ url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
+            ^-  [url=tape txt=tape]
+            ?-  -.mul
+              %plej  [(surt:enrl:format ship.mul) "{<ship.mul>}"]
+              %pruf  [(aset:enrl:format %link) "chain data"]
+            ::
+                %trib
+              ?~  ship.mul  [(aset:enrl:format %box) "anonymous"]
+              [(surt:enrl:format u.ship.mul) "{<u.ship.mul>}"]
+            ==
       ==
       ;div(class "flex items-center gap-x-2")
         ;p(class "font-serif leading-tight"): {(mony:enjs:format cash.mul con)}
@@ -583,12 +586,14 @@
   ++  mula-pill                                  ::  mula pill element
     |=  mul=mula
     ^-  manx
-    =-  ;div(class "fund-pill {kas} {cas}"): {nam}
-    ^-  [nam=tape kas=tape]
-    =-  [?-(-.mul %plej "pledged", %trib "fulfilled") "text-{-} border-{-}"]
+    =-  ;div(class "fund-pill text-{klr} border-{klr} {cas}"): {nam}
+    ^-  [nam=tape klr=tape]
     ?-  -.mul
-      %plej  "yellow-500"
-      %trib  "green-500"
+      %plej  ["pledged" "yellow-500"]
+      %pruf  ["verified" "green-500"]
+      ::  TODO: Need 'treb' information to make this useful (e.g.
+      ::  fulfilled a pledge, etc.)
+      %trib  ["attested" "green-300"]
     ==
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat

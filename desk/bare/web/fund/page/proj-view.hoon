@@ -405,7 +405,7 @@
                   ^-  siz=(set @p)
                   %+  roll  muz
                   |=  [mul=mula:f siz=(set @p)]
-                  =/  sip=(unit @p)  ?-(-.mul %plej `ship.mul, %trib ship.mul)
+                  =/  sip=(unit @p)  ?-(-.mul %plej `ship.mul, %trib ship.mul, %pruf ~)
                   ?~(sip siz (~(put in siz) u.sip))
             ==
           ==

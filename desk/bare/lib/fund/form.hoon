@@ -174,8 +174,8 @@
     ^-  tape
     ?-  -.mul
       %plej  "pledge"
-      %depo  "deposit"
       %trib  "contribution"
+      %pruf  ?-(note.mul %with "withdrawal", %depo "deposit")
     ==
   ++  stat                                     ::  %born => "draft"
     |=  sat=^stat

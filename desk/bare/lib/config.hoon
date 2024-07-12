@@ -26,7 +26,9 @@
   ?+  -.val  !!
     [%atom %f *]  ?:(!<(bean val) "true" "false")
     [%atom %ux *]  "'{['0' 'x' ((x-co:co 40) !<(@ux val))]}'"
+    [%atom %ud *]  "'{(a-co:co !<(@ val))}'"
     [%atom %p *]  "'{(scow %p !<(@ val))}'"
+    [%atom %dr *]  "'{(a-co:co !<(@ val))}'"  ::  FIXME: Doesn't really work
     [%atom dim=@ ~]  "'{(scow %tas !<(@ val))}'"
   ==
 --

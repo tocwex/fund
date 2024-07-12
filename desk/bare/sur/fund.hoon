@@ -117,22 +117,22 @@
 ::
 +$  sess  (pair @p cash)
 ::
-::  $plej: promise for contribution
+::  $pruf: blockchain/oracle attestation of contribution
+::
++$  pruf
+  $:  ship=~
+      =cash
+      when=stub
+      note=?(%with %depo)
+  ==
+::
+::  $plej: ship promise for contribution
 ::
 +$  plej
   $:  ship=@p
       =cash
       when=bloq
       note=@t
-  ==
-::
-::  $depo: blockchain attestation of contribution
-::
-+$  depo
-  $:  ship=~
-      =cash
-      when=stub
-      note=%''
   ==
 ::
 ::  $trib: ship attestation of contribution
@@ -152,12 +152,12 @@
       claim=(unit bloq)
   ==
 ::
-::  $mula: investment via pledge ($plej), deposit ($depo), or contribution ($trib)
+::  $mula: investment diff via attestation ($pruf), pledge ($plej), or contribution ($trib)
 ::
 +$  mula
   $%  [%plej plej]
-      [%depo depo]
       [%trib trib]
+      [%pruf pruf]
   ==
 ::
 ::  $odit: financials associated with a work unit ($proj, $mile)
@@ -192,8 +192,8 @@
 ::  $deta: display metadata (for visible + addressable items)
 ::
 +$  deta
-  $:  id=@
-      hide=?
+  $:  id=@ud
+      show=?
   ==
 ::
 ::  $peta: display metadata and interpretation (deta + optional view)
@@ -211,7 +211,7 @@
       image=(unit @t)
       cost=cash
       status=stat
-      withdrawal=(unit with)
+      withdrawal=(unit with)  :: TODO: if bloq is 0 on withdrawal, then it's pending
   ==
 ::
 ::  $proj: collection of work (milestones) requesting funding
@@ -230,11 +230,6 @@
   ::      should not be listed)... just include it as a `trec` without a
   ::      fill, to be filled in later (potentially) by an on-Urbit claim
   ::
-  ::  NOTE: Can maybe just use `contribs` for everything:
-  ::  - tribs w/o claim: from chain only; no urbit claim
-  ::  - tribs w/o stub, i.e. `=(0x0 from.when.trib)`: from urbit
-  ::    only; no chain data
-  ::
   $:  title=@t
       summary=@t
       image=(unit @t)
@@ -242,9 +237,10 @@
       currency=coin
       milestones=(lest mile)
       contract=(unit oath)
-      latest=bloq
+      last-bloq=bloq
       pledges=(map ship [plej peta])
-      contribs=(list [treb deta])
+      contribs=(map addr [treb deta])
+      proofs=(map addr pruf)
   ==
 ::
 ::  $proz: collection of projects keyed by id (host/term)

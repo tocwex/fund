@@ -42,19 +42,22 @@
             currency=currency.pro
             milestones=milestones.pro
             contract=contract.pro
-            latest=0
+            last-bloq=0
         ::
               ^=  pledges
             =<  -<  %+  ~(rib by pledges.pro)  *[(map ship [plej peta]) @ud]
+            =+  off=(lent contribs.pro)
             |=  [[key=ship val=plej:pold] acc=[ma=(map ship [plej peta]) id=@ud]]
             =-  [[(~(put by ma.acc) key -) +(id.acc)] key val]
-            [`plej`val ~ id.acc |]
+            [`plej`val ~ (add off id.acc) &]
         ::
               ^=  contribs
             =<  -  %+  reel  contribs.pro
-            |=  [nex=trib:pold acc=[li=(list [treb deta]) id=@ud]]
-            =-  [[- li.acc] +(id.acc)]
-            [[`trib`nex ~ ~] id.acc |]
+            |=  [nex=trib:pold acc=[ma=(map addr [treb deta]) id=@ud]]
+            =-  [(~(put by ma.acc) q.xact.when.nex -) +(id.acc)]
+            [[`trib`nex ~ ~] id.acc &]
+        ::
+            proofs=*(map addr pruf)
         ==
       --
   |%
@@ -185,34 +188,57 @@
       ~|(bad-wash+mes !!)  ::  %dead =X=> status
     ::
         %mula
+      ::  TODO: Can maybe accept %pruf when %done/%dead
       ?<  ?=(?(%born %prop %done %dead) sat)
       ?>  (gth cash.pod 0)
+      ::  FIXME: Very inefficient, but also very convenient!
+      =/  nid=@ud
+        .+  %+  max
+          (~(rep by contribs.pro) |=([[k=addr v=[treb deta]] a=@ud] (max a id.v)))
+        (~(rep by pledges.pro) |=([[k=ship v=[plej peta]] a=@ud] (max a id.v)))
       ?-    +<.pod
           %plej
         ::  NOTE: This is a sufficient check because we only allow the
         ::  host of a project to accept donations on the project's behalf
         ::  (so src.bol must always be the %plej attestor; no forwarding!)
-        ::  NOTE: Reinstate this check once POST requests directly apply
-        ::  cards locally instead of forwarding them
         ?>  =(src.bol ship.pod)
         ?>  (plan:fx src.bol)
         ?<  (~(has by pledges.pro) ship.pod)
-        %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod))
+        %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod(when last-bloq.pro) ~ nid &))
       ::
           %trib
-        =/  pol=(unit plej)  ?~(ship.pod ~ (~(get by pledges.pro) (need ship.pod)))
-        ?>  |(?=(~ pol) =(cash.u.pol cash.pod))
+        =/  pol=(unit [plej peta])  ?~(ship.pod ~ (~(get by pledges.pro) u.ship.pod))
+        =/  puf=(unit pruf)  (~(get by proofs.pro) q.xact.when.pod)
+        ?>  |(?=(~ pol) &(=(src.bol ship.u.pol) =(cash.u.pol cash.pod)))
         %_    pro
             pledges
           ?~  pol  pledges.pro
           (~(del by pledges.pro) (need ship.pod))
         ::
+            proofs
+          ?~  puf  proofs.pro
+          (~(del by proofs.pro) q.xact.when.u.puf)
+        ::
             contribs
-          :_  contribs.pro
-          %=  +>.pod  note
-            ?.  =('' note.pod)  note.pod
-            (fall (bind pol |=(p=plej note.p)) '')
+          %-  ~(put by contribs.pro)
+          =-  [q.xact.when.pod - nid &]
+          :*  trib=+>.pod(p.xact.when last-bloq.pro)
+              plej=?~(pol ~ `-.u.pol)
+              claim=?~(puf ~ `p.xact.when.u.puf)
           ==
+        ==
+      ::
+          %pruf
+        ?>  =(src our):bol
+        ?-    note.pod
+            %depo
+          ?~  teb=(~(get by contribs.pro) q.xact.when.pod)
+            %_(pro proofs (~(put by proofs.pro) q.xact.when.pod +>.pod))
+          %_(pro contribs (~(put by contribs.pro) q.xact.when.pod u.teb(claim `p.xact.when.pod)))
+        ::
+            %with
+          ::  TODO: If %with, try to match it up with a milestone withdrawal
+          pro
         ==
       ==
     ::

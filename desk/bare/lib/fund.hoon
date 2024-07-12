@@ -21,8 +21,8 @@
   ^-  bloq
   ?-  -.mul
     %plej  when.mul
-    %depo  p.xact.when.mul
     %trib  p.xact.when.mul
+    %pruf  p.xact.when.mul
   ==
 ::
 ::  +csig: c(heck) (Ethereum EIP-191) sig(nature)
@@ -55,11 +55,12 @@
     (roll (turn milestonez |=(n=mile cost.n)) add)
   ++  plej                                       ::  summed pledge amounts
     ^-  cash
-    %+  roll  ~(val by pledges)
-    |=([[n=^plej *] a=cash] (add a cash.n))
+    %-  ~(rep by pledges)
+    |=([[k=ship v=[^plej peta]] a=cash] (add a cash.v))
   ++  fill                                       ::  project-wide cost fill
     ^-  cash
-    (roll (turn contribs |=([t=treb *] cash.t)) add)
+    %-  ~(rep by contribs)
+    |=([[k=addr v=[treb deta]] a=cash] (add a cash.v))
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
@@ -91,8 +92,11 @@
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
     =-  (sort - |=([m=^mula n=^mula] (gth (tula m) (tula n))))
-    %+  welp  (turn contribs |=([t=treb *] `^mula`[%trib -.t]))
-    (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
+    ;:  welp
+        (turn ~(val by contribs) |=([t=treb *] `^mula`[%trib -.t]))
+        (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
+        (turn ~(val by proofs) |=(p=pruf `^mula`[%pruf p]))
+    ==
   ++  next                                       ::  next active milestone
     ^-  [min=@ mil=mile]
     ::  NOTE: Provide index past last milestone when all are completed
@@ -107,7 +111,7 @@
         ?.(=(wox who) ~ [%work]~)
         ?.(=(p.assessment who) ~ [%orac]~)
         ?.  ?|  (~(has by pledges) who)
-                (lien contribs |=([t=treb *] ?~(ship.t | =(u.ship.t who))))
+                (~(rep by contribs) |=([[k=addr v=[treb deta]] a=_|] |(a ?~(ship.v | =(u.ship.v who)))))
             ==
           ~
         [%fund]~

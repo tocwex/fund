@@ -53,7 +53,9 @@
                     (skim fuz |=([* p=proj:f *] (~(has by pledges.p) our.bol)))
                   :+  "Projects I Funded"  %find
                     %+  skim  fuz
-                    |=([* p=proj:f *] (lien contribs.p |=(t=trib:f ?~(ship.t | =(our.bol u.ship.t)))))
+                    |=  [* p=proj:f *]
+                    %-  ~(rep by contribs.p)
+                    |=([[k=addr:f v=[treb:f deta:f]] a=_|] |(a ?~(ship.v | =(our.bol u.ship.v))))
                   ::  :+  "Projects from %pals"  %none
                   ::    *(list [flag:f prej:f])
               ==

@@ -7,7 +7,7 @@
 |%
 +$  card       card:agent:gall
 +$  sign-gall  sign:agent:gall
-+$  state-now  [%1 data:fd]
++$  state-now  [%2 data:fd]
 --
 ^-  agent:gall
 =|  state-now
@@ -58,14 +58,22 @@
   |=  vas=vase
   ^+  cor
   |^  =+  !<([sat=state-any @] vas)  ::  NOTE: @ is unused `epic` flag
+      ::  TODO: Inflate IO by re-opening %scanner watch wires for all
+      ::  projects (needs to be done in the case of an 1-to-2 upgrade)
       |-
       ?-  -.sat
+        %2  cor(state sat)
+        %1  $(sat (move-1-2 sat))
         %0  $(sat (move-0-1 sat))
-        %1  cor(state sat)
       ==
-  +$  state-any  $%(state-now state-0)
+  +$  state-any  $%(state-now state-1 state-0)
+  +$  state-2    state-now       ::  NOTE: Used to kick off %scanner watches
+  +$  state-1    [%1 data:fd]
   +$  state-0    [%0 data:fd-0]
-  +$  state-1    state-now
+  ++  move-1-2
+    |=  old=state-1
+    ^-  state-2
+    [%2 +.old]
   ++  move-0-1
     |=  old=state-0
     ^-  state-1
@@ -265,11 +273,11 @@
           %+  turn  loz
           |=  log=event-log:rpc:ethereum:fc
           ^-  prod:f
-          :+  %mula  %depo
+          :+  %mula  %pruf
           :*  ship=~
               cash=`@ud`(addr:dejs:format:fh data.log)
-              when=[[block-number block-hash]:(need mined.log) (snag 1 topics.log)]
-              note=%$
+              when=[[block-number block-hash]:(need mined.log) (snag 1 `(list @ux)`topics.log)]
+              note=%depo
           ==
         ==
       ==
@@ -360,13 +368,10 @@
             =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
             po-core
           ::
-              ?(%bump %mula %draw %wipe)
+              ?(%bump %mula %blot %draw %wipe)
             ?<  ~|(bad-push+mes po-is-new)
             =-  (wash -)
-            ?-    -.pod
-                ?(%draw %wipe)
-              ~
-            ::
+            ?+    -.pod  ~
                 %bump
               =+  ses=p.assessment.pro
               ?+  sat.pod  ~
@@ -390,7 +395,7 @@
                 %mula
               ::  TODO: Add hark notifications and follow-up reminders for
               ::  pledges
-              ?-  +<.pod
+              ?+  +<.pod  ~
                 %plej  [(po-mk-car ship.pod [%lure ship.pod %fund])]~
                 %trib  ?~(ship.pod ~ [(po-mk-car u.ship.pod [%lure u.ship.pod %fund])]~)
               ==

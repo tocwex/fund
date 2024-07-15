@@ -83,9 +83,9 @@
 ::  $view: interpretation of outstanding pledge
 ::
 +$  view
-  $~  %okay
+  $~  %slyd
   $?  %stif  ::  negative view; "welched"
-      %okay  ::  positive view; "forgiven"
+      %slyd  ::  positive view; "forgiven"
   ==
 ::
 ::  $role: peer role relative to a work unit
@@ -149,7 +149,7 @@
 +$  treb
   $:  trib
       plej=(unit plej)
-      claim=(unit bloq)
+      pruf=(unit pruf)
   ==
 ::
 ::  $mula: investment diff via attestation ($pruf), pledge ($plej), or contribution ($trib)
@@ -185,6 +185,7 @@
   $:  xact=(unit xact)
       =sigm
       =cash
+      pruf=(unit pruf)
   ==
 
 +|  %core
@@ -211,25 +212,12 @@
       image=(unit @t)
       cost=cash
       status=stat
-      withdrawal=(unit with)  :: TODO: if bloq is 0 on withdrawal, then it's pending
+      withdrawal=(unit with)
   ==
 ::
 ::  $proj: collection of work (milestones) requesting funding
 ::
 ++  proj
-  ::
-  ::  - on %mula submission: put this onto the `claims` list; if there's
-  ::  a matching `stuc` entry, then merge and put into `contribs`; else,
-  ::  just put it into the `(list trib)`
-  ::
-  ::  - on %scanner update: produce `(pair stub cash)` for each `loglist` entry and
-  ::  look for `claims` `trib` associations (take first matching entry),
-  ::  producing merged entries from `claims` and `pleges` into `contribs`
-  ::    - if there isn't a `trib` entry for a new `(pair stub cash)`, we
-  ::      still want to list this as a contribution (only `trib` first
-  ::      should not be listed)... just include it as a `trec` without a
-  ::      fill, to be filled in later (potentially) by an on-Urbit claim
-  ::
   $:  title=@t
       summary=@t
       image=(unit @t)

@@ -58,16 +58,15 @@
   |=  vas=vase
   ^+  cor
   |^  =+  !<([sat=state-any @] vas)  ::  NOTE: @ is unused `epic` flag
-      ::  TODO: Inflate IO by re-opening %scanner watch wires for all
-      ::  projects (needs to be done in the case of an 1-to-2 upgrade)
-      |-
+      =-  =.(state.cor nat open)
+      |-  ^-  nat=state-now
       ?-  -.sat
-        %2  cor(state sat)
+        %2  sat
         %1  $(sat (move-1-2 sat))
         %0  $(sat (move-0-1 sat))
       ==
   +$  state-any  $%(state-now state-1 state-0)
-  +$  state-2    state-now       ::  NOTE: Used to kick off %scanner watches
+  +$  state-2    state-now
   +$  state-1    [%1 data:fd]
   +$  state-0    [%0 data:fd-0]
   ++  move-1-2
@@ -238,6 +237,7 @@
     ::  scan response  ::
         [%scan typ=@ ~]
       ?>  =(our.bol sip.pat)
+      ?>  ?=(?(%with %depo) typ.pat.pat)
       ?+    -.syn  cor
       ::  init response  ::
           %poke-ack
@@ -257,28 +257,21 @@
         =+  !<(dif=diff:fc q.cage.syn)
         ::  TODO: Handle the %disavow case properly
         =/  loz=loglist:fc  ?+(-.dif loglist.dif %disavow ~)
-        ?+    typ.pat.pat  cor
-            %with
-          ::  TODO: If we see a withdrawal, try to map it onto an
-          ::  existing milestone. In the case of ambiguity, take
-          ::  whichever one has been approved; it won't ultimately
-          ::  matter if we pick the wrong one here
-          cor
-        ::
-            %depo
-          ::  TODO: Currently assuming that all deposits are completely
-          ::  new and not de-duping
-          %-  emil
-          %-  turn  :_  |=(p=prod:f (po-mk-car:(po-abed:po-core sip.pat nam.pat) sip.pat p))
-          %+  turn  loz
-          |=  log=event-log:rpc:ethereum:fc
-          ^-  prod:f
-          :+  %mula  %pruf
-          :*  ship=~
-              cash=`@ud`(addr:dejs:format:fh data.log)
-              when=[[block-number block-hash]:(need mined.log) (snag 1 `(list @ux)`topics.log)]
-              note=%depo
-          ==
+        %-  emil
+        %+  turn  loz
+        |=  log=event-log:rpc:ethereum:fc
+        ^-  card
+        =-  (po-mk-car:(po-abed:po-core sip.pat nam.pat) sip.pat -)
+        :+  %mula  %pruf
+        :*  ship=~
+            cash=`@ud`(addr:dejs:format:fh data.log)
+          ::
+              ^=  when
+            :-  [block-number block-hash]:(need mined.log)
+            ::  NOTE: The ERC-20 topic order is: [hash, from, to]
+            (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.log)
+          ::
+            note=typ.pat.pat
         ==
       ==
     ==
@@ -288,6 +281,25 @@
   |=  [pat=(pole knot) syn=sign-arvo]
   ^+  cor
   cor
+::
+++  open
+  ?:  (lte -.state 1)  cor
+  ::  TODO: Open up cards for every existing project that's in a
+  ::  post-lock state
+  ::  TODO: Find all projects that don't have a %watches open on
+  ::  %scanner and open the ports
+  ~&  >>  wex.bol
+  cor
+  ::                  %lock
+  ::                ?~  oat.pod  ~
+  ::                %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
+  ::                |=  [pat=path cfg=config:fc]
+  ::                =/  pax=path  (po-pj-pax pat)
+  ::                ^-  card
+  ::                :*  %pass   pax
+  ::                    %agent  [our.bol %scanner]
+  ::                    %poke   scanner-poke+!>([%watch pax cfg])
+  ::                ==
 ::
 ++  po-core
   |_  [lag=flag:f pro=proj:f]

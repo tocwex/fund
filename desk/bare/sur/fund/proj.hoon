@@ -40,7 +40,20 @@
             image=image.pro
             assessment=assessment.pro
             currency=currency.pro
-            milestones=milestones.pro
+        ::
+              ^=  milestones
+            ;;  (lest mile)
+            %+  turn  milestones.pro
+            |=  mil=mile:pold
+            ^-  mile
+            :*  title=title.mil
+                summary=summary.mil
+                image=image.mil
+                cost=cost.mil
+                status=status.mil
+                withdrawal=(bind withdrawal.mil |=(w=with:pold `with`[xact.w sigm.w cash.w ~]))
+            ==
+        ::
             contract=contract.pro
             last-bloq=0
         ::
@@ -109,7 +122,7 @@
             =+  niz=(turn miz |=(m=mile ?:(?=(%done status.m) m m(status %dead))))
             %+  snoc  (snip niz)
             =+  mil=(rear niz)
-            mil(withdrawal `[~ sigm.oat (sub ~(fill pj pro) ~(take pj pro))])
+            mil(withdrawal `[~ sigm.oat (sub ~(fill pj pro) ~(take pj pro)) ~])
           ==
         --
     =/  sat=stat  ~(stat pj pro)
@@ -181,7 +194,7 @@
           =/  sig=sigm  sigm:(need oat.pod)
           =/  mod=odit  (snag min ~(odim pj pro))
           ?>  (orac-sigm sig)
-          (edit-mile min mil(status sat.pod, withdrawal `[~ sig fill.mod]))
+          (edit-mile min mil(status sat.pod, withdrawal `[~ sig fill.mod ~]))
         ?:  ?=(%dead sat.pod)
           (dead-milz (need oat.pod))
         ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)
@@ -224,21 +237,33 @@
           =-  [q.xact.when.pod - nid &]
           :*  trib=+>.pod(p.xact.when last-bloq.pro)
               plej=?~(pol ~ `-.u.pol)
-              claim=?~(puf ~ `p.xact.when.u.puf)
+              pruf=?~(puf ~ `u.puf)
           ==
         ==
       ::
           %pruf
+        ::  TODO: Currently assuming that all attestations are completely
+        ::  new and not de-duping (probably should be de-duping at the
+        ::  project level anyway)
         ?>  =(src our):bol
         ?-    note.pod
             %depo
           ?~  teb=(~(get by contribs.pro) q.xact.when.pod)
             %_(pro proofs (~(put by proofs.pro) q.xact.when.pod +>.pod))
-          %_(pro contribs (~(put by contribs.pro) q.xact.when.pod u.teb(claim `p.xact.when.pod)))
+          %_(pro contribs (~(put by contribs.pro) q.xact.when.pod u.teb(pruf `+>.pod)))
         ::
             %with
-          ::  TODO: If %with, try to match it up with a milestone withdrawal
-          pro
+          =/  myz=(list (pair @ mile))
+            %+  skim  +:(roll miz |=([n=mile a=[@ (list [@ mile])]] [+(-.a) [[-.a n] +.a]]))
+            |=  [min=@ mil=mile]
+            ?&  ?=(^ withdrawal.mil)
+                ?=(^ xact.u.withdrawal.mil)
+                =(q.u.xact.u.withdrawal.mil q.xact.when.pod)
+            ==
+          ?~  mil=`(unit (pair @ mile))`?~(myz ~ `i.myz)
+            %_(pro proofs (~(put by proofs.pro) q.xact.when.pod +>.pod))
+          ?>  ?=(^ withdrawal.q.u.mil)
+          (edit-mile p.u.mil q.u.mil(withdrawal `u.withdrawal.q.u.mil(pruf `+>.pod)))
         ==
       ==
     ::
@@ -246,18 +271,29 @@
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
       ?>  ?=(?(%dead %done) status.mil)
       ?>  |(?=(%done status.mil) =((lent miz) +(min)))
-      ?>  ?=(^ withdrawal.mil)
-      (edit-mile min mil(withdrawal `u.withdrawal.mil(xact `dif.pod)))
+      ?>  &(?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))
+      =/  puf=(unit pruf)  (~(get by proofs.pro) q.dif.pod)
+      %_    pro
+          milestones
+        ;;  (lest mile)
+        %^  snap  miz  min
+        `mile`mil(withdrawal `u.withdrawal.mil(xact `dif.pod(p last-bloq.pro), pruf puf))
+      ::
+          proofs
+        ?~  puf  proofs.pro
+        (~(del by proofs.pro) q.dif.pod)
+      ==
     ::
         %wipe
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
       ?>  ?=(?(%dead %done) status.mil)
       ?>  |(?=(%done status.mil) =((lent miz) +(min)))
+      ?>  |(?=(~ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))
       =/  mod=odit  (snag min ~(odim pj pro))
       ?~  sig.pod  (edit-mile min mil(withdrawal ~))
       ?>  (peer-sigm u.sig.pod)
       =+  fil=?:(?=(%done status.mil) fill.mod (sub ~(fill pj pro) ~(take pj pro)))
-      (edit-mile min mil(withdrawal `[~ u.sig.pod fil]))
+      (edit-mile min mil(withdrawal `[~ u.sig.pod fil ~]))
     ==
   --
 --

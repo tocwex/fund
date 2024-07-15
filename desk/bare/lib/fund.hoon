@@ -111,7 +111,8 @@
         ?.(=(wox who) ~ [%work]~)
         ?.(=(p.assessment who) ~ [%orac]~)
         ?.  ?|  (~(has by pledges) who)
-                (~(rep by contribs) |=([[k=addr v=[treb deta]] a=_|] |(a ?~(ship.v | =(u.ship.v who)))))
+                %-  ~(rep by contribs)
+                |=([[k=addr v=[treb deta]] a=_|] |(a ?~(ship.v | =(u.ship.v who))))
             ==
           ~
         [%fund]~

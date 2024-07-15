@@ -414,8 +414,36 @@
               |=  mul=mula:f
               ^-  manx
               ;div(class "p-2.5 flex flex-col gap-y-2 fund-card")
-                ;+  (mula-tytl:ui:fh mul currency.pro)
-                ;+  ?:  =('' note.mul)  ;p(class "fund-warn"): No message included.
+                ;div(class "flex flex-wrap items-center justify-between")
+                  ;div(class "flex items-center gap-x-2")
+                    ;*  =-  ~[(icon-circ:ui:fh url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
+                        ^-  [url=tape txt=tape]
+                        ?-  -.mul
+                          %plej  [(surt:enrl:format:fh ship.mul) "{<ship.mul>}"]
+                          %pruf  [(aset:enrl:format:fh %link) "chain data"]
+                        ::
+                            %trib
+                          ?~  ship.mul  [(aset:enrl:format:fh %box) "anonymous"]
+                          [(surt:enrl:format:fh u.ship.mul) "{<u.ship.mul>}"]
+                        ==
+                  ==
+                  ;div(class "flex items-center gap-x-2")
+                    ;p(class "font-serif leading-tight"): {(mony:enjs:format:fh cash.mul currency.pro)}
+                    ;+  =-  ;div(class "fund-pill text-{klr} border-{klr}"): {nam}
+                        ^-  [nam=tape klr=tape]
+                        ?-  -.mul
+                          %plej  ["pledged" "yellow-500"]
+                          %pruf  ["confirmed" "blue-500"]
+                        ::
+                            %trib
+                          =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
+                          ?~  pruf.teb  ["attested" "green-400"]
+                          ["verified" "green-600"]
+                        ==
+                  ==
+                ==
+                ;+  ?:  |(=('' note.mul) ?=(%pruf -.mul))
+                      ;p(class "fund-warn"): No message included.
                     ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
               ==
         ==

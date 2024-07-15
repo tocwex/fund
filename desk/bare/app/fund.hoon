@@ -236,7 +236,7 @@
       ((slog u.p.syn) cor)
     ::  scan response  ::
         [%scan typ=@ ~]
-      ?>  =(our.bol sip.pat)
+      ?>  =(our.bol sip)
       ?>  ?=(?(%with %depo) typ.pat.pat)
       ?+    -.syn  cor
       ::  init response  ::
@@ -261,13 +261,13 @@
         %+  turn  loz
         |=  log=event-log:rpc:ethereum:fc
         ^-  card
-        =-  (po-mk-car:(po-abed:po-core sip.pat nam.pat) sip.pat -)
+        =-  (po-mk-car:(po-abed:po-core sip nam) sip -)
         :+  %mula  %pruf
         :*  ship=~
             cash=`@ud`(addr:dejs:format:fh data.log)
           ::
               ^=  when
-            :-  [block-number block-hash]:(need mined.log)
+            :-  [block-number transaction-hash]:(need mined.log)
             ::  NOTE: The ERC-20 topic order is: [hash, from, to]
             (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.log)
           ::
@@ -284,22 +284,35 @@
 ::
 ++  open
   ?:  (lte -.state 1)  cor
-  ::  TODO: Open up cards for every existing project that's in a
-  ::  post-lock state
-  ::  TODO: Find all projects that don't have a %watches open on
-  ::  %scanner and open the ports
-  ~&  >>  wex.bol
-  cor
-  ::                  %lock
-  ::                ?~  oat.pod  ~
-  ::                %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
-  ::                |=  [pat=path cfg=config:fc]
-  ::                =/  pax=path  (po-pj-pax pat)
-  ::                ^-  card
-  ::                :*  %pass   pax
-  ::                    %agent  [our.bol %scanner]
-  ::                    %poke   scanner-poke+!>([%watch pax cfg])
-  ::                ==
+  =/  poz=(map flag:f proj:f)                    ::  post-%lock projects
+    %-  ~(rep by my-pez)
+    |=  [[lag=flag:f pre=prej:f] acc=(map flag:f proj:f)]
+    ?:  ?=(?(%born %prop) ~(stat pj:f -.pre))  acc
+    (~(put in acc) lag -.pre)
+  =/  liz=(set flag:f)                           ::  live %scanner flags
+    %-  ~(rep by wex.bol)
+    |=  [[[wire sip=@p dek=@tas] [ack=? pat=(pole knot)]] acc=(set flag:f)]
+    ?.  ?&  =(sip our.bol)
+            =(dek %scanner)
+            ack
+            ?=([%fund %proj sip=@ nam=@ %scan ?(%with %depo) ~] pat)
+        ==
+      acc
+    (~(put in acc) sip.pat nam.pat)
+  =/  waz=(set flag:f)  (~(dif in ~(key by poz)) liz)
+  %-  emil  %-  zing
+  %+  turn  ~(tap in waz)
+  |=  lag=flag:f
+  ^-  (list card)
+  =/  pro=proj:f  (~(got by poz) lag)
+  %+  turn  (scan-cfgz:fc (need contract.pro) currency.pro)
+  |=  [pat=path cfg=config:fc]
+  =/  pax=path  (welp /fund/proj/(scot %p p.lag)/[q.lag] pat)
+  ^-  card
+  :*  %pass   pax
+      %agent  [our.bol %scanner]
+      %poke   scanner-poke+!>([%watch pax cfg])
+  ==
 ::
 ++  po-core
   |_  [lag=flag:f pro=proj:f]

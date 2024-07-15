@@ -547,27 +547,6 @@
             ;span: Funding Goal
       ==
     ==
-  ++  mula-tytl                                  ::  mula (pledge/contribution) title
-    |=  [mul=mula con=coin]
-    ^-  manx
-    ;div(class "flex flex-wrap items-center justify-between {cas}")
-      ;div(class "flex items-center gap-x-2")
-        ;*  =-  ~[(icon-circ url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
-            ^-  [url=tape txt=tape]
-            ?-  -.mul
-              %plej  [(surt:enrl:format ship.mul) "{<ship.mul>}"]
-              %pruf  [(aset:enrl:format %link) "chain data"]
-            ::
-                %trib
-              ?~  ship.mul  [(aset:enrl:format %box) "anonymous"]
-              [(surt:enrl:format u.ship.mul) "{<u.ship.mul>}"]
-            ==
-      ==
-      ;div(class "flex items-center gap-x-2")
-        ;p(class "font-serif leading-tight"): {(mony:enjs:format cash.mul con)}
-        ;+  (mula-pill mul)
-      ==
-    ==
   ++  ship-icon                                  ::  icon for a user ship
     |=  sip=@p
     ^-  manx
@@ -582,18 +561,6 @@
       ;h2(class "leading-loose")
         ;+  ban
       ==
-    ==
-  ++  mula-pill                                  ::  mula pill element
-    |=  mul=mula
-    ^-  manx
-    =-  ;div(class "fund-pill text-{klr} border-{klr} {cas}"): {nam}
-    ^-  [nam=tape klr=tape]
-    ?-  -.mul
-      %plej  ["pledged" "yellow-500"]
-      %pruf  ["verified" "green-500"]
-      ::  TODO: Need 'treb' information to make this useful (e.g.
-      ::  fulfilled a pledge, etc.)
-      %trib  ["attested" "green-300"]
     ==
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat

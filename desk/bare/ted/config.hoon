@@ -3,6 +3,8 @@
 ::    -fund!config & /xtra/verb/hoon
 ::    -fund!config | /verb/hoon
 ::
+::    -fund!config & /xtra/fake/hoon
+::
 /-  spider
 /+  io=strandio, fx=fund-xtra
 =,  strand=strand:spider

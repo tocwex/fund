@@ -55,7 +55,6 @@
             ==
         ::
             contract=contract.pro
-            last-bloq=0
         ::
               ^=  pledges
             =<  -<  %+  ~(rib by pledges.pro)  *[(map ship [plej peta]) @ud]
@@ -217,7 +216,7 @@
         ?>  =(src.bol ship.pod)
         ?>  (plan:fx src.bol)
         ?<  (~(has by pledges.pro) ship.pod)
-        %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod(when last-bloq.pro) ~ nid &))
+        %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod ~ nid &))
       ::
           %trib
         =/  pol=(unit [plej peta])  ?~(ship.pod ~ (~(get by pledges.pro) u.ship.pod))
@@ -235,7 +234,7 @@
             contribs
           %-  ~(put by contribs.pro)
           =-  [q.xact.when.pod - nid &]
-          :*  trib=+>.pod(p.xact.when last-bloq.pro)
+          :*  trib=+>.pod
               plej=?~(pol ~ `-.u.pol)
               pruf=?~(puf ~ `u.puf)
           ==
@@ -277,7 +276,7 @@
           milestones
         ;;  (lest mile)
         %^  snap  miz  min
-        `mile`mil(withdrawal `u.withdrawal.mil(xact `dif.pod(p last-bloq.pro), pruf puf))
+        `mile`mil(withdrawal `u.withdrawal.mil(xact `dif.pod, pruf puf))
       ::
           proofs
         ?~  puf  proofs.pro

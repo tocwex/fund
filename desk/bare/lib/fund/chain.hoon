@@ -1,10 +1,11 @@
-/-  *scanner, *fund
+/-  *fund-watcher, *fund
 /+  fund-config=config
 |%
 ++  xeta                                         ::  chain metadata core
   |%
-  ++  ethereum  `^xeta`[1 %ethereum 'https://eth.drpc.org']
-  ++  sepolia   `^xeta`[11.155.111 %sepolia 'https://sepolia.drpc.org']
+  ++  chainless  `^xeta`[0 %chainless '']
+  ++  ethereum   `^xeta`[1 %ethereum 'https://eth.drpc.org']
+  ++  sepolia    `^xeta`[11.155.111 %sepolia 'https://sepolia.drpc.org']
   ::  ++  optimism  `^xeta`[10 %optimism ?]
   ::  ++  base      `^xeta`[8.453 %base ?]
   ::  ++  arbitrum  `^xeta`[42.161 %arbitrum ?]
@@ -23,7 +24,8 @@
   %-  malt  %-  zing
   %+  turn
     ^-  (list ^coin)
-    :~  [id:ethereum:xeta 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 'USDC' 'USDC' 6]
+    :~  ::  [id:chainless:xeta 0x0 'USD' 'USD' 6]
+        [id:ethereum:xeta 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 'USDC' 'USDC' 6]
         [id:ethereum:xeta 0xf0dc.76c2.2139.ab22.618d.dfb4.98be.1283.2546.12b1 'WrappedStar' 'WSTR' 18]
         [id:sepolia:xeta 0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38 '%fund USDC' 'fundUSDC' 6]
         [id:sepolia:xeta 0x3066.f428.d935.a44b.e7aa.845b.6c6b.8125.19ce.1e17 '%fund WSTR' 'fundWSTR' 18]
@@ -37,6 +39,7 @@
   ^-  (list [path config])
   ?:  =(0x0 safe.oat)  ~
   ?~  con=(~(get by coin) [chain addr]:cin)  ~
+  ?:  =(id:chainless:xeta chain.u.con)  ~
   ?~  can=(~(get by xmap) chain.u.con)  ~
   %+  turn  `(list @tas)`~[%depo %with]
   |=  act=term

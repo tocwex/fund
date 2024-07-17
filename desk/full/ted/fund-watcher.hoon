@@ -1,4 +1,4 @@
-/-  spider, *scanner
+/-  spider, *fund-watcher
 /+  strandio, ethio
 =,  ethereum-types
 =,  jael

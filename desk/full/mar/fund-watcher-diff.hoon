@@ -1,4 +1,4 @@
-/-  *scanner
+/-  *fund-watcher
 |_  diff
 ++  grad  %noun
 ++  grow

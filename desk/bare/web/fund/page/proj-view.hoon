@@ -355,6 +355,9 @@
                       :_  ~
                       %:  prod-butn:ui:fh
                           %draw-done  %true  "claim funds ✓"  "claimMilestone"
+                          ::  TODO: Add logic to say "funds claimed but
+                          ::  not confirmed" or similar
+                          ::  ?~  xact.u.withdrawal.mil
                           ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
                       ==
                     ::
@@ -436,6 +439,8 @@
                           %pruf  ["confirmed" "blue-500"]
                         ::
                             %trib
+                          ::  TODO: Figure out the different indicators
+                          ::  for fulfilled pledges
                           =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
                           ?~  pruf.teb  ["attested" "green-400"]
                           ["verified" "green-600"]
@@ -444,6 +449,7 @@
                 ==
                 ;+  ?:  |(=('' note.mul) ?=(%pruf -.mul))
                       ;p(class "fund-warn"): No message included.
+                    ::  TODO: Consider including the pledge message here too
                     ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
               ==
         ==

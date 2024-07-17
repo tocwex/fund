@@ -1,1 +1,0 @@
-../../bare/ted/scan.hoon

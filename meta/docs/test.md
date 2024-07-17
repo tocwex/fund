@@ -156,25 +156,25 @@ need to be accounted for:
 
 # Ethereum Testing #
 
-Here are some of the basic queries that can be submitted to `%scanner` (a
+Here are some of the basic queries that can be submitted to `%fund-watcher` (a
 gentle fork of `%eth-watcher`):
 
 ```
-=s -build-file /=fund=/sur/scanner/hoon
-.^((set path) %gx /=scanner=/dogs/noun)
-.^((map path config:s) %gx /=scanner=/dogs/configs/noun)
-.^(@ %gx /=scanner=/block/…/noun)
+=s -build-file /=fund=/sur/fund-watcher/hoon
+.^((set path) %gx /=fund-watcher=/dogs/noun)
+.^((map path config:s) %gx /=fund-watcher=/dogs/configs/noun)
+.^(@ %gx /=fund-watcher=/block/…/atom)
 ```
 
 Here are some basic commands to track Ethereum contract interactions:
 
 ```
 ::  track all %fund usdc transactions on Sepolia
-:scanner &scanner-poke [%watch path=/fund/usdc config=['https://sepolia.drpc.org' | ~s10 ~m1 5.621.625 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~]]
+:fund-watcher &fund-watcher-poke [%watch path=/fund/usdc config=['https://sepolia.drpc.org' | ~s10 ~m1 5.621.625 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~]]
 ::  track all %fund usdc transactions to a specific safe
-:scanner &scanner-poke [%watch path=/fund/safe config=['https://sepolia.drpc.org' | ~s10 ~m1 6.227.269 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~[0x0 0x0 0x1117.bfea.1e43.d16b.a9c2.6d06.1a77.a347.3908.330e]]]
+:fund-watcher &fund-watcher-poke [%watch path=/fund/safe config=['https://sepolia.drpc.org' | ~s10 ~m1 6.227.269 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~[0x0 0x0 0x1117.bfea.1e43.d16b.a9c2.6d06.1a77.a347.3908.330e]]]
 ::  cancel the tracking for a specific path
-:scanner &scanner-poke [%clear path=/fund/test]
+:fund-watcher &fund-watcher-poke [%clear path=/fund/usdc]
 ```
 
 # Markdown Testing #

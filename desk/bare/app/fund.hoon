@@ -160,9 +160,6 @@
   ::  http pokes  ::
       %handle-http-request
     =+  !<(ord=order:rudder vas)
-    ::  TODO: Add a card here to send a `%keen` to `src.bol` if it's a
-    ::  real remote ship to get and cache its remote URL:
-    ::  -keen [src.bol /e/x/(scot %da now.bol)//eauth/url]
     =/  vaz=(list card)
       ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
       [(active:vita-client bol)]~
@@ -244,7 +241,7 @@
         ?^  p.syn  ((slog u.p.syn) cor)
         %-  emit
         :*  %pass   pat
-            %agent  [our.bol %scanner]
+            %agent  [our.bol %fund-watcher]
             %watch  [%logs pat]
         ==
       ::  watch response  ::
@@ -253,7 +250,7 @@
         ((slog u.p.syn) cor)
       ::  watch update response  ::
           %fact
-        ?.  ?=(%scanner-diff p.cage.syn)  cor
+        ?.  ?=(%fund-watcher-diff p.cage.syn)  cor
         =+  !<(dif=diff:fc q.cage.syn)
         ::  TODO: Handle the %disavow case properly
         =/  loz=loglist:fc  ?+(-.dif loglist.dif %disavow ~)
@@ -283,22 +280,21 @@
   cor
 ::
 ++  open
-  ?:  (lte -.state 1)  cor
   =/  poz=(map flag:f proj:f)                    ::  post-%lock projects
     %-  ~(rep by my-pez)
     |=  [[lag=flag:f pre=prej:f] acc=(map flag:f proj:f)]
     ?:  ?=(?(%born %prop) ~(stat pj:f -.pre))  acc
     (~(put in acc) lag -.pre)
-  =/  liz=(set flag:f)                           ::  live %scanner flags
+  =/  liz=(set flag:f)                           ::  live %fund-watcher flags
     %-  ~(rep by wex.bol)
     |=  [[[wire sip=@p dek=@tas] [ack=? pat=(pole knot)]] acc=(set flag:f)]
     ?.  ?&  =(sip our.bol)
-            =(dek %scanner)
+            =(dek %fund-watcher)
             ack
-            ?=([%fund %proj sip=@ nam=@ %scan ?(%with %depo) ~] pat)
+            ?=([%logs %fund %proj sip=@ nam=@ %scan ?(%with %depo) ~] pat)
         ==
       acc
-    (~(put in acc) sip.pat nam.pat)
+    (~(put in acc) (slav %p sip.pat) (slav %tas nam.pat))
   =/  waz=(set flag:f)  (~(dif in ~(key by poz)) liz)
   %-  emil  %-  zing
   %+  turn  ~(tap in waz)
@@ -310,8 +306,8 @@
   =/  pax=path  (welp /fund/proj/(scot %p p.lag)/[q.lag] pat)
   ^-  card
   :*  %pass   pax
-      %agent  [our.bol %scanner]
-      %poke   scanner-poke+!>([%watch pax cfg])
+      %agent  [our.bol %fund-watcher]
+      %poke   fund-watcher-poke+!>([%watch pax cfg])
   ==
 ::
 ++  po-core
@@ -333,6 +329,11 @@
   ++  po-du-pat  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  po-da-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
   ::
+  ++  po-pj-boq
+    =/  pre=path  /(scot %p our.bol)/fund-watcher/(scot %da now.bol)
+    =/  pat=path  (welp po-pj-pat /scan/depo)
+    =+  .^(pap=(map path *) %gx (welp pre /dogs/configs/noun))
+    ?.((~(has by pap) pat) 0 .^(@ %gx :(welp pre /block pat /atom)))
   ++  po-mk-car
     |=  [who=@p pod=prod:f]
     ^-  card
@@ -380,80 +381,94 @@
     ^+  po-core
     =*  mes  `mess:f`[src.bol lag pod]
     ?<  ~|(bad-push+mes =(%$ q.lag))
-    |^  ?+    -.pod
-        ::  proj prods ::
-          ?.  po-is-myn  po-core(cor (emit (po-mk-car p.lag pod)))
-          ?>  ~|(bad-push+mes (po-do-writ pod))
-          ?-    -.pod
-              %init
-            =?  cor  po-is-new  (push (public:du-poz [po-du-pat]~))
-            (wash ~)
-          ::
-              %drop
-            =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
-            po-core
-          ::
-              ?(%bump %mula %blot %draw %wipe)
-            ?<  ~|(bad-push+mes po-is-new)
-            =-  (wash -)
-            ?+    -.pod  ~
-                %bump
-              =+  ses=p.assessment.pro
-              ?+  sat.pod  ~
-                ::  TODO: If this was sent by the user, also send cards to
-                ::  close the project path to the retracted oracle
-                %born  ?:(=(our.bol ses) ~ ~)
-                %prop  [(po-mk-car ses [%lure ses %orac])]~
-              ::
-                  %lock
-                ?~  oat.pod  ~
-                %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
-                |=  [pat=path cfg=config:fc]
-                =/  pax=path  (po-pj-pax pat)
-                ^-  card
-                :*  %pass   pax
-                    %agent  [our.bol %scanner]
-                    %poke   scanner-poke+!>([%watch pax cfg])
-                ==
-              ==
-            ::
-                %mula
-              ::  TODO: Add hark notifications and follow-up reminders for
-              ::  pledges
-              ?+  +<.pod  ~
-                %plej  [(po-mk-car ship.pod [%lure ship.pod %fund])]~
-                %trib  ?~(ship.pod ~ [(po-mk-car u.ship.pod [%lure u.ship.pod %fund])]~)
-              ==
-            ==
-          ==
-        ::  meta prods ::
-            %lure
-          ::  FIXME: For a more complete version, maintain a per-ship lure
-          ::  list (like group invites from %tlon)
-          ?:  =(our.bol who.pod)  $(pod [%join ~])
-          ?<  ~|(bad-push+mes po-is-new)
-          po-core(cor (emit (po-mk-car ?:(po-is-myn who.pod p.lag) pod)))
-        ::  meta prods ::
-            ?(%join %exit)
-          ::  FIXME: Re-add this contraint once an invite mechanism is
-          ::  in place (see %lure clause above).
-          ::  ?>  ~|(bad-meta+mes po-is-src)
-          ?:  po-is-myn  po-core
-          ?-    -.pod
-              %join
-            ?.  po-is-new  po-core
-            po-core(cor (pull (surf:da-poz po-da-pat)))
-          ::
-              %exit
-            ?:  po-is-new  po-core
-            po-core(cor (pull ~ (quit:da-poz po-da-pat)))
-          ==
-        ==
-    ++  wash
-      |=  caz=(list card)
+    =/  wash
+      |=  [pod=prod:f caz=(list card)]
       =.  cor  (push (give:du-poz po-du-pat *vers:lake:proj:fd bol lag pod))
       =.  cor  (emil caz)
       po-core
-    --
+    ?+    -.pod
+    ::  proj prods ::
+      ?.  po-is-myn  po-core(cor (emit (po-mk-car p.lag pod)))
+      ?>  ~|(bad-push+mes (po-do-writ pod))
+      ?-    -.pod
+          %init
+        =?  cor  po-is-new  (push (public:du-poz [po-du-pat]~))
+        (wash pod ~)
+      ::
+          %drop
+        =?  cor  !po-is-new  (push (kill:du-poz [po-du-pat]~))
+        po-core
+      ::
+          ?(%bump %mula %blot %draw %wipe)
+        ?<  ~|(bad-push+mes po-is-new)
+        =-  (wash nod caz)
+        ^-  [nod=prod:f caz=(list card)]
+        ?+    -.pod  [pod ~]
+            %bump
+          =+  ses=p.assessment.pro
+          :-  pod
+          ?+  sat.pod  ~
+            ::  TODO: If this was sent by the user, also send cards to
+            ::  close the project path to the retracted oracle
+            %born  ?:(=(our.bol ses) ~ ~)
+            %prop  [(po-mk-car ses [%lure ses %orac])]~
+          ::
+              %lock
+            ?~  oat.pod  ~
+            %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
+            |=  [pat=path cfg=config:fc]
+            =/  pax=path  (po-pj-pax pat)
+            ^-  card
+            :*  %pass   pax
+                %agent  [our.bol %fund-watcher]
+                %poke   fund-watcher-poke+!>([%watch pax cfg])
+            ==
+          ==
+        ::
+            %mula
+          ::  NOTE: The `+wash:lake` function cannot contain any scries,
+          ::  so the `fund` app needs to filter incoming pokes with block
+          ::  timings and adjust them to the local time (for remote ships)
+          ::  TODO: Add hark notifications and follow-up reminders for pledges
+          ?-  +<.pod
+              %plej
+            :-  ?:(po-is-src pod pod(when po-pj-boq))
+            [(po-mk-car ship.pod [%lure ship.pod %fund])]~
+          ::
+              %trib
+            :-  ?:(po-is-src pod pod(p.xact.when po-pj-boq))
+            ?~(ship.pod ~ [(po-mk-car u.ship.pod [%lure u.ship.pod %fund])]~)
+          ::
+              %pruf
+            [?:(po-is-src pod pod(p.xact.when po-pj-boq)) ~]
+          ==
+        ::
+            %draw
+          [?:(po-is-src pod pod(p.dif po-pj-boq)) ~]
+        ==
+      ==
+    ::  meta prods ::
+        %lure
+      ::  FIXME: For a more complete version, maintain a per-ship lure
+      ::  list (like group invites from %tlon)
+      ?:  =(our.bol who.pod)  $(pod [%join ~])
+      ?<  ~|(bad-push+mes po-is-new)
+      po-core(cor (emit (po-mk-car ?:(po-is-myn who.pod p.lag) pod)))
+    ::  meta prods ::
+        ?(%join %exit)
+      ::  FIXME: Re-add this contraint once an invite mechanism is
+      ::  in place (see %lure clause above).
+      ::  ?>  ~|(bad-meta+mes po-is-src)
+      ?:  po-is-myn  po-core
+      ?-    -.pod
+          %join
+        ?.  po-is-new  po-core
+        po-core(cor (pull (surf:da-poz po-da-pat)))
+      ::
+          %exit
+        ?:  po-is-new  po-core
+        po-core(cor (pull ~ (quit:da-poz po-da-pat)))
+      ==
+    ==
   --
 --

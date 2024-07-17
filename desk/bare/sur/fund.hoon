@@ -120,7 +120,7 @@
 ::  $pruf: blockchain/oracle attestation of contribution
 ::
 +$  pruf
-  $:  ship=~
+  $:  ship=(unit @p)
       =cash
       when=stub
       note=?(%with %depo)
@@ -225,7 +225,6 @@
       currency=coin
       milestones=(lest mile)
       contract=(unit oath)
-      last-bloq=bloq
       pledges=(map ship [plej peta])
       contribs=(map addr [treb deta])
       proofs=(map addr pruf)

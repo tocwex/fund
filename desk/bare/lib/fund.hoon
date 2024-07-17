@@ -59,8 +59,14 @@
     |=([[k=ship v=[^plej peta]] a=cash] (add a cash.v))
   ++  fill                                       ::  project-wide cost fill
     ^-  cash
-    %-  ~(rep by contribs)
-    |=([[k=addr v=[treb deta]] a=cash] (add a cash.v))
+    |^  (add trib-cash pruf-cash)
+    ++  trib-cash
+      %-  ~(rep by contribs)
+      |=([[k=addr v=[treb deta]] a=cash] (add a ?~(pruf.v 0 cash.u.pruf.v)))
+    ++  pruf-cash
+      %-  ~(rep by proofs)
+      |=([[k=addr v=pruf] a=cash] (add a ?-(note.v %with 0, %depo cash.v)))
+    --
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
@@ -69,9 +75,10 @@
     ?.  ?&  ?=(%done status.mil)
             ?=(^ withdrawal.mil)
             ?=(^ xact.u.withdrawal.mil)
+            ?=(^ pruf.u.withdrawal.mil)
         ==
       0
-    cash.u.withdrawal.mil
+    cash.u.pruf.u.withdrawal.mil
   ++  odit                                       ::  project-wide audit
     ^-  ^odit
     (filo [cost fill plej ~])
@@ -82,11 +89,11 @@
     ::  which produces negative fill values (reconciled in `+filo`)
     =<  -  %^  spin  milestonez  [0 (sun:si fill) (sun:si plej)]
     |=  [mil=mile min=@ fre=@sd pre=@sd]
-    =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil))
+    =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil) ?=(^ pruf.u.withdrawal.mil))
     =+  end==(min lin)
-    =+  fos=(sun:si ?:(!dun cost.mil cash:(need withdrawal.mil)))
+    =+  fos=(sun:si ?.(dun cost.mil cash:(need pruf:(need withdrawal.mil))))
     =+  fil=?:(|(end =(-1 (cmp:si fre fos))) fre fos)
-    =+  pos=?:(!dun (dif:si fos fil) --0)
+    =+  pos=?.(dun (dif:si fos fil) --0)
     =+  pej=?:(|(end =(-1 (cmp:si pre pos))) pre pos)
     [(filo [cost.mil (abs:si fil) (abs:si pej) ~]) +(min) (dif:si fre fil) (dif:si pre pej)]
   ++  mula                                       ::  project-wide $mula list

@@ -1,8 +1,8 @@
-::  scanner: ethereum event log collector
+::  fund-watcher: ethereum event log collector
 ::
 ::  based on eth-watcher
 ::
-/-  *scanner, spider
+/-  *fund-watcher, spider
 /+  ethereum, default-agent, verb, dbug
 =,  ethereum-types
 =,  jael
@@ -79,7 +79,7 @@
   ?:  ?=(%noun mark)
     ~&  state
     `this
-  ?.  ?=(%scanner-poke mark)
+  ?.  ?=(%fund-watcher-poke mark)
     (on-poke:def mark vase)
   ::
   =+  !<(=poke vase)
@@ -133,16 +133,8 @@
     [(weld wait-cards restart-cards) this]
   ::
       %clear
-    ?:  (~(has by dogs.state) path.poke)
-      =.  dogs.state  (~(del by dogs.state) path.poke)
-      [~ this]
-    =-  =.  dogs.state  -  [~ this]
-    %-  ~(rep by dogs.state)
-    |=  [[=path dog=watchdog] dogs=_dogs.state]
-    ^+  dogs.state
-    ?.  =(-.path -.path.poke)  dogs
-    ~&  >>  "deleting dog for {<path>}"
-    (~(del by dogs) path)
+    =.  dogs.state  (~(del by dogs.state) path.poke)
+    [~ this]
   ==
 ::
 ::  +on-watch: subscribe & get initial subscription data
@@ -156,7 +148,7 @@
     ~|  [%invalid-subscription-path path]
     !!
   :_  this  :_  ~
-  :*  %give  %fact  ~  %scanner-diff  !>
+  :*  %give  %fact  ~  %fund-watcher-diff  !>
       :-  %history
       ^-  loglist
       %-  zing
@@ -198,14 +190,14 @@
       %poke-ack
     ?~  p.sign
       [~ this]
-    %-  (slog leaf+"scanner couldn't start thread" u.p.sign)
+    %-  (slog leaf+"fund-watcher couldn't start thread" u.p.sign)
     :_  (clear-running t.wire)  :_  ~
     (leave-spider t.wire our.bowl)
   ::
       %watch-ack
     ?~  p.sign
       [~ this]
-    %-  (slog leaf+"scanner couldn't start listening to thread" u.p.sign)
+    %-  (slog leaf+"fund-watcher couldn't start listening to thread" u.p.sign)
     ::  TODO: kill thread that may have started, although it may not
     ::  have started yet since we get this response before the
     ::  %start-spider poke is processed
@@ -221,7 +213,7 @@
     ?+    p.cage.sign  (on-agent:def wire sign)
         %thread-fail
       =+  !<([=term =tang] q.cage.sign)
-      %-  (slog leaf+"scanner failed; will retry" leaf+<term> tang)
+      %-  (slog leaf+"fund-watcher failed; will retry" leaf+<term> tang)
       [~ this(dogs.state (~(put by dogs.state) path u.dog(running ~)))]
     ::
         %thread-done
@@ -275,7 +267,7 @@
     :_  dog(history actual-history)
     %+  turn  actual-vows
     |=  =id:block
-    [%give %fact [%logs path]~ %scanner-diff !>([%disavow id])]
+    [%give %fact [%logs path]~ %fund-watcher-diff !>([%disavow id])]
   ::
   ++  release-logs
     |=  [=path dog=watchdog]
@@ -301,8 +293,8 @@
     ?~  logs
       ~
     ^-  (list card:agent:gall)
-    ::  ~&  >>>  scanner+"releasing logs {<path>}"
-    [%give %fact [%logs path]~ %scanner-diff !>([%logs logs])]~
+    ::  ~&  >>>  fund-watcher+"releasing logs {<path>}"
+    [%give %fact [%logs path]~ %fund-watcher-diff !>([%logs logs])]~
   --
 ::
 ++  on-arvo
@@ -315,14 +307,14 @@
     ?.  (~(has by dogs.state) path)
       ~&  >>  unknown-dog+path
       [~ this]
-    ::  ~&  >>  scanner+"found dog for {<path>}"
+    ::  ~&  >>  fund-watcher+"found dog for {<path>}"
     =/  dog=watchdog
       (~(got by dogs.state) path)
     ?^  error.sign-arvo
       ::  failed, try again.  maybe should tell user if fails more than
       ::  5 times.
       ::
-      %-  (slog leaf+"scanner failed; will retry" ~)
+      %-  (slog leaf+"fund-watcher failed; will retry" ~)
       [[(wait path now.bowl refresh-rate.dog)]~ this]
     ::  maybe kill a timed-out update thread, maybe start a new one
     ::
@@ -336,7 +328,7 @@
           ==
         `dog
       ::
-      %-  (slog leaf+"scanner {(spud path)} timed out; will restart" ~)
+      %-  (slog leaf+"fund-watcher {(spud path)} timed out; will restart" ~)
       =/  =cage  [%spider-stop !>([tid.u.running.dog |])]
       :_  dog(running ~)
       :~  (leave-spider path our.bowl)
@@ -345,7 +337,7 @@
     ::
     =^  start-cards=(list card)  dog
       ::  if not (or no longer) running, start a new thread
-      
+
       ?^  running.dog
         `dog
       :: if reached the to-block, don't start a new thread
@@ -356,10 +348,10 @@
         `dog
       ::
       =/  new-tid=@ta
-        (cat 3 'scanner--' (scot %uv eny.bowl))
+        (cat 3 'fund-watcher--' (scot %uv eny.bowl))
       :_  dog(running `[now.bowl new-tid])
       =/  args
-        :*  ~  `new-tid  bec  %scanner
+        :*  ~  `new-tid  bec  %fund-watcher
             !>([~ `watchpup`[- number pending-logs blocks]:dog])
         ==
       :~  (watch-spider path our.bowl /thread-result/[new-tid])

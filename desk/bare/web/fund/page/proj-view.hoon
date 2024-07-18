@@ -355,10 +355,12 @@
                       :_  ~
                       %:  prod-butn:ui:fh
                           %draw-done  %true  "claim funds ✓"  "claimMilestone"
-                          ::  TODO: Add logic to say "funds claimed but
-                          ::  not confirmed" or similar
-                          ::  ?~  xact.u.withdrawal.mil
-                          ?~(xact.u.withdrawal.mil ~ "funds have already been claimed")
+                          ?^  xact.u.withdrawal.mil
+                            ?~  pruf.u.withdrawal.mil
+                              "funds claimed but awaiting confirmation"
+                            "funds have already been fully claimed"
+                          ::  NOTE: An `pruf` without an `xact` is an impossible case
+                          ~
                       ==
                     ::
                     ::
@@ -380,7 +382,7 @@
       ==
       ;div(class "col-span-1 flex flex-col gap-1")
         ;div(class "flex flex-col gap-2")
-          ;h1: Project Participants
+          ;h1: Participants
           ;+  %:  ship-card:ui:fh
                   p.lag
                   "Project Worker"
@@ -400,7 +402,7 @@
         ==
         ;div(class "flex flex-col gap-2")
           ;div(class "flex flex-row justify-between items-center")
-            ;h1: Fund Contributors
+            ;h1: Transactions
             ;div(class "flex flex-wrap items-center gap-1")
               ;*  =-  :~  (icon-stax:ui:fh (scag 3 (turn ~(tap in siz) surt:enrl:format:fh)))
                           ;h6: {<~(wyt in siz)>} total

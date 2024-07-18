@@ -254,22 +254,31 @@
         =+  !<(dif=diff:fc q.cage.syn)
         ::  TODO: Handle the %disavow case properly
         =/  loz=loglist:fc  ?+(-.dif loglist.dif %disavow ~)
+        ::  NOTE: We group by transaction for multisend cases (which
+        ::  always occur for withdrawals), which pack multiple
+        ::  transfers into one atomic transaction
+        =/  xap=(map xact:f (list [addr:f cash:f]))
+          %+  roll  loz
+          |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f cash:f]))]
+          =/  act=xact:f  [block-number transaction-hash]:(need mined.nex)
+          =/  who=addr:f  (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.nex)
+          =/  cas=cash:f  `@ud`(addr:dejs:format:fh data.nex)
+          (~(put by acc) act [[who cas] (~(gut by acc) act ~)])
+        =/  xaz=(list [xact:f cash:f addr:f])
+          %-  ~(rep by xap)
+          |=  [[act=xact:f fez=(list [addr:f cash:f])] acc=(list [xact:f cash:f addr:f])]
+          :_  acc
+          :-  act
+          =<  [- +<]  %+  roll  fez
+          |=  [[nea=addr:f nec=cash:f] [acc=cash:f aca=addr:f ack=cash:f]]
+          :-  (add nec acc)
+          ?:((gth nec ack) [nea nec] [aca ack])
         %-  emil
-        %+  turn  loz
-        |=  log=event-log:rpc:ethereum:fc
+        %+  turn  xaz
+        |=  [act=xact:f cas=cash:f adr=addr:f]
         ^-  card
-        =-  (po-mk-car:(po-abed:po-core sip nam) sip -)
-        :+  %mula  %pruf
-        :*  ship=~
-            cash=`@ud`(addr:dejs:format:fh data.log)
-          ::
-              ^=  when
-            :-  [block-number transaction-hash]:(need mined.log)
-            ::  NOTE: The ERC-20 topic order is: [hash, from, to]
-            (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.log)
-          ::
-            note=typ.pat.pat
-        ==
+        %+  po-mk-car:(po-abed:po-core sip nam)  sip
+        [%mula %pruf ship=~ cash=cas when=[act adr] note=typ.pat.pat]
       ==
     ==
   ==

@@ -200,8 +200,7 @@
       ~|(bad-wash+mes !!)  ::  %dead =X=> status
     ::
         %mula
-      ::  TODO: Can maybe accept %pruf when %done/%dead
-      ?<  ?=(?(%born %prop %done %dead) sat)
+      ?<  ?=(?(%born %prop) sat)
       ?>  (gth cash.pod 0)
       ::  FIXME: Very inefficient, but also very convenient!
       =/  nid=@ud
@@ -213,12 +212,14 @@
         ::  NOTE: This is a sufficient check because we only allow the
         ::  host of a project to accept donations on the project's behalf
         ::  (so src.bol must always be the %plej attestor; no forwarding!)
+        ?<  ?=(?(%done %dead) sat)
         ?>  =(src.bol ship.pod)
         ?>  (plan:fx src.bol)
         ?<  (~(has by pledges.pro) ship.pod)
         %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod ~ nid &))
       ::
           %trib
+        ?<  ?=(?(%done %dead) sat)
         =/  pol=(unit [plej peta])  ?~(ship.pod ~ (~(get by pledges.pro) u.ship.pod))
         =/  puf=(unit pruf)  (~(get by proofs.pro) q.xact.when.pod)
         ?>  |(?=(~ pol) &(=(src.bol ship.u.pol) =(cash.u.pol cash.pod)))

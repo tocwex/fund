@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-edit/hoon: render project edit page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund, fx=fund-xtra, fh=fund-http
+/+  f=fund, fx=fund-xtra, fh=fund-http, fc=fund-chain
 /+  rudder, config
 %-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
 ^-  page:fd
@@ -38,19 +38,16 @@
       %bump-born  ?~(pru 'project does not exist' [%bump %born ~])
     ::
         %init
-      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %toc %toa %ton %tod %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %can %tok %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
         :+  %init  ~
         =/  con=coin:f
-          :*  chain=(bloq:dejs:format:fh (~(got by p.arz) %toc))
-              addr=(addr:dejs:format:fh (~(got by p.arz) %toa))
-              name=(~(got by p.arz) %ton)
-              symbol=(~(got by p.arz) %ton)
-              decimals=(bloq:dejs:format:fh (~(got by p.arz) %tod))
-          ==
+          %+  ~(got by cmap:fc)
+            (bloq:dejs:format:fh (~(got by p.arz) %can))
+          (~(got by p.arz) %tok)
         =+  pro=*proj:f  %_  pro
-          currency    con
           title       (~(got by p.arz) %nam)
           summary     (trim (~(got by p.arz) %sum))
+          currency    con
         ::
             assessment
           :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
@@ -116,38 +113,40 @@
             ==
             ;div(class "flex")
               ;div(class "fund-form-group")
-                ;select#proj-chain.fund-tsel(name "net", required ~)
-                  ::  FIXME: Including the network IDs here is a hack, but
-                  ::  this should be fixed by moving chain stuff to the BE
+                ;select#proj-chain.fund-tsel  =name  "can"  =required  ~
+                    =x-model  "proj_scan"
+                    =x-on-change  "updateToks"
                   ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
-                      %+  turn  ~[["mainnet" 1] ["sepolia" 11.155.111]]
-                      |=  [net=tape nid=@ud]
+                      %+  turn  xlis:fc
+                      |=  xet=xeta:f
                       ^-  manx
-                      :_  ; {(caps:fx net)}
+                      :_  ; {(caps:fx (trip tag.xet))}
                       :-  %option
                       ;:  welp
-                          [%value net]~
-                          [%data-image (aset:enrl:format:fh (crip net))]~
-                          ?.(=(can nid) ~ [%selected ~]~)
+                          [%value (bloq:enjs:format:fh id.xet)]~
+                          [%data-image (aset:enrl:format:fh tag.xet)]~
+                          ?.(=(can id.xet) ~ [%selected ~]~)
                       ==
                 ==
-                ;label(for "net"): Blockchain
+                ;label(for "can"): Blockchain
               ==
               ;div(class "fund-form-group")
+                ;select#proj-token-options.hidden(required ~)
+                  ;*  %+  turn  clis:fc
+                      |=  con=coin:f
+                      ^-  manx
+                      :_  ; {(trip name.con)}
+                      :-  %option
+                      ;:  welp
+                          [%value (trip symbol.con)]~
+                          [%data-chain (bloq:enjs:format:fh chain.con)]~
+                          [%data-image (aset:enrl:format:fh (:(corl crip cass trip) symbol.con))]~
+                      ==
+                ==
                 ;select#proj-token.fund-tsel  =name  "tok"  =required  ~
                     =x-model  "proj_stok"
                     =x-on-change  "updateProj"
-                  ;*  =+  sym=(trip symbol:?~(pru *coin:f currency.u.pru))
-                      %+  turn  ~["usdc" "wstr"]  ::  "usdt" "dai"
-                      |=  tok=tape
-                      ^-  manx
-                      :_  ; {(cuss tok)}
-                      :-  %option
-                      ;:  welp
-                          [%value tok]~
-                          [%data-image (aset:enrl:format:fh (crip tok))]~
-                          ?.(=(sym tok) ~ [%selected ~]~)
-                      ==
+                  ;option(value ~, data-image (aset:enrl:format:fh %box)): "…loading…"
                 ==
                 ;label(for "tok"): Token
               ==
@@ -273,7 +272,7 @@
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:ui:fh %init %action "save draft ~" "saveProj" ~)
+            ++  init-butn  (prod-butn:ui:fh %init %action "save draft ~" ~ ~)
             ++  croc-butn  (prod-butn:ui:fh %bump-born %action "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
@@ -293,32 +292,46 @@
       %-  zing  %+  join  "\0a"
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
-          :(weld "proj_stok: '" ?~(pru "usdc" (trip symbol.currency.u.pru)) "',")
+          :(weld "proj_scan: '" (bloq:enjs:format:fh ?~(pru id:(snag 0 xlis:fc) chain.currency.u.pru)) "',")
+          :(weld "proj_stok: '" ?~(pru "USDC" (trip symbol.currency.u.pru)) "',")
           :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh cost.n ?~(pru 6 decimals.currency.u.pru)) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''
           init() {
             this.updateProj();
+            // FIXME: This is a super ugly hack we need to wait on the "TomSelect"
+            // initialization in "boot.js"
+            new Promise(res => setTimeout(res, 1000)).then(() => this.updateToks());
             document.querySelectorAll('textarea').forEach(elem => (
               this.updateTextarea({target: elem})
             ));
           },
+          updateToks() {
+            const tokenChain = document.querySelector('[name=can]').value;
+            const tokenSelect = document.querySelector('#proj-token').tomselect;
+            const tokenOpts = document.querySelectorAll('#proj-token-options > option');
+            const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
+              value: elem.value,
+              text: elem.innerText,
+              image: elem.dataset.image,
+              chain: elem.dataset.chain,
+            })).filter(({chain}) => (
+              chain === tokenChain
+            ));
+
+            tokenSelect.clear(true);
+            tokenSelect.clearOptions();
+            tokenSelect.addOptions(tokenChainOpts);
+            tokenSelect.addItem(
+              (tokenChainOpts.find(({value}) => value === this.proj_stok) ?? tokenChainOpts[0]).value
+            );
+          },
           updateProj() {
             const amount = this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2);
-            this.proj_cost = (this.proj_stok === 'usdc')
+            this.proj_cost = (this.proj_stok.includes('USDC'))
               ? `\$${amount}`
-              : `${amount} \$${this.proj_stok.toUpperCase()}`;
-          },
-          saveProj(event) {
-            const chain = event.target.form.querySelector('[name=net]').value.toUpperCase();
-            const token = event.target.form.querySelector('[name=tok]').value.toUpperCase();
-            this.sendForm(event, [], () => Promise.resolve({
-              toc: this.NETWORK.ID[chain],
-              toa: this.CONTRACT[token].ADDRESS[chain],
-              ton: token.toLowerCase(),
-              tod: this.CONTRACT[token].DECIMALS,
-            }));
+              : `${amount} \$${this.proj_stok}`;
           },
           updateTextarea(event) {
             event.target.parentNode.dataset.replicatedValue = event.target.value;

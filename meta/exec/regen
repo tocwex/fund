@@ -29,7 +29,7 @@ regen__deskdir="${regen__basedir}/desk"
 
 cd "${regen__deskdir}"
 rm -rf full/
-find bare -type f | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
+find bare -type f,l | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
 mkdir -p full/app full/lib/ full/mar full/sur/json full/ted
 ln -sr ../LICENSE.txt full/license.txt
 

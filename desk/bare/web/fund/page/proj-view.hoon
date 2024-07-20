@@ -19,6 +19,7 @@
       %bump-born  [%bump %born ~]
       %bump-work  [%bump %work ~]
       %bump-sess  [%bump %sess ~]
+      %folo-proj  [%lure src.bol %fund]
       %wipe-rede  [%wipe lin ~]
     ::
         %wipe-cade
@@ -182,6 +183,14 @@
         ::
             ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
           :_  ~  (pink-butn:ui:fh bol lag)
+        ::
+            ?:  |(?=(?(%born %prop) sat) =(our src):bol (~(has in roz) %fund))  ~
+          :_  ~
+          ;form(method "post")
+            ;button(id "prod-butn-folo-proj", type "submit", name "dif", value "folo-proj")
+              ;img.fund-butn-icon@"{(aset:enrl:format:fh %bookmark)}";
+            ==
+          ==
         ::
             ?:  ?=(?(%born %done %dead) sat)  ~
           =-  ?~  fom  ~

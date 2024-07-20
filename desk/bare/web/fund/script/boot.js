@@ -9,9 +9,9 @@ import {
   http, createConfig, injected,
   connect, disconnect, reconnect,
   getAccount, getEnsName,
-} from 'https://esm.sh/@wagmi/core@2.x';
-import { fromHex } from 'https://esm.sh/viem@2.x';
-import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
+} from 'https://esm.sh/@wagmi/core@2.10.0';
+import { fromHex } from 'https://esm.sh/viem@2.16.0';
+import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
 import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';

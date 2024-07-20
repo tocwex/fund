@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-edit/hoon: render project edit page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund, fx=fund-xtra, fh=fund-http, fc=fund-chain
+/+  f=fund, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
 ^-  page:fd
@@ -140,7 +140,7 @@
                       ;:  welp
                           [%value (trip symbol.con)]~
                           [%data-chain (bloq:enjs:format:fh chain.con)]~
-                          [%data-image (aset:enrl:format:fh (:(corl crip cass trip) symbol.con))]~
+                          [%data-image (aset:enrl:format:fh symbol.con)]~
                       ==
                 ==
                 ;select#proj-token.fund-tsel  =name  "tok"  =required  ~
@@ -195,7 +195,7 @@
                         =x-on-change  "updateMile";
                       ;label(for "m{<min>}c")
                         ; Amount
-                        ;span(x-text "'($' + proj_stok.toUpperCase() + ')'");
+                        ;span(x-text "'($' + proj_stok + ')'");
                       ==
                     ==
                   ==

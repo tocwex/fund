@@ -39,7 +39,16 @@
             summary=summary.pro
             image=image.pro
             assessment=assessment.pro
-            currency=currency.pro
+        ::
+              ^=  currency
+            =-  currency.pro(name nam, symbol sym)
+            ^-  [nam=@t sym=@t]
+            ?+  [chain.currency.pro name.currency.pro]  ['USDC' 'USDC']
+              [%1 %usdc]           ['USDC' 'USDC']
+              [%1 %wstr]           ['WrappedStar' 'USDC']
+              [%11.155.111 %usdc]  ['%fund USDC' 'fundUSDC']
+              [%11.155.111 %wstr]  ['%fund WSTR' 'fundWSTR']
+            ==
         ::
               ^=  milestones
             ;;  (lest mile)

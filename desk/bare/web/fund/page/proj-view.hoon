@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  f=fund, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  page:fd
@@ -156,8 +156,8 @@
   =/  [nin=@ mile:f]  ~(next pj:f pro)
   =/  ioz=manx
     %-  icon-stax:ui:fh
-    :~  (aset:enrl:format:fh name.currency.pro)
-        (aset:enrl:format:fh ?:(=(1 chain.currency.pro) %mainnet %sepolia))
+    :~  (aset:enrl:format:fh symbol.currency.pro)
+        (aset:enrl:format:fh tag:(~(got by xmap:fc) chain.currency.pro))
     ==
   :-  %page
   %-  page:ui:fh
@@ -224,9 +224,9 @@
                             ==
                         :_  ~
                         ;option
-                            =value  (trip name.currency.pro)
-                            =data-image  (aset:enrl:format:fh name.currency.pro)
-                          ; {(cuss (trip name.currency.pro))}
+                            =value  (trip symbol.currency.pro)
+                            =data-image  (aset:enrl:format:fh symbol.currency.pro)
+                          ; {(trip name.currency.pro)}
                         ==
                     ;label(for "tok"): token
                   ==
@@ -359,7 +359,7 @@
                             ?~  pruf.u.withdrawal.mil
                               "funds claimed but awaiting confirmation"
                             "funds have already been fully claimed"
-                          ::  NOTE: An `pruf` without an `xact` is an impossible case
+                          ::  NOTE: A `pruf` without an `xact` is an impossible case
                           ~
                       ==
                     ::
@@ -425,10 +425,13 @@
                         ^-  [url=tape txt=tape]
                         ?-  -.mul
                           %plej  [(surt:enrl:format:fh ship.mul) "{<ship.mul>}"]
-                          %pruf  [(aset:enrl:format:fh %link) "chain data"]
                         ::
                             %trib
                           ?~  ship.mul  [(aset:enrl:format:fh %box) "anonymous"]
+                          [(surt:enrl:format:fh u.ship.mul) "{<u.ship.mul>}"]
+                        ::
+                            %pruf
+                          ?~  ship.mul  [(aset:enrl:format:fh %link) "chain data"]
                           [(surt:enrl:format:fh u.ship.mul) "{<u.ship.mul>}"]
                         ==
                   ==
@@ -438,7 +441,6 @@
                         ^-  [nam=tape klr=tape]
                         ?-  -.mul
                           %plej  ["pledged" "yellow-500"]
-                          %pruf  ["confirmed" "blue-500"]
                         ::
                             %trib
                           ::  TODO: Figure out the different indicators
@@ -446,6 +448,12 @@
                           =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
                           ?~  pruf.teb  ["attested" "green-400"]
                           ["verified" "green-600"]
+                        ::
+                            %pruf
+                          ?-  note.mul
+                            %depo  ["confirmed" "blue-500"]
+                            %with  ["withdrawn" "red-500"]
+                          ==
                         ==
                   ==
                 ==
@@ -480,7 +488,7 @@
           :(weld "work_addr: '" (addr:enjs:format:fh ?~(contract.pro 0x0 work.u.contract.pro)) "',")
           :(weld "orac_addr: '" (addr:enjs:format:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)) "',")
           :(weld "coin_chain: " (bloq:enjs:format:fh chain.currency.pro) ",")
-          :(weld "coin_name: '" (trip name.currency.pro) "',")
+          :(weld "coin_symbol: '" (trip symbol.currency.pro) "',")
           :(weld "orac_cut: " (cash:enjs:format:fh q.assessment.pro 6) ",")
           :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (cash:enjs:format:fh fill.n decimals.currency.pro) ","))) "],")
           :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:format:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")
@@ -529,7 +537,7 @@
                 safeAddress: this.safe_addr,
                 fundAmount: event.target.form.querySelector('[name=sum]').value,
                 // fundToken: event.target.form.querySelector('[name=tok]').value,
-                fundToken: this.coin_name,
+                fundToken: this.coin_symbol,
               }).then(([address, xblock, xhash]) => {
                 console.log(`contribution successful; view at: ${this.txnGetURL(xhash)}`);
                 return {
@@ -548,7 +556,7 @@
                 workerAddress: this.work_addr,
                 oracleCut: this.orac_cut,
                 fundAmount: this.mile_fill[this.mile_idex],
-                fundToken: this.coin_name,
+                fundToken: this.coin_symbol,
               }).then(([address, signature, payload]) => ({
                 mii: this.mile_idex,
                 mia: address,
@@ -568,7 +576,7 @@
                 projectChain: this.coin_chain,
                 safeAddress: this.safe_addr,
                 fundAmount: this.mile_take[this.mile_idex],
-                fundToken: this.coin_name,
+                fundToken: this.coin_symbol,
                 oracleSignature: this.mile_sign[this.mile_idex],
                 oracleAddress: this.orac_addr,
                 oracleCut: this.orac_cut,
@@ -588,7 +596,7 @@
               () => (
                 this.safeSignRefund({
                   projectChain: this.coin_chain,
-                  fundToken: this.coin_name,
+                  fundToken: this.coin_symbol,
                   safeAddress: this.safe_addr,
                   safeInitBlock: this.safe_bloq,
                 }).then(([address, signature, payload]) => ({
@@ -606,7 +614,7 @@
               () => (
                 this.safeExecRefund({
                   projectChain: this.coin_chain,
-                  fundToken: this.coin_name,
+                  fundToken: this.coin_symbol,
                   safeAddress: this.safe_addr,
                   safeInitBlock: this.safe_bloq,
                   oracleAddress: this.mile_whom[this.mile_idex],

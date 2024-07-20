@@ -264,21 +264,30 @@
           =/  who=addr:f  (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.nex)
           =/  cas=cash:f  `@ud`(addr:dejs:format:fh data.nex)
           (~(put by acc) act [[who cas] (~(gut by acc) act ~)])
-        =/  xaz=(list [xact:f cash:f addr:f])
+        =/  xaz=(list [xact:f cash:f (set addr:f)])
           %-  ~(rep by xap)
-          |=  [[act=xact:f fez=(list [addr:f cash:f])] acc=(list [xact:f cash:f addr:f])]
+          |=  [[act=xact:f fez=(list [addr:f cash:f])] acc=(list [xact:f cash:f (set addr:f)])]
           :_  acc
           :-  act
-          =<  [- +<]  %+  roll  fez
-          |=  [[nea=addr:f nec=cash:f] [acc=cash:f aca=addr:f ack=cash:f]]
-          :-  (add nec acc)
-          ?:((gth nec ack) [nea nec] [aca ack])
+          %+  roll  fez
+          |=  [[nea=addr:f nec=cash:f] [acc=cash:f acs=(set addr:f)]]
+          [(add nec acc) (~(put in acs) nea)]
         %-  emil
         %+  turn  xaz
-        |=  [act=xact:f cas=cash:f adr=addr:f]
+        |=  [act=xact:f cas=cash:f adz=(set addr:f)]
         ^-  card
-        %+  po-mk-car:(po-abed:po-core sip nam)  sip
-        [%mula %pruf ship=~ cash=cas when=[act adr] note=typ.pat.pat]
+        =*  por  (po-abed:po-core sip nam)
+        =-  (po-mk-car:por sip [%mula %pruf ship=zip cash=cas when=[act adr] note=typ.pat.pat])
+        ^-  [zip=(unit @p) adr=addr:f]
+        ?-  typ.pat.pat
+          %depo  [~ (head ~(tap in adz))]
+          ::  FIXME: Assumes that all withdrawals (including refunds)
+          ::  are prompted by the worker.
+          %with  [~ work:(need contract:pro:por)]
+          ::    %with
+          ::  =/  wok=addr:f  work:(need contract:pro:por)
+          ::  ?:((~(has in adz) wok) [`sip wok] [~ (head ~(tap in adz))])
+        ==
       ==
     ==
   ==

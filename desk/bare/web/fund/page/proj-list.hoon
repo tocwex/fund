@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  f=fund, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
@@ -110,13 +110,11 @@
               ==
               ;div(class "inline-flex justify-between items-end self-stretch pl-3")
                 ;div(class "flex flex-row gap-2 item-center")
-                  ;img.h-12@"{(aset:enrl:format:fh name.currency.pro)}";
-                  ::  FIXME: Need a Hoon-based solution for associating chain
-                  ::  IDs with human-readable names
+                  ;img.h-12@"{(aset:enrl:format:fh symbol.currency.pro)}";
                   ;div(class "flex flex-col justify-center items-start")
                     ;h1: {(mony:enjs:format:fh ~(cost pj:f pro) currency.pro)}
                     ;h6(class "leading-none tracking-widest")
-                      ; Deployed On {?:(=(1 chain.currency.pro) "Mainnet" "Sepolia")}
+                      ; Deployed On {(caps:fx (trip tag:(~(got by xmap:fc) chain.currency.pro)))}
                     ==
                   ==
                 ==

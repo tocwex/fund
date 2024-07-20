@@ -1,12 +1,12 @@
 import {
   getAccount, getClient, getChainId, getPublicClient, getBalance, getBlockNumber,
   signMessage, readContract, writeContract, waitForTransactionReceipt,
-} from 'https://esm.sh/@wagmi/core@2.x';
+} from 'https://esm.sh/@wagmi/core@2.10.0';
 import {
   encodeFunctionData, encodePacked, keccak256,
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
-} from 'https://esm.sh/viem@2.x';
+} from 'https://esm.sh/viem@2.16.0';
 import BigNumber from 'https://cdn.jsdelivr.net/npm/bignumber.js@9.1.2/+esm'
 import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, NETWORK, CONTRACT } from './const.js';
@@ -20,14 +20,14 @@ export const ethGetChain = () => (NETWORK.NAME?.[getChainId(window.Wagmi)] ?? NE
 export const txnGetURL = (address) => {
   const chain = ethGetChain().toLowerCase();
   return `https://${
-    (chain === "mainnet") ? "" : `${chain}.`
+    (chain === "ethereum") ? "" : `${chain}.`
   }etherscan.io/tx/${address}`
 };
 
 export const safeGetURL = (address) => {
   const chain = ethGetChain().toLowerCase();
   return `https://app.safe.global/home?safe=${
-    (chain === "mainnet") ? "" : `${chain.substring(0, 3)}:`
+    (chain === "ethereum") ? "" : `${chain.substring(0, 3)}:`
   }${address}`;
 };
 

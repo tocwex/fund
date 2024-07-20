@@ -50,11 +50,11 @@
   ++  aset                                     ::  as(s)e(t) t(ape) (url path)
     |=  ast=@t  ~+
     ^-  tape
-    (dest /asset/[(crip "{(trip ast)}.svg")])
+    (dest /asset/[(crip "{(cass (trip ast))}.svg")])
   ++  asec                                     ::  as(s)e(t) c(ord) (url path)
     |=  ast=@t  ~+
     ^-  cord
-    (desc /asset/[(crip "{(trip ast)}.svg")])
+    (desc /asset/[(crip "{(cass (trip ast))}.svg")])
   --
   ++  surt                                     ::  s(hip) ur(l) t(ape) (url path)
     |=  sip=@p  ~+

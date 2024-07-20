@@ -103,6 +103,7 @@
         (turn ~(val by contribs) |=([t=treb *] `^mula`[%trib -.t]))
         (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
         (turn ~(val by proofs) |=(p=pruf `^mula`[%pruf p]))
+        (murn milestonez |=(m=mile `(unit ^mula)`?~(withdrawal.m ~ (bind pruf.u.withdrawal.m (lead %pruf)))))
     ==
   ++  next                                       ::  next active milestone
     ^-  [min=@ mil=mile]
@@ -170,8 +171,16 @@
       ^-  tape
       ?:  ?=(%v0-0-0 ver)  ~
       =-  "currency: {-} ({(addr:enjs:format addr.con)}) on eth chain {(bloq:enjs:format chain.con)}"
-      ?+  ver               (coin:enjs:format con)
-        ?(%v1-0-0 %v0-4-0)  (trip name.con)
+      ?+    ver  (coin:enjs:format con)
+          ?(%v1-0-0 %v0-4-0)
+        ::  NOTE: These should be the only coin possibilities for
+        ::  v0.4.0 and v1.0.0 contracts
+        ?+  symbol.con  "usdc"
+          %'USDC'       "usdc"
+          %'WSTR'       "wstr"
+          %'fundUSDC'   "usdc"
+          %'fundWSTR'   "wstr"
+        ==
       ==
     --
   --

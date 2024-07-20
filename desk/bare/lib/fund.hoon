@@ -158,13 +158,13 @@
       |=  [cas=cash dex=@ud]
       ^-  tape
       ?+  ver    (cash:enjs:format cas dex)
-        %v1-0-0  (cash:enjs:format cas 6)
-        %v0-0-0  (r-co:co [%d & -6 cas])
+          %v0-0-0
+        (r-co:co [%d & (pro:si -1 (sun:si dex)) cas])
       ::
           %v0-4-0
         =+  cax=(drg:fl (sun:fl cas))
         ?>  ?=(%d -.cax)
-        (flot:fx cax(e (dif:si e.cax --6)) ~)
+        (flot:fx cax(e (dif:si e.cax (sun:si dex))) ~)
       ==
     ++  coin-enjs
       |=  con=coin

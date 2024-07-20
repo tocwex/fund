@@ -184,7 +184,7 @@
             ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
           :_  ~  (pink-butn:ui:fh bol lag)
         ::
-            ?:  |(?=(?(%born %prop) sat) =(our src):bol (~(has in roz) %fund))  ~
+            ?:  |(?=(?(%born %prop) sat) !(auth:fh bol) =(our src):bol (~(has in roz) %fund))  ~
           :_  ~
           ;form(method "post")
             ;button(id "prod-butn-folo-proj", type "submit", name "dif", value "folo-proj")
@@ -383,7 +383,12 @@
                       :_  ~
                       %:  prod-butn:ui:fh
                           %draw-dead  %true  "refund funds ✓"  "refundContract"
-                          ?~(xact.u.withdrawal.mil ~ "funds have already been refunded")
+                          ?^  xact.u.withdrawal.mil
+                            ?~  pruf.u.withdrawal.mil
+                              "funds refunded but awaiting confirmation"
+                            "funds have already been fully refunded"
+                          ::  NOTE: A `pruf` without an `xact` is an impossible case
+                          ~
                       ==
                     ==
               ==
@@ -644,4 +649,4 @@
     ==
   ==
 --
-::  VERSION: [1 0 2]
+::  VERSION: [1 1 0]

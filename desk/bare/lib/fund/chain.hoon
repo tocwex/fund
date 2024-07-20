@@ -1,3 +1,5 @@
+:: /lib/fund/chain/hoon: blockchain-related data and functions for %fund
+::
 /-  *fund-watcher, *fund
 /+  fund-config=config
 |%

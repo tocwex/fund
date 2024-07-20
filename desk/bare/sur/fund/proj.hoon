@@ -31,56 +31,62 @@
 +$  vers  _%3
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
-  =>  |%
-      ++  proj-next
-        |=  pro=proj:pold
-        ^-  proj
-        :*  title=title.pro
-            summary=summary.pro
-            image=image.pro
-            assessment=assessment.pro
-        ::
-              ^=  currency
-            =-  currency.pro(name nam, symbol sym)
-            ^-  [nam=@t sym=@t]
-            ?+  [chain.currency.pro name.currency.pro]  ['USDC' 'USDC']
-              [%1 %usdc]           ['USDC' 'USDC']
-              [%1 %wstr]           ['WrappedStar' 'USDC']
-              [%11.155.111 %usdc]  ['%fund USDC' 'fundUSDC']
-              [%11.155.111 %wstr]  ['%fund WSTR' 'fundWSTR']
-            ==
-        ::
-              ^=  milestones
-            ;;  (lest mile)
-            %+  turn  milestones.pro
-            |=  mil=mile:pold
-            ^-  mile
-            :*  title=title.mil
-                summary=summary.mil
-                image=image.mil
-                cost=cost.mil
-                status=status.mil
-                withdrawal=(bind withdrawal.mil |=(w=with:pold `with`[xact.w sigm.w cash.w ~]))
-            ==
-        ::
-            contract=contract.pro
-        ::
-              ^=  pledges
-            =<  -<  %+  ~(rib by pledges.pro)  *[(map ship [plej peta]) @ud]
-            =+  off=(lent contribs.pro)
-            |=  [[key=ship val=plej:pold] acc=[ma=(map ship [plej peta]) id=@ud]]
-            =-  [[(~(put by ma.acc) key -) +(id.acc)] key val]
-            [`plej`val ~ (add off id.acc) &]
-        ::
-              ^=  contribs
-            =<  -  %+  reel  contribs.pro
-            |=  [nex=trib:pold acc=[ma=(map addr [treb deta]) id=@ud]]
-            =-  [(~(put by ma.acc) q.xact.when.nex -) +(id.acc)]
-            [[`trib`nex ~ ~] id.acc &]
-        ::
-            proofs=*(map addr pruf)
-        ==
-      --
+  =/  up
+    |_  pro=proj:pold
+    ::  NOTE: For convenience, v1.1.0- listed $WSTR currencies as having
+    ::  6 decimals. v1.1.0 corrects this to 18 decimals, so all of
+    ::  these cash values need to be readjusted.
+    ++  cash  |=(c=cash:pold `^cash`?.(=(%wstr symbol.currency.pro) c (mul c (pow 10 12))))
+    ++  plej  |=(p=plej:pold `^plej`p(cash (cash cash.p)))
+    ++  trib  |=(t=trib:pold `^trib`t(cash (cash cash.t)))
+    ++  proj
+      ^-  ^proj
+      :*  title=title.pro
+          summary=summary.pro
+          image=image.pro
+          assessment=assessment.pro
+      ::
+            ^=  currency
+          =-  currency.pro(name nam, symbol sym)
+          ^-  [nam=@t sym=@t]
+          ?+  [chain.currency.pro symbol.currency.pro]  ['USDC' 'USDC']
+            [%1 %usdc]           ['USDC' 'USDC']
+            [%1 %wstr]           ['WrappedStar' 'WSTR']
+            [%11.155.111 %usdc]  ['%fund USDC' 'fundUSDC']
+            [%11.155.111 %wstr]  ['%fund WSTR' 'fundWSTR']
+          ==
+      ::
+            ^=  milestones
+          ;;  (lest mile)
+          %+  turn  milestones.pro
+          |=  mil=mile:pold
+          ^-  mile
+          :*  title=title.mil
+              summary=summary.mil
+              image=image.mil
+              cost=(cash cost.mil)
+              status=status.mil
+              withdrawal=(bind withdrawal.mil |=(w=with:pold `with`[xact.w sigm.w (cash cash.w) ~]))
+          ==
+      ::
+          contract=contract.pro
+      ::
+            ^=  pledges
+          =+  off=(lent contribs.pro)
+          =<  -  %-  ~(rep by pledges.pro)
+          |=  [[key=ship val=plej:pold] acc=[ma=(map ship [^plej peta]) id=@ud]]
+          :_  +(id.acc)
+          (~(put by ma.acc) key [(plej val) ~ (add off id.acc) &])
+      ::
+            ^=  contribs
+          =<  -  %+  reel  contribs.pro
+          |=  [nex=trib:pold acc=[ma=(map addr [treb deta]) id=@ud]]
+          :_  +(id.acc)
+          (~(put by ma.acc) q.xact.when.nex [[(trib nex) ~ ~] id.acc &])
+      ::
+          proofs=*(map addr pruf)
+      ==
+    --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
@@ -92,7 +98,7 @@
     ^-  rock
     ?+  -.voc     $(voc (urck:lake:pold voc))
       vers        voc
-      vers:pold   $(voc [*vers (proj-next +.voc)])
+      vers:pold   $(voc [*vers ~(proj up +.voc)])
     ==
   ++  uwve
     |=  vav=vave
@@ -103,7 +109,10 @@
         vers:pold
       =-  $(vav [*vers -])
       ?+    +.vav      +.vav
-        [* * %init *]  [bol.vav p.pok.vav %init (bind pro.q.pok.vav proj-next)]
+        [* * %init *]  [bol.vav p.pok.vav %init (bind pro.q.pok.vav |=(p=proj:pold ~(proj up p)))]
+        ::  NOTE: %mula from v1.1.0- will just be underreported! There
+        ::  should be no victims of this omission (on mainnet at least)
+        ::  [* * %mula *]  ...
       ==
     ==
   ++  wash
@@ -134,6 +143,8 @@
           ==
         --
     =/  sat=stat  ~(stat pj pro)
+    ::  TODO: unit of version tag; use this info to adjust old %mula for
+    ::  WSTR projects
     :-  *vers
     ?+    -.pod  pro
         %init
@@ -211,49 +222,11 @@
         %mula
       ?<  ?=(?(%born %prop) sat)
       ?>  (gth cash.pod 0)
-      ::  FIXME: Very inefficient, but also very convenient!
-      =/  nid=@ud
-        .+  %+  max
-          (~(rep by contribs.pro) |=([[k=addr v=[treb deta]] a=@ud] (max a id.v)))
-        (~(rep by pledges.pro) |=([[k=ship v=[plej peta]] a=@ud] (max a id.v)))
       ?-    +<.pod
-          %plej
-        ::  NOTE: This is a sufficient check because we only allow the
-        ::  host of a project to accept donations on the project's behalf
-        ::  (so src.bol must always be the %plej attestor; no forwarding!)
-        ?<  ?=(?(%done %dead) sat)
-        ?>  =(src.bol ship.pod)
-        ?>  (plan:fx src.bol)
-        ?<  (~(has by pledges.pro) ship.pod)
-        %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod ~ nid &))
-      ::
-          %trib
-        ?<  ?=(?(%done %dead) sat)
-        =/  pol=(unit [plej peta])  ?~(ship.pod ~ (~(get by pledges.pro) u.ship.pod))
-        =/  puf=(unit pruf)  (~(get by proofs.pro) q.xact.when.pod)
-        ?>  |(?=(~ pol) &(=(src.bol ship.u.pol) =(cash.u.pol cash.pod)))
-        %_    pro
-            pledges
-          ?~  pol  pledges.pro
-          (~(del by pledges.pro) (need ship.pod))
-        ::
-            proofs
-          ?~  puf  proofs.pro
-          (~(del by proofs.pro) q.xact.when.u.puf)
-        ::
-            contribs
-          %-  ~(put by contribs.pro)
-          =-  [q.xact.when.pod - nid &]
-          :*  trib=+>.pod
-              plej=?~(pol ~ `-.u.pol)
-              pruf=?~(puf ~ `u.puf)
-          ==
-        ==
-      ::
           %pruf
-        ::  TODO: Currently assuming that all attestations are completely
-        ::  new and not de-duping (probably should be de-duping at the
-        ::  project level anyway)
+        ::  TODO: When duplicate attestations come in, they currently
+        ::  overwrite the existing data; this hasn't been an issue, but
+        ::  it's unclear if this is the best behavior
         ?>  =(src our):bol
         ?-    note.pod
             %depo
@@ -273,6 +246,46 @@
             %_(pro proofs (~(put by proofs.pro) q.xact.when.pod +>.pod))
           ?>  ?=(^ withdrawal.q.u.mil)
           (edit-mile p.u.mil q.u.mil(withdrawal `u.withdrawal.q.u.mil(pruf `+>.pod)))
+        ==
+      ::
+          ?(%plej %trib)
+        ?<  ?=(?(%done %dead) sat)
+        ::  FIXME: Very inefficient, but also very convenient!
+        =/  nid=@ud
+          .+  %+  max
+            (~(rep by contribs.pro) |=([[k=addr v=[treb deta]] a=@ud] (max a id.v)))
+          (~(rep by pledges.pro) |=([[k=ship v=[plej peta]] a=@ud] (max a id.v)))
+        ?-    +<.pod
+            %plej
+          ::  NOTE: This is a sufficient check because we only allow the
+          ::  host of a project to accept donations on the project's behalf
+          ::  (so src.bol must always be the %plej attestor; no forwarding!)
+          ?>  =(src.bol ship.pod)
+          ?>  (plan:fx src.bol)
+          ?<  (~(has by pledges.pro) ship.pod)
+          %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod ~ nid &))
+        ::
+            %trib
+          =/  pej=(unit [plej peta])  ?~(ship.pod ~ (~(get by pledges.pro) u.ship.pod))
+          =/  puf=(unit pruf)  (~(get by proofs.pro) q.xact.when.pod)
+          ?>  |(?=(~ pej) &(=(src.bol ship.u.pej) =(cash.u.pej cash.pod)))
+          %_    pro
+              pledges
+            ?~  pej  pledges.pro
+            (~(del by pledges.pro) (need ship.pod))
+          ::
+              proofs
+            ?~  puf  proofs.pro
+            (~(del by proofs.pro) q.xact.when.u.puf)
+          ::
+              contribs
+            %-  ~(put by contribs.pro)
+            =-  [q.xact.when.pod - nid &]
+            :*  trib=+>.pod
+                plej=?~(pej ~ `-.u.pej)
+                pruf=?~(puf ~ `u.puf)
+            ==
+          ==
         ==
       ==
     ::

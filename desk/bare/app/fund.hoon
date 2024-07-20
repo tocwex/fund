@@ -298,11 +298,12 @@
   cor
 ::
 ++  open
+  ^+  cor
   =/  poz=(map flag:f proj:f)                    ::  post-%lock projects
     %-  ~(rep by my-pez)
     |=  [[lag=flag:f pre=prej:f] acc=(map flag:f proj:f)]
     ?:  ?=(?(%born %prop) ~(stat pj:f -.pre))  acc
-    (~(put in acc) lag -.pre)
+    (~(put by acc) lag -.pre)
   =/  liz=(set flag:f)                           ::  live %fund-watcher flags
     %-  ~(rep by wex.bol)
     |=  [[[wire sip=@p dek=@tas] [ack=? pat=(pole knot)]] acc=(set flag:f)]
@@ -447,22 +448,21 @@
           ::  NOTE: The `+wash:lake` function cannot contain any scries,
           ::  so the `fund` app needs to filter incoming pokes with block
           ::  timings and adjust them to the local time (for remote ships)
+          ::  NOTE: Because the ship's latest block is used when
+          ::  receiving a %mula, it can differ from the final `%pruf`'s
+          ::  block number (there are no issues with this)
           ::  TODO: Add hark notifications and follow-up reminders for pledges
           ?-  +<.pod
-              %plej
-            :-  ?:(po-is-src pod pod(when po-pj-boq))
-            [(po-mk-car ship.pod [%lure ship.pod %fund])]~
+            %pruf  [pod(p.xact.when po-pj-boq) ~]
+            %plej  [pod(when po-pj-boq) [(po-mk-car ship.pod [%lure ship.pod %fund])]~]
           ::
               %trib
-            :-  ?:(po-is-src pod pod(p.xact.when po-pj-boq))
+            :-  pod(p.xact.when po-pj-boq)
             ?~(ship.pod ~ [(po-mk-car u.ship.pod [%lure u.ship.pod %fund])]~)
-          ::
-              %pruf
-            [?:(po-is-src pod pod(p.xact.when po-pj-boq)) ~]
           ==
         ::
             %draw
-          [?:(po-is-src pod pod(p.dif po-pj-boq)) ~]
+          [pod(p.dif po-pj-boq) ~]
         ==
       ==
     ::  meta prods ::

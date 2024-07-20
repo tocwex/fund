@@ -45,17 +45,20 @@
               ==
             ::
                 %funder
-              =/  fuz
-                %+  skim  ~(tap by ~(ours conn:proj:fd bol +.dat))
-                |=  [[sip=@p *] pro=proj:f liv=?]
-                (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
+              =/  ouz  ~(tap by ~(ours conn:proj:fd bol +.dat))
               :~  :+  "My Open Pledges"  %none
-                    (skim fuz |=([* p=proj:f *] (~(has by pledges.p) our.bol)))
+                    (skim ouz |=([* p=proj:f *] (~(has by pledges.p) our.bol)))
                   :+  "Projects I Funded"  %find
-                    %+  skim  fuz
+                    %+  skim  ouz
                     |=  [* p=proj:f *]
                     %-  ~(rep by contribs.p)
                     |=([[k=addr:f v=[treb:f deta:f]] a=_|] |(a ?~(ship.v | =(our.bol u.ship.v))))
+                  :+  "Projects I Bookmarked"  %find
+                    %+  skip  ouz
+                    |=  [[sip=@p *] pro=proj:f liv=?]
+                    ?|  =(sip our.bol)
+                        (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
+                    ==
                   ::  :+  "Projects from %pals"  %none
                   ::    *(list [flag:f prej:f])
               ==
@@ -136,4 +139,4 @@
   +$  welz-type  ?(%anew %find %none)
   --
 --
-::  VERSION: [1 0 2]
+::  VERSION: [1 1 0]

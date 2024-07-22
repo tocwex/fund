@@ -1,10 +1,10 @@
 ::  /web/fund/page/asset/hoon: render an arbitrary asset file (png, svg, etc.)
 ::
-/-  fd=fund-data
-/+  f=fund, fh=fund-http, fx=fund-xtra
+/-  sd=sss-data-proj
+/+  fh=fund-http, fx=fund-xtra
 /+  config, rudder
-^-  page:fd
-|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+^-  page:sd
+|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build
@@ -17,7 +17,7 @@
       ++  forj  |=([d=@t l=(list @t)] (crip (roll (join d l) |=([n=@t a=tape] (weld a (trip n))))))
       +$  sath  (each path [@ta @t])  ::  pseudo-path
       --
-  =/  pat=(pole knot)  (slag:derl:format:fh url.request.ord)
+  =/  pat=(pole knot)  (slag:derl:ff:fh url.request.ord)
   ?>  ?=([%asset fyl=@t ~] pat)
   =/  max=(map @t sath)
     =<  +  %^  spin
@@ -40,7 +40,7 @@
   ::  if this file has no version specified, 307 to latest version
   ?~  ned
     :-  %next  :_  ~
-    %-  desc:enrl:format:fh
+    %-  desc:enrl:ff:fh
     pat(fyl (crip (welp (trip fyl.pat) "?v={<+2.hav>}.{<+6.hav>}.{<+7.hav>}")))
   ::  if this file has an old version specified, 404
   ?.  =(hav u.ned)

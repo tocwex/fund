@@ -1,14 +1,14 @@
 ::  /web/fund/page/proj-edit/hoon: render project edit page for %fund
 ::
-/-  fd=fund-data
-/+  f=fund, fh=fund-http, fc=fund-chain, fx=fund-xtra
+/-  sd=sss-data-proj
+/+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
-^-  page:fd
-|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+^-  page:sd
+|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:fd)
+  ^-  $@(brief:rudder diff:sd)
   =>  |%
       ++  trim                                 ::  remove trailing whitespace and \r
         |=  cor=@t
@@ -20,7 +20,7 @@
       ++  pars                                 ::  parse real number
         |=  [cor=@t dex=@ud]
         ^-  (unit cash:f)
-        ?-  val=(mule |.((cash:dejs:format:fh cor dex)))
+        ?-  val=(mule |.((cash:dejs:ff:fh cor dex)))
           [%| *]  ~
           [%& *]  `+.val
         ==
@@ -42,7 +42,7 @@
         :+  %init  ~
         =/  con=coin:f
           %+  ~(got by cmap:fc)
-            (bloq:dejs:format:fh (~(got by p.arz) %can))
+            (bloq:dejs:ff:fh (~(got by p.arz) %can))
           (~(got by p.arz) %tok)
         =+  pro=*proj:f  %_  pro
           title       (~(got by p.arz) %nam)
@@ -77,8 +77,8 @@
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
   =/  [lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
-  ?:  =(%drop pyp)  [%next (desc:enrl:format:fh /dashboard/worker) ~]
-  [%next (desc:enrl:format:fh /next/(scot %p p.lag)/[q.lag]/edit) ~]
+  ?:  =(%drop pyp)  [%next (desc:enrl:ff:fh /dashboard/worker) ~]
+  [%next (desc:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/edit) ~]
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -87,7 +87,7 @@
   ?:  &(?=(^ lau) ?=(~ pru))
     [%code 404 'project does not exist']
   ?.  |(?=(~ pru) ?=(?(%born %prop) sat))
-    [%next (flac:enrl:format:fh (need lau)) 'project cannot be edited after locking']
+    [%next (flac:enrl:ff:fh (need lau)) 'project cannot be edited after locking']
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "project edit"
@@ -123,8 +123,8 @@
                       :_  ; {(caps:fx (trip tag.xet))}
                       :-  %option
                       ;:  welp
-                          [%value (bloq:enjs:format:fh id.xet)]~
-                          [%data-image (aset:enrl:format:fh tag.xet)]~
+                          [%value (bloq:enjs:ff:fh id.xet)]~
+                          [%data-image (aset:enrl:ff:fh tag.xet)]~
                           ?.(=(can id.xet) ~ [%selected ~]~)
                       ==
                 ==
@@ -139,14 +139,14 @@
                       :-  %option
                       ;:  welp
                           [%value (trip symbol.con)]~
-                          [%data-chain (bloq:enjs:format:fh chain.con)]~
-                          [%data-image (aset:enrl:format:fh symbol.con)]~
+                          [%data-chain (bloq:enjs:ff:fh chain.con)]~
+                          [%data-image (aset:enrl:ff:fh symbol.con)]~
                       ==
                 ==
                 ;select#proj-token.fund-tsel  =name  "tok"  =required  ~
                     =x-model  "proj_stok"
                     =x-on-change  "updateProj"
-                  ;option(value ~, data-image (aset:enrl:format:fh %box)): "…loading…"
+                  ;option(value ~, data-image (aset:enrl:ff:fh %box)): "…loading…"
                 ==
                 ;label(for "tok"): Token
               ==
@@ -191,7 +191,7 @@
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
                         =min  "0"  =max  "100000000"  =step  "0.01"
                         =placeholder  "0"
-                        =value  ?:(=(0 cost.mil) "" (cash:enjs:format:fh cost.mil dex))
+                        =value  ?:(=(0 cost.mil) "" (cash:enjs:ff:fh cost.mil dex))
                         =x-on-change  "updateMile";
                       ;label(for "m{<min>}c")
                         ; Amount
@@ -238,7 +238,7 @@
                     :-  %option
                     ;:  welp
                         [%value "{<ora>}"]~
-                        [%data-image "https://azimuth.network/erc721/{(bloq:enjs:format:fh `@`ora)}.svg"]~
+                        [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`ora)}.svg"]~
                         ?.(=(ses ora) ~ [%selected ~]~)
                     ==
               ==
@@ -248,7 +248,7 @@
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
                 =placeholder  "1%"
-                =value  ?~(pru "" (cash:enjs:format:fh q.assessment.u.pru 6));
+                =value  ?~(pru "" (cash:enjs:ff:fh q.assessment.u.pru 6));
               ;label(for "seo"): Fee Offer (%)
             ==
           ==
@@ -292,9 +292,9 @@
       %-  zing  %+  join  "\0a"
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
-          :(weld "proj_scan: '" (bloq:enjs:format:fh ?~(pru id:(snag 0 xlis:fc) chain.currency.u.pru)) "',")
+          :(weld "proj_scan: '" (bloq:enjs:ff:fh ?~(pru id:(snag 0 xlis:fc) chain.currency.u.pru)) "',")
           :(weld "proj_stok: '" ?~(pru "USDC" (trip symbol.currency.u.pru)) "',")
-          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:format:fh cost.n ?~(pru 6 decimals.currency.u.pru)) ","))) "],")
+          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:ff:fh cost.n ?~(pru 6 decimals.currency.u.pru)) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''

@@ -1,13 +1,12 @@
-/-  fd=fund-data
-/-  fd-0=fund-data-0
-/+  f=fund, fh=fund-http, fc=fund-chain
+/-  sd=sss-data-proj, sd-0=sss-data-proj-0
+/+  f=fund-proj, fh=fund-http, fc=fund-chain
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
-/~  pagz  page:fd  /web/fund/page
+/~  pagz  page:sd  /web/fund/page
 |%
 +$  card       card:agent:gall
 +$  sign-gall  sign:agent:gall
-+$  state-now  [%2 data:fd]
++$  state-now  [%2 data:sd]
 --
 ^-  agent:gall
 =|  state-now
@@ -32,7 +31,7 @@
     --
 |_  [bol=bowl:gall caz=(list card)]
 ::
-+*  pj-con  ~(. conn:proj:fd bol +>.state)
++*  pj-con  ~(. conn:proj:sd bol +>.state)
     da-poz  subs:pj-con
     du-poz  pubs:pj-con
     my-pez  mine:pj-con
@@ -67,8 +66,8 @@
       ==
   +$  state-any  $%(state-now state-1 state-0)
   +$  state-2    state-now
-  +$  state-1    [%1 data:fd]
-  +$  state-0    [%0 data:fd-0]
+  +$  state-1    [%1 data:sd]
+  +$  state-0    [%0 data:sd-0]
   ++  move-1-2
     |=  old=state-1
     ^-  state-2
@@ -77,27 +76,27 @@
     |=  old=state-0
     ^-  state-1
     |^  [%1 init.old (sove subs.old) (pove pubs.old)]
-    ++  urck  |=(old=vock:lake:proj:fd-0 `vock:lake:proj:fd`[%1 old])
-    ++  uwve  |=(old=vave:lake:proj:fd-0 `vave:lake:proj:fd`[%1 old])
-    +$  trok  ((mop aeon vock:lake:proj:fd) gte)
-    +$  twav  ((mop aeon vave:lake:proj:fd) lte)
+    ++  urck  |=(old=vock:lake:proj:sd-0 `vock:lake:proj:sd`[%1 old])
+    ++  uwve  |=(old=vave:lake:proj:sd-0 `vave:lake:proj:sd`[%1 old])
+    +$  trok  ((mop aeon vock:lake:proj:sd) gte)
+    +$  twav  ((mop aeon vave:lake:proj:sd) lte)
     ++  sove
-      |=  old=_subs:*data:fd-0
-      ^-  _subs:*data:fd
-      ?:  =(~ +.old)  *_subs:*data:fd  ::  avoid invalid bunt in +rib:by gate
-      =<  -  %+  ~(rib by +.old)  *_subs:*data:fd
-      |=  [kev=_?>(?=([%0 ^] old) n.+.old) acc=_subs:*data:fd]
+      |=  old=_subs:*data:sd-0
+      ^-  _subs:*data:sd
+      ?:  =(~ +.old)  *_subs:*data:sd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_subs:*data:sd
+      |=  [kev=_?>(?=([%0 ^] old) n.+.old) acc=_subs:*data:sd]
       :_  kev
       :-  -.acc  %+  ~(put by +.acc)  p.kev
       ?~  q.kev  q.kev
       `u.q.kev(rock (urck rock.u.q.kev))
     ++  pove
-      |=  old=_pubs:*data:fd-0
-      ^-  _pubs:*data:fd
+      |=  old=_pubs:*data:sd-0
+      ^-  _pubs:*data:sd
       ?>  ?=(%1 -.old)
-      ?:  =(~ +.old)  *_pubs:*data:fd  ::  avoid invalid bunt in +rib:by gate
-      =<  -  %+  ~(rib by +.old)  *_pubs:*data:fd
-      |=  [kev=_?>(?=([%1 ^] old) n.+.old) acc=_pubs:*data:fd]
+      ?:  =(~ +.old)  *_pubs:*data:sd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_pubs:*data:sd
+      |=  [kev=_?>(?=([%1 ^] old) n.+.old) acc=_pubs:*data:sd]
       ?>  ?=(%1 -.acc)
       :_  kev
       :-  -.acc  %+  ~(put by +.acc)  p.kev
@@ -105,18 +104,18 @@
       ?@  tid.q.kev  tid.q.kev
       %=    tid.q.kev
           rok
-        =<  -  %^  (dip:((on aeon vock:lake:proj:fd-0) gte) trok)
+        =<  -  %^  (dip:((on aeon vock:lake:proj:sd-0) gte) trok)
             rok.tid.q.kev
           *trok
-        |=  [a=trok k=aeon v=vock:lake:proj:fd-0]
-        [`v | (put:((on aeon vock:lake:proj:fd) gte) a k (urck v))]
+        |=  [a=trok k=aeon v=vock:lake:proj:sd-0]
+        [`v | (put:((on aeon vock:lake:proj:sd) gte) a k (urck v))]
       ::
           wav
-        =<  -  %^  (dip:((on aeon vave:lake:proj:fd-0) lte) twav)
+        =<  -  %^  (dip:((on aeon vave:lake:proj:sd-0) lte) twav)
             wav.tid.q.kev
           *twav
-        |=  [a=twav k=aeon v=vave:lake:proj:fd-0]
-        [`v | (put:((on aeon vave:lake:proj:fd) lte) a k (uwve v))]
+        |=  [a=twav k=aeon v=vave:lake:proj:sd-0]
+        [`v | (put:((on aeon vave:lake:proj:sd) lte) a k (uwve v))]
       ==
     --
   --
@@ -128,7 +127,7 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<([lag=flag:f pod=prod:f] vas)
-    ~?  !<(bean (slot:config %debug))   (poke:enjs:format:fh lag pod)
+    ~?  !<(bean (slot:config %debug))   (poke:enjs:ff:fh lag pod)
     ::  FIXME: This is a hack to support pokes that edit app-global
     ::  (instead of project-specific) information
     ?:  =([our.bol %$] lag)
@@ -156,23 +155,23 @@
   ::
       %sss-proj
     =/  res  !<(into:da-poz (fled vas))
-    po-abet:(po-pull:(po-abed:po-core (flag:proj:fd path.res)) res)
+    po-abet:(po-pull:(po-abed:po-core (flag:proj:sd path.res)) res)
   ::  http pokes  ::
       %handle-http-request
     =+  !<(ord=order:rudder vas)
     =/  vaz=(list card)
-      ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:format:fh url.request.ord)))  ~
+      ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:ff:fh url.request.ord)))  ~
       [(active:vita-client bol)]~
     =-  cor(caz (welp (flop (welp kaz vaz)) caz), +.state dat)
-    ^-  [kaz=(list card) dat=data:fd]
+    ^-  [kaz=(list card) dat=data:sd]
     %.  [bol ord +.state]
-    %-  (steer:rudder data:fd diff:fd)
+    %-  (steer:rudder data:sd diff:sd)
     :^  pagz  route:fh  (fours:rudder +.state)
-    |=  dif=diff:fd
-    ^-  $@(brief:rudder [brief:rudder (list card) data:fd])
+    |=  dif=diff:sd
+    ^-  $@(brief:rudder [brief:rudder (list card) data:sd])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
-    ^-  [bre=brief:rudder dat=data:fd kaz=(list card)]
-    :-  (crip (poke:enjs:format:fh dif))
+    ^-  [bre=brief:rudder dat=data:sd kaz=(list card)]
+    :-  (crip (poke:enjs:ff:fh dif))
     ?.  =(p.p.dif our.bol)
       [+.state [(po-mk-car:(po-abed:po-core p.dif) p.p.dif q.dif)]~]
     ::  FIXME: A little sloppy, but it works!
@@ -262,7 +261,7 @@
           |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f cash:f]))]
           =/  act=xact:f  [block-number transaction-hash]:(need mined.nex)
           =/  who=addr:f  (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.nex)
-          =/  cas=cash:f  `@ud`(addr:dejs:format:fh data.nex)
+          =/  cas=cash:f  `@ud`(addr:dejs:ff:fh data.nex)
           (~(put by acc) act [[who cas] (~(gut by acc) act ~)])
         =/  xaz=(list [xact:f cash:f (set addr:f)])
           %-  ~(rep by xap)
@@ -398,11 +397,11 @@
   ++  po-push
     |=  pod=prod:f
     ^+  po-core
-    =*  mes  `mess:f`[src.bol lag pod]
+    =*  mes  `(mess:f prod:f)`[src.bol po-du-pat pod]
     ?<  ~|(bad-push+mes =(%$ q.lag))
     =/  wash
       |=  [pod=prod:f caz=(list card)]
-      =.  cor  (push (give:du-poz po-du-pat *vers:lake:proj:fd bol lag pod))
+      =.  cor  (push (give:du-poz po-du-pat *vers:lake:proj:sd bol lag pod))
       =.  cor  (emil caz)
       po-core
     ?+    -.pod

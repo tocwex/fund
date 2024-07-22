@@ -1,0 +1,1 @@
+../../../bare/lib/fund/proj.hoon

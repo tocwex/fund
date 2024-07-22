@@ -1,6 +1,6 @@
 :: /lib/fund/form/hoon: format helper functions for %fund
 ::
-/-  *fund
+/-  *fund-proj
 /+  fx=fund-xtra, rudder
 |%
 +|  %url

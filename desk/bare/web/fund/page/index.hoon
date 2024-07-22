@@ -1,11 +1,11 @@
 ::  /web/fund/page/index/hoon: render base page for %fund
 ::
-/-  fd=fund-data
-/+  f=fund, fh=fund-http, fx=fund-xtra
+/-  sd=sss-data-proj
+/+  f=fund-proj, fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  :(corl mine:preface:fh init:preface:fh)
-^-  page:fd
-|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+^-  page:sd
+|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build
@@ -41,7 +41,7 @@
       ;div(class "flex flex-col gap-2")
         ;div(class "text-sm text-center"): {sum}
         ;div(class "mx-auto text-center")
-          ;a.fund-butn-de-m/"{(dest:enrl:format:fh /dashboard/[das])}": view dashboard
+          ;a.fund-butn-de-m/"{(dest:enrl:ff:fh /dashboard/[das])}": view dashboard
         ==
       ==
     ==

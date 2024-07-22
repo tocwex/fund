@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
-/-  fd=fund-data
-/+  *fund, format=fund-form, fx=fund-xtra
+/-  sd=sss-data-proj
+/+  *fund-proj, ff=fund-form, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -96,12 +96,12 @@
 ++  preface
   |%
   ++  dump                                       ::  print input data
-    |=  pag=page:fd
-    ^-  page:fd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+    |=  pag=page:sd
+    ^-  page:sd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
     +*  tis  ~(. pag bol ord dat)
         dum  !<(bean (slot:config %debug))
-        url  (spud (slag:derl:format url.request.ord))
+        url  (spud (slag:derl:ff url.request.ord))
     ++  argue
       |=  [hed=header-list:http bod=(unit octs)]
       ~?  dum  ">> POST @ {url} : arz({<?~(bod ~ (frisk:rudder q.u.bod))>})"
@@ -116,24 +116,24 @@
       (build:tis arz msg)
     --
   ++  init                                       ::  initialization checks
-    |=  pag=page:fd
-    ^-  page:fd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+    |=  pag=page:sd
+    ^-  page:sd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
     +*  tis  ~(. pag bol ord dat)
     ++  argue
       |=  [hed=header-list:http bod=(unit octs)]
       ?.(init.dat 'must initialize config before app use' (argue:tis hed bod))
     ++  final
       |=  [gud=? txt=brief:rudder]
-      ?.(init.dat [%next (desc:enrl:format /config) ~] (final:tis gud txt))
+      ?.(init.dat [%next (desc:enrl:ff /config) ~] (final:tis gud txt))
     ++  build
       |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
-      ?.(init.dat [%next (desc:enrl:format /config) ~] (build:tis arz msg))
+      ?.(init.dat [%next (desc:enrl:ff /config) ~] (build:tis arz msg))
     --
   ++  mine                                       ::  `our`-restricted checks
-    |=  pag=page:fd
-    ^-  page:fd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+    |=  pag=page:sd
+    ^-  page:sd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
     +*  tis  ~(. pag bol ord dat)
         myn  =(our src):bol
     ++  argue
@@ -167,33 +167,33 @@
       ;;([flag @tas] (cue txt))
     ++  core
       |=  req=_|
-      |=  pag=page:fd
-      ^-  page:fd
-      |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+      |=  pag=page:sd
+      ^-  page:sd
+      |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
       +*  tis  ~(. pag bol ord dat)
       ::  FIXME: Should probably make these hacky argument names more unique
       ++  argue
         |=  [hed=header-list:http bod=(unit octs)]
-        =/  lag=(unit flag)  (flag:derl:format url.request.ord)
-        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:fd bol +.dat)) u.lag))
+        =/  lag=(unit flag)  (flag:derl:ff url.request.ord)
+        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:sd bol +.dat)) u.lag))
         ?:  &(req ?=(~ pro))  'project does not exist'
         (argue:tis [[%flag (jam lag)] [%proj (jam pro)] hed] bod)
       ++  final
         |=  [gud=? txt=brief:rudder]
         ?.  gud  [%code 500 txt]
-        (final:tis gud (jam (poke:dejs:format ?~(txt '' txt))))
+        (final:tis gud (jam (poke:dejs:ff ?~(txt '' txt))))
       ++  build
         |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
-        =/  lag=(unit flag)  (flag:derl:format url.request.ord)
-        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:fd bol +.dat)) u.lag))
+        =/  lag=(unit flag)  (flag:derl:ff url.request.ord)
+        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:sd bol +.dat)) u.lag))
         ?:  &(req ?=(~ pro))  [%code 404 'project does not exist']
         (build:tis [[%flag (jam lag)] [%proj (jam pro)] arz] msg)
       --
     --
   ++  pass                                       ::  no effect (placeholder)
-    |=  pag=page:fd
-    ^-  page:fd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+    |=  pag=page:sd
+    ^-  page:sd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
     +*  tis  ~(. pag bol ord dat)
     ++  argue  |=([hed=header-list:http bod=(unit octs)] (argue:tis hed bod))
     ++  final  |=([gud=? txt=brief:rudder] (final:tis gud txt))
@@ -217,7 +217,7 @@
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
             ;*  meta
             ;title: {tyt}
-            ;link/"{(dest:enrl:format /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
+            ;link/"{(dest:enrl:ff /asset/[~.tocwex.svg])}"(rel "icon", type "image/svg+xml");
             ;link/"https://fonts.googleapis.com"(rel "preconnect");
             ;link/"https://fonts.gstatic.com"(rel "preconnect", crossorigin ~);
             ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
@@ -228,12 +228,12 @@
               =href  "{ape}/f1719727743303x447523347489316540/Chaney%20Wide.css";
             ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
               =href  "{ape}/f1719608058163x825753518615514200/Safiro%20Medium.css";
-            ;link/"{(dest:enrl:format /asset/[~.fund.css])}"(rel "stylesheet");
+            ;link/"{(dest:enrl:ff /asset/[~.fund.css])}"(rel "stylesheet");
             ;*  ?.  !<(bean (slot:config %debug))  ~
                 :~  ;script(src "/session.js");
                     (inject:tonic q.byk.bol)
                 ==
-            ;script(type "module", src "{(dest:enrl:format /asset/[~.boot.js])}");
+            ;script(type "module", src "{(dest:enrl:ff /asset/[~.boot.js])}");
           ==
           ;body(class "fund-body {cas}", x-data "fund")
             ;*  ?.  !<(bean (slot:config %debug))  ~
@@ -287,13 +287,13 @@
     ++  head
       ^-  manx
       =/  url=@t  url.request.ord
-      =/  pat=(pole knot)  (slag:derl:format url)
+      =/  pat=(pole knot)  (slag:derl:ff url)
       ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
         ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
-              ;a.fund-butn-de-m/"{(dest:enrl:format (snip `(list knot)`pat))}": ← back
-            =+  dst=?:(=(our src):bol (dest:enrl:format /) (trip !<(@t (slot:config %meta-site))))
+              ;a.fund-butn-de-m/"{(dest:enrl:ff (snip `(list knot)`pat))}": ← back
+            =+  dst=?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))
             ;a/"{dst}"(class "h-10 p-2 rounded-2xl hover:bg-primary-550")
-              ;img.h-full@"{(dest:enrl:format /asset/[~.fund.svg])}";
+              ;img.h-full@"{(dest:enrl:ff /asset/[~.fund.svg])}";
             ==
         ;div(class "flex inline-flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
@@ -306,7 +306,7 @@
                   ;div#fund-agis-opts(class "hidden")
                     ;div(class "flex flex-col gap-2")
                       ;*  ?.  =(our src):bol  ~
-                          :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:format /config)}": config ⚙️
+                          :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:ff /config)}": config ⚙️
                       ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": logout ↩️
                     ==
                   ==
@@ -327,16 +327,16 @@
         ==
         ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end")
           ;a/"https://github.com/tocwex"(target "_blank")
-            ;img@"{(dest:enrl:format /asset/[~.github.svg])}";
+            ;img@"{(dest:enrl:ff /asset/[~.github.svg])}";
           ==
           ;a/"{(trip !<(@t (slot:config %meta-tlon)))}"(target "_blank")
-            ;img@"{(dest:enrl:format /asset/[~.urbit.svg])}";
+            ;img@"{(dest:enrl:ff /asset/[~.urbit.svg])}";
           ==
           ;a/"https://x.com/tocwex"(target "_blank")
-            ;img@"{(dest:enrl:format /asset/[~.x.svg])}";
+            ;img@"{(dest:enrl:ff /asset/[~.x.svg])}";
           ==
           ;a/"https://tocwexsyndicate.com"(target "_blank")
-            ;img@"{(dest:enrl:format /asset/[~.globe.svg])}";
+            ;img@"{(dest:enrl:ff /asset/[~.globe.svg])}";
           ==
         ==
       ==
@@ -353,7 +353,7 @@
         ;+  (~(ship-icon ..$ "h-20") sip)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;h3(class "leading-7 tracking-tight"): {<sip>}
-          ;h5.fund-addr.fund-addr-ens(title (addr:enjs:format adr), data-addr (addr:enjs:format adr))
+          ;h5.fund-addr.fund-addr-ens(title (addr:enjs:ff adr), data-addr (addr:enjs:ff adr))
             …loading…
           ==
           ;div(class "self-stretch justify-between items-center inline-flex")
@@ -379,7 +379,7 @@
           |=  [sow=tape kas=tape]
           ;zero-md(class "w-full {kas} {cas}", x-show sow, xlass "cmd()", no-shadow ~)
             ;template
-              ;link/"{(dest:enrl:format /asset/[~.mark.css])}"(rel "stylesheet");
+              ;link/"{(dest:enrl:ff /asset/[~.mark.css])}"(rel "stylesheet");
             ==
             ;script(type "text/markdown"): {txt}
           ==
@@ -424,7 +424,7 @@
         =/  alt=(unit [mane tape])  (find:fx mat |=([m=mane tape] =(%alt m)))
         :-  [%a ?~(src mat [[%href +.u.src] mat])]
         :_  mal
-        ;span: {?^(alt +.u.alt ?^(src +.u.src (dest:enrl:format /)))}
+        ;span: {?^(alt +.u.alt ?^(src +.u.src (dest:enrl:ff /)))}
       ==
     --
   ++  proj-ther                                  ::  project funding thermometer
@@ -433,7 +433,7 @@
     =+  pod=~(odit pj pro)
     =+  [udr ovr]=(need void:(filo pod))
     =+  tot=(add cost.pod ?:(udr 0 ovr))
-    =+  cen=(srel:enjs:format (perc:fx (add fill.pod plej.pod) tot))
+    =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) tot))
     ;div(class "w-full flex flex-row items-center gap-3")
       ;div(class "w-full min-w-0 flex-1 flex flex-col gap-1")
         ;div(class "w-full min-w-0 flex-1 flex flex-row gap-1")
@@ -446,11 +446,11 @@
             :_  ~
             ;div(class "hidden sm:(flex flex-row gap-2)")
               ;h3(class "text-tertiary-500 tracking-tight font-bold")
-                ; {(mony:enjs:format fill.pod currency.pro)}
+                ; {(mony:enjs:ff fill.pod currency.pro)}
               ==
               ;h3(class "text-tertiary-400 tracking-tight"): /
               ;h3(class "text-tertiary-400 tracking-tight")
-                ; {(mony:enjs:format plej.pod currency.pro)}
+                ; {(mony:enjs:ff plej.pod currency.pro)}
               ==
             ==
       ==
@@ -460,7 +460,7 @@
               ; {cen}% raised
               ;span(class "hidden sm:block"): of
             ==
-          ;span(class "hidden sm:block"): {(mony:enjs:format cost.pod currency.pro)}
+          ;span(class "hidden sm:block"): {(mony:enjs:ff cost.pod currency.pro)}
     ==
   ++  mile-ther                                  ::  milestone funding thermometer
     |=  [odi=odit tyt=tape]
@@ -489,7 +489,7 @@
                 ^-  (unit manx)
                 ?:  =(0 den)  ~
                 :-  ~
-                ;div  =title  "{(real:enjs:format cen)}% {nam}"
+                ;div  =title  "{(real:enjs:ff cen)}% {nam}"
                   =class  "fund-odit-sect w-[{<den>}%] {kas}";
           ==
           ;*  ?~  tyt  ~
@@ -550,7 +550,7 @@
   ++  ship-icon                                  ::  icon for a user ship
     |=  sip=@p
     ^-  manx
-    (icon-circ (surt:enrl:format sip))
+    (icon-circ (surt:enrl:ff sip))
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx
@@ -567,7 +567,7 @@
     ^-  manx
     =-  ;div(class "fund-pill {kas} {cas}"): {nam}
     ^-  [nam=tape kas=tape]
-    =-  [(stat:enjs:format sat) "text-{-} border-{-}"]
+    =-  [(stat:enjs:ff sat) "text-{-} border-{-}"]
     ?-  sat
       %born  "primary-600"
       %prop  "gray-700"
@@ -607,18 +607,18 @@
   ++  edit-butn                                  ::  project edit link button
     |=  lag=flag
     ^-  manx
-    ;a/"{(flat:enrl:format lag)}/edit"(class cas)
-      ;img.fund-butn-icon@"{(aset:enrl:format %edit)}";
+    ;a/"{(flat:enrl:ff lag)}/edit"(class cas)
+      ;img.fund-butn-icon@"{(aset:enrl:ff %edit)}";
     ==
   ++  pink-butn                                  ::  project link copy button
     |=  [bol=bowl:gall lag=flag]
     ^-  manx
     =-  ;button(type "button", class cas, x-data ~, x-on-click xoc)
-          ;img.fund-butn-icon@"{(aset:enrl:format %share)}";
+          ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
         ==
     ^=  xoc
     """
-    copyText('{(weld (burl bol) (flat:enrl:format lag))}');
+    copyText('{(weld (burl bol) (flat:enrl:ff lag))}');
     alert('project url copied to clipboard');
     """
   ++  link-butn                                  ::  hyperlink/redirect button

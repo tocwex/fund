@@ -1,3 +1,3 @@
-/-  fund-proj
+/-  sss-proj
 /+  *sss
-(mk-mar lake:fund-proj)
+(mk-mar lake:sss-proj)

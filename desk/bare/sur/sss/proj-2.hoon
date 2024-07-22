@@ -1,4 +1,4 @@
-/-  pj-1=fund-proj-1
+/-  pj-1=sss-proj-1
 /+  *fund-1, config, sss
 |%
 +|  %misc

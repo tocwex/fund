@@ -1,14 +1,14 @@
 ::  /web/fund/page/proj-next/hoon: project redirect page for %fund
 ::
-/-  fd=fund-data
-/+  f=fund, fh=fund-http, fx=fund-xtra
+/-  sd=sss-data-proj
+/+  f=fund-proj, fh=fund-http, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
-^-  page:fd
-|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+^-  page:sd
+|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:fd)
+  ^-  $@(brief:rudder diff:sd)
   =/  [lag=flag:f *]  (greb:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
@@ -20,11 +20,11 @@
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
   =/  [lag=flag:f *]  (gref:proj:preface:fh txt)
-  [%next (flac:enrl:format:fh lag) ~]
+  [%next (flac:enrl:ff:fh lag) ~]
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  pat=(pole knot)  (slag:derl:format:fh url.request.ord)
+  =/  pat=(pole knot)  (slag:derl:ff:fh url.request.ord)
   =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh arz)
   =/  aut=?(%clear %eauth %admin)
     ?.((auth:fh bol) %clear ?:(=(our src):bol %admin %eauth))
@@ -38,7 +38,7 @@
       :*  hep=(trip !<(@t (slot:config %meta-help)))
           hos=(trip !<(@t (slot:config %meta-site)))
           tlo=(trip !<(@t (slot:config %meta-tlon)))
-          pro=(dest:enrl:format:fh pat(- %project, +>+ ~))
+          pro=(dest:enrl:ff:fh pat(- %project, +>+ ~))
       ==
     =/  btn
       :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~)
@@ -48,8 +48,8 @@
       ::
             ^=  das
           |=  rol=role:f
-          =+  roc=(role:enjs:format:fh rol)
-          =+  rul=(dest:enrl:format:fh /dashboard/[(crip roc)])
+          =+  roc=(role:enjs:ff:fh rol)
+          =+  rul=(dest:enrl:ff:fh /dashboard/[(crip roc)])
           (link-butn:ui:fh rul %| "{roc} dashboard" ~)
       ==
     ?+    typ.pat  !!
@@ -70,7 +70,7 @@
         know they have a pending service request!
         '''
       :~  (prod-butn:ui:fh %bump-prop %true "request oracle ✓" ~ ~)
-          =+  (dest:enrl:format:fh pat(- %project))
+          =+  (dest:enrl:ff:fh pat(- %project))
             (link-butn:ui:fh - %| "continue editing" ~)
           pro.btn
       ==

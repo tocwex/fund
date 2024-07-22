@@ -453,7 +453,7 @@
           ::  block number (there are no issues with this)
           ::  TODO: Add hark notifications and follow-up reminders for pledges
           ?-  +<.pod
-            %pruf  [pod(p.xact.when po-pj-boq) ~]
+            %pruf  [?:(po-is-src pod pod(p.xact.when po-pj-boq)) ~]
             %plej  [pod(when po-pj-boq) [(po-mk-car ship.pod [%lure ship.pod %fund])]~]
           ::
               %trib

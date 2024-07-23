@@ -1,4 +1,4 @@
-/+  *fund-prof, f=fund, sss
+/+  *fund-prof, fc=fund-core, sss
 |%
 +|  %misc
 ++  flag
@@ -52,7 +52,7 @@
     ?+    -.pod  pro
         %sign
       ?>  =((oath:pf sip from.sig.pod) (trip `@t`p.mesg.sig.pod))
-      ?>  (csig:f sig.pod)
+      ?>  (csig:fc sig.pod)
       %_(pro wallets (~(put by wallets.pro) from.sig.pod sig.pod))
     ::
         %surl

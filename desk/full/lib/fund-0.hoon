@@ -1,1 +1,0 @@
-../../bare/lib/fund-0.hoon

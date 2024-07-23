@@ -1,5 +1,5 @@
 /-  pold=sss-proj-2
-/+  *fund-proj, f=fund, config, sss
+/+  *fund-proj, fc=fund-core, config, sss
 |%
 +|  %misc
 ++  flag
@@ -127,7 +127,7 @@
         ++  aver-orac  |-(~|(bad-wash+mes ?>(=(p.assessment.pro src.bol) %.y)))
         ++  edit-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
         ++  edit-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
-        ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig:f s)))
+        ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig:fc s)))
         ++  orac-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy [orac.-]~))))
         ++  team-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.-]))))
         ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- !<(addr (slot:config %sign-addr))]))))
@@ -184,7 +184,7 @@
                     (~(vath pj pro) our.bol %v0-4-0)
                     (~(vath pj pro) our.bol %v0-0-0)
                 ==
-            ?>  (csig:f sig)
+            ?>  (csig:fc sig)
             =+(o=*oath `o(sigm sig))
           ::
               %lock

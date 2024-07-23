@@ -1,5 +1,5 @@
 /-  *fund-proj
-/+  f=fund, ff=fund-form, fx=fund-xtra
+/+  fc=fund-core, ff=fund-form, fx=fund-xtra
 |%
 ::
 ::  +pj: p(ro)j(ect) (library); helper door for $proj data
@@ -43,7 +43,7 @@
     cash.u.pruf.u.withdrawal.mil
   ++  odit                                       ::  project-wide audit
     ^-  ^odit
-    (filo:f [cost fill plej ~])
+    (filo:fc [cost fill plej ~])
   ++  odim                                       ::  per-milestone audit
     ^-  (list ^odit)
     =/  lin=@  (dec (lent milestonez))
@@ -57,10 +57,10 @@
     =+  fil=?:(|(end =(-1 (cmp:si fre fos))) fre fos)
     =+  pos=?.(dun (dif:si fos fil) --0)
     =+  pej=?:(|(end =(-1 (cmp:si pre pos))) pre pos)
-    [(filo:f [cost.mil (abs:si fil) (abs:si pej) ~]) +(min) (dif:si fre fil) (dif:si pre pej)]
+    [(filo:fc [cost.mil (abs:si fil) (abs:si pej) ~]) +(min) (dif:si fre fil) (dif:si pre pej)]
   ++  mula                                       ::  project-wide $mula list
     ^-  (list ^mula)
-    =-  (sort - |=([m=^mula n=^mula] (gth (tula:f m) (tula:f n))))
+    =-  (sort - |=([m=^mula n=^mula] (gth (tula:fc m) (tula:fc n))))
     ;:  welp
         (turn ~(val by contribs) |=([t=treb *] `^mula`[%trib -.t]))
         (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))

@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
 /-  fd=fund-data
-/+  *fund-proj, f=fund, ff=fund-form, fx=fund-xtra
+/+  *fund-proj, fc=fund-core, ff=fund-form, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -433,7 +433,7 @@
     |=  [pro=proj big=bean]
     ^-  manx
     =+  pod=~(odit pj pro)
-    =+  [udr ovr]=(need void:(filo:f pod))
+    =+  [udr ovr]=(need void:(filo:fc pod))
     =+  tot=(add cost.pod ?:(udr 0 ovr))
     =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) tot))
     ;div(class "w-full flex flex-row items-center gap-3")
@@ -468,7 +468,7 @@
     |=  [odi=odit tyt=tape]
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
-    |^  =+  [udr ovr]=(need void:(filo:f odi))
+    |^  =+  [udr ovr]=(need void:(filo:fc odi))
         =+  tot=(add cost.odi ?:(udr 0 ovr))
         =/  caz=(list cash)
           ?:  udr  ~[fill.odi plej.odi ovr]

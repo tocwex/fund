@@ -1,4 +1,4 @@
-/+  *fund-0, config, sss
+/+  *fund-core-0, config, sss
 |%
 +|  %misc
 ++  flag

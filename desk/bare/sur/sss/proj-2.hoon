@@ -1,5 +1,5 @@
 /-  pj-1=sss-proj-1
-/+  *fund-1, config, sss
+/+  *fund-core-1, config, sss
 |%
 +|  %misc
 ++  flag

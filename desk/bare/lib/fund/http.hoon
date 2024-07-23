@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
-/-  sd=sss-data-proj
-/+  *fund-proj, ff=fund-form, fx=fund-xtra
+/-  fd=fund-data
+/+  *fund-proj, f=fund, ff=fund-form, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -96,9 +96,9 @@
 ++  preface
   |%
   ++  dump                                       ::  print input data
-    |=  pag=page:sd
-    ^-  page:sd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+    |=  pag=page:fd
+    ^-  page:fd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
     +*  tis  ~(. pag bol ord dat)
         dum  !<(bean (slot:config %debug))
         url  (spud (slag:derl:ff url.request.ord))
@@ -116,9 +116,9 @@
       (build:tis arz msg)
     --
   ++  init                                       ::  initialization checks
-    |=  pag=page:sd
-    ^-  page:sd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+    |=  pag=page:fd
+    ^-  page:fd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
     +*  tis  ~(. pag bol ord dat)
     ++  argue
       |=  [hed=header-list:http bod=(unit octs)]
@@ -131,9 +131,9 @@
       ?.(init.dat [%next (desc:enrl:ff /config) ~] (build:tis arz msg))
     --
   ++  mine                                       ::  `our`-restricted checks
-    |=  pag=page:sd
-    ^-  page:sd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+    |=  pag=page:fd
+    ^-  page:fd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
     +*  tis  ~(. pag bol ord dat)
         myn  =(our src):bol
     ++  argue
@@ -167,15 +167,16 @@
       ;;([flag @tas] (cue txt))
     ++  core
       |=  req=_|
-      |=  pag=page:sd
-      ^-  page:sd
-      |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+      |=  pag=page:fd
+      ^-  page:fd
+      |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
       +*  tis  ~(. pag bol ord dat)
       ::  FIXME: Should probably make these hacky argument names more unique
       ++  argue
         |=  [hed=header-list:http bod=(unit octs)]
         =/  lag=(unit flag)  (flag:derl:ff url.request.ord)
-        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:sd bol +.dat)) u.lag))
+        =/  pro=(unit prej)
+          ?~(lag ~ (~(get by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)) u.lag))
         ?:  &(req ?=(~ pro))  'project does not exist'
         (argue:tis [[%flag (jam lag)] [%proj (jam pro)] hed] bod)
       ++  final
@@ -185,15 +186,16 @@
       ++  build
         |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
         =/  lag=(unit flag)  (flag:derl:ff url.request.ord)
-        =/  pro=(unit prej)  ?~(lag ~ (~(get by ~(ours conn:proj:sd bol +.dat)) u.lag))
+        =/  pro=(unit prej)
+          ?~(lag ~ (~(get by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)) u.lag))
         ?:  &(req ?=(~ pro))  [%code 404 'project does not exist']
         (build:tis [[%flag (jam lag)] [%proj (jam pro)] arz] msg)
       --
     --
   ++  pass                                       ::  no effect (placeholder)
-    |=  pag=page:sd
-    ^-  page:sd
-    |_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+    |=  pag=page:fd
+    ^-  page:fd
+    |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
     +*  tis  ~(. pag bol ord dat)
     ++  argue  |=([hed=header-list:http bod=(unit octs)] (argue:tis hed bod))
     ++  final  |=([gud=? txt=brief:rudder] (final:tis gud txt))
@@ -431,7 +433,7 @@
     |=  [pro=proj big=bean]
     ^-  manx
     =+  pod=~(odit pj pro)
-    =+  [udr ovr]=(need void:(filo pod))
+    =+  [udr ovr]=(need void:(filo:f pod))
     =+  tot=(add cost.pod ?:(udr 0 ovr))
     =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) tot))
     ;div(class "w-full flex flex-row items-center gap-3")
@@ -466,7 +468,7 @@
     |=  [odi=odit tyt=tape]
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
-    |^  =+  [udr ovr]=(need void:(filo odi))
+    |^  =+  [udr ovr]=(need void:(filo:f odi))
         =+  tot=(add cost.odi ?:(udr 0 ovr))
         =/  caz=(list cash)
           ?:  udr  ~[fill.odi plej.odi ovr]

@@ -1,5 +1,5 @@
-/-  fp=fund-proj
-|_  pro=proj:fp
+/-  fp=fund-prof
+|_  pro=prof:fp
 ++  grad  %noun
 ++  grow
   |%
@@ -7,6 +7,6 @@
   --
 ++  grab
   |%
-  ++  noun  proj:fp
+  ++  noun  prof:fp
   --
 --

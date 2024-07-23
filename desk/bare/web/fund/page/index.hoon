@@ -1,11 +1,11 @@
 ::  /web/fund/page/index/hoon: render base page for %fund
 ::
-/-  sd=sss-data-proj
+/-  fd=fund-data
 /+  f=fund-proj, fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  :(corl mine:preface:fh init:preface:fh)
-^-  page:sd
-|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build

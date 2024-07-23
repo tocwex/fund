@@ -1,5 +1,5 @@
 /-  pold=sss-proj-2
-/+  *fund-proj, config, sss
+/+  *fund-proj, f=fund, config, sss
 |%
 +|  %misc
 ++  flag
@@ -16,15 +16,16 @@
     (du puz bol -:!>(*result:du))
   ++  mine                                     ::  local data only
     ^-  prez
-    =<  -  %+  ~(rib by read:pubs)  *prez
+    %-  ~(rep by read:pubs)
     |=  [[k=path v=[(unit (set ship)) vers p=proj]] a=prez]
-    [(~(put by a) (flag k) p.v &) k v]
+    (~(put by a) (flag k) p.v &)
   ++  ours                                     ::  local and remote data
     ^-  prez
-    %-  ~(uni by mine)
-    =<  -  %+  ~(rib by read:subs)  *prez
-    |=  [[k=[ship dude:gall p=path] v=[s=? f=? vers p=proj]] a=prez]
-    [(~(put by a) (flag p.k) p.v &(!s.v !f.v)) k v]
+    *prez
+    ::  %-  ~(uni by mine)
+    ::  %-  ~(rep by read:subs)
+    ::  |=  [[k=[ship dude:gall p=path] v=[s=? f=? vers p=proj]] a=prez]
+    ::  (~(put by a) (flag p.k) p.v &(!s.v !f.v))
   --
 
 +|  %core
@@ -126,7 +127,7 @@
         ++  aver-orac  |-(~|(bad-wash+mes ?>(=(p.assessment.pro src.bol) %.y)))
         ++  edit-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
         ++  edit-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
-        ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig s)))
+        ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig:f s)))
         ++  orac-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy [orac.-]~))))
         ++  team-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.-]))))
         ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- !<(addr (slot:config %sign-addr))]))))
@@ -183,7 +184,7 @@
                     (~(vath pj pro) our.bol %v0-4-0)
                     (~(vath pj pro) our.bol %v0-0-0)
                 ==
-            ?>  (csig sig)
+            ?>  (csig:f sig)
             =+(o=*oath `o(sigm sig))
           ::
               %lock

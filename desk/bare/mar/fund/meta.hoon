@@ -1,5 +1,5 @@
-/-  fp=fund-proj
-|_  pro=proj:fp
+/-  fm=fund-meta
+|_  met=meta:fm
 ++  grad  %noun
 ++  grow
   |%
@@ -7,6 +7,6 @@
   --
 ++  grab
   |%
-  ++  noun  proj:fp
+  ++  noun  meta:fm
   --
 --

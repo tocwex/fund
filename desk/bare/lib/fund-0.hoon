@@ -1,4 +1,4 @@
-/-  *fund-0
+/-  *fund-core-0
 /+  fx=fund-xtra, tx=naive-transactions
 |%
 ::

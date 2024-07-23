@@ -1,14 +1,14 @@
 ::  /web/fund/page/proj-edit/hoon: render project edit page for %fund
 ::
-/-  sd=sss-data-proj
+/-  fd=fund-data
 /+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh mine:preface:fh init:preface:fh (proj:preface:fh |))
-^-  page:sd
-|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  ::  POST reply
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:sd)
+  ^-  $@(brief:rudder diff:fd)
   =>  |%
       ++  trim                                 ::  remove trailing whitespace and \r
         |=  cor=@t
@@ -30,7 +30,7 @@
     ::  FIXME: Go to next available name if this path is already taken
     ::  by another project (add random number suffix)
     =/  lag=flag:f  ?^(lau u.lau [our.bol (asci:fx (~(got by p.arz) %nam))])
-    =-  ?@(- - [lag -])
+    =-  ?@(- - [%proj lag -])
     ^-  $@(@t prod:f)
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected (init|drop|bump-*), not {(trip dif)}")

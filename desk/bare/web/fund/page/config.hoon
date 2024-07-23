@@ -1,21 +1,19 @@
 ::  /web/fund/page/config/hoon: render config page for %fund
 ::
-/-  sd=sss-data-proj
+/-  fd=fund-data
 /+  fh=fund-http
 /+  rudder
 %-  mine:preface:fh
-^-  page:sd
-|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:sd)
+  ^-  $@(brief:rudder diff:fd)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected vita-*, not {(trip dif)}")
-      ::  FIXME: This is a hack to support pokes that edit app-global
-      ::  (as opposed to project-specific) information
-      %vita-enable   [[our.bol %$] %join ~]
-      %vita-disable  [[our.bol %$] %exit ~]
+      %vita-enable   [%fund %vita &]
+      %vita-disable  [%fund %vita |]
     ==
   ==
 ++  final

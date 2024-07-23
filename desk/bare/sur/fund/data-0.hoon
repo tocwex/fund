@@ -1,4 +1,4 @@
-/-  fund=fund-0, sss-proj=sss-proj-0
+/-  fund=fund-core-0, sss-proj=sss-proj-0
 /+  sss, rudder
 |%
 ::

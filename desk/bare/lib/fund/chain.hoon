@@ -1,6 +1,6 @@
 :: /lib/fund/chain/hoon: blockchain-related data and functions for %fund
 ::
-/-  *fund-watcher, *fund
+/-  *fund-watcher, *fund-core
 /+  fund-config=config
 |%
 ++  xeta                                         ::  chain metadata core

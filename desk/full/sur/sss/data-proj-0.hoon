@@ -1,1 +1,0 @@
-../../../bare/sur/sss/data-proj-0.hoon

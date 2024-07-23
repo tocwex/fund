@@ -1,19 +1,19 @@
 ::  /web/fund/page/proj-next/hoon: project redirect page for %fund
 ::
-/-  sd=sss-data-proj
+/-  fd=fund-data
 /+  f=fund-proj, fh=fund-http, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
-^-  page:sd
-|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:sd)
+  ^-  $@(brief:rudder diff:fd)
   =/  [lag=flag:f *]  (greb:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected bump-prop, not {(trip dif)}")
-      %bump-prop  [lag %bump %prop ~]
+      %bump-prop  [%proj lag %bump %prop ~]
     ==
   ==
 ++  final

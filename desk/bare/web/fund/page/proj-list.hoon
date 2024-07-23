@@ -1,11 +1,11 @@
 ::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
-/-  sd=sss-data-proj
+/-  fd=fund-data
 /+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder
 %-  :(corl mine:preface:fh init:preface:fh)
-^-  page:sd
-|_  [bol=bowl:gall ord=order:rudder dat=data:sd]
+^-  page:fd
+|_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)
 ++  final  (alert:rudder url.request.ord build)
 ++  build
@@ -22,7 +22,7 @@
             ^-  (list [tape welz-type (list [flag:f prej:f])])
             ?+    dyp  !!
                 %worker
-              =/  myn  ~(tap by ~(mine conn:proj:sd bol +.dat))
+              =/  myn  ~(tap by ~(mine conn:proj:fd bol [proj-subs proj-pubs]:dat))
               :~  :+  "My Draft Proposals"  %anew
                     (skim myn |=([* p=proj:f *] ?=(?(%born %prop) ~(stat pj:f p))))
                   :+  "My Open Projects"  %none
@@ -33,7 +33,7 @@
             ::
                 %oracle
               =/  orz
-                %+  skim  ~(tap by ~(ours conn:proj:sd bol +.dat))
+                %+  skim  ~(tap by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
                 |=  [[sip=@p *] pro=proj:f liv=?]
                 (~(has in (~(rols pj:f pro) sip our.bol)) %orac)
               :~  :+  "Requests for My Services"  %none
@@ -45,7 +45,7 @@
               ==
             ::
                 %funder
-              =/  ouz  ~(tap by ~(ours conn:proj:sd bol +.dat))
+              =/  ouz  ~(tap by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
               :~  :+  "My Open Pledges"  %none
                     (skim ouz |=([* p=proj:f *] (~(has by pledges.p) our.bol)))
                   :+  "Projects I Funded"  %find

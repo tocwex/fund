@@ -1,7 +1,7 @@
 :: /lib/fund/form/hoon: format helper functions for %fund
 ::
-/-  *fund-proj
-/+  fx=fund-xtra, rudder
+/-  *fund
+/+  fx=fund-xtra
 |%
 +|  %url
 ++  derl                                       ::  rl-path => noun
@@ -13,7 +13,7 @@
     ::  FIXME: A smarter `stab` parser would be better, e.g. something like:
     ::  `path`(rash '/a/b/' ;~(sfix stap fas))
     =?  pre  ?=([%'/' *] (flop pre))  (snip pre)
-    (need (decap:rudder /apps/fund (stab (crip pre))))
+    (need (chip:fx /apps/fund (stab (crip pre))))
   ++  flag                                     ::  (url path) (project) flag
     |=  cor=cord  ~+
     ^-  (unit ^flag)
@@ -156,7 +156,21 @@
   ++  poke                                     ::  [[~zod %nam] %type ...] => "~zod/name:type"
     |=  pok=^poke
     ^-  tape
-    "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(?(%bump %mula) -.q.pok) ~ ['-' (trip +<.q.pok)])}"
+    =+  fix="~zod/fix:todo"
+    ?-    -.pok
+        %fund
+      fix
+    ::
+        %proj
+      =/  poq=poke:proj  +.pok
+      "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(?(%bump %mula) -.q.pok) ~ ['-' (trip +<.q.pok)])}"
+    ::
+        %prof
+      fix
+    ::
+        %meta
+      fix
+    ==
   ++  coin                                     ::  [1 0x1 %wstr %wstr 6] => "$WSTR"
     |=  con=^coin
     ^-  tape

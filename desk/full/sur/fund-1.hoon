@@ -1,1 +1,0 @@
-../../bare/sur/fund-1.hoon

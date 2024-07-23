@@ -1,4 +1,4 @@
-/-  *fund
+/-  *fund-core
 |%
 ::
 ::  $deta: display metadata (for visible + addressable items)

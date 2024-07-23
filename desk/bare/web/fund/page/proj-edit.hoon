@@ -76,7 +76,7 @@
 ++  final  ::  POST render
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  =/  [lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
   ?:  =(%drop pyp)  [%next (desc:enrl:ff:fh /dashboard/worker) ~]
   [%next (desc:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/edit) ~]
 ++  build  ::  GET

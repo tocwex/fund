@@ -133,7 +133,7 @@
 ++  final  ::  POST render
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  =/  [lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
   :-  %next  :_  ~
   %-  desc:enrl:ff:fh
   /next/(scot %p p.lag)/[q.lag]/[?+(pyp %bump %mula-trib %trib, %mula-plej %plej)]

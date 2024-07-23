@@ -163,8 +163,8 @@
       [(need -.g) (need +.g)]
     ++  gref
       |=  txt=brief:rudder
-      ^-  [flag @tas]
-      ;;([flag @tas] (cue txt))
+      ^-  [@tas flag @tas]
+      ;;([@tas flag @tas] (cue txt))
     ++  core
       |=  req=_|
       |=  pag=page:fd

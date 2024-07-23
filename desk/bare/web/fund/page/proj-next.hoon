@@ -19,7 +19,7 @@
 ++  final
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  =/  [lag=flag:f *]  (gref:proj:preface:fh txt)
+  =/  [* lag=flag:f *]  (gref:proj:preface:fh txt)
   [%next (flac:enrl:ff:fh lag) ~]
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]

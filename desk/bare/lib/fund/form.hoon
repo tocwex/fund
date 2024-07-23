@@ -87,15 +87,15 @@
     |=  rel=@t
     ^-  @rs
     (rash rel royl-rs:so)
-  ++  bloq                                     ::  "123456..." => 1234.56...
+  ++  bloq                                     ::  "123456…" => 1234.56…
     |=  boq=@t
     ^-  ^bloq
     (rash boq dem)
-  ++  addr                                     ::  "0xabcdef..." => 0xabcd.ef...
+  ++  addr                                     ::  "0xabcdef…" => 0xabcd.ef…
     |=  adr=@t
     ^-  ^addr
     (rash adr ;~(pfix (jest '0x') hex))
-  ++  sign                                     ::  "0xabcdef..." => 0xabcd.ef...
+  ++  sign                                     ::  "0xabcdef…" => 0xabcd.ef…
     |=  sig=@t
     ^-  ^sign
     (rash sig ;~(pfix (jest '0x') hex))
@@ -103,10 +103,15 @@
     |=  lag=@t
     ^-  ^flag
     (rash lag ;~((glue fas) ;~(pfix sig fed:ag) sym))
-  ++  poke                                     ::  "~zod/nam:typ" => [p=[~zod %nam] q=%typ]
+  ++  poke                                     ::  "lvl:~zod/nam:typ" => [p=%lvl q=[~zod %nam] q=%typ]
     |=  pok=@t
-    ^-  (pair ^flag @tas)
-    (rash pok ;~((glue col) ;~((glue fas) ;~(pfix sig fed:ag) sym) sym))
+    ^-  (trel @tas ^flag @tas)
+    %+  rash  pok
+    ;~  (glue col)
+      ;~(pose (jest %fund) (jest %proj) (jest %prof) (jest %meta))
+      ;~((glue fas) ;~(pfix sig fed:ag) ;~(pose sym (easy '')))
+      sym
+    ==
   --
 ++  enjs                                       ::  noun => js-tape
   |%
@@ -132,20 +137,20 @@
     |=  rel=@rs
     ^-  tape
     (flot:fx (rlys rel) `[0 0])
-  ++  bloq                                     ::  1234.56... => "123456..."
+  ++  bloq                                     ::  1234.56… => "123456…"
     |=  boq=^bloq
     ^-  tape
     (a-co:co boq)
-  ++  addr                                     ::  0xabcd.ef... => "0xabcdef..."
+  ++  addr                                     ::  0xabcd.ef… => "0xabcdef…"
     |=  adr=^addr
     ^-  tape
     ['0' 'x' ((x-co:co 40) adr)]
-  ++  sadr                                     ::  0xabcd.ef... => "0xabc…def"
+  ++  sadr                                     ::  0xabcd.ef… => "0xabc…def"
     |=  adr=^addr
     ^-  tape
     =+  bas=(addr adr)
     :(weld (scag 5 bas) "…" (slaj:fx 4 bas))
-  ++  sign                                     ::  0xabcd.ef... => "0xabcdef..."
+  ++  sign                                     ::  0xabcd.ef… => "0xabcdef…"
     |=  sig=^sign
     ^-  tape
     ['0' 'x' ((x-co:co 130) sig)]
@@ -153,23 +158,17 @@
     |=  lag=^flag
     ^-  tape
     "{<p.lag>}/{(trip q.lag)}"
-  ++  poke                                     ::  [[~zod %nam] %type ...] => "~zod/name:type"
+  ++  poke                                     ::  [%level [~zod %nam] %type …] => "level:~zod/nam:type"
     |=  pok=^poke
     ^-  tape
-    =+  fix="~zod/fix:todo"
-    ?-    -.pok
-        %fund
-      fix
-    ::
-        %proj
-      =/  poq=poke:proj  +.pok
-      "{(flag p.pok)}:{(trip -.q.pok)}{?.(?=(?(%bump %mula) -.q.pok) ~ ['-' (trip +<.q.pok)])}"
-    ::
-        %prof
-      fix
-    ::
-        %meta
-      fix
+    =-  (zing (join ":" `(list tape)`~[lvl (flag lag) typ]))
+    ^-  [lvl=tape lag=^flag typ=tape]
+    :-  (trip -.pok)
+    ?-  -.pok
+      %fund  [[~zod %$] (trip +<.pok)]
+      %prof  [[p.pok %$] (trip +<.q.pok)]
+      %meta  [p.pok (trip +<.q.pok)]
+      %proj  [p.pok "{(trip -.q.pok)}{?+(-.q.pok ~ ?(%bump %mula) ['-' (trip +<.q.pok)])}"]
     ==
   ++  coin                                     ::  [1 0x1 %wstr %wstr 6] => "$WSTR"
     |=  con=^coin
@@ -183,7 +182,7 @@
       %orac  "oracle"
       %fund  "funder"
     ==
-  ++  mula                                     ::  [%plej ...] => "pledge"
+  ++  mula                                     ::  [%plej …] => "pledge"
     |=  mul=^mula
     ^-  tape
     ?-  -.mul

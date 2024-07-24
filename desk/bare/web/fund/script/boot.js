@@ -12,6 +12,7 @@ import {
 } from 'https://esm.sh/@wagmi/core@2.10.0';
 import { fromHex } from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
+import urbitHttpApi from 'https://cdn.skypack.dev/@urbit/http-api';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
 import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
@@ -420,6 +421,9 @@ if (window.Alpine === undefined) {
     `;
   };
 
+  window.Urbit = new urbitHttpApi('', '', 'fund');
+  window.Urbit.ship = window.ship;
+
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
     connectors: [injected()],
@@ -444,27 +448,38 @@ if (window.Alpine === undefined) {
         if (connection) {
           reconnect(window.Wagmi, {connector: connection.connector});
         } else {
-          // FIXME: Get existing set of wallets before requiring signature;
-          // can use %gu scry, I think...!
+          const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
           connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => {
-            const account = getAccount(window.Wagmi);
-            return signMessage(window.Wagmi, {
-              account: account,
-              message: `I, ~${window.ship}, am broadcasting to the Urbit network that I own wallet ${account.address.toLowerCase()}`,
+            return window.Urbit.scry({
+              app: "fund",
+              path: `/prof/~${window.ship}/${getAddress()}`,
             });
+          }).then((accountExists) => {
+            if (accountExists) {
+              return Promise.resolve(undefined);
+            } else {
+              return signMessage(window.Wagmi, {
+                account: getAccount(window.Wagmi),
+                message: `I, ~${window.ship}, am broadcasting to the Urbit network that I own wallet ${getAddress()}`,
+              });
+            }
           }).then((signature) => {
-            // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
-            const signData = new URLSearchParams({
-              dif: "prof-sign",
-              pos: signature,
-              poa: getAccount(window.Wagmi).address.toLowerCase(),
-            });
-            const hostUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
-            return fetch(`${hostUrl}/config`, {
-              method: "POST",
-              headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-              body: signData,
-            });
+            if (signature === undefined) {
+              return Promise.resolve(undefined);
+            } else {
+              // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
+              const signData = new URLSearchParams({
+                dif: "prof-sign",
+                pos: signature,
+                poa: getAddress(),
+              });
+              const hostUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
+              return fetch(`${hostUrl}/config`, {
+                method: "POST",
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: signData,
+              });
+            }
           });
         }
       } else if (status === "connected") {

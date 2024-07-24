@@ -243,17 +243,11 @@
     =/  sip=@p    (slav %p sip.pat)
     ``noun+!>((bind (~(get by pf-our) sip) head))
   ::
-      [%u %prof sip=@ adr=@ ~]
+      [%x %prof sip=@ adr=@ ~]  ::  %u-esque %x endpoint for HTTP API
     =/  sip=@p    (slav %p sip.pat)
-    =/  adr=@ux   (slav %ux adr.pat)
+    =/  adr=@ux   (addr:dejs:ff:fh adr.pat)
     =+  pre=(~(gut by pf-our) sip *pref:prof:f)
     ``loob+!>((~(has by wallets.pre) adr))
-  ::
-      [%x %prof sip=@ adr=@ ~]
-    =/  sip=@p    (slav %p sip.pat)
-    =/  adr=@ux   (slav %ux adr.pat)
-    =+  pre=(~(gut by pf-our) sip *pref:prof:f)
-    ``noun+!>((~(get by wallets.pre) adr))
   ==
 ::
 ++  agent

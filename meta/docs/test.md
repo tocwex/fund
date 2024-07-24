@@ -7,48 +7,49 @@
 These tests must be run on `~zod` in order to work!
 
 ```
-=f -build-file /=fund=/lib/fund/hoon
+=f -build-file /=fund=/lib/fund/proj/hoon
+=x -build-file /=fund=/lib/fund/chain/hoon
 =p *proj:f
 =m *mile:f
 =s *stub:f
 =o *oath:f
-=c `coin:f`[11.155.111 0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38 %usdc %usdc 6]
 =ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
 =ad2 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf
 =miz ~[m(title '1', summary '!', cost 10.000.000) m(title '2', summary '@', cost 20.000.000) m(title '3', summary '#', cost 30.000.000) m(title '4', summary '$', cost 40.000.000)]
-=po1 p(title 't', summary 'd', assessment [our 0], milestones miz, currency c)
-=sig 0x74.cce9.43e5.905f.80c1.c1da.3174.a047.4634.7f8b.250c.0d35.78e9.bd89.36d1.dad7.6145.a679.41e2.e01c.d3cf.6aa1.fb1a.88a9.6b27.93e1.8830.550e.20f9.d615.3e98.d4c6.161b
+=po1 p(title 't', summary 'd', assessment [our 0], milestones miz, currency sepolia-usdc:coin:x)
+=sig 0xd0.c895.66e4.8bc9.0bd0.e92f.f9f2.85c5.6458.d91f.ee51.0290.2d09.eae6.6908.f0b4.6443.3d19.3121.987b.842e.8ba5.d8a5.c047.c587.d6f8.8ae2.3f23.df9e.b971.6e3d.f741.921b
 =si1 `sigm:f`[sig ad1 [%& (crip (~(oath pj:f po1) our))]]
-:fund &fund-poke [[our %test] %init ~]
-:fund &fund-poke [[our %test] %init `po1]
-:fund &fund-poke [[our %test] %bump %prop ~]
-:fund &fund-poke [[our %test] %bump %born ~]
-:fund &fund-poke [[our %test] %bump %prop ~]
-:fund &fund-poke [[our %test] %bump %prop `o(sigm si1)]
-:fund &fund-poke [[our %test] %bump %lock `o(sigm si1, xact [0 0x0], work ad2, orac ad1, safe 0x0)]
-:fund &fund-poke [[our %test] %mula %plej our 9.000.000 0 (crip "{<our>} plej")]
-:fund &fund-poke [[our %test] %mula %trib `our 9.000.000 s(xact [1 0x0]) (crip "{<our>} fill")]
-:fund &fund-poke [[our %test] %bump %work ~]
-:fund &fund-poke [[our %test] %bump %sess ~]
-:fund &fund-poke [[our %test] %bump %done `o(sigm si1)]
-:fund &fund-poke [[our %test] %bump %work ~]
-:fund &fund-poke [[our %test] %mula %trib `our 2.000.000 s(xact [2 0x0]) (crip "{<our>} trib")]
-:fund &fund-poke [[our %test] %mula %trib ~ 20.000.000 s(xact [3 0x0]) (crip "anon trib")]
-:fund &fund-poke [[our %test] %mula %plej our 1.000.000 4 (crip "{<our>} pass")]
-:fund &fund-poke [[our %test] %mula %trib `our 1.000.000 s(xact [5 0x0]) '']
-:fund &fund-poke [[our %test] %mula %plej our 50.000.000 6 (crip "{<our>} plej")]
-:fund &fund-poke [[our %test] %draw 0 [7 0x0]]
-:fund &fund-poke [[our %tes2] %init ~]
-:fund &fund-poke [[our %tes2] %init `p(title '5', summary '%', image `'https://picsum.photos/200', assessment [~nec 1.000.000], milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
-:fund &fund-poke [[our %tes2] %bump %prop ~]
+:fund &fund-poke [%proj [our %test] %init ~]
+:fund &fund-poke [%proj [our %test] %init `po1]
+:fund &fund-poke [%proj [our %test] %bump %prop ~]
+:fund &fund-poke [%proj [our %test] %bump %born ~]
+:fund &fund-poke [%proj [our %test] %bump %prop ~]
+:fund &fund-poke [%proj [our %test] %bump %prop `o(sigm si1)]
+:fund &fund-poke [%proj [our %test] %bump %lock `o(sigm si1, xact [0 0x0], work ad2, orac ad1, safe 0x0)]
+:fund &fund-poke [%proj [our %test] %mula %plej our 9.000.000 0 (crip "{<our>} plej")]
+:fund &fund-poke [%proj [our %test] %mula %trib `our 9.000.000 s(xact [1 0x0]) (crip "{<our>} fill")]
+:fund &fund-poke [%proj [our %test] %bump %work ~]
+:fund &fund-poke [%proj [our %test] %bump %sess ~]
+:fund &fund-poke [%proj [our %test] %bump %done `o(sigm si1)]
+:fund &fund-poke [%proj [our %test] %bump %work ~]
+:fund &fund-poke [%proj [our %test] %mula %trib `our 2.000.000 s(xact [2 0x0]) (crip "{<our>} trib")]
+:fund &fund-poke [%proj [our %test] %mula %trib ~ 20.000.000 s(xact [3 0x0]) (crip "anon trib")]
+:fund &fund-poke [%proj [our %test] %mula %plej our 1.000.000 4 (crip "{<our>} pass")]
+:fund &fund-poke [%proj [our %test] %mula %trib `our 1.000.000 s(xact [5 0x0]) '']
+:fund &fund-poke [%proj [our %test] %mula %plej our 50.000.000 6 (crip "{<our>} plej")]
+:fund &fund-poke [%proj [our %test] %draw 0 [7 0x0]]
+:fund &fund-poke [%proj [our %tes2] %init ~]
+:fund &fund-poke [%proj [our %tes2] %init `p(title '5', summary '%', assessment [~nec 1.000.000], currency sepolia-usdc:coin:x, milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
+:fund &fund-poke [%proj [our %tes2] %bump %prop ~]
+:fund &fund-poke [%prof ~nec %join ~]
 ```
 
 After running the above, run the following to test overage behavior:
 
 ```
 =s *stub:f
-:fund &fund-poke [[our %test] %mula %trib `our 50.000.000 s(xact [8 0x0]) '']
-:fund &fund-poke [[our %test] %mula %trib ~ 100.000.000 s(xact [9 0x0]) '']
+:fund &fund-poke [%proj [our %test] %mula %trib `our 50.000.000 s(xact [8 0x0]) '']
+:fund &fund-poke [%proj [our %test] %mula %trib ~ 100.000.000 s(xact [9 0x0]) '']
 ```
 
 ### Deletion Tests ###
@@ -56,7 +57,7 @@ After running the above, run the following to test overage behavior:
 Only run these commands after running all of the basic test commands.
 
 ```
-:fund &fund-poke [[our %test] %drop ~]
+:fund &fund-poke [%proj [our %test] %drop ~]
 ```
 
 ### Error Tests ###
@@ -64,12 +65,12 @@ Only run these commands after running all of the basic test commands.
 Only run these commands after running all of the basic test commands.
 
 ```
-:fund &fund-poke [[our %test] %mula %plej our 30.000.000 *bloq:f (crip "{<our>} bad plej")]
-:fund &fund-poke [[our %test] %mula %trib `our 10.000.000 *stub:f (crip "{<our>} bad cont")]
-:fund &fund-poke [[our %test] %init ~]
-:fund &fund-poke [[our %test] %bump %born ~]
-:fund &fund-poke [[our %test] %bump %prop ~]
-:fund &fund-poke [[our %test] %bump %lock `*oath:f]
+:fund &fund-poke [%proj [our %test] %mula %plej our 30.000.000 *bloq:f (crip "{<our>} bad plej")]
+:fund &fund-poke [%proj [our %test] %mula %trib `our 10.000.000 *stub:f (crip "{<our>} bad cont")]
+:fund &fund-poke [%proj [our %test] %init ~]
+:fund &fund-poke [%proj [our %test] %bump %born ~]
+:fund &fund-poke [%proj [our %test] %bump %prop ~]
+:fund &fund-poke [%proj [our %test] %bump %lock `*oath:f]
 ```
 
 ### Permissions Tests ###
@@ -92,9 +93,14 @@ test commands).
 
 ```
 =f -build-file /=fund=/sur/fund/hoon
-.^(bean %gu /=fund=/proj/(scot %p our)/test)
-.^(bean %gu /=fund=/proj/(scot %p our)/gues)
-.^((unit proj:f) %gx /=fund=/proj/(scot %p our)/test/noun)
+.^(? %gu /=fund=/proj/(scot %p our)/test)
+.^(? %gu /=fund=/proj/(scot %p our)/gues)
+.^((unit proj:proj:f) %gx /=fund=/proj/(scot %p our)/test/noun)
+.^(? %gu /=fund=/prof/(scot %p our))
+.^(? %gu /=fund=/prof/(scot %p `@p`+(`@`our)))
+.^((unit prof:prof:f) %gx /=fund=/prof/(scot %p our)/noun)
+.^(? %gu /=fund=/prof/(scot %p our)/(scot %ux 0x0))
+.^((unit sigm:f) %gx /=fund=/prof/(scot %p our)/(scot %ux 0x0)/noun)
 ```
 
 ### JSON Tests ###
@@ -129,8 +135,8 @@ a fake `~nec` ship:
 ## Poke Tests ##
 
 ```
-:fund &fund-poke [[~zod %test] %join ~]
-:fund &fund-poke [[~zod %test] %exit ~]
+:fund &fund-poke [%proj [~zod %test] %join ~]
+:fund &fund-poke [%proj [~zod %test] %exit ~]
 ```
 
 ## eAuth Tests ##

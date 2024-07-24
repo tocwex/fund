@@ -21,11 +21,11 @@
     (~(put by a) (flag k) m.v &)
   ++  ours                                     ::  local and remote data
     ^-  mytz
-    *mytz
-    ::  %-  ~(uni by mine)
-    ::  %-  ~(rep by read:subs)
-    ::  |=  [[k=[ship dude:gall p=path] v=[s=? f=? vers m=meta]] a=mytz]
-    ::  (~(put by a) (flag p.k) m.v &(!s.v !f.v))
+    %-  ~(uni by mine)
+    ^-  mytz
+    %-  ~(rep by read:subs)
+    |=  [[k=[ship dude:gall p=path] v=[s=? f=? vers m=meta]] a=mytz]
+    (~(put by a) (flag p.k) m.v &(!s.v !f.v))
   --
 
 +|  %core

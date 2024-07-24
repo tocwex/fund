@@ -8,7 +8,7 @@ import presetAutoPrefix from 'https://cdn.jsdelivr.net/npm/@twind/preset-autopre
 import {
   http, createConfig, injected,
   connect, disconnect, reconnect,
-  getAccount, getEnsName,
+  getAccount, getEnsName, signMessage,
 } from 'https://esm.sh/@wagmi/core@2.10.0';
 import { fromHex } from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
@@ -444,7 +444,28 @@ if (window.Alpine === undefined) {
         if (connection) {
           reconnect(window.Wagmi, {connector: connection.connector});
         } else {
-          connect(window.Wagmi, {connector: Wagmi.connectors[0]});
+          // FIXME: Get existing set of wallets before requiring signature;
+          // can use %gu scry, I think...!
+          connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => {
+            const account = getAccount(window.Wagmi);
+            return signMessage(window.Wagmi, {
+              account: account,
+              message: `I, ~${window.ship}, am broadcasting to the Urbit network that I own wallet ${account.address.toLowerCase()}`,
+            });
+          }).then((signature) => {
+            // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
+            const signData = new URLSearchParams({
+              dif: "prof-sign",
+              pos: signature,
+              poa: getAccount(window.Wagmi).address.toLowerCase(),
+            });
+            const hostUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
+            return fetch(`${hostUrl}/config`, {
+              method: "POST",
+              headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+              body: signData,
+            });
+          });
         }
       } else if (status === "connected") {
         // FIXME: Actually calling disconnects tells MetaMask to stop giving

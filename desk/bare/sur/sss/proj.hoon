@@ -21,11 +21,11 @@
     (~(put by a) (flag k) p.v &)
   ++  ours                                     ::  local and remote data
     ^-  prez
-    *prez
-    ::  %-  ~(uni by mine)
-    ::  %-  ~(rep by read:subs)
-    ::  |=  [[k=[ship dude:gall p=path] v=[s=? f=? vers p=proj]] a=prez]
-    ::  (~(put by a) (flag p.k) p.v &(!s.v !f.v))
+    %-  ~(uni by mine)
+    ^-  prez
+    %-  ~(rep by read:subs)
+    |=  [[k=[ship dude:gall p=path] v=[s=? f=? vers p=proj]] a=prez]
+    (~(put by a) (flag p.k) p.v &(!s.v !f.v))
   --
 
 +|  %core

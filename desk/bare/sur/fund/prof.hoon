@@ -6,6 +6,7 @@
 ++  prof
   $:  ship-url=@t
       wallets=(map addr sigm)
+      ::  favorites=(set flag)  ::  listings of projects; see "meta"
   ==
 ::
 ::  $pref: profile with peer information

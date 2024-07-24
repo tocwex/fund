@@ -9,6 +9,6 @@
   ++  oath
     |=  [who=@p wat=addr]
     ^-  tape
-    "I, {<who>}, own wallet {<(addr:enjs:ff wat)>}"
+    "I, {<who>}, am broadcasting to the Urbit network that I own wallet {(addr:enjs:ff wat)}"
   --
 --

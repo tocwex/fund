@@ -8,17 +8,17 @@
   |_  proj
   ::  FIXME: All the `wox=@p` function signatures will be simplified
   ::  once a project stores/supports multiple different workers
-  +*  milestonez  `(list mile)`milestones
+  +*  miz  `(list mile)`milestones
   ++  stat                                       ::  project-wide status
     ^-  ^stat
     status:mil:next
   ++  cost                                       ::  summed milestone costs
     ^-  cash
-    (roll (turn milestonez |=(n=mile cost.n)) add)
+    (roll (turn miz |=(n=mile cost.n)) add)
   ++  plej                                       ::  summed pledge amounts
     ^-  cash
     %-  ~(rep by pledges)
-    |=([[k=ship v=[^plej peta]] a=cash] (add a cash.v))
+    |=([[k=@p v=[^plej peta]] a=cash] (add a cash.v))
   ++  fill                                       ::  project-wide cost fill
     ^-  cash
     |^  (add trib-cash pruf-cash)
@@ -32,7 +32,7 @@
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
-    %+  turn  milestonez
+    %+  turn  miz
     |=  mil=mile
     ?.  ?&  ?=(%done status.mil)
             ?=(^ withdrawal.mil)
@@ -46,10 +46,10 @@
     (filo:fc [cost fill plej ~])
   ++  odim                                       ::  per-milestone audit
     ^-  (list ^odit)
-    =/  lin=@  (dec (lent milestonez))
+    =/  lin=@  (dec (lent miz))
     ::  NOTE: Use @sd values since the last milestone can have an overage,
     ::  which produces negative fill values (reconciled in `+filo`)
-    =<  -  %^  spin  milestonez  [0 (sun:si fill) (sun:si plej)]
+    =<  -  %^  spin  miz  [0 (sun:si fill) (sun:si plej)]
     |=  [mil=mile min=@ fre=@sd pre=@sd]
     =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil) ?=(^ pruf.u.withdrawal.mil))
     =+  end==(min lin)
@@ -65,13 +65,13 @@
         (turn ~(val by contribs) |=([t=treb *] `^mula`[%trib -.t]))
         (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
         (turn ~(val by proofs) |=(p=pruf `^mula`[%pruf p]))
-        (murn milestonez |=(m=mile `(unit ^mula)`?~(withdrawal.m ~ (bind pruf.u.withdrawal.m (lead %pruf)))))
+        (murn miz |=(m=mile `(unit ^mula)`?~(withdrawal.m ~ (bind pruf.u.withdrawal.m (lead %pruf)))))
     ==
   ++  next                                       ::  next active milestone
     ^-  [min=@ mil=mile]
     ::  NOTE: Provide index past last milestone when all are completed
-    =-  ?^(- i.- [(lent milestonez) (rear milestonez)])
-    %+  skip  (enum:fx milestonez)
+    =-  ?^(- i.- [(lent miz) (rear miz)])
+    %+  skip  (enum:fx miz)
     |=([@ n=mile] ?=(?(%done %dead) status.n))
   ++  rols                                       ::  project $role(s) of user
     |=  [wox=@p who=@p]
@@ -106,7 +106,7 @@
               (coin-enjs currency)
               "summary: {(trip summary)}"
           ==
-        %+  turn  (enum:fx milestonez)
+        %+  turn  (enum:fx miz)
         |=  [min=@ mil=mile]
         ^-  tape
         %-  zing  %+  join  "\0a\09"

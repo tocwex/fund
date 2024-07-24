@@ -26,7 +26,7 @@
   %-  send-raw-cards:io
   %+  turn  txz
   |=  [fyl=path old=@t]
-  =+  new=(welp (to-wain:ff old) ~['::  RELOAD' ''])
+  =+  new=(welp (to-wain:format old) ~['::  RELOAD' ''])
   :*  %pass  [%web-reload fyl]
       %arvo  %c
       [%info dex %& [fyl %mut %txt !>(new)]~]

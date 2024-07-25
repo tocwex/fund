@@ -56,7 +56,7 @@
 ++  init
   ^+  cor
   =.  cor  open-eyre:action
-  =.  cor  setup-prof:action
+  =.  cor  update-prof:action
   cor
 ::
 ++  load
@@ -340,22 +340,44 @@
 ++  arvo
   |=  [pat=(pole knot) syn=sign-arvo]
   ^+  cor
-  cor
+  ?+    pat  cor
+      [%fund %prof %update ~]
+    ?+    syn  cor
+        [%behn %wake *]
+      ?^  error.syn  ((slog u.error.syn) cor)
+      ~?  !<(bean (slot:config %debug))   "%fund: updating profile"
+      update-prof:action
+    ==
+  ==
 ::
 ++  open
   ^+  cor
   ::  TODO: Populate metadata for local projects publication here
-  ::        (and also %pals projects, or %prof 'favorites'?
+  ::        (and also %pals projects, or %prof 'favorites'?)
   ::  TODO: Grab metadata from %pals here (using %prof data?)
-  =.  cor  setup-prof:action
+  =.  cor  update-prof:action
   =.  cor  watch-profs:action
   =.  cor  watch-projs:action
   cor
 ++  action
   |%
-  ++  setup-prof
+  ++  update-prof
     ^+  cor
-    pf-abet:(pf-push:(pf-abed:pf-core our.bol) [%surl (crip (burl:fh bol))])
+    =.  cor  pf-abet:(pf-push:(pf-abed:pf-core our.bol) [%surl (crip (burl:fh bol))])
+    =/  wyr=path  /fund/prof/update
+    =-  %-  emil
+        ;:  welp
+            (turn tyz |=([t=@da duct] [%pass wyr %arvo %b %rest t]))
+            [%pass wyr %arvo %b %wait (add now.bol !<(@dr (slot:config %uprl-herz)))]~
+        ==
+    ^-  tyz=(list [@da duct])
+    %+  skim  .^((list [@da duct]) %bx /(scot %p our.bol)//(scot %da now.bol)/debug/timers)
+    |=  [tym=@da duc=duct]
+    %+  lien  duc
+    |=  pat=path
+    ?&  ?=(^ (find wyr pat))
+        ?=(^ (find /gall/use/fund pat))
+    ==
   ++  open-eyre
     ^+  cor
     %-  emit

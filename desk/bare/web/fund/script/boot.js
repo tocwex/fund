@@ -12,7 +12,7 @@ import {
 } from 'https://esm.sh/@wagmi/core@2.10.0';
 import { fromHex } from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
-import urbitHttpApi from 'https://cdn.skypack.dev/@urbit/http-api';
+// import urbitHttpApi from 'https://cdn.skypack.dev/@urbit/http-api';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
 import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
@@ -421,8 +421,8 @@ if (window.Alpine === undefined) {
     `;
   };
 
-  window.Urbit = new urbitHttpApi('', '', 'fund');
-  window.Urbit.ship = window.ship;
+  // window.Urbit = new urbitHttpApi('', '', 'fund');
+  // window.Urbit.ship = window.ship;
 
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
@@ -448,19 +448,29 @@ if (window.Alpine === undefined) {
         if (connection) {
           reconnect(window.Wagmi, {connector: connection.connector});
         } else {
+          const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
           const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
-          connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => {
-            return window.Urbit.scry({
-              app: "fund",
-              path: `/prof/~${window.ship}/${getAddress()}`,
-            });
-          }).then((accountExists) => {
-            if (accountExists) {
+            //  return window.Urbit.scry({
+            //    app: "fund",
+            //    path: `/prof/~${window.ship}/${getAddress()}`,
+            //  });
+          connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => (
+            fetch(`${appUrl}/ship`, {method: "GET"})
+          )).then((responseStream) => (
+            responseStream.text()
+          )).then((responseText) => {
+            const responseDOM = new DOMParser().parseFromString(responseText, "text/html");
+            const ship = responseDOM.querySelector("#ship").value;
+            const wallets = responseDOM.querySelector("#wallets").value.split(" ");
+            return [ship, wallets];
+          }).then(([ship, wallets]) => {
+            const address = getAddress();
+            if (wallets.includes(address)) {
               return Promise.resolve(undefined);
             } else {
               return signMessage(window.Wagmi, {
                 account: getAccount(window.Wagmi),
-                message: `I, ~${window.ship}, am broadcasting to the Urbit network that I own wallet ${getAddress()}`,
+                message: `I, ${ship}, am broadcasting to the Urbit network that I own wallet ${address}`,
               });
             }
           }).then((signature) => {
@@ -473,8 +483,7 @@ if (window.Alpine === undefined) {
                 pos: signature,
                 poa: getAddress(),
               });
-              const hostUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
-              return fetch(`${hostUrl}/config`, {
+              return fetch(`${appUrl}/ship`, {
                 method: "POST",
                 headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
                 body: signData,

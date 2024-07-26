@@ -1,6 +1,6 @@
 /-  f=fund
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
-/+  fh=fund-http, fc=fund-chain
+/+  fh=fund-http, fc=fund-chain, fp=fund-prof
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -78,7 +78,6 @@
     |=  old=state-1
     ^-  state-2
     ::  TODO: Populate profile and meta here...!
-    ::  For profile, get the latest local URL and
     ::  For metadata, take all projects and extract profile data, using
     ::  the same flag as existing
     =+  new=*state-2  %_  new
@@ -198,18 +197,18 @@
     ^-  $@(brief:rudder [brief:rudder (list card) data:fd])
     =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
     ^-  [bre=brief:rudder dat=data:fd kaz=(list card)]
-    :-  (crip (poke:enjs:ff:fh dif))
-    =+  sip=?+(-.dif p.p.dif %fund our.bol, %prof p.dif)
-    ?:  =(sip our.bol)
-      =+  kor=^$(mar %fund-poke, vas !>(dif))
+    =/  aply
+      |=  dif=diff:fd
+      =+  kor=^^$(mar %fund-poke, vas !>(dif))
       [+.state.kor (scag (sub (lent caz.kor) (lent caz)) caz.kor)]
-    :-  +.state
-    ?+  -.dif  ~
-      %proj    [(pj-mk-car:(pj-abed:pj-core p.dif) p.p.dif q.dif)]~
-      ::  NOTE: Since the only cross-ship $prof pokes are %join and
-      ::  %exit, we always direct the cards back at this ship
-      %prof    [(pf-mk-car:(pf-abed:pf-core p.dif) our.bol q.dif)]~
-      ::  %meta
+    :-  (crip (poke:enjs:ff:fh dif))
+    ?+    -.dif  [+.state ~]
+      %fund  (aply dif)
+      %prof  (aply dif)
+    ::
+        %proj
+      ?:  =(p.p.dif our.bol)  (aply dif)
+      [+.state [(pj-mk-card:(pj-abed:pj-core p.dif) p.p.dif q.dif)]~]
     ==
   ==
 ::
@@ -243,11 +242,16 @@
     =/  sip=@p    (slav %p sip.pat)
     ``noun+!>((bind (~(get by pf-our) sip) head))
   ::
-      [%x %prof sip=@ adr=@ ~]  ::  %u-esque %x endpoint for HTTP API
+      [%x %prof sip=@ %adrz ~]
     =/  sip=@p    (slav %p sip.pat)
-    =/  adr=@ux   (addr:dejs:ff:fh adr.pat)
-    =+  pre=(~(gut by pf-our) sip *pref:prof:f)
-    ``loob+!>((~(has by wallets.pre) adr))
+    =+  waz=pf-pf-walz:(pf-abed:pf-core sip)
+    ``noun+!>(~(tap in ~(key by waz)))
+  ::
+      [%x %prof sip=@ %addr adr=@ ~]
+    =/  sip=@p    (slav %p sip.pat)
+    =/  adr=@ux   (slav %ux adr.pat)  ::  (addr:dejs:ff:fh adr.pat)
+    =+  waz=pf-pf-walz:(pf-abed:pf-core sip)
+    ``noun+!>((~(get by waz) adr))
   ==
 ::
 ++  agent
@@ -322,7 +326,7 @@
         |=  [act=xact:f cas=cash:f adz=(set addr:f)]
         ^-  card
         =*  por  (pj-abed:pj-core sip nam)
-        =-  (pj-mk-car:por sip [%mula %pruf ship=zip cash=cas when=[act adr] note=typ.pat.pat])
+        =-  (pj-mk-card:por sip [%mula %pruf zip cas [act adr] typ.pat.pat])
         ^-  [zip=(unit @p) adr=addr:f]
         ?-  typ.pat.pat
           %depo  [~ (head ~(tap in adz))]
@@ -371,7 +375,7 @@
             [%pass wyr %arvo %b %wait (add now.bol !<(@dr (slot:config %uprl-herz)))]~
         ==
     ^-  tyz=(list [@da duct])
-    %+  skim  .^((list [@da duct]) %bx /(scot %p our.bol)//(scot %da now.bol)/debug/timers)
+    %+  skim  .^((list [@da duct]) %bx (en-beam [our.bol %$ da+now.bol] /debug/timers))
     |=  [tym=@da duc=duct]
     %+  lien  duc
     |=  pat=path
@@ -453,12 +457,13 @@
   ++  pj-pu-pat  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  pj-su-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
   ::
-  ++  pj-pj-boq
-    =/  pre=path  /(scot %p our.bol)/fund-watcher/(scot %da now.bol)
+  ++  pj-pj-bloq
+    ^-  @
+    =/  pre=path  (en-beam [our.bol %fund-watcher da+now.bol] /)
     =/  pat=path  (welp pj-pu-pat /scan/depo)
     =+  .^(pap=(map path *) %gx (welp pre /dogs/configs/noun))
     ?.((~(has by pap) pat) 0 .^(@ %gx :(welp pre /block pat /atom)))
-  ++  pj-mk-car
+  ++  pj-mk-card
     |=  [who=@p pod=prod:proj:f]
     ^-  card
     :*  %pass   pj-pu-pat
@@ -511,7 +516,7 @@
       pj-core
     ?+    -.pod
     ::  proj prods ::
-      ?.  pj-is-myn  pj-core(cor (emit (pj-mk-car p.lag pod)))
+      ?.  pj-is-myn  pj-core(cor (emit (pj-mk-card p.lag pod)))
       ?>  ~|(bad-pj-push+mes (pj-do-writ pod))
       ?-    -.pod
           %init
@@ -534,7 +539,7 @@
             ::  TODO: If this was sent by the user, also send cards to
             ::  close the project path to the retracted oracle
             %born  ?:(=(our.bol ses) ~ ~)
-            %prop  [(pj-mk-car ses [%lure ses %orac])]~
+            %prop  [(pj-mk-card ses [%lure ses %orac])]~
           ::
               %lock
             ?~  oat.pod  ~
@@ -557,16 +562,16 @@
           ::  block number (there are no issues with this)
           ::  TODO: Add hark notifications and follow-up reminders for pledges
           ?-  +<.pod
-            %pruf  [?:(pj-is-src pod pod(p.xact.when pj-pj-boq)) ~]
-            %plej  [pod(when pj-pj-boq) [(pj-mk-car ship.pod [%lure ship.pod %fund])]~]
+            %pruf  [?:(pj-is-src pod pod(p.xact.when pj-pj-bloq)) ~]
+            %plej  [pod(when pj-pj-bloq) [(pj-mk-card ship.pod [%lure ship.pod %fund])]~]
           ::
               %trib
-            :-  pod(p.xact.when pj-pj-boq)
-            ?~(ship.pod ~ [(pj-mk-car u.ship.pod [%lure u.ship.pod %fund])]~)
+            :-  pod(p.xact.when pj-pj-bloq)
+            ?~(ship.pod ~ [(pj-mk-card u.ship.pod [%lure u.ship.pod %fund])]~)
           ==
         ::
             %draw
-          [pod(p.dif pj-pj-boq) ~]
+          [pod(p.dif pj-pj-bloq) ~]
         ==
       ==
     ::  meta prods ::
@@ -575,7 +580,7 @@
       ::  list (like group invites from %tlon)
       ?:  =(our.bol who.pod)  $(pod [%join ~])
       ?<  ~|(bad-pj-push+mes pj-is-new)
-      pj-core(cor (emit (pj-mk-car ?:(pj-is-myn who.pod p.lag) pod)))
+      pj-core(cor (emit (pj-mk-card ?:(pj-is-myn who.pod p.lag) pod)))
     ::  meta prods ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is
@@ -594,14 +599,16 @@
     ==
   --
 ++  pf-core
-  |_  [sip=@p pro=prof:prof:f]
+  |_  [sip=@p pro=prof:prof:f lad=(map addr:f sigm:f)]
   ++  pf-core  .
-  ++  pf-abet  cor
+  ++  pf-abet  cor(adrz.state (~(put by adrz.state) sip lad))
+  ::
   ++  pf-abed
     |=  sip=@p
     %=  pf-core
       sip  sip
       pro  -:(~(gut by pf-our) sip *pref:prof:f)
+      lad  (~(gut by adrz.state) sip *_lad)
     ==
   ::
   ++  pf-is-myn  =(our.bol sip)
@@ -610,13 +617,9 @@
   ++  pf-pu-pat  [%fund %prof (scot %p sip) ~]
   ++  pf-su-pat  [sip dap.bol %fund %prof (scot %p sip) ~]
   ::
-  ++  pf-mk-car
-    |=  [who=@p pod=prod:prof:f]
-    ^-  card
-    :*  %pass   pf-pu-pat
-        %agent  [who dap.bol]
-        %poke   fund-poke+!>([%prof sip pod])
-    ==
+  ++  pf-pf-walz
+    ^-  (map addr:f sigm:f)
+    (~(uni by wallets.pro) lad)
   ::
   ++  pf-pull
     |=  res=into:pf-suz
@@ -631,8 +634,14 @@
     |=  pod=prod:prof:f
     ^+  pf-core
     =*  mes  `(mess:f prod:prof:f)`[src.bol pf-pu-pat pod]
+    ::  FIXME: This is a bit ugly and should probably be moved into `pf-core`
     ?+    -.pod
     ::  prof prods ::
+      ::  NOTE: Signs directed at a foreign ship are handled specially; we allow
+      ::  these to be placed in a local cache
+      ?:  &(?=(%sign -.pod) !pf-is-myn)
+        ?>  (csig:pf:fp sip sig.pod)
+        pf-core(lad (~(put by lad) from.sig.pod sig.pod))
       ?>  ~|(bad-pf-push+mes pf-is-myn)
       =?  cor  pf-is-new  (prof-push (public:pf-puz [pf-pu-pat]~))
       pf-core(cor (prof-push (give:pf-puz pf-pu-pat *vers:lake:prof:fd bol sip pod)))

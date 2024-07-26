@@ -51,8 +51,7 @@
     :-  *vers
     ?+    -.pod  pro
         %sign
-      ?>  =((oath:pf sip from.sig.pod) (trip `@t`p.mesg.sig.pod))
-      ?>  (csig:fc sig.pod)
+      ?>  (csig:pf sip sig.pod)
       %_(pro wallets (~(put by wallets.pro) from.sig.pod sig.pod))
     ::
         %surl

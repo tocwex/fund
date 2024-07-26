@@ -15,7 +15,7 @@
 ::
 +$  data
   $:  init=_|
-      adrs=(map addr:fund sigm:fund)
+      adrz=(map @p (map addr:fund sigm:fund))
       proj-subs=_(mk-subs:sss lake:sss-proj path:sss-proj)
       proj-pubs=_(mk-pubs:sss lake:sss-proj path:sss-proj)
       prof-subs=_(mk-subs:sss lake:sss-prof path:sss-prof)

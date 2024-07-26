@@ -118,9 +118,8 @@
   ++  mony                                     ::  [12.345.000 [1 0x0 %wstr %wstr 6]] => "12.34 $WSTR"
     |=  [cas=^cash con=^coin]
     ^-  tape
-    ?-  symbol.con
-      %usdc   "${(cash cas decimals.con)}"
-      *       "{(cash cas decimals.con)} {(coin con)}"
+    ?+  symbol.con  "{(cash cas decimals.con)} {(coin con)}"
+      ?(%'USDC' %'fundUSDC')  "${(cash cas decimals.con)}"
     ==
   ++  cash                                     ::  12.345.000 => "12.34"
     |=  [cas=^cash dex=@ud]

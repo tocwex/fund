@@ -457,11 +457,15 @@
                           %plej  ["pledged" "yellow-500"]
                         ::
                             %trib
-                          ::  TODO: Figure out the different indicators
-                          ::  for fulfilled pledges
                           =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
                           ?~  pruf.teb  ["attested" "green-400"]
-                          ["verified" "green-600"]
+                          =-  ["{-}verified" "green-600"]
+                          ?~  ship.teb  ~
+                          =-  ?~(- ~ "✔️ ")
+                          .^  pro=(unit sigm:f)
+                              %gx  (scot %p our.bol)  dap.bol  (scot %da now.bol)
+                              /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)/noun
+                          ==
                         ::
                             %pruf
                           ?-  note.mul

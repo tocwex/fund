@@ -144,8 +144,6 @@
           ==
         --
     =/  sat=stat  ~(stat pj pro)
-    ::  TODO: unit of version tag; use this info to adjust old %mula for
-    ::  WSTR projects
     :-  *vers
     ?+    -.pod  pro
         %init

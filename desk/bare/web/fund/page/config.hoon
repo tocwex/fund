@@ -1,7 +1,7 @@
 ::  /web/fund/page/config/hoon: render config page for %fund
 ::
 /-  fd=fund-data
-/+  fh=fund-http, fp=fund-prof
+/+  fh=fund-http
 /+  rudder
 %-  mine:preface:fh
 ^-  page:fd
@@ -10,17 +10,9 @@
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
-    ?+    dif=(~(got by p.arz) %dif)
-        (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")
+    ?+    dif=(~(got by p.arz) %dif)  (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")
       %vita-enable   [%fund %vita &]
       %vita-disable  [%fund %vita |]
-    ::
-        %prof-sign
-      ?+  arz=(parz:fh bod (sy ~[%pos %poa]))  p.arz  [%| *]
-        =+  pos=(sign:dejs:ff:fh (~(got by p.arz) %pos))
-        =+  poa=(addr:dejs:ff:fh (~(got by p.arz) %poa))
-        [%prof our.bol %sign pos poa [%& (crip (oath:pf:fp our.bol poa))]]
-      ==
     ==
   ==
 ++  final

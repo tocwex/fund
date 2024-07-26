@@ -75,6 +75,7 @@
   ?+  pat                                        ~
     ~                                            `[%page | %index]
     [%asset *]                                   `[%page | %asset]
+    [%ship ~]                                    `[%page | %ship]
     [%config ~]                                  `[%page | %config]
     [%dashboard suf=*]    ?+  suf.pat            ~
       ~                                          `[%away (snip syt)]

@@ -99,7 +99,8 @@ test commands).
 .^(? %gu /=fund=/prof/(scot %p our))
 .^(? %gu /=fund=/prof/(scot %p `@p`+(`@`our)))
 .^((unit prof:prof:f) %gx /=fund=/prof/(scot %p our)/noun)
-.^(? %gx /=fund=/prof/(scot %p our)/(crip "0x{((x-co:co 40) 0x0)}")/loob)
+.^((list addr:f) %gx /=fund=/prof/(scot %p our)/adrz/noun)
+.^((unit sigm:f) %gx /=fund=/prof/(scot %p our)/addr/(scot %ux 0x0)/noun)
 ```
 
 ### JSON Tests ###

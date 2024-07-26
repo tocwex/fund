@@ -1,6 +1,6 @@
 /-  f=fund
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
-/+  fh=fund-http, fc=fund-chain, fp=fund-prof
+/+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -42,6 +42,11 @@
     pf-puz  pubs:pf-con
     pf-myn  mine:pf-con
     pf-our  ours:pf-con
+    me-con  ~(. conn:meta:fd bol [meta-subs meta-pubs]:state)
+    me-suz  subs:me-con
+    me-puz  pubs:me-con
+    me-myn  mine:me-con
+    me-our  ours:me-con
 ::
 ++  abet  [(flop caz) state]
 ++  cor   .
@@ -50,6 +55,8 @@
 ++  give  |=(g=gift:agent:gall (emit %give g))
 ++  proj-pull  |=([c=(list card) s=_proj-subs] =.(proj-subs s (emil c)))
 ++  proj-push  |=([c=(list card) p=_proj-pubs] =.(proj-pubs p (emil c)))
+++  meta-pull  |=([c=(list card) s=_meta-subs] =.(meta-subs s (emil c)))
+++  meta-push  |=([c=(list card) p=_meta-pubs] =.(meta-pubs p (emil c)))
 ++  prof-pull  |=([c=(list card) s=_prof-subs] =.(prof-subs s (emil c)))
 ++  prof-push  |=([c=(list card) p=_prof-pubs] =.(prof-pubs p (emil c)))
 ::
@@ -141,43 +148,45 @@
       %fund-poke
     =+  !<(pok=poke:f vas)
     ~?  !<(bean (slot:config %debug))   pok
-    ?+    -.pok  cor
+    ?-    -.pok
+      %proj  pj-abet:(pj-push:(pj-abed:pj-core p.pok) q.pok)
+      %meta  me-abet:(me-push:(me-abed:me-core p.pok) q.pok)
+      %prof  pf-abet:(pf-push:(pf-abed:pf-core p.pok) q.pok)
+    ::
         %fund
       %-  emit
       :*  %pass   /fund/vita
           %agent  [our.bol dap.bol]
           %poke   vita-client+!>([%set-enabled sat.pok])
       ==
-    ::
-        %proj
-      =/  [lag=flag:f pod=prod:proj:f]  +.pok
-      pj-abet:(pj-push:(pj-abed:pj-core lag) pod)
-    ::
-        %prof
-      =/  [sip=@p pod=prod:prof:f]  +.pok
-      pf-abet:(pf-push:(pf-abed:pf-core sip) pod)
     ==
   ::  sss pokes  ::
       %sss-on-rock
-    ?-  msg=!<($%(from:pj-suz from:pf-suz) (fled vas))
+    ?-  msg=!<($%(from:pj-suz from:me-suz from:pf-suz) (fled vas))
       [[%fund *] *]  cor
     ==
   ::
       %sss-fake-on-rock
-    ?-  msg=!<($%(from:pj-suz from:pf-suz) (fled vas))
+    ?-  msg=!<($%(from:pj-suz from:me-suz from:pf-suz) (fled vas))
       [[%fund %proj *] *]  (emil (handle-fake-on-rock:pj-suz msg))
+      [[%fund %meta *] *]  (emil (handle-fake-on-rock:me-suz msg))
       [[%fund %prof *] *]  (emil (handle-fake-on-rock:pf-suz msg))
     ==
   ::
       %sss-to-pub
-    ?-  msg=!<($%(into:pj-puz into:pf-puz) (fled vas))
+    ?-  msg=!<($%(into:pj-puz into:me-puz into:pf-puz) (fled vas))
       [[%fund %proj *] *]  (proj-push (apply:pj-puz msg))
+      [[%fund %meta *] *]  (meta-push (apply:me-puz msg))
       [[%fund %prof *] *]  (prof-push (apply:pf-puz msg))
     ==
   ::
       %sss-proj
     =/  res  !<(into:pj-suz (fled vas))
     pj-abet:(pj-pull:(pj-abed:pj-core (flag:proj:fd path.res)) res)
+  ::
+      %sss-meta
+    =/  res  !<(into:me-suz (fled vas))
+    me-abet:(me-pull:(me-abed:me-core (flag:meta:fd path.res)) res)
   ::
       %sss-prof
     =/  res  !<(into:pf-suz (fled vas))
@@ -202,10 +211,7 @@
       =+  kor=^^$(mar %fund-poke, vas !>(dif))
       [+.state.kor (scag (sub (lent caz.kor) (lent caz)) caz.kor)]
     :-  (crip (poke:enjs:ff:fh dif))
-    ?+    -.dif  [+.state ~]
-      %fund  (aply dif)
-      %prof  (aply dif)
-    ::
+    ?+    -.dif  (aply dif)
         %proj
       ?:  =(p.p.dif our.bol)  (aply dif)
       [+.state [(pj-mk-card:(pj-abed:pj-core p.dif) p.p.dif q.dif)]~]
@@ -262,6 +268,9 @@
     [~ %sss %on-rock @ @ @ %fund %proj @ @ ~]        (proj-pull ~ (chit:pj-suz |3:pat syn))
     [~ %sss %scry-request @ @ @ %fund %proj @ @ ~]   (proj-pull (tell:pj-suz |3:pat syn))
     [~ %sss %scry-response @ @ @ %fund %proj @ @ ~]  (proj-push (tell:pj-puz |3:pat syn))
+    [~ %sss %on-rock @ @ @ %fund %meta @ @ ~]        (meta-pull ~ (chit:me-suz |3:pat syn))
+    [~ %sss %scry-request @ @ @ %fund %meta @ @ ~]   (meta-pull (tell:me-suz |3:pat syn))
+    [~ %sss %scry-response @ @ @ %fund %meta @ @ ~]  (meta-push (tell:me-puz |3:pat syn))
     [~ %sss %on-rock @ @ @ %fund %prof @ ~]          (prof-pull ~ (chit:pf-suz |3:pat syn))
     [~ %sss %scry-request @ @ @ %fund %prof @ ~]     (prof-pull (tell:pf-suz |3:pat syn))
     [~ %sss %scry-response @ @ @ %fund %prof @ ~]    (prof-push (tell:pf-puz |3:pat syn))
@@ -359,9 +368,34 @@
   ::  TODO: Populate metadata for local projects publication here
   ::        (and also %pals projects, or %prof 'favorites'?)
   ::  TODO: Grab metadata from %pals here (using %prof data?)
+  ::
+  ::  - Does the %pals desk exist?
+  ::    .^(? %cu /=pals=/desk/docket-0)
+  ::  - Is the %pals desk running?
+  ::    =+  dex=.^(rock:tire:clay %cx (en-beam [our.bol %$ da+now.bol] /tire))
+  ::    ?~  dek=(~(get by dex) %pals)  %.n
+  ::    ?=(%live zest.u.dek)
+  ::  - Who am I following via %pals?
+  ::    .^((set ship) %gx (en-beam [our.bol %pals da+now.bol] /targets/noun))
+  ::    .^((set ship) %gx /=pals=/targets/noun)
+  ::    .^((set ship) %gx /=pals=/mutuals/noun)
+  ::  - Subscribe to updates to %pals changes
+  ::    [%pass /some/wire %agent [our.bol %pals] %watch /targets]
+  ::
+  ::  How do we populate the metadata?
+  ::  - On subscribe to project
+  ::  - When we add/remove a pal (?) (if used, use level triggering effect here)
+  ::  - On upgrade (all projects we *should* have metadata for but do not currently)
+  ::  How do we know what metadata we should be subscribed to?
+  ::  - All local projects (we produce this data)
+  ::  - All existing remote projects
+  ::  - All projects "advertized" by %pals (mutuals or targets? probably targets for now)
+  ::
   =.  cor  update-prof:action
   =.  cor  watch-profs:action
-  =.  cor  watch-projs:action
+  =.  cor  watch-metas:action
+  =.  cor  watch-pals:action
+  =.  cor  watch-chains:action
   cor
 ++  action
   |%
@@ -408,7 +442,19 @@
         (turn ~(val by pledges.pro) |=([p=plej:f *] ship.p))
         (murn ~(val by contribs.pro) |=([t=treb:f *] ship.t))
     ==
-  ++  watch-projs
+  ++  watch-metas
+    ^+  cor
+    ::  TODO: List is all existing projs for which there is no
+    ::  corresponding meta
+    cor
+  ++  watch-pals
+    ^+  cor
+    %-  emit
+    :*  %pass   /fund/pals
+        %agent  [our.bol %pals]
+        %watch  /targets
+    ==
+  ++  watch-chains
     ^+  cor
     =/  poz=(map flag:f proj:proj:f)             ::  post-%lock projects
       %-  ~(rep by pj-myn)
@@ -454,19 +500,27 @@
   ++  pj-is-myn  =(our.bol p.lag)
   ++  pj-is-src  =(our.bol src.bol)
   ++  pj-is-new  !(~(has by pj-our) lag)
-  ++  pj-pu-pat  [%fund %proj (scot %p p.lag) q.lag ~]
-  ++  pj-su-pat  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
+  ++  pj-pa-pub  [%fund %proj (scot %p p.lag) q.lag ~]
+  ++  pj-pa-sub  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
   ::
+  ++  pj-pj-meta
+    ^-  meta:meta:f
+    :*  title=title.pro
+        cost=~(cost pj:fj pro)
+        currency=currency.pro
+        worker=p.lag
+        oracle=p.assessment.pro
+    ==
   ++  pj-pj-bloq
     ^-  @
     =/  pre=path  (en-beam [our.bol %fund-watcher da+now.bol] /)
-    =/  pat=path  (welp pj-pu-pat /scan/depo)
+    =/  pat=path  (welp pj-pa-pub /scan/depo)
     =+  .^(pap=(map path *) %gx (welp pre /dogs/configs/noun))
     ?.((~(has by pap) pat) 0 .^(@ %gx :(welp pre /block pat /atom)))
   ++  pj-mk-card
     |=  [who=@p pod=prod:proj:f]
     ^-  card
-    :*  %pass   pj-pu-pat
+    :*  %pass   pj-pa-pub
         %agent  [who dap.bol]
         %poke   fund-poke+!>([%proj lag pod])
     ==
@@ -503,15 +557,15 @@
     ?:  ?|  ?=(%tomb what.res)
             &(?=(%wave what.res) ?=(%exit -.q.pok.wave.res))
         ==
-      pj-core(cor (proj-pull ~ (quit:pj-suz pj-su-pat)))
+      pj-core(cor (proj-pull ~ (quit:pj-suz pj-pa-sub)))
     pj-core(cor (proj-pull (apply:pj-suz res)))
   ++  pj-push
     |=  pod=prod:proj:f
     ^+  pj-core
-    =*  mes  `(mess:f prod:proj:f)`[src.bol pj-pu-pat pod]
+    =*  mes  `(mess:f prod:proj:f)`[src.bol pj-pa-pub pod]
     =/  wash
       |=  [pod=prod:proj:f caz=(list card)]
-      =.  cor  (proj-push (give:pj-puz pj-pu-pat *vers:lake:proj:fd bol lag pod))
+      =.  cor  (proj-push (give:pj-puz pj-pa-pub *vers:lake:proj:fd bol lag pod))
       =.  cor  (emil caz)
       pj-core
     ?+    -.pod
@@ -520,11 +574,11 @@
       ?>  ~|(bad-pj-push+mes (pj-do-writ pod))
       ?-    -.pod
           %init
-        =?  cor  pj-is-new  (proj-push (public:pj-puz [pj-pu-pat]~))
+        =?  cor  pj-is-new  (proj-push (public:pj-puz [pj-pa-pub]~))
         (wash pod ~)
       ::
           %drop
-        =?  cor  !pj-is-new  (proj-push (kill:pj-puz [pj-pu-pat]~))
+        =?  cor  !pj-is-new  (proj-push (kill:pj-puz [pj-pa-pub]~))
         pj-core
       ::
           ?(%bump %mula %blot %draw %wipe)
@@ -545,7 +599,7 @@
             ?~  oat.pod  ~
             %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
             |=  [pat=path cfg=config:fc]
-            =/  pax=path  (welp pj-pu-pat pat)
+            =/  pax=path  (welp pj-pa-pub pat)
             ^-  card
             :*  %pass   pax
                 %agent  [our.bol %fund-watcher]
@@ -587,17 +641,66 @@
       ::  in place (see %lure clause above).
       ::  ?>  ~|(bad-meta+mes pj-is-src)
       ?:  pj-is-myn  pj-core
-      ?-    -.pod
-          %join
-        ?.  pj-is-new  pj-core
-        pj-core(cor (proj-pull (surf:pj-suz pj-su-pat)))
-      ::
-          %exit
-        ?:  pj-is-new  pj-core
-        pj-core(cor (proj-pull ~ (quit:pj-suz pj-su-pat)))
+      ?-  -.pod
+        %join  ?.(pj-is-new pj-core pj-core(cor (proj-pull (surf:pj-suz pj-pa-sub))))
+        %exit  ?:(pj-is-new pj-core pj-core(cor (proj-pull ~ (quit:pj-suz pj-pa-sub))))
       ==
     ==
   --
+::
+++  me-core
+  |_  [lag=flag:f met=meta:meta:f]
+  ++  me-core  .
+  ++  me-abet  cor
+  ++  me-abed
+    |=  lag=flag:f
+    %=  me-core
+      lag  lag
+      met  -:(~(gut by me-our) lag *mete:meta:f)
+    ==
+  ::
+  ++  me-is-myn  =(our.bol p.lag)
+  ++  me-is-src  =(our.bol src.bol)
+  ++  me-is-new  !(~(has by me-our) lag)
+  ++  me-pa-pub  [%fund %meta (scot %p p.lag) q.lag ~]
+  ++  me-pa-sub  [p.lag dap.bol %fund %meta (scot %p p.lag) q.lag ~]
+  ::
+  ++  me-pull
+    |=  res=into:me-suz
+    ^+  me-core
+    ?<  me-is-myn
+    ?:  ?|  ?=(%tomb what.res)
+            &(?=(%wave what.res) ?=(%exit -.q.pok.wave.res))
+        ==
+      me-core(cor (meta-pull ~ (quit:me-suz me-pa-sub)))
+    me-core(cor (meta-pull (apply:me-suz res)))
+  ++  me-push
+    |=  pod=prod:meta:f
+    ^+  me-core
+    =*  mes  `(mess:f prod:meta:f)`[src.bol me-pa-pub pod]
+    ?+    -.pod
+    ::  meta prods ::
+      ?>  ~|(bad-me-push+mes me-is-myn)
+      ?-    -.pod
+          %init
+        =?  cor  me-is-new  (meta-push (public:me-puz [me-pa-pub]~))
+        me-core(cor (meta-push (give:me-puz me-pa-pub *vers:lake:meta:fd bol lag pod)))
+      ::
+          %drop
+        =?  cor  !me-is-new  (meta-push (kill:me-puz [me-pa-pub]~))
+        me-core
+      ==
+    ::  meta prods ::
+        ?(%join %exit)
+      ::  ?>  ~|(bad-meta+mes me-is-src)
+      ?:  me-is-myn  me-core
+      ?-  -.pod
+        %join  ?.(me-is-new me-core me-core(cor (meta-pull (surf:me-suz me-pa-sub))))
+        %exit  ?:(me-is-new me-core me-core(cor (meta-pull ~ (quit:me-suz me-pa-sub))))
+      ==
+    ==
+  --
+::
 ++  pf-core
   |_  [sip=@p pro=prof:prof:f lad=(map addr:f sigm:f)]
   ++  pf-core  .
@@ -614,8 +717,8 @@
   ++  pf-is-myn  =(our.bol sip)
   ++  pf-is-src  =(our.bol src.bol)
   ++  pf-is-new  !(~(has by pf-our) sip)
-  ++  pf-pu-pat  [%fund %prof (scot %p sip) ~]
-  ++  pf-su-pat  [sip dap.bol %fund %prof (scot %p sip) ~]
+  ++  pf-pa-pub  [%fund %prof (scot %p sip) ~]
+  ++  pf-pa-sub  [sip dap.bol %fund %prof (scot %p sip) ~]
   ::
   ++  pf-pf-walz
     ^-  (map addr:f sigm:f)
@@ -628,13 +731,12 @@
     ?:  ?|  ?=(%tomb what.res)
             &(?=(%wave what.res) ?=(%exit -.q.pok.wave.res))
         ==
-      pf-core(cor (prof-pull ~ (quit:pf-suz pf-su-pat)))
+      pf-core(cor (prof-pull ~ (quit:pf-suz pf-pa-sub)))
     pf-core(cor (prof-pull (apply:pf-suz res)))
   ++  pf-push
     |=  pod=prod:prof:f
     ^+  pf-core
-    =*  mes  `(mess:f prod:prof:f)`[src.bol pf-pu-pat pod]
-    ::  FIXME: This is a bit ugly and should probably be moved into `pf-core`
+    =*  mes  `(mess:f prod:prof:f)`[src.bol pf-pa-pub pod]
     ?+    -.pod
     ::  prof prods ::
       ::  NOTE: Signs directed at a foreign ship are handled specially; we allow
@@ -643,22 +745,17 @@
         ?>  (csig:pf:fp sip sig.pod)
         pf-core(lad (~(put by lad) from.sig.pod sig.pod))
       ?>  ~|(bad-pf-push+mes pf-is-myn)
-      =?  cor  pf-is-new  (prof-push (public:pf-puz [pf-pu-pat]~))
-      pf-core(cor (prof-push (give:pf-puz pf-pu-pat *vers:lake:prof:fd bol sip pod)))
+      =?  cor  pf-is-new  (prof-push (public:pf-puz [pf-pa-pub]~))
+      pf-core(cor (prof-push (give:pf-puz pf-pa-pub *vers:lake:prof:fd bol sip pod)))
     ::  meta prods ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is
       ::  in place (see %lure clause above).
       ::  ?>  ~|(bad-meta+mes pf-is-src)
       ?:  pf-is-myn  pf-core
-      ?-    -.pod
-          %join
-        ?.  pf-is-new  pf-core
-        pf-core(cor (prof-pull (surf:pf-suz pf-su-pat)))
-      ::
-          %exit
-        ?:  pf-is-new  pf-core
-        pf-core(cor (prof-pull ~ (quit:pf-suz pf-su-pat)))
+      ?-  -.pod
+        %join  ?.(pf-is-new pf-core pf-core(cor (prof-pull (surf:pf-suz pf-pa-sub))))
+        %exit  ?:(pf-is-new pf-core pf-core(cor (prof-pull ~ (quit:pf-suz pf-pa-sub))))
       ==
     ==
   --

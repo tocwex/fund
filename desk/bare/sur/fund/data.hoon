@@ -7,6 +7,10 @@
 ::
 ++  proj  sss-proj
 ::
+::  +meta: convenience accessor for 'sss-meta' sss core
+::
+++  meta  sss-meta
+::
 ::  +prof: convenience accessor for 'sss-prof' sss core
 ::
 ++  prof  sss-prof
@@ -18,10 +22,10 @@
       adrz=(map @p (map addr:fund sigm:fund))
       proj-subs=_(mk-subs:sss lake:sss-proj path:sss-proj)
       proj-pubs=_(mk-pubs:sss lake:sss-proj path:sss-proj)
-      prof-subs=_(mk-subs:sss lake:sss-prof path:sss-prof)
-      prof-pubs=_(mk-pubs:sss lake:sss-prof path:sss-prof)
       meta-subs=_(mk-subs:sss lake:sss-meta path:sss-meta)
       meta-pubs=_(mk-pubs:sss lake:sss-meta path:sss-meta)
+      prof-subs=_(mk-subs:sss lake:sss-prof path:sss-prof)
+      prof-pubs=_(mk-pubs:sss lake:sss-prof path:sss-prof)
   ==
 ::
 ::  $diff: data delta forwarded to rudder-related POST requests

@@ -11,8 +11,8 @@
 ::
 ++  poke
   $%  [%proj poke:proj]
-      [%prof poke:prof]
       [%meta poke:meta]
+      [%prof poke:prof]
       [%fund prod]
   ==
 --

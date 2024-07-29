@@ -30,7 +30,7 @@ regen__deskdir="${regen__basedir}/desk"
 cd "${regen__deskdir}"
 rm -rf full/
 find bare -type f,l | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
-mkdir -p full/app full/lib/ full/mar full/sur/json full/ted
+mkdir -p full/app full/lib/ full/mar/pals full/sur/json full/ted
 ln -sr ../LICENSE.txt full/license.txt
 
 git clone -b 411k --depth 1 https://github.com/urbit/urbit.git urb
@@ -62,3 +62,7 @@ cp vit/vita-client/lib/vita-client.hoon full/lib/
 
 git clone --depth 1 https://github.com/tinnus-napbus/manx-utils.git mut
 cp mut/lib/manx-utils.hoon full/lib/
+
+git clone --depth 1 https://github.com/Fang-/suite.git pal
+cp pal/mar/pals/effect.hoon full/mar/pals/
+cp pal/sur/pals.hoon full/sur/

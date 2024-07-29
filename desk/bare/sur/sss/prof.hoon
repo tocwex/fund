@@ -50,12 +50,13 @@
     ^-  rock
     :-  *vers
     ?+    -.pod  pro
+      %surl  %_(pro ship-url url.pod)
+      %fave  %_(pro favorites (~(put in favorites.pro) lag.pod))
+      %jilt  %_(pro favorites (~(del in favorites.pro) lag.pod))
+    ::
         %sign
       ?>  (csig:pf sip sig.pod)
       %_(pro wallets (~(put by wallets.pro) from.sig.pod sig.pod))
-    ::
-        %surl
-      %_(pro ship-url url.pod)
     ==
   --
 --

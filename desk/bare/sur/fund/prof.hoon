@@ -6,7 +6,7 @@
 ++  prof
   $:  ship-url=@t
       wallets=(map addr sigm)
-      ::  favorites=(set flag)  ::  listings of projects; see "meta"
+      favorites=(set flag)
   ==
 ::
 ::  $pref: profile with peer information
@@ -27,6 +27,8 @@
   $%  ::  data prods  ::
       [%sign sig=sigm]
       [%surl url=@t]
+      [%fave lag=flag]
+      [%jilt lag=flag]
       ::  meta prods  ::
       [%join ~]
       [%exit ~]

@@ -169,7 +169,7 @@ div.ts-wrapper + label:after {
   padding: calc(8px - 2px - 0) 8px calc(8px - 2px - 3px - 0);
 }
 .full .ts-control {
-  background-color: #f5f5f0; /* bg-primary-250 */
+  background-color: #f6f6f6; /* bg-primary-250 */
 }
 .disabled .ts-control, .disabled .ts-control * {
   cursor: default !important;

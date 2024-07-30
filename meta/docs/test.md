@@ -104,6 +104,7 @@ test commands).
 .^((unit prof:prof:f) %gx /=fund=/prof/(scot %p our)/noun)
 .^((list addr:f) %gx /=fund=/prof/(scot %p our)/adrz/noun)
 .^((unit sigm:f) %gx /=fund=/prof/(scot %p our)/addr/(scot %ux 0x0)/noun)
+.^([hoz=(set flag:f) faz=(set flag:f) mez=(set flag:f)] %gx /=fund=/view/noun)
 ```
 
 ### JSON Tests ###

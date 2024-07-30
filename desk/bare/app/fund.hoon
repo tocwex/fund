@@ -1,4 +1,4 @@
-/-  f=fund
+/-  f=fund, p=pals
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
 /+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof
 /+  config, default-agent, rudder, *sss
@@ -230,6 +230,12 @@
   |=  pat=(pole knot)
   ^-  (unit (unit cage))
   ?+    pat  [~ ~]
+      [%x %view ~]
+    =/  hoz=(set flag:f)  ~(key by pj-myn)
+    =/  faz=(set flag:f)  favorites:pro:(pf-abed:pf-core our.bol)
+    =/  mez=(set flag:f)  ~(key by me-our)
+    ``noun+!>([hoz faz mez])
+  ::
       [%u %proj sip=@ nam=@ ~]
     =/  sip=@p    (slav %p sip.pat)
     =/  nam=@tas  (slav %tas nam.pat)
@@ -299,17 +305,11 @@
     ::  watch update response  ::
         %fact
       ?.  ?=(%pals-effect p.cage.syn)  cor
-      ::  TODO: This will just be a matter of following/unfollowing
-      ::  profiles, then re-accumulating the list of favorites that need
-      ::  to be followed
-      ::  TODO: Level trigger and update;
-      ::  TODO: List all new and all the missing projects (based on the
-      ::  pal it came from); need to have %prof for each %pal, and get
-      ::  the list of proj from there?
-      ::  If we don't have a list anywhere shared, then we cannot know
-      ::  what flags we should be following; ships via SSS cannot share
-      ::  their whole list of available entries
-      cor
+      =+  !<(pef=effect:p q.cage.syn)
+      ?+  -.pef  cor
+        %meet  (diff-profs:action & (silt [ship.pef]~))
+        %part  (diff-profs:action | (silt [ship.pef]~))
+      ==
     ==
   ::  proj responses  ::
       [%fund %proj sip=@ nam=@ pat=*]
@@ -397,32 +397,6 @@
 ::
 ++  open
   ^+  cor
-  ::  TODO: Populate metadata for local projects publication here
-  ::        (and also %pals projects, or %prof 'favorites'?)
-  ::  TODO: Grab metadata from %pals here (using %prof data?)
-  ::
-  ::  - Does the %pals desk exist?
-  ::    .^(? %cu /=pals=/desk/docket-0)
-  ::  - Is the %pals desk running?
-  ::    =+  dex=.^(rock:tire:clay %cx (en-beam [our.bol %$ da+now.bol] /tire))
-  ::    ?~  dek=(~(get by dex) %pals)  %.n
-  ::    ?=(%live zest.u.dek)
-  ::  - Who am I following via %pals?
-  ::    .^((set ship) %gx (en-beam [our.bol %pals da+now.bol] /targets/noun))
-  ::    .^((set ship) %gx /=pals=/targets/noun)
-  ::    .^((set ship) %gx /=pals=/mutuals/noun)
-  ::  - Subscribe to updates to %pals changes
-  ::    [%pass /some/wire %agent [our.bol %pals] %watch /targets]
-  ::
-  ::  How do we populate the metadata?
-  ::  - On subscribe to project
-  ::  - When we add/remove a pal (?) (if used, use level triggering effect here)
-  ::  - On upgrade (all projects we *should* have metadata for but do not currently)
-  ::  How do we know what metadata we should be subscribed to?
-  ::  - All local projects (we produce this data)
-  ::  - All existing remote projects
-  ::  - All projects "advertized" by %pals (mutuals or targets? probably targets for now)
-  ::
   =.  cor  update-prof:action
   =.  cor  watch-profs:action
   =.  cor  watch-metas:action
@@ -431,6 +405,14 @@
   cor
 ++  action
   |%
+  ++  diff-profs
+    |=  [new=? siz=(set @p)]
+    ^+  cor
+    =/  lis=(list @p)  ~(tap in siz)
+    |-
+    ?~  lis  cor
+    =/  pod=prod:prof:f  ?:(new [%join ~] [%exit ~])
+    $(cor pf-abet:(pf-push:(pf-abed:pf-core i.lis) pod), lis t.lis)
   ++  update-prof
     ^+  cor
     =.  cor  pf-abet:(pf-push:(pf-abed:pf-core our.bol) [%surl (crip (burl:fh bol))])
@@ -457,12 +439,7 @@
     ==
   ++  watch-profs
     ^+  cor
-    =-  |-
-        ?~  siz  cor
-        =.  cor  pf-abet:(pf-push:(pf-abed:pf-core i.siz) [%join ~])
-        $(siz t.siz)
-    ^-  siz=(list @p)
-    %~  tap  in
+    =-  (diff-profs & -)
     ^-  (set @p)
     %-  ~(rep by pj-myn)
     |=  [[flag:f pro=proj:proj:f lyv=?] acc=(set @p)]
@@ -491,7 +468,7 @@
     =/  poz=(map flag:f proj:proj:f)             ::  post-%lock projects
       %-  ~(rep by pj-myn)
       |=  [[lag=flag:f pre=prej:proj:f] acc=(map flag:f proj:proj:f)]
-      ?:(?=(?(%born %prop) status.i.milestones.pre) acc (~(put by acc) lag -.pre))
+      ?:(?=(?(%born %prop) ~(stat pj:fj -.pre)) acc (~(put by acc) lag -.pre))
     =/  liz=(set flag:f)                         ::  live %fund-watcher flags
       %-  ~(rep by wex.bol)
       |=  [[[wire sip=@p dek=@tas] [ack=? pat=(pole knot)]] acc=(set flag:f)]
@@ -519,9 +496,22 @@
   --
 ::
 ++  pj-core
-  |_  [lag=flag:f pro=proj:proj:f]
+  |_  [lag=flag:f pro=proj:proj:f gon=_|]
   ++  pj-core  .
-  ++  pj-abet  cor
+  ++  pj-abet
+    =.  pro  -:(~(gut by pj-our) lag *prej:proj:f)
+    =?  pj-core  &(pj-is-myn ?=(%lock ~(stat pj:fj pro)))
+      (pj-me-push [%init `pj-me-met])
+    =?    pj-core
+        ?&  ?!  (~(has in favorites:pro:(pf-abed:pf-core our.bol)) lag)
+            ?!  ?=(?(%born %prop) ~(stat pj:fj pro))
+        ==
+      (pj-pf-push [%fave lag])
+    =?  pj-core  gon
+      (pj-pf-push [%jilt lag])
+    =?  pj-core  &(pj-is-myn gon)
+      (pj-me-push [%drop ~])
+    cor
   ++  pj-abed
     |=  lag=flag:f
     %=  pj-core
@@ -530,7 +520,6 @@
     ==
   ::
   ++  pj-is-myn  =(our.bol p.lag)
-  ++  pj-is-src  =(our.bol src.bol)
   ++  pj-is-new  !(~(has by pj-our) lag)
   ++  pj-pa-pub  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  pj-pa-sub  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
@@ -550,6 +539,10 @@
     |=  pod=prod:meta:f
     ^+  pj-core
     pj-core(cor me-abet:(me-push:(me-abed:me-core lag) pod))
+  ++  pj-pf-push
+    |=  pod=prod:prof:f
+    ^+  pj-core
+    pj-core(cor pf-abet:(pf-push:(pf-abed:pf-core our.bol) pod))
   ++  pj-mk-card
     |=  [who=@p pod=prod:proj:f]
     ^-  card
@@ -590,15 +583,7 @@
     ?:  ?|  ?=(%tomb what.res)
             &(?=(%wave what.res) ?=(%exit -.q.pok.wave.res))
         ==
-      =.  pj-core  (pj-me-push [%exit ~])
-      pj-core(cor (proj-pull ~ (quit:pj-suz pj-pa-sub)))
-    =?    pj-core
-        ?&  ?=(%wave what.res)
-            ?=(%bump -.q.pok.wave.res)
-            ?=(%lock sat.q.pok.wave.res)
-            ?=(^ oat.q.pok.wave.res)
-        ==
-      (pj-me-push [%join ~])
+      pj-core(cor (proj-pull ~ (quit:pj-suz pj-pa-sub)), gon &)
     pj-core(cor (proj-pull (apply:pj-suz res)))
   ++  pj-push
     |=  pod=prod:proj:f
@@ -616,8 +601,7 @@
       ::
           %drop
         =?  cor  !pj-is-new  (proj-push (kill:pj-puz [pj-pa-pub]~))
-        =?  pj-core  !pj-is-new  (pj-me-push [%drop ~])
-        pj-core
+        pj-core(gon &)
       ::
           %draw
         (pj-pj-push pod(p.dif pj-pj-bloq))
@@ -631,7 +615,7 @@
         ::  block number (there are no issues with this)
         ?-  +<.pod
             %pruf
-          (pj-pj-push ?:(pj-is-src pod pod(p.xact.when pj-pj-bloq)))
+          (pj-pj-push ?:(=(our src):bol pod pod(p.xact.when pj-pj-bloq)))
         ::
             %plej
           =.  pj-core  (pj-pj-push pod(when pj-pj-bloq))
@@ -654,7 +638,6 @@
         ::
             %lock
           ?~  oat.pod  pj-core
-          =.  pj-core  (pj-me-push [%init `pj-me-met])
           =-  pj-core(cor (emil -))
           %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
           |=  [pat=path cfg=config:fc]
@@ -682,15 +665,17 @@
       ?-  -.pod
         ::  TODO: Join metadata (?)
         %join  ?.(pj-is-new pj-core pj-core(cor (proj-pull (surf:pj-suz pj-pa-sub))))
-        %exit  ?:(pj-is-new pj-core pj-core(cor (proj-pull ~ (quit:pj-suz pj-pa-sub))))
+        %exit  ?:(pj-is-new pj-core pj-core(cor (proj-pull ~ (quit:pj-suz pj-pa-sub)), gon &))
       ==
     ==
   --
 ::
 ++  me-core
-  |_  [lag=flag:f met=meta:meta:f]
+  |_  [lag=flag:f met=meta:meta:f gon=_|]
   ++  me-core  .
-  ++  me-abet  cor
+  ++  me-abet
+    =.  met  -:(~(gut by me-our) lag *mete:meta:f)
+    cor
   ++  me-abed
     |=  lag=flag:f
     %=  me-core
@@ -699,13 +684,9 @@
     ==
   ::
   ++  me-is-myn  =(our.bol p.lag)
-  ++  me-is-src  =(our.bol src.bol)
   ++  me-is-new  !(~(has by me-our) lag)
   ++  me-pa-pub  [%fund %meta (scot %p p.lag) q.lag ~]
   ++  me-pa-sub  [p.lag dap.bol %fund %meta (scot %p p.lag) q.lag ~]
-  ::
-  ++  me-pf-fave  pf-abet:(pf-push:(pf-abed:pf-core p.lag) [%fave lag])
-  ++  me-pf-jilt  pf-abet:(pf-push:(pf-abed:pf-core p.lag) [%jilt lag])
   ::
   ++  me-pull
     |=  res=into:me-suz
@@ -714,7 +695,6 @@
     ?:  ?|  ?=(%tomb what.res)
             &(?=(%wave what.res) ?=(%exit -.q.pok.wave.res))
         ==
-      =.  cor  me-pf-jilt
       me-core(cor (meta-pull ~ (quit:me-suz me-pa-sub)))
     me-core(cor (meta-pull (apply:me-suz res)))
   ++  me-push
@@ -728,12 +708,10 @@
           %init
         =?  cor  me-is-new  (meta-push (public:me-puz [me-pa-pub]~))
         =.  cor  (meta-push (give:me-puz me-pa-pub *vers:lake:meta:fd bol lag pod))
-        =?  cor  me-is-new  me-pf-fave
         me-core
       ::
           %drop
         =?  cor  !me-is-new  (meta-push (kill:me-puz [me-pa-pub]~))
-        =?  cor  !me-is-new  me-pf-jilt
         me-core
       ==
     ::  meta prods ::
@@ -741,25 +719,35 @@
       ::  ?>  ~|(bad-meta+mes me-is-src)
       ?:  me-is-myn  me-core
       ?-  -.pod
-          %join
-        ?.  me-is-new  me-core
-        =.  cor  (meta-pull (surf:me-suz me-pa-sub))
-        =.  cor  me-pf-fave
-        me-core
-      ::
-          %exit
-        ?:  me-is-new  me-core
-        =.  cor  (meta-pull ~ (quit:me-suz me-pa-sub))
-        =.  cor  me-pf-jilt
-        me-core
+        %join  ?.(me-is-new me-core me-core(cor (meta-pull (surf:me-suz me-pa-sub))))
+        %exit  ?:(me-is-new me-core me-core(cor (meta-pull ~ (quit:me-suz me-pa-sub)), gon &))
       ==
     ==
   --
 ::
 ++  pf-core
-  |_  [sip=@p pro=prof:prof:f lad=(map addr:f sigm:f)]
+  |_  [sip=@p pro=prof:prof:f lad=(map addr:f sigm:f) gon=_|]
   ++  pf-core  .
-  ++  pf-abet  cor(adrz.state (~(put by adrz.state) sip lad))
+  ++  pf-abet
+    ^+  cor
+    =.  pro  -:(~(gut by pf-our) sip *pref:prof:f)
+    =.  adrz.state  (~(put by adrz.state) sip lad)
+    =/  old=(set flag:f)  (~(get ju p2f.metz.state) sip)
+    ::  NOTE: We refresh everything here for a "level triggering" effect
+    ::  that causes profile metadata subs to be refreshed when "favorites" change
+    =.  metz.state
+      :_  (~(del by p2f.metz.state) sip)
+      =<  +  %^  spin  ~(tap in (~(get ju p2f.metz.state) sip))  f2p.metz.state
+      |=([n=flag:f a=(jug flag:f @p)] [n (~(del ju a) n sip)])
+    =?  metz.state  &(!gon pf-is-pals)
+      :_  (~(gas ju p2f.metz.state) (turn ~(tap in favorites.pro) (lead sip)))
+      (~(gas ju f2p.metz.state) (turn ~(tap in favorites.pro) (late sip)))
+    =/  new=(set flag:f)  (~(get ju p2f.metz.state) sip)
+    =/  joz=(list flag:f)  ~(tap in (~(dif in new) old))
+    =.  pf-core  |-(?~(joz pf-core $(pf-core (pf-me-push i.joz [%join ~]), joz t.joz)))
+    =/  exz=(list flag:f)  ~(tap in (~(dif in old) new))
+    =.  pf-core  |-(?~(exz pf-core $(pf-core (pf-me-push i.exz [%exit ~]), exz t.exz)))
+    cor
   ::
   ++  pf-abed
     |=  sip=@p
@@ -770,7 +758,6 @@
     ==
   ::
   ++  pf-is-myn  =(our.bol sip)
-  ++  pf-is-src  =(our.bol src.bol)
   ++  pf-is-new  !(~(has by pf-our) sip)
   ++  pf-pa-pub  [%fund %prof (scot %p sip) ~]
   ++  pf-pa-sub  [sip dap.bol %fund %prof (scot %p sip) ~]
@@ -778,6 +765,17 @@
   ++  pf-pf-walz
     ^-  (map addr:f sigm:f)
     (~(uni by wallets.pro) lad)
+  ++  pf-me-push
+    |=  [lag=flag:f pod=prod:meta:f]
+    ^+  pf-core
+    pf-core(cor me-abet:(me-push:(me-abed:me-core lag) pod))
+  ++  pf-is-pals
+    ^-  bean
+    =+  .^(dex=rock:tire:clay %cx (en-beam [our.bol %$ da+now.bol] /tire))
+    ?~  dek=(~(get by dex) %pals)  |
+    ?.  ?=(%live zest.u.dek)  |
+    =+  .^(taz=(set ship) %gx (en-beam [our.bol %pals da+now.bol] /targets/noun))
+    (~(has in taz) sip)
   ::
   ++  pf-pull
     |=  res=into:pf-suz
@@ -786,7 +784,7 @@
     ?:  ?|  ?=(%tomb what.res)
             &(?=(%wave what.res) ?=(%exit -.q.pok.wave.res))
         ==
-      pf-core(cor (prof-pull ~ (quit:pf-suz pf-pa-sub)))
+      pf-core(cor (prof-pull ~ (quit:pf-suz pf-pa-sub)), gon &)
     pf-core(cor (prof-pull (apply:pf-suz res)))
   ++  pf-push
     |=  pod=prod:prof:f
@@ -810,7 +808,7 @@
       ?:  pf-is-myn  pf-core
       ?-  -.pod
         %join  ?.(pf-is-new pf-core pf-core(cor (prof-pull (surf:pf-suz pf-pa-sub))))
-        %exit  ?:(pf-is-new pf-core pf-core(cor (prof-pull ~ (quit:pf-suz pf-pa-sub))))
+        %exit  ?:(pf-is-new pf-core pf-core(cor (prof-pull ~ (quit:pf-suz pf-pa-sub)), gon &))
       ==
     ==
   --

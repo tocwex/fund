@@ -20,6 +20,7 @@
 +$  data
   $:  init=_|
       adrz=(map @p (map addr:fund sigm:fund))
+      metz=[f2p=(jug flag:fund @p) p2f=(jug @p flag:fund)]
       proj-subs=_(mk-subs:sss lake:sss-proj path:sss-proj)
       proj-pubs=_(mk-pubs:sss lake:sss-proj path:sss-proj)
       meta-subs=_(mk-subs:sss lake:sss-meta path:sss-meta)

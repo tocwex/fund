@@ -799,7 +799,16 @@
         pf-core(lad (~(put by lad) from.sig.pod sig.pod))
       ?>  ~|(bad-pf-push+mes pf-is-myn)
       =?  cor  pf-is-new  (prof-push (public:pf-puz [pf-pa-pub]~))
-      pf-core(cor (prof-push (give:pf-puz pf-pa-pub *vers:lake:prof:fd bol sip pod)))
+      ::  NOTE: Only prompt a push if new information is being provided
+      =-  =?  cor  new  (prof-push (give:pf-puz pf-pa-pub *vers:lake:prof:fd bol sip pod))
+          pf-core
+      ^-  new=?
+      ?-  -.pod
+        %sign  !(~(has by wallets.pro) from.sig.pod)
+        %surl  !=(url.pod ship-url.pro)
+        %fave  !(~(has in favorites.pro) lag.pod)
+        %jilt  (~(has in favorites.pro) lag.pod)
+      ==
     ::  meta prods ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is

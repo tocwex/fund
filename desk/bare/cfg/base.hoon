@@ -16,6 +16,6 @@
     [%meta-help !>('https://docs.tocwexsyndicate.com')]
     [%meta-tlon !>('https://tlon.network/lure/~tocwex/syndicate-public')]
     [%meta-aset !>('https://90981e03b3525c060ac438353e4a3300.cdn.bubble.io')]
-    [%meta-logo !>('https://90981e03b3525c060ac438353e4a3300.cdn.bubble.io/f1719738413646x112725681729831660/Fund%20Wordmark.svg')]
+    [%meta-logo !>('https://sfo3.digitaloceanspaces.com/sarlev-sarsen/sarlev-sarsen/2024.4.29..23.58.31..2b02.0c49.ba5e.353f-IMG_4726.jpeg')]
     [%meta-desc !>('%fund: A sovereign webapp built by ~toxwex.syndicate on an integrated blockchain escrow ecosystem for human created, understood, and assessed "wise contracts".')]
 ==

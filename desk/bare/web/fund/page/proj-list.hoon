@@ -1,6 +1,6 @@
 ::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
-/-  fd=fund-data
+/-  fd=fund-data, fm=fund-meta
 /+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder
 %-  :(corl mine:preface:fh init:preface:fh)
@@ -57,12 +57,19 @@
                     %+  skip  ouz
                     |=  [[sip=@p *] pro=proj:f liv=?]
                     ?|  =(sip our.bol)
-                        (~(has in (~(rols pj:f pro) sip our.bol)) %fund)
+                        !=(~ (~(rols pj:f pro) sip our.bol))
                     ==
-                  ::  :+  "Projects from %pals"  %none
-                  ::    *(list [flag:f prej:f])
               ==
             ==
+        ;*  ?.  ?=(%funder dyp)  ~
+            =/  mez
+              %+  skim  ~(tap by ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat))
+              |=  [[sip=@p *] met=meta:fm liv=?]
+              !=(sip our.bol)
+            %+  turn  mez
+            |=  [lag=flag:f met=meta:fm liv=?]
+            ^-  manx
+            ;p: {(flag:enjs:ff:fh lag)}
       ==
   ++  prez-welz
     |=  [tyt=tape typ=welz-type pez=(list [flag:f prej:f])]

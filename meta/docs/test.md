@@ -19,8 +19,7 @@ These tests must be run on `~zod` in order to work!
 =po1 p(title 't', summary 'd', assessment [our 0], milestones miz, currency sepolia-usdc:coin:x)
 =sig 0xd0.c895.66e4.8bc9.0bd0.e92f.f9f2.85c5.6458.d91f.ee51.0290.2d09.eae6.6908.f0b4.6443.3d19.3121.987b.842e.8ba5.d8a5.c047.c587.d6f8.8ae2.3f23.df9e.b971.6e3d.f741.921b
 =si1 `sigm:f`[sig ad1 [%& (crip (~(oath pj:f po1) our))]]
-:fund &fund-poke [%proj [our %test] %init ~]
-:fund &fund-poke [%proj [our %test] %init `po1]
+:fund &fund-poke [%proj [our %test] %init po1]
 :fund &fund-poke [%proj [our %test] %bump %prop ~]
 :fund &fund-poke [%proj [our %test] %bump %born ~]
 :fund &fund-poke [%proj [our %test] %bump %prop ~]
@@ -38,8 +37,7 @@ These tests must be run on `~zod` in order to work!
 :fund &fund-poke [%proj [our %test] %mula %trib `our 1.000.000 s(xact [5 0x0]) '']
 :fund &fund-poke [%proj [our %test] %mula %plej our 50.000.000 6 (crip "{<our>} plej")]
 :fund &fund-poke [%proj [our %test] %draw 0 [7 0x0]]
-:fund &fund-poke [%proj [our %tes2] %init ~]
-:fund &fund-poke [%proj [our %tes2] %init `p(title '5', summary '%', assessment [~nec 1.000.000], currency sepolia-usdc:coin:x, milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
+:fund &fund-poke [%proj [our %tes2] %init p(title '5', summary '%', assessment [~nec 1.000.000], currency sepolia-usdc:coin:x, milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
 :fund &fund-poke [%proj [our %tes2] %bump %prop ~]
 :fund &fund-poke [%prof ~nec %join ~]
 ```
@@ -104,7 +102,7 @@ test commands).
 .^((unit prof:prof:f) %gx /=fund=/prof/(scot %p our)/noun)
 .^((list addr:f) %gx /=fund=/prof/(scot %p our)/adrz/noun)
 .^((unit sigm:f) %gx /=fund=/prof/(scot %p our)/addr/(scot %ux 0x0)/noun)
-.^([hoz=(set flag:f) faz=(set flag:f) mez=(set flag:f)] %gx /=fund=/view/noun)
+.^([host=(set @t) fave=(set @t) meta=(set @t) prof=(set @p)] %gx /=fund=/view/noun)
 ```
 
 ### JSON Tests ###

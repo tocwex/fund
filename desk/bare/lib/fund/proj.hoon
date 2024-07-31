@@ -73,6 +73,15 @@
     =-  ?^(- i.- [(lent miz) (rear miz)])
     %+  skip  (enum:fx miz)
     |=([@ n=mile] ?=(?(%done %dead) status.n))
+  ++  whos                                       ::  all ships involved in the project
+    ^-  (set @p)
+    %-  silt
+    ^-  (list @p)
+    ;:  welp
+        [p.assessment]~
+        (turn ~(val by pledges) |=([p=^plej *] ship.p))
+        (murn ~(val by contribs) |=([t=treb *] ship.t))
+    ==
   ++  rols                                       ::  project $role(s) of user
     |=  [wox=@p who=@p]
     ^-  (set role)

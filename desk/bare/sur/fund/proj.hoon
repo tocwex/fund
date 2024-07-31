@@ -57,14 +57,14 @@
 ::
 +$  prod
   $%  ::  proj prods  ::
-      [%init pro=(unit proj)]
+      [%init pro=proj]
       [%drop ~]
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
       [%blot mid=@ dif=blot]
       [%draw min=@ dif=xact]
       [%wipe min=@ sig=(unit sigm)]
-      ::  [%load ~]  ::  reload ethereum state
+      [%redo ~]
       ::  meta prods  ::
       [%join ~]
       [%exit ~]

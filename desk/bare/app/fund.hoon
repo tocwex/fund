@@ -12,7 +12,7 @@
 ^-  agent:gall
 =|  state-now
 =*  state  -
-=<  =-  ?.  !<(bean (slot:config %debug))  -
+=<  =-  ?.  !<(? (slot:config %debug))  -
         (verb & (agent:dbug (agent:tonic -)))
     %-  (agent:vita-client | !<(@p (slot:config %point)))
     |_  bol=bowl:gall
@@ -63,7 +63,7 @@
 ++  init
   ^+  cor
   =.  cor  open-eyre:action
-  =.  cor  update-prof:action
+  =.  cor  renew-surl:action
   cor
 ::
 ++  load
@@ -84,9 +84,6 @@
   ++  move-1-2
     |=  old=state-1
     ^-  state-2
-    ::  TODO: Populate profile and meta here...!
-    ::  For metadata, take all projects and extract profile data, using
-    ::  the same flag as existing
     =+  new=*state-2  %_  new
       init       init.old
       proj-subs  subs.old
@@ -147,7 +144,7 @@
   ::  native pokes  ::
       %fund-poke
     =+  !<(pok=poke:f vas)
-    ~?  !<(bean (slot:config %debug))   pok
+    ~?  !<(? (slot:config %debug))   pok
     ?-    -.pok
       %proj  pj-abet:(pj-push:(pj-abed:pj-core p.pok) q.pok)
       %meta  me-abet:(me-push:(me-abed:me-core p.pok) q.pok)
@@ -176,8 +173,23 @@
       %sss-to-pub
     ?-  msg=!<($%(into:pj-puz into:me-puz into:pf-puz) (fled vas))
       [[%fund %proj *] *]  (proj-push (apply:pj-puz msg))
-      [[%fund %meta *] *]  (meta-push (apply:me-puz msg))
       [[%fund %prof *] *]  (prof-push (apply:pf-puz msg))
+    ::
+        [[%fund %meta *] *]
+      ::  NOTE: First-time subs to the meta for a project are often upgrading
+      ::  ships for which the host/worker may be missing the profile
+      =*  pro  pro:(pj-abed:pj-core (flag:meta:fd path.msg))
+      =?  cor  (~(has in ~(whos pj:fj pro)) src.bol)
+        (toggle-profs:action & (silt [src.bol]~))
+      (meta-push (apply:me-puz msg))
+    ==
+  ::
+      %sss-surf-fail
+    =-  ~?(!<(? (slot:config %debug)) "%fund: failed to sub to {-}" cor)
+    ?-  msg=!<($%(fail:pj-suz fail:me-suz fail:pf-suz) (fled vas))
+      [[%fund %proj *] *]  "%proj {(flag:enjs:ff:fh (flag:proj:fd -.msg))}"
+      [[%fund %meta *] *]  "%meta {(flag:enjs:ff:fh (flag:meta:fd -.msg))}"
+      [[%fund %prof *] *]  "%prof {<(flag:prof:fd -.msg)>}"
     ==
   ::
       %sss-proj
@@ -204,7 +216,7 @@
     :^  pagz  route:fh  (fours:rudder +.state)
     |=  dif=diff:fd
     ^-  $@(brief:rudder [brief:rudder (list card) data:fd])
-    =-  ~?(!<(bean (slot:config %debug)) bre [bre kaz dat])
+    =-  ~?(!<(? (slot:config %debug)) bre [bre kaz dat])
     ^-  [bre=brief:rudder dat=data:fd kaz=(list card)]
     =/  aply
       |=  dif=diff:fd
@@ -231,10 +243,13 @@
   ^-  (unit (unit cage))
   ?+    pat  [~ ~]
       [%x %view ~]
-    =/  hoz=(set flag:f)  ~(key by pj-myn)
-    =/  faz=(set flag:f)  favorites:pro:(pf-abed:pf-core our.bol)
-    =/  mez=(set flag:f)  ~(key by me-our)
-    ``noun+!>([hoz faz mez])
+    =+  flat=(cork flag:enjs:ff:fh crip)
+    :^  ~  ~  %noun  !>
+    :*  host=(~(run in ~(key by pj-myn)) flat)
+        fave=(~(run in favorites:pro:(pf-abed:pf-core our.bol)) flat)
+        meta=(~(run in ~(key by me-our)) flat)
+        prof=(~(run in ~(key by pf-our)) (cury scot %p))
+    ==
   ::
       [%u %proj sip=@ nam=@ ~]
     =/  sip=@p    (slav %p sip.pat)
@@ -307,8 +322,8 @@
       ?.  ?=(%pals-effect p.cage.syn)  cor
       =+  !<(pef=effect:p q.cage.syn)
       ?+  -.pef  cor
-        %meet  (diff-profs:action & (silt [ship.pef]~))
-        %part  (diff-profs:action | (silt [ship.pef]~))
+        %meet  (toggle-profs:action & (silt [ship.pef]~))
+        %part  (toggle-profs:action | (silt [ship.pef]~))
       ==
     ==
   ::  proj responses  ::
@@ -390,30 +405,37 @@
     ?+    syn  cor
         [%behn %wake *]
       ?^  error.syn  ((slog u.error.syn) cor)
-      ~?  !<(bean (slot:config %debug))   "%fund: updating profile"
-      update-prof:action
+      ~?  !<(? (slot:config %debug))   "%fund: updating profile"
+      renew-surl:action
     ==
   ==
 ::
 ++  open
   ^+  cor
-  =.  cor  update-prof:action
-  =.  cor  watch-profs:action
-  =.  cor  watch-metas:action
+  =/  old=?  !(~(has by pf-myn) our.bol)
+  =.  cor  renew-surl:action
   =.  cor  watch-pals:action
   =.  cor  watch-chains:action
+  =?  cor  old  renew-projs:action
   cor
 ++  action
   |%
-  ++  diff-profs
-    |=  [new=? siz=(set @p)]
+  ++  open-eyre                                  ::  open up HTTP %eyre channel
     ^+  cor
-    =/  lis=(list @p)  ~(tap in siz)
-    |-
-    ?~  lis  cor
-    =/  pod=prod:prof:f  ?:(new [%join ~] [%exit ~])
-    $(cor pf-abet:(pf-push:(pf-abed:pf-core i.lis) pod), lis t.lis)
-  ++  update-prof
+    %-  emit
+    :*  %pass     /eyre/connect
+        %arvo     %e
+        %connect  `/apps/[dap.bol]  dap.bol
+    ==
+  ++  watch-pals                                 ::  watch %pals /targets endpoint
+    ^+  cor
+    ?:  (~(has by wex.bol) /fund/pals our.bol %pals)  cor
+    %-  emit
+    :*  %pass   /fund/pals
+        %agent  [our.bol %pals]
+        %watch  /targets
+    ==
+  ++  renew-surl                                 ::  update ship url
     ^+  cor
     =.  cor  pf-abet:(pf-push:(pf-abed:pf-core our.bol) [%surl (crip (burl:fh bol))])
     =/  wyr=path  /fund/prof/update
@@ -430,40 +452,19 @@
     ?&  ?=(^ (find wyr pat))
         ?=(^ (find /gall/use/fund pat))
     ==
-  ++  open-eyre
+  ++  renew-projs                                ::  invoke project level triggers
     ^+  cor
-    %-  emit
-    :*  %pass     /eyre/connect
-        %arvo     %e
-        %connect  `/apps/[dap.bol]  dap.bol
+    =/  lis=(list flag:f)  ~(tap in ~(key by pj-our))
+    |-
+    ?~  lis  cor
+    %=  $
+      lis  t.lis
+    ::
+        cor
+      ?.  =(p.i.lis our.bol)  pj-abet:(pj-abed:pj-core i.lis)
+      pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~])
     ==
-  ++  watch-profs
-    ^+  cor
-    =-  (diff-profs & -)
-    ^-  (set @p)
-    %-  ~(rep by pj-myn)
-    |=  [[flag:f pro=proj:proj:f lyv=?] acc=(set @p)]
-    %-  ~(uni in acc)
-    %-  silt
-    ^-  (list @p)
-    ;:  welp
-        [p.assessment.pro]~
-        (turn ~(val by pledges.pro) |=([p=plej:f *] ship.p))
-        (murn ~(val by contribs.pro) |=([t=treb:f *] ship.t))
-    ==
-  ++  watch-metas
-    ^+  cor
-    ::  TODO: List is all existing projs for which there is no
-    ::  corresponding meta
-    cor
-  ++  watch-pals
-    ^+  cor
-    %-  emit
-    :*  %pass   /fund/pals
-        %agent  [our.bol %pals]
-        %watch  /targets
-    ==
-  ++  watch-chains
+  ++  watch-chains                               ::  open subs on proj chains
     ^+  cor
     =/  poz=(map flag:f proj:proj:f)             ::  post-%lock projects
       %-  ~(rep by pj-myn)
@@ -493,6 +494,14 @@
         %agent  [our.bol %fund-watcher]
         %poke   fund-watcher-poke+!>([%watch pax cfg])
     ==
+  ++  toggle-profs                               ::  toggle profile follow status
+    |=  [ahn=? siz=(set @p)]
+    ^+  cor
+    =/  lis=(list @p)  ~(tap in siz)
+    |-
+    ?~  lis  cor
+    =/  pod=prod:prof:f  ?:(ahn [%join ~] [%exit ~])
+    $(cor pf-abet:(pf-push:(pf-abed:pf-core i.lis) pod), lis t.lis)
   --
 ::
 ++  pj-core
@@ -501,14 +510,13 @@
   ++  pj-abet
     =.  pro  -:(~(gut by pj-our) lag *prej:proj:f)
     =?  pj-core  &(pj-is-myn ?=(%lock ~(stat pj:fj pro)))
-      (pj-me-push [%init `pj-me-met])
-    =?    pj-core
-        ?&  ?!  (~(has in favorites:pro:(pf-abed:pf-core our.bol)) lag)
-            ?!  ?=(?(%born %prop) ~(stat pj:fj pro))
-        ==
+      (pj-me-push [%init pj-me-met])
+    =?  pj-core  !?=(?(%born %prop) ~(stat pj:fj pro))
       (pj-pf-push [%fave lag])
     =?  pj-core  gon
       (pj-pf-push [%jilt lag])
+    =?  cor  &(pj-is-myn !gon)
+      (toggle-profs:action & ~(whos pj:fj pro))
     =?  pj-core  &(pj-is-myn gon)
       (pj-me-push [%drop ~])
     cor
@@ -663,7 +671,6 @@
       ::  ?>  ~|(bad-meta+mes pj-is-src)
       ?:  pj-is-myn  pj-core
       ?-  -.pod
-        ::  TODO: Join metadata (?)
         %join  ?.(pj-is-new pj-core pj-core(cor (proj-pull (surf:pj-suz pj-pa-sub))))
         %exit  ?:(pj-is-new pj-core pj-core(cor (proj-pull ~ (quit:pj-suz pj-pa-sub)), gon &))
       ==
@@ -673,9 +680,7 @@
 ++  me-core
   |_  [lag=flag:f met=meta:meta:f gon=_|]
   ++  me-core  .
-  ++  me-abet
-    =.  met  -:(~(gut by me-our) lag *mete:meta:f)
-    cor
+  ++  me-abet  cor
   ++  me-abed
     |=  lag=flag:f
     %=  me-core
@@ -707,7 +712,9 @@
       ?-    -.pod
           %init
         =?  cor  me-is-new  (meta-push (public:me-puz [me-pa-pub]~))
-        =.  cor  (meta-push (give:me-puz me-pa-pub *vers:lake:meta:fd bol lag pod))
+        ::  NOTE: Only prompt a push if new information is being provided
+        =?  cor  !=(met met.pod)
+          (meta-push (give:me-puz me-pa-pub *vers:lake:meta:fd bol lag pod))
         me-core
       ::
           %drop
@@ -739,11 +746,12 @@
       :_  (~(del by p2f.metz.state) sip)
       =<  +  %^  spin  ~(tap in (~(get ju p2f.metz.state) sip))  f2p.metz.state
       |=([n=flag:f a=(jug flag:f @p)] [n (~(del ju a) n sip)])
-    =?  metz.state  &(!gon pf-is-pals)
+    =?  metz.state  &(!gon |(pf-is-myn pf-is-pals))
       :_  (~(gas ju p2f.metz.state) (turn ~(tap in favorites.pro) (lead sip)))
       (~(gas ju f2p.metz.state) (turn ~(tap in favorites.pro) (late sip)))
     =/  new=(set flag:f)  (~(get ju p2f.metz.state) sip)
-    =/  joz=(list flag:f)  ~(tap in (~(dif in new) old))
+    =/  joz=(list flag:f)  ~(tap in new)  ::  FIXME: Join all to fix peer upgrades
+    ::  =/  joz=(list flag:f)  ~(tap in (~(dif in new) old))
     =.  pf-core  |-(?~(joz pf-core $(pf-core (pf-me-push i.joz [%join ~]), joz t.joz)))
     =/  exz=(list flag:f)  ~(tap in (~(dif in old) new))
     =.  pf-core  |-(?~(exz pf-core $(pf-core (pf-me-push i.exz [%exit ~]), exz t.exz)))

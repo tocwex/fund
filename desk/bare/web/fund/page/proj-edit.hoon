@@ -39,7 +39,7 @@
     ::
         %init
       ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %can %tok %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
-        :+  %init  ~
+        :-  %init
         =/  con=coin:f
           %+  ~(got by cmap:fc)
             (bloq:dejs:ff:fh (~(got by p.arz) %can))

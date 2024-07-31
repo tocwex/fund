@@ -110,7 +110,11 @@
         vers:pold
       =-  $(vav [*vers -])
       ?+    +.vav      +.vav
-        [* * %init *]  [bol.vav p.pok.vav %init (bind pro.q.pok.vav |=(p=proj:pold ~(proj up p)))]
+          [* * %init *]
+        :^  bol.vav  p.pok.vav  %init
+        %-  fall  :_  *proj
+        (bind pro.q.pok.vav |=(p=proj:pold ~(proj up p)))
+      ::
         ::  NOTE: %mula from v1.1.0- will just be underreported! There
         ::  should be no victims of this omission (on mainnet at least)
         ::  [* * %mula *]  ...
@@ -149,11 +153,10 @@
         %init
       ?>  aver-work
       ?>  =(%born sat)
-      ?~  pro.pod  pro
-      ?>  =(%born ~(stat pj u.pro.pod))
+      ?>  =(%born ~(stat pj pro.pod))
       ::  NOTE: For now, stars and galaxies only
-      ?>  (star:fx p.assessment.u.pro.pod)
-      u.pro.pod
+      ?>  (star:fx p.assessment.pro.pod)
+      pro.pod
     ::
         %bump
       =/  [min=@ mil=mile]  ~(next pj pro)
@@ -315,6 +318,17 @@
       ?>  (peer-sigm u.sig.pod)
       =+  fil=?:(?=(%done status.mil) fill.mod (sub ~(fill pj pro) ~(take pj pro)))
       (edit-mile min mil(withdrawal `[~ u.sig.pod fil ~]))
+    ::
+        %redo
+      %_    pro
+        proofs    proofs:*proj
+        contribs  (~(run by contribs.pro) |=([t=treb d=deta] [t(pruf ~) d]))
+      ::
+          milestones
+        ;;  (lest mile)
+        %+  turn  milestones.pro
+        |=(m=mile m(withdrawal (bind withdrawal.m |=(w=with w(pruf ~)))))
+      ==
     ==
   --
 --

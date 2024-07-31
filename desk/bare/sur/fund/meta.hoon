@@ -27,7 +27,7 @@
 ::
 +$  prod
   $%  ::  data prods  ::
-      [%init met=(unit meta)]
+      [%init met=meta]
       [%drop ~]
       ::  meta prods  ::
       [%join ~]

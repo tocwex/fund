@@ -52,8 +52,7 @@
     :-  *vers
     ?+    -.pod  met
         %init
-      ?~  met.pod  met
-      u.met.pod
+      met.pod
     ==
   --
 --

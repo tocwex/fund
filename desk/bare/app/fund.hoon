@@ -531,18 +531,16 @@
     |=  oat=(unit oath:f)
     ^-  (list card)
     =+  oaf=(fall (clap oat contract.pro head) *oath:f)
-    =+  .^(paz=(set path) %gx (en-beam [our.bol %fund-watcher da+now.bol] /dogs/noun))
     %-  zing
     %+  turn  (scan-cfgz:fc oaf currency.pro)
     |=  [suf=path cfg=config:fc]
     ^-  (list card)
     =/  pat=path  (welp pj-pa-pub suf)
     =+  car=[%pass pat %agent [our.bol %fund-watcher] act=~]
-    ?.  (~(has in paz) pat)
-      [car(act [%poke %fund-watcher-poke !>([%watch pat cfg])])]~
-    ?.  (~(has by wex.bol) pat our.bol %fund-watcher)
-      [car(act [%watch [%logs pat]])]~
-    ~[car(act [%leave ~]) car(act [%watch [%logs pat]])]
+    ;:  welp
+        ?.((~(has by wex.bol) pat our.bol %fund-watcher) ~ [car(act [%leave ~])]~)
+        [car(act [%poke %fund-watcher-poke !>([%watch pat cfg])])]~
+    ==
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f
@@ -720,18 +718,18 @@
   ++  pf-abet
     ^+  cor
     =.  pro  -:(~(gut by pf-our) sip *pref:prof:f)
-    =.  adrz.state  (~(put by adrz.state) sip lad)
-    =/  old=(set flag:f)  (~(get ju p2f.metz.state) sip)
+    =.  adrz-loql.state  (~(put by adrz-loql.state) sip lad)
+    =/  old=(set flag:f)  (~(get ju p2f.meta-srcs.state) sip)
     ::  NOTE: We refresh everything here for a "level triggering" effect
     ::  that causes profile metadata subs to be refreshed when "favorites" change
-    =.  metz.state
-      :_  (~(del by p2f.metz.state) sip)
-      =<  +  %^  spin  ~(tap in (~(get ju p2f.metz.state) sip))  f2p.metz.state
+    =.  meta-srcs.state
+      :_  (~(del by p2f.meta-srcs.state) sip)
+      =<  +  %^  spin  ~(tap in (~(get ju p2f.meta-srcs.state) sip))  f2p.meta-srcs.state
       |=([n=flag:f a=(jug flag:f @p)] [n (~(del ju a) n sip)])
-    =?  metz.state  &(!gon |(pf-is-myn pf-is-pals))
-      :_  (~(gas ju p2f.metz.state) (turn ~(tap in favorites.pro) (lead sip)))
-      (~(gas ju f2p.metz.state) (turn ~(tap in favorites.pro) (late sip)))
-    =/  new=(set flag:f)  (~(get ju p2f.metz.state) sip)
+    =?  meta-srcs.state  &(!gon |(pf-is-myn pf-is-pals))
+      :_  (~(gas ju p2f.meta-srcs.state) (turn ~(tap in favorites.pro) (lead sip)))
+      (~(gas ju f2p.meta-srcs.state) (turn ~(tap in favorites.pro) (late sip)))
+    =/  new=(set flag:f)  (~(get ju p2f.meta-srcs.state) sip)
     =/  joz=(list flag:f)  ~(tap in new)  ::  FIXME: Join all to fix peer upgrades
     ::  =/  joz=(list flag:f)  ~(tap in (~(dif in new) old))
     =.  pf-core  |-(?~(joz pf-core $(pf-core (pf-me-push i.joz [%join ~]), joz t.joz)))
@@ -744,7 +742,7 @@
     %=  pf-core
       sip  sip
       pro  -:(~(gut by pf-our) sip *pref:prof:f)
-      lad  (~(gut by adrz.state) sip *_lad)
+      lad  (~(gut by adrz-loql.state) sip *_lad)
     ==
   ::
   ++  pf-is-myn  =(our.bol sip)

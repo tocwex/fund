@@ -415,7 +415,6 @@
   =/  old=?  !(~(has by pf-myn) our.bol)
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  =.  cor  watch-chains:action
   =?  cor  old  renew-projs:action
   cor
 ++  action
@@ -463,36 +462,6 @@
         cor
       ?.  =(p.i.lis our.bol)  pj-abet:(pj-abed:pj-core i.lis)
       pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~])
-    ==
-  ++  watch-chains                               ::  open subs on proj chains
-    ^+  cor
-    =/  poz=(map flag:f proj:proj:f)             ::  post-%lock projects
-      %-  ~(rep by pj-myn)
-      |=  [[lag=flag:f pre=prej:proj:f] acc=(map flag:f proj:proj:f)]
-      ?:(?=(?(%born %prop) ~(stat pj:fj -.pre)) acc (~(put by acc) lag -.pre))
-    =/  liz=(set flag:f)                         ::  live %fund-watcher flags
-      %-  ~(rep by wex.bol)
-      |=  [[[wire sip=@p dek=@tas] [ack=? pat=(pole knot)]] acc=(set flag:f)]
-      ?.  ?&  =(sip our.bol)
-              =(dek %fund-watcher)
-              ack
-              ?=([%logs %fund %proj sip=@ nam=@ %scan ?(%with %depo) ~] pat)
-          ==
-        acc
-      (~(put in acc) (slav %p sip.pat) (slav %tas nam.pat))
-    =/  waz=(set flag:f)  (~(dif in ~(key by poz)) liz)
-    %-  emil  %-  zing
-    %+  turn  ~(tap in waz)
-    |=  lag=flag:f
-    ^-  (list card)
-    =/  pro=proj:proj:f  (~(got by poz) lag)
-    %+  turn  (scan-cfgz:fc (need contract.pro) currency.pro)
-    |=  [pat=path cfg=config:fc]
-    =/  pax=path  (welp /fund/proj/(scot %p p.lag)/[q.lag] pat)
-    ^-  card
-    :*  %pass   pax
-        %agent  [our.bol %fund-watcher]
-        %poke   fund-watcher-poke+!>([%watch pax cfg])
     ==
   ++  toggle-profs                               ::  toggle profile follow status
     |=  [ahn=? siz=(set @p)]
@@ -558,6 +527,23 @@
         %agent  [who dap.bol]
         %poke   fund-poke+!>([%proj lag pod])
     ==
+  ++  pj-mk-scan
+    |=  oat=(unit oath:f)
+    ^-  (list card)
+    =+  oaf=(fall (clap oat contract.pro head) *oath:f)
+    =+  .^(paz=(set path) %gx (en-beam [our.bol %fund-watcher da+now.bol] /dogs/noun))
+    %-  zing
+    %+  turn  (scan-cfgz:fc oaf currency.pro)
+    |=  [suf=path cfg=config:fc]
+    ^-  (list card)
+    =/  pat=path  (welp pj-pa-pub suf)
+    =+  car=[%pass pat %agent [our.bol %fund-watcher] act=~]
+    ?.  (~(has in paz) pat)
+      [car(act [%poke %fund-watcher-poke !>([%watch pat cfg])])]~
+    ?.  (~(has by wex.bol) pat our.bol %fund-watcher)
+      [car(act [%watch [%logs pat]])]~
+    ~[car(act [%leave ~]) car(act [%watch [%logs pat]])]
+  ::
   ++  pj-do-read
     |=  pod=prod:proj:f
     ^-  bean
@@ -614,6 +600,10 @@
           %draw
         (pj-pj-push pod(p.dif pj-pj-bloq))
       ::
+          %redo
+        =?  cor  !?=(?(%born %prop) ~(stat pj:fj pro))  (emil (pj-mk-scan ~))
+        (pj-pj-push pod)
+      ::
           %mula
         ::  NOTE: The `+wash:lake` function cannot contain any scries,
         ::  so the `fund` app needs to filter incoming pokes with block
@@ -645,16 +635,8 @@
           (pj-mk-card p.assessment.pro [%lure p.assessment.pro %orac])
         ::
             %lock
-          ?~  oat.pod  pj-core
           =-  pj-core(cor (emil -))
-          %+  turn  (scan-cfgz:fc u.oat.pod currency.pro)
-          |=  [pat=path cfg=config:fc]
-          =/  pax=path  (welp pj-pa-pub pat)
-          ^-  card
-          :*  %pass   pax
-              %agent  [our.bol %fund-watcher]
-              %poke   fund-watcher-poke+!>([%watch pax cfg])
-          ==
+          (pj-mk-scan oat.pod)
         ==
       ==
     ::  meta prods ::

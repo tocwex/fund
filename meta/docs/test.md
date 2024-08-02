@@ -102,7 +102,7 @@ test commands).
 .^((unit prof:prof:f) %gx /=fund=/prof/(scot %p our)/noun)
 .^((list addr:f) %gx /=fund=/prof/(scot %p our)/adrz/noun)
 .^((unit sigm:f) %gx /=fund=/prof/(scot %p our)/addr/(scot %ux 0x0)/noun)
-.^([host=(set @t) fave=(set @t) meta=(set @t) prof=(set @p)] %gx /=fund=/view/noun)
+.^([host=(set @t) fave=(set @t) meta=(set @t) prof=(set @t)] %gx /=fund=/view/noun)
 ```
 
 ### JSON Tests ###

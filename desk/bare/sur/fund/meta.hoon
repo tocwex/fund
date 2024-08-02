@@ -7,6 +7,7 @@
   $:  title=@t
       cost=cash
       currency=coin
+      launch=bloq
       worker=@p
       oracle=@p
   ==

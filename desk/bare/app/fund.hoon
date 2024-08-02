@@ -500,7 +500,15 @@
   ++  pj-is-new  !(~(has by pj-our) lag)
   ++  pj-pa-pub  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  pj-pa-sub  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
-  ++  pj-me-met  `meta:meta:f`[title.pro ~(cost pj:fj pro) currency.pro p.lag p.assessment.pro]
+  ++  pj-me-met
+    ^-  meta:meta:f
+    :*  title=title.pro
+        cost=~(cost pj:fj pro)
+        currency=currency.pro
+        launch=p:xact:(fall contract.pro *oath:f)
+        worker=p.lag
+        oracle=p.assessment.pro
+    ==
   ::
   ++  pj-pj-bloq
     ^-  @

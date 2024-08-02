@@ -67,6 +67,12 @@
         (turn ~(val by proofs) |=(p=pruf `^mula`[%pruf p]))
         (murn miz |=(m=mile `(unit ^mula)`?~(withdrawal.m ~ (bind pruf.u.withdrawal.m (lead %pruf)))))
     ==
+  ++  bloq                                       ::  project-wide latest block
+    ^-  ^bloq
+    =/  mul=(list ^mula)  mula
+    =/  moq=^bloq  ?~(mul 0 (tula:fc i.mul))
+    =/  loq=^bloq  p:xact:(fall contract *^oath)
+    (max loq moq)
   ++  next                                       ::  next active milestone
     ^-  [min=@ mil=mile]
     ::  NOTE: Provide index past last milestone when all are completed

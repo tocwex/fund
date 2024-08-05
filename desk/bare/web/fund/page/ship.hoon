@@ -30,10 +30,11 @@
       ;data#ship(value "{<src.bol>}");
       ;+  =-  ;data#wallets(value wap);
           ^-  wap=tape
-          ?~  waz=(~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) src.bol)  ~
-          %-  zing  %+  join  " "
-          ^-  (list tape)
-          (turn ~(tap in ~(key by wallets.u.waz)) addr:enjs:ff:fh)
+          =-  (zing (join " " (turn waz addr:enjs:ff:fh)))
+          .^  waz=(list addr:f)
+              %gx
+              (en-beam [our.bol dap.bol da+now.bol] /prof/(scot %p src.bol)/adrz/noun)
+          ==
     ==
   ==
 --

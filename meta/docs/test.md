@@ -162,6 +162,12 @@ need to be accounted for:
   It's good to test this endpoint as a first step when debugging issues with
   eAuth on a particular ship.
 
+# Enable Debug Mode #
+
+```
+-fund!config & /xtra/fake/hoon
+```
+
 # Ethereum Testing #
 
 Here are some of the basic queries that can be submitted to `%fund-watcher` (a

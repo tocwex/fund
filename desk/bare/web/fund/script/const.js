@@ -8,10 +8,12 @@ export const NETWORK = Object.freeze({
   ID: Object.freeze({
     ETHEREUM: 1,
     SEPOLIA: 11155111,
+    NONE: 9223372036854776000,
   }),
   NAME: Object.freeze({
     1: "ETHEREUM",
     11155111: "SEPOLIA",
+    9223372036854776000: "NONE",
   }),
   RPC: Object.freeze({
     // NOTE: Make it at least nontrivial to sniff out and steal these API keys

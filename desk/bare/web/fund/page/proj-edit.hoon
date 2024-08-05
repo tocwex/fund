@@ -329,7 +329,7 @@
           },
           updateProj() {
             const amount = this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2);
-            this.proj_cost = (this.proj_stok.includes('USDC'))
+            this.proj_cost = (this.proj_stok.includes('USDC') || this.proj_stok === 'OOBP')
               ? `\$${amount}`
               : `${amount} \$${this.proj_stok}`;
           },

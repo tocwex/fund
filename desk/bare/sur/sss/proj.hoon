@@ -138,6 +138,9 @@
         ++  dead-milz
           |=  oat=oath
           ?>  (team-sigm sigm.oat)
+          ?>  ?|  ?=([%| @ux] mesg.sigm.oat)
+                  =((crip (~(bail pj pro) (dec (lent miz)) %dead)) +.mesg.sigm.oat)
+              ==
           %_    pro
               milestones
             ;;  (lest mile)
@@ -179,12 +182,13 @@
               %prop
             =+  sig=sigm:(need oat.pod)
             ?>  %.  (trip `@t`p.mesg.sig)
+                ::  NOTE: Try all versions listed in simple type union `over`
                 %~  has  in  %-  silt
-                :~  (~(vath pj pro) our.bol %v1-1-0)
-                    (~(vath pj pro) our.bol %v1-0-0)
-                    (~(vath pj pro) our.bol %v0-4-0)
-                    (~(vath pj pro) our.bol %v0-0-0)
-                ==
+                =-  (turn vez |=(v=@ (~(vath pj pro) our.bol ;;(over v))))
+                ^-  vez=(list @)
+                =/  typ=type  ~(repo ut -:!>(*over))
+                ?>  ?=([%hint * %fork *] typ)
+                (murn ~(tap in p.q.typ) |=(t=type ?>(?=([%atom *] t) q.t)))
             ?>  (csig:fc sig)
             =+(o=*oath `o(sigm sig))
           ::
@@ -215,6 +219,9 @@
           =/  sig=sigm  sigm:(need oat.pod)
           =/  mod=odit  (snag min ~(odim pj pro))
           ?>  (orac-sigm sig)
+          ?>  ?|  ?=([%| @ux] mesg.sig)
+                  =((crip (~(bail pj pro) min sat.pod)) +.mesg.sig)
+              ==
           (edit-mile min mil(status sat.pod, withdrawal `[~ sig fill.mod ~]))
         ?:  ?=(%dead sat.pod)
           (dead-milz (need oat.pod))
@@ -316,6 +323,9 @@
       =/  mod=odit  (snag min ~(odim pj pro))
       ?~  sig.pod  (edit-mile min mil(withdrawal ~))
       ?>  (peer-sigm u.sig.pod)
+      ?>  ?|  ?=([%| @ux] mesg.u.sig.pod)
+              =((crip (~(bail pj pro) min status.mil)) +.mesg.u.sig.pod)
+          ==
       =+  fil=?:(?=(%done status.mil) fill.mod (sub ~(fill pj pro) ~(take pj pro)))
       (edit-mile min mil(withdrawal `[~ u.sig.pod fil ~]))
     ::

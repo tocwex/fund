@@ -49,6 +49,15 @@ export const safeGetAccount = (chainId) => {
   return account;
 }
 
+export const safeGetBalance = async ({fundToken, safeAddress}) => {
+  const TOKEN = safeTransactionToken({id: fundToken});
+  const safeBalance = await getBalance(window.Wagmi, {
+    address: safeAddress,
+    token: TOKEN.ADDRESS[ethGetChain()],
+  });
+  return Number(safeBalance.formatted);
+};
+
 export const safeSignDeploy = async ({projectChain, projectContent}) => {
   const { address } = safeGetAccount(projectChain);
   const signature = await signMessage(window.Wagmi, {
@@ -202,11 +211,7 @@ const safeGetClaimTransactions = async ({fundAmount, fundToken, workerAddress, o
 
 const safeGetRefundTransactions = async ({fundToken, safeAddress, safeInitBlock}) => {
   const TOKEN = safeTransactionToken({id: fundToken});
-  const safeBalance = await getBalance(window.Wagmi, {
-    address: safeAddress,
-    token: TOKEN.ADDRESS[ethGetChain()],
-  });
-  const safeCurrTotal = Number(safeBalance.formatted);
+  const safeCurrTotal = await safeGetBalance({fundToken, safeAddress});
   // FIXME: If there are ever projects that exceed ~2k contributions, this will
   // need to be changed to paginate RPC queries.
   const transferLogs = await getPublicClient(window.Wagmi).getContractEvents({

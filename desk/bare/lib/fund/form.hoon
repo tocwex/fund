@@ -87,6 +87,14 @@
     |=  rel=@t
     ^-  @rs
     (rash rel royl-rs:so)
+  ++  bool                                     ::  "true" => %.y
+    |=  bul=@t
+    ^-  bean
+    %+  rash  bul
+    ;~  pose
+      (cold %& (jest 'true'))
+      (cold %| (jest 'false'))
+    ==
   ++  bloq                                     ::  "123456…" => 1234.56…
     |=  boq=@t
     ^-  ^bloq
@@ -119,7 +127,7 @@
     |=  [cas=^cash con=^coin]
     ^-  tape
     ?+  symbol.con  "{(cash cas decimals.con)} {(coin con)}"
-      ?(%'USDC' %'fundUSDC')  "${(cash cas decimals.con)}"
+      ?(%'USDC' %'fundUSDC' %'OOBP')  "${(cash cas decimals.con)}"
     ==
   ++  cash                                     ::  12.345.000 => "12.34"
     |=  [cas=^cash dex=@ud]
@@ -132,6 +140,10 @@
     |=  rel=@rs
     ^-  tape
     (flot:fx (rlys rel) `[0 2])
+  ++  bool                                     ::  %.y => "true"
+    |=  bul=?
+    ^-  tape
+    ?:(bul "true" "false")
   ++  srel                                     ::  .1.2345e1 => "12"
     |=  rel=@rs
     ^-  tape

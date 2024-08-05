@@ -5,12 +5,12 @@
 |%
 ++  xeta                                         ::  chain metadata core
   |%
-  ++  ethereum   `^xeta`[1 %ethereum 'https://eth.drpc.org']
-  ++  sepolia    `^xeta`[11.155.111 %sepolia 'https://sepolia.drpc.org']
-  ::  ++  optimism   `^xeta`[10 %optimism ?]
-  ::  ++  base       `^xeta`[8.453 %base ?]
-  ::  ++  arbitrum   `^xeta`[42.161 %arbitrum ?]
-  ::  ++  chainless  `^xeta`[9.223.372.036.854.775.772 %chainless '']  ::  https://eips.ethereum.org/EIPS/eip-2294
+  ++  ethereum  `^xeta`[1 %ethereum 'https://eth.drpc.org']
+  ++  sepolia   `^xeta`[11.155.111 %sepolia 'https://sepolia.drpc.org']
+  ::  ++  optimism  `^xeta`[10 %optimism ?]
+  ::  ++  base      `^xeta`[8.453 %base ?]
+  ::  ++  arbitrum  `^xeta`[42.161 %arbitrum ?]
+  ::  ++  none      `^xeta`[9.223.372.036.854.776.000 %none '']  ::  https://eips.ethereum.org/EIPS/eip-2294
   --
 ++  xmap                                         ::  chain metadata map
   ~+
@@ -28,11 +28,11 @@
   (sort ~(tap in (silt (turn ~(val by xmap) |=(x=^xeta id.x)))) lth)
 ++  coin                                         ::  coin metadata core
   |%
-  ++  ethereum-usdc   [id:ethereum:xeta 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 'USDC' 'USDC' 6]
-  ++  ethereum-wstr   [id:ethereum:xeta 0xf0dc.76c2.2139.ab22.618d.dfb4.98be.1283.2546.12b1 'WrappedStar' 'WSTR' 18]
-  ++  sepolia-usdc    [id:sepolia:xeta 0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38 '%fund USDC' 'fundUSDC' 6]
-  ++  sepolia-wstr    [id:sepolia:xeta 0x3066.f428.d935.a44b.e7aa.845b.6c6b.8125.19ce.1e17 '%fund WSTR' 'fundWSTR' 18]
-  ::  ++  chainless-none  [id:chainless:xeta 0x0 'Coinless' 'COINLESS' 2]
+  ++  ethereum-usdc  [id:ethereum:xeta 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 'USDC' 'USDC' 6]
+  ++  ethereum-wstr  [id:ethereum:xeta 0xf0dc.76c2.2139.ab22.618d.dfb4.98be.1283.2546.12b1 'WrappedStar' 'WSTR' 18]
+  ++  sepolia-usdc   [id:sepolia:xeta 0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38 '%fund USDC' 'fundUSDC' 6]
+  ++  sepolia-wstr   [id:sepolia:xeta 0x3066.f428.d935.a44b.e7aa.845b.6c6b.8125.19ce.1e17 '%fund WSTR' 'fundWSTR' 18]
+  ::  ++  none-oobp      [id:none:xeta 0x0 'Out-of-band' 'OOBP' 2]
   --
 ++  cmap                                         ::  coin metadata map
   ~+
@@ -64,7 +64,7 @@
   ^-  (list [path config])
   ?:  =(0x0 safe.oat)  ~
   ?~  con=(~(get by cmap) [chain addr]:cin)  ~
-  ::  ?:  =(id:chainless:xeta chain.u.con)  ~
+  ::  ?:  =(id:none:xeta chain.u.con)  ~
   ?~  can=(~(get by xmap) chain.u.con)  ~
   %+  turn  `(list @tas)`~[%depo %with]
   |=  act=term

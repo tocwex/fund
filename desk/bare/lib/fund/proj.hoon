@@ -37,10 +37,10 @@
     ?.  ?&  ?=(%done status.mil)
             ?=(^ withdrawal.mil)
             ?=(^ xact.u.withdrawal.mil)
-            ?=(^ pruf.u.withdrawal.mil)
+            |(=(0x0 q.u.xact.u.withdrawal.mil) ?=(^ pruf.u.withdrawal.mil))
         ==
       0
-    cash.u.pruf.u.withdrawal.mil
+    cash.u.withdrawal.mil  ::  cash.u.pruf.u.withdrawal.mil
   ++  odit                                       ::  project-wide audit
     ^-  ^odit
     (filo:fc [cost fill plej ~])
@@ -51,11 +51,19 @@
     ::  which produces negative fill values (reconciled in `+filo`)
     =<  -  %^  spin  miz  [0 (sun:si fill) (sun:si plej)]
     |=  [mil=mile min=@ fre=@sd pre=@sd]
-    =+  dun=&(?=(?(%done %dead) status.mil) ?=(^ withdrawal.mil) ?=(^ pruf.u.withdrawal.mil))
+    =/  [dun=? amo=@ud]
+      ?+  status.mil  [| cost.mil]
+        %dead  [& ?~(withdrawal.mil 0 cash.u.withdrawal.mil)]
+      ::
+          %done
+        ?~  withdrawal.mil  [| 0]
+        :_  cash.u.withdrawal.mil
+        |(=(0x0 +:(fall xact.u.withdrawal.mil [0 0x1])) ?=(^ pruf.u.withdrawal.mil))
+      ==
     =+  end==(min lin)
-    =+  fos=(sun:si ?.(dun cost.mil cash:(need pruf:(need withdrawal.mil))))
+    =+  fos=(sun:si amo)
     =+  fil=?:(|(end =(-1 (cmp:si fre fos))) fre fos)
-    =+  pos=?.(dun (dif:si fos fil) --0)
+    =+  pos=?:(dun --0 (dif:si fos fil))
     =+  pej=?:(|(end =(-1 (cmp:si pre pos))) pre pos)
     [(filo:fc [cost.mil (abs:si fil) (abs:si pej) ~]) +(min) (dif:si fre fil) (dif:si pre pej)]
   ++  mula                                       ::  project-wide $mula list
@@ -160,5 +168,14 @@
         ==
       ==
     --
+  ++  bail                                       ::  text of bail statement (no payout)
+    |=  [min=@ byp=?(%done %dead)]
+    ^-  tape
+    =-  "I, {ses}, decree {tag}project with safe {saf} {end} with no payout."
+    :*  ses=(trip (scot %p p.assessment))
+        tag=?-(byp %done "milestone {<+(min)>} of ", %dead ~)
+        saf=(addr:enjs:ff safe:(fall contract *^oath))
+        end=?-(byp %done "completed", %dead "canceled")
+    ==
   --
 --

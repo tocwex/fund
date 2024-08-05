@@ -28,20 +28,24 @@
       ==
     ::
         %wipe-casi
-      ?+  arz=(parz:fh bod (sy ~[%mii %mis %mia %mit]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%mii %mis %mia %mit %mie]))  p.arz  [%| *]
+        =/  emt=bean  (bool:dejs:ff:fh (~(got by p.arz) %mie))
         :+  %wipe  (bloq:dejs:ff:fh (~(got by p.arz) %mii))
         :^    ~
             (sign:dejs:ff:fh (~(got by p.arz) %mis))
           (addr:dejs:ff:fh (~(got by p.arz) %mia))
+        ?:  emt  [%& (~(got by p.arz) %mit)]
         [%| (addr:dejs:ff:fh (~(got by p.arz) %mit))]
       ==
     ::
         %wipe-resi
-      ?+  arz=(parz:fh bod (sy ~[%des %dea %det]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%des %dea %det %dee]))  p.arz  [%| *]
+        =/  emt=bean  (bool:dejs:ff:fh (~(got by p.arz) %dee))
         :+  %wipe  lin
         :^    ~
             (sign:dejs:ff:fh (~(got by p.arz) %des))
           (addr:dejs:ff:fh (~(got by p.arz) %dea))
+        ?:  emt  [%& (~(got by p.arz) %det)]
         [%| (addr:dejs:ff:fh (~(got by p.arz) %det))]
       ==
     ::
@@ -70,12 +74,14 @@
       ==
     ::
         %bump-done
-      ?+  arz=(parz:fh bod (sy ~[%mis %mia %mit]))  p.arz  [%| *]
+      ?+  arz=(parz:fh bod (sy ~[%mis %mia %mit %mie]))  p.arz  [%| *]
+        =/  emt=bean  (bool:dejs:ff:fh (~(got by p.arz) %mie))
         :+  %bump  %done
         :-  ~  =+  oat=*oath:f  %_  oat
             sigm
           :*  (sign:dejs:ff:fh (~(got by p.arz) %mis))
               (addr:dejs:ff:fh (~(got by p.arz) %mia))
+              ?:  emt  [%& (~(got by p.arz) %mit)]
               [%| (addr:dejs:ff:fh (~(got by p.arz) %mit))]
           ==
         ==
@@ -83,11 +89,13 @@
     ::
         %bump-dead
       ?+  arz=(parz:fh bod (sy ~[%des %dea %det]))  p.arz  [%| *]
+        =/  emt=bean  (bool:dejs:ff:fh (~(got by p.arz) %dee))
         :+  %bump  %dead
         :-  ~  =+  oat=*oath:f  %_  oat
             sigm
           :*  (sign:dejs:ff:fh (~(got by p.arz) %des))
               (addr:dejs:ff:fh (~(got by p.arz) %dea))
+              ?:  emt  [%& (~(got by p.arz) %det)]
               [%| (addr:dejs:ff:fh (~(got by p.arz) %det))]
           ==
         ==
@@ -365,7 +373,9 @@
                       %:  prod-butn:ui:fh
                           %draw-done  %true  "claim funds ✓"  "claimMilestone"
                           ?^  xact.u.withdrawal.mil
-                            ?~  pruf.u.withdrawal.mil
+                            ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
+                                    ?=(~ pruf.u.withdrawal.mil)
+                                ==
                               "funds claimed but awaiting confirmation"
                             "funds have already been fully claimed"
                           ::  NOTE: A `pruf` without an `xact` is an impossible case
@@ -384,7 +394,9 @@
                       %:  prod-butn:ui:fh
                           %draw-dead  %true  "refund funds ✓"  "refundContract"
                           ?^  xact.u.withdrawal.mil
-                            ?~  pruf.u.withdrawal.mil
+                            ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
+                                    ?=(~ pruf.u.withdrawal.mil)
+                                ==
                               "funds refunded but awaiting confirmation"
                             "funds have already been fully refunded"
                           ::  NOTE: A `pruf` without an `xact` is an impossible case
@@ -487,6 +499,8 @@
       ::  FIXME: We use inline HTML instead of inline JS in order to
       ::  circumvent the need for text escaping (e.g. ', ", and `).
       ;data#fund-proj-oath(value (~(oath pj:f pro) p.lag));
+      ;data#fund-proj-bane(value (~(bail pj:f pro) 1 %done));
+      ;data#fund-proj-baad(value (~(bail pj:f pro) 1 %dead));
       ::  FIXME: These fields are embedded on the page so that they can
       ::  be used to inform page metadata
       ;data#fund-meta-desc(value (trip summary.pro));
@@ -567,21 +581,37 @@
             ));
           },
           approveMilestone(event) {
-            this.sendForm(event, [() => this.checkWallet([this.orac_addr], 'oracle')], () => (
-              this.safeSignClaim({
-                projectChain: this.coin_chain,
-                safeAddress: this.safe_addr,
-                workerAddress: this.work_addr,
-                oracleCut: this.orac_cut,
-                fundAmount: this.mile_fill[this.mile_idex],
-                fundToken: this.coin_symbol,
-              }).then(([address, signature, payload]) => ({
-                mii: this.mile_idex,
-                mia: address,
-                mis: signature,
-                mit: payload,
-              }))
-            ));
+            this.sendForm(event, [() => this.checkWallet([this.orac_addr], 'oracle')], () => {
+              if (this.mile_fill[this.mile_idex] === 0) {
+                const payload = document.querySelector('#fund-proj-bane').value
+                  .replace(/milestone \d+/, `milestone ${this.mile_idex + 1}`);
+                return this.safeSignDeploy({
+                  projectChain: this.coin_chain,
+                  projectContent: payload,
+                }).then(([address, signature]) => ({
+                  mii: this.mile_idex,
+                  mia: address,
+                  mis: signature,
+                  mit: payload,
+                  mie: true,
+                }));
+              } else {
+                return this.safeSignClaim({
+                  projectChain: this.coin_chain,
+                  safeAddress: this.safe_addr,
+                  workerAddress: this.work_addr,
+                  oracleCut: this.orac_cut,
+                  fundAmount: this.mile_fill[this.mile_idex],
+                  fundToken: this.coin_symbol,
+                }).then(([address, signature, payload]) => ({
+                  mii: this.mile_idex,
+                  mia: address,
+                  mis: signature,
+                  mit: payload,
+                  mie: false,
+                }));
+              }
+            });
           },
           clearMilestone(event) {
             this.sendForm(event, [], () => (
@@ -589,62 +619,101 @@
             ));
           },
           claimMilestone(event) {
-            this.sendForm(event, [() => this.checkWallet([this.work_addr], 'worker')], () => (
-              this.safeExecClaim({
-                projectChain: this.coin_chain,
-                safeAddress: this.safe_addr,
-                fundAmount: this.mile_take[this.mile_idex],
-                fundToken: this.coin_symbol,
-                oracleSignature: this.mile_sign[this.mile_idex],
-                oracleAddress: this.orac_addr,
-                oracleCut: this.orac_cut,
-              }).then(([xblock, xhash]) => {
-                console.log(`claim successful; view at: ${this.txnGetURL(xhash)}`);
-                return {
+            this.sendForm(event, [() => this.checkWallet([this.work_addr], 'worker')], () => {
+              if (this.mile_take[this.mile_idex] === 0) {
+                return this.safeGetBlock().then((block) => ({
                   mii: this.mile_idex,
-                  mib: xblock,
-                  mih: xhash,
-                };
-              })
-            ));
+                  mib: block,
+                  mih: "0x0",
+                }));
+              } else {
+                return this.safeExecClaim({
+                  projectChain: this.coin_chain,
+                  safeAddress: this.safe_addr,
+                  fundAmount: this.mile_take[this.mile_idex],
+                  fundToken: this.coin_symbol,
+                  oracleSignature: this.mile_sign[this.mile_idex],
+                  oracleAddress: this.orac_addr,
+                  oracleCut: this.orac_cut,
+                }).then(([xblock, xhash]) => {
+                  console.log(`claim successful; view at: ${this.txnGetURL(xhash)}`);
+                  return {
+                    mii: this.mile_idex,
+                    mib: xblock,
+                    mih: xhash,
+                  };
+                });
+              }
+            });
           },
           cancelContract(event) {
             this.sendForm(event,
               [() => this.checkWallet([this.work_addr, this.orac_addr], 'worker/oracle')],
-              () => (
-                this.safeSignRefund({
-                  projectChain: this.coin_chain,
+              () => {
+                return this.safeGetBalance({
                   fundToken: this.coin_symbol,
                   safeAddress: this.safe_addr,
-                  safeInitBlock: this.safe_bloq,
-                }).then(([address, signature, payload]) => ({
-                  des: signature,
-                  dea: address,
-                  det: payload,
-                }))
-              )
+                }).then((balance) => {
+                  if (balance === 0) {
+                    const payload = document.querySelector('#fund-proj-baad').value;
+                    return this.safeSignDeploy({
+                      projectChain: this.coin_chain,
+                      projectContent: payload,
+                    }).then(([address, signature]) => ({
+                      des: signature,
+                      dea: address,
+                      det: payload,
+                      dee: true,
+                    }));
+                  } else {
+                    return this.safeSignRefund({
+                      projectChain: this.coin_chain,
+                      fundToken: this.coin_symbol,
+                      safeAddress: this.safe_addr,
+                      safeInitBlock: this.safe_bloq,
+                    }).then(([address, signature, payload]) => ({
+                      des: signature,
+                      dea: address,
+                      det: payload,
+                      dee: false,
+                    }));
+                  }
+                });
+              }
             );
           },
           refundContract(event) {
             this.sendForm(event,
               // FIXME: Should disallow the prior signer, i.e. `this.mile_whom[this.mile_idex]`
               [() => this.checkWallet([this.work_addr, this.orac_addr], 'worker/oracle')],
-              () => (
-                this.safeExecRefund({
-                  projectChain: this.coin_chain,
+              () => {
+                return this.safeGetBalance({
                   fundToken: this.coin_symbol,
                   safeAddress: this.safe_addr,
-                  safeInitBlock: this.safe_bloq,
-                  oracleAddress: this.mile_whom[this.mile_idex],
-                  oracleSignature: this.mile_sign[this.mile_idex],
-                }).then(([xblock, xhash]) => {
-                  console.log(`refund successful; view at: ${this.txnGetURL(xhash)}`);
-                  return {
-                    mib: xblock,
-                    mih: xhash,
-                  };
-                })
-              )
+                }).then((balance) => {
+                  if (balance === 0) {
+                    return this.safeGetBlock().then((block) => ({
+                      mib: block,
+                      mih: "0x0",
+                    }));
+                  } else {
+                    return this.safeExecRefund({
+                      projectChain: this.coin_chain,
+                      fundToken: this.coin_symbol,
+                      safeAddress: this.safe_addr,
+                      safeInitBlock: this.safe_bloq,
+                      oracleAddress: this.mile_whom[this.mile_idex],
+                      oracleSignature: this.mile_sign[this.mile_idex],
+                    }).then(([xblock, xhash]) => {
+                      console.log(`refund successful; view at: ${this.txnGetURL(xhash)}`);
+                      return {
+                        mib: xblock,
+                        mih: xhash,
+                      };
+                    });
+                  }
+                });
+              }
             );
           },
           })));

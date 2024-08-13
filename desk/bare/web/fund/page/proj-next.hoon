@@ -57,6 +57,11 @@
       %^  hero-plaq:ui:fh  "Your project action has been submitted."  ~
       [pro.btn (turn (skip roz |=(r=role:f =(%fund r))) das.btn)]
     ::
+        %join
+      ::  FIXME: Implement the actual functional
+      %^  hero-plaq:ui:fh  "You are trying to join a project; please wait."  ~
+      [pro.btn ~]
+    ::
         %edit
       %^      hero-plaq:ui:fh
           "Your changes have been saved!"

@@ -164,7 +164,7 @@
   =/  muz=(list mula:f)  ~(mula pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
   =/  ioz=manx
-    %-  icon-stax:ui:fh
+    %+  icon-stax:ui:fh  |
     :~  (aset:enrl:ff:fh symbol.currency.pro)
         (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.currency.pro))
     ==
@@ -430,7 +430,7 @@
           ;div(class "flex flex-row justify-between items-center")
             ;h1: Transactions
             ;div(class "flex flex-wrap items-center gap-1")
-              ;*  =-  :~  (icon-stax:ui:fh (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
+              ;*  =-  :~  (icon-stax:ui:fh | (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
                           ;h6: {<~(wyt in siz)>} total
                       ==
                   ^-  siz=(set @p)
@@ -447,7 +447,7 @@
               ;div(class "p-2.5 flex flex-col gap-y-2 fund-card")
                 ;div(class "flex flex-wrap items-center justify-between")
                   ;div(class "flex items-center gap-x-2")
-                    ;*  =-  ~[(icon-circ:ui:fh url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
+                    ;*  =-  ~[(icon-logo:ui:fh & url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
                         ^-  [url=tape txt=tape]
                         ?-  -.mul
                           %plej  [(surt:enrl:ff:fh ship.mul) "{<ship.mul>}"]

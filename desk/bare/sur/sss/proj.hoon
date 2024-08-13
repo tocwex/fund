@@ -148,6 +148,10 @@
             %+  snoc  (snip niz)
             =+  mil=(rear niz)
             mil(withdrawal `[~ sigm.oat (sub ~(fill pj pro) ~(take pj pro)) ~])
+          ::
+              pledges
+            %-  ~(run by pledges.pro)
+            |=([p=plej d=peta] [p d(view `%slyd)])
           ==
         --
     =/  sat=stat  ~(stat pj pro)
@@ -222,7 +226,16 @@
           ?>  ?|  ?=([%| @ux] mesg.sig)
                   =((crip (~(bail pj pro) min sat.pod)) +.mesg.sig)
               ==
-          (edit-mile min mil(status sat.pod, withdrawal `[~ sig fill.mod ~]))
+          %_    pro
+              milestones
+            ;;  (lest mile)
+            %^  snap  miz  min
+            `mile`mil(status sat.pod, withdrawal `[~ sig fill.mod ~])
+          ::
+              pledges
+            %-  ~(run by pledges.pro)
+            |=([p=plej d=peta] [p d(view `%stif)])
+          ==
         ?:  ?=(%dead sat.pod)
           (dead-milz (need oat.pod))
         ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)

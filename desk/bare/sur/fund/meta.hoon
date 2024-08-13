@@ -5,6 +5,7 @@
 ::
 +$  meta
   $:  title=@t
+      image=(unit @t)
       cost=cash
       currency=coin
       launch=bloq

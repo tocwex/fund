@@ -503,6 +503,7 @@
   ++  pj-me-met
     ^-  meta:meta:f
     :*  title=title.pro
+        image=image.pro
         cost=~(cost pj:fj pro)
         currency=currency.pro
         launch=p:xact:(fall contract.pro *oath:f)

@@ -111,46 +111,10 @@
                 ;label(for "pic"): Header Image URL
               ==
             ==
-            ;div(class "flex")
-              ;div(class "fund-form-group")
-                ;select#proj-chain.fund-tsel  =name  "can"  =required  ~
-                    =x-model  "proj_scan"
-                    =x-on-change  "updateToks"
-                  ;*  =+  can=chain:?~(pru *coin:f currency.u.pru)
-                      %+  turn  xlis:fc
-                      |=  xet=xeta:f
-                      ^-  manx
-                      :_  ; {(caps:fx (trip tag.xet))}
-                      :-  %option
-                      ;:  welp
-                          [%value (bloq:enjs:ff:fh id.xet)]~
-                          [%data-image (aset:enrl:ff:fh tag.xet)]~
-                          ?.(=(can id.xet) ~ [%selected ~]~)
-                      ==
+            ;+  %:  ~(coin-selz ui:fh "flex")
+                    `?~(pru *coin:f currency.u.pru)
+                    "proj_stok"  "updateProj"
                 ==
-                ;label(for "can"): Blockchain
-              ==
-              ;div(class "fund-form-group")
-                ;select#proj-token-options.hidden(required ~)
-                  ;*  %+  turn  clis:fc
-                      |=  con=coin:f
-                      ^-  manx
-                      :_  ; {(trip name.con)}
-                      :-  %option
-                      ;:  welp
-                          [%value (trip symbol.con)]~
-                          [%data-chain (bloq:enjs:ff:fh chain.con)]~
-                          [%data-image (aset:enrl:ff:fh symbol.con)]~
-                      ==
-                ==
-                ;select#proj-token.fund-tsel  =name  "tok"  =required  ~
-                    =x-model  "proj_stok"
-                    =x-on-change  "updateProj"
-                  ;option(value ~, data-image (aset:enrl:ff:fh %box)): "…loading…"
-                ==
-                ;label(for "tok"): Token
-              ==
-            ==
             ;div(class "fund-form-group")
               ;div(class "grow-wrap")
                 ;textarea.p-1  =name  "sum"  =rows  "3"
@@ -226,7 +190,7 @@
           ==
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;select#proj-oracle.fund-tsel(name "sea")
+              ;select#proj-oracle.fund-tsel(name "sea", x-init "useTomSelect($el, false)")
                 ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
                     =+  dad=(sein:title our.bol now.bol our.bol)
                     ::  FIXME: These options are hard-coded from the
@@ -300,32 +264,9 @@
           '''
           init() {
             this.updateProj();
-            // FIXME: This is a super ugly hack we need to wait on the "TomSelect"
-            // initialization in "boot.js"
-            new Promise(res => setTimeout(res, 1000)).then(() => this.updateToks());
             document.querySelectorAll('textarea').forEach(elem => (
               this.updateTextarea({target: elem})
             ));
-          },
-          updateToks() {
-            const tokenChain = document.querySelector('[name=can]').value;
-            const tokenSelect = document.querySelector('#proj-token').tomselect;
-            const tokenOpts = document.querySelectorAll('#proj-token-options > option');
-            const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
-              value: elem.value,
-              text: elem.innerText,
-              image: elem.dataset.image,
-              chain: elem.dataset.chain,
-            })).filter(({chain}) => (
-              chain === tokenChain
-            ));
-
-            tokenSelect.clear(true);
-            tokenSelect.clearOptions();
-            tokenSelect.addOptions(tokenChainOpts);
-            tokenSelect.addItem(
-              (tokenChainOpts.find(({value}) => value === this.proj_stok) ?? tokenChainOpts[0]).value
-            );
           },
           updateProj() {
             const amount = this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2);

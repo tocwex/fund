@@ -13,7 +13,7 @@
   ::  NOTE: Files are loaded at run-time here through scries in order to
   ::  avoid expensive re-compilation when doing quick edits to js/css
   =>  |%
-      ++  beak  |=([d=@tas p=path] (weld /(scot %p our.bol)/[d]/(scot %da now.bol) p))
+      ++  beak  |=([d=@tas p=path] (en-beam [our.bol d da+now.bol] p))
       ++  forj  |=([d=@t l=(list @t)] (crip (roll (join d l) |=([n=@t a=tape] (weld a (trip n))))))
       +$  sath  (each path [@ta @t])  ::  pseudo-path
       --

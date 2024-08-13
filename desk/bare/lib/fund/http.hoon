@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
-/-  fd=fund-data
-/+  *fund-proj, fc=fund-core, ff=fund-form, fx=fund-xtra
+/-  fd=fund-data, fm=fund-meta
+/+  *fund-proj, fk=fund-core, ff=fund-form, fc=fund-chain, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -73,13 +73,13 @@
   =/  pat=(pole knot)  (need (decap:rudder /apps/fund syt))
   ?:  ?=([%$ *] (flop pat))                      `[%away (snip syt)]
   ?+  pat                                        ~
-    ~                                            `[%page | %index]
+    ~                                            `[%away (welp syt /dashboard/following)]
     [%asset *]                                   `[%page | %asset]
     [%ship ~]                                    `[%page | %ship]
     [%config ~]                                  `[%page | %config]
     [%dashboard suf=*]    ?+  suf.pat            ~
       ~                                          `[%away (snip syt)]
-      [?(%worker %oracle %funder) ~]             `[%page | %proj-list]
+      [?(%following %discover %action) ~]        `[%page | %proj-list]
     ==
     [%create suf=*]       ?+  suf.pat            ~
       ~                                          `[%away (snip syt)]
@@ -292,7 +292,7 @@
       =/  url=@t  url.request.ord
       =/  pat=(pole knot)  (slag:derl:ff url)
       ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
-        ;+  ?:  ?=(?([%dashboard *] [%create %proj ~] [%project @ @ %edit ~]) pat)
+        ;+  ?:  ?=(?([%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:ff (snip `(list knot)`pat))}": ← back
             =+  dst=?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))
             ;a/"{dst}"(class "h-10 p-2 rounded-2xl hover:bg-primary-550")
@@ -303,8 +303,8 @@
           ::  in the current tab causes issues with turbojs in-place loading
           ;+  ?:  (auth bol)
                 ;button  =id  "fund-agis"
-                    =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-2xl hover:bg-primary-550"
-                  ;+  (ship-icon src.bol)
+                    =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-md hover:bg-primary-550"
+                  ;+  (ship-logo src.bol)
                   ;span(class "hidden sm:block font-bold"): {<src.bol>}
                   ;div#fund-agis-opts(class "hidden")
                     ;div(class "flex flex-col gap-2")
@@ -353,7 +353,7 @@
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;h6(class "leading-none tracking-widest"): {tyt}
       ;div(class "inline-flex self-stretch justify-start items-center gap-2")
-        ;+  (~(ship-icon ..$ "h-20") sip)
+        ;+  (~(ship-logo ..$ "h-20") sip)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;h3(class "leading-7 tracking-tight"): {<sip>}
           ;h5.fund-addr.fund-addr-ens(title (addr:enjs:ff adr), data-addr (addr:enjs:ff adr))
@@ -434,7 +434,7 @@
     |=  [pro=proj big=bean]
     ^-  manx
     =+  pod=~(odit pj pro)
-    =+  [udr ovr]=(need void:(filo:fc pod))
+    =+  [udr ovr]=(need void:(filo:fk pod))
     =+  tot=(add cost.pod ?:(udr 0 ovr))
     =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) tot))
     ;div(class "w-full flex flex-row items-center gap-3")
@@ -465,11 +465,68 @@
             ==
           ;span(class "hidden sm:block"): {(mony:enjs:ff cost.pod currency.pro)}
     ==
+  ++  coin-selz                                  ::  coin select input fields
+    |=  [con=(unit coin) mod=tape xoc=tape]
+    ^-  manx
+    =/  emt=tape  (bool:enjs:ff ?=(~ con))
+    =/  ini=tape  ?~(con "undefined" "'{(trip symbol.u.con)}'")
+    ;div(class cas, x-data ~)
+      ;div(class "fund-form-group")
+        ;select#proj-chain.fund-tsel  =name  "can"
+            =required  ~
+            =x-init  "useTomSelect($el, {emt})"
+            =x-on-change  "updateTokenSelect"
+          ;*  =+  can=chain:?~(con *coin u.con)
+              %+  welp
+                ?^  con  ~
+                :_  ~  ;option(value ""): No Chain
+              %+  turn  xlis:fc
+              |=  xet=xeta
+              ^-  manx
+              :_  ; {(caps:fx (trip tag.xet))}
+              :-  %option
+              ;:  welp
+                  [%value (bloq:enjs:ff id.xet)]~
+                  [%data-image (aset:enrl:ff tag.xet)]~
+                  ?.(=(can id.xet) ~ [%selected ~]~)
+              ==
+        ==
+        ;*  ?~  con  ~
+            :_  ~  ;label(for "can"): Blockchain
+      ==
+      ;div(class "fund-form-group")
+        ;select#proj-token-options.hidden(required ~)
+          ;*  %+  welp
+                ?^  con  ~
+                :_  ~  ;option(value ""): No Token
+              %+  turn  clis:fc
+              |=  con=coin
+              ^-  manx
+              :_  ; {(trip name.con)}
+              :-  %option
+              ;:  welp
+                  [%value (trip symbol.con)]~
+                  [%data-chain (bloq:enjs:ff chain.con)]~
+                  [%data-image (aset:enrl:ff symbol.con)]~
+              ==
+        ==
+        ;select#proj-token.fund-tsel  =name  "tok"
+            =required  ~
+            =x-init  "useTomSelect($el, {emt}); updateTokenSelect({ini})"
+            =x-model  mod
+            =x-on-change  xoc
+          ;*  ?~  con  ~
+              :_  ~  ;option(value ~, data-image (aset:enrl:ff %box)): "…loading…"
+        ==
+        ;*  ?~  con  ~
+            :_  ~  ;label(for "tok"): Token
+      ==
+    ==
   ++  mile-ther                                  ::  milestone funding thermometer
     |=  [odi=odit tyt=tape]
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
-    |^  =+  [udr ovr]=(need void:(filo:fc odi))
+    |^  =+  [udr ovr]=(need void:(filo:fk odi))
         =+  tot=(add cost.odi ?:(udr 0 ovr))
         =/  caz=(list cash)
           ?:  udr  ~[fill.odi plej.odi ovr]
@@ -550,10 +607,10 @@
             ;span: Funding Goal
       ==
     ==
-  ++  ship-icon                                  ::  icon for a user ship
+  ++  ship-logo                                  ::  icon for a user ship
     |=  sip=@p
     ^-  manx
-    (icon-circ (surt:enrl:ff sip))
+    (icon-logo & (surt:enrl:ff sip))
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx
@@ -581,18 +638,18 @@
       %dead  "highlight1-400"
     ==
   ++  icon-stax                                  ::  stack of icons (leftmost on top)
-    |=  liz=(list tape)
+    |=  [box=bean liz=(list tape)]
     ^-  manx
     ;div(class "flex flex-row-reverse h-6 {cas}")
       ;*  %+  turn  (enum:fx (flop liz))
           |=  [lid=@ lin=tape]
           =+  lim=?:(=(0 lid) "" "-mr-3")
-          (~(icon-circ ..$ "relative h-full {lim}") lin)
+          (~(icon-logo ..$ "relative h-full {lim}") box lin)
     ==
-  ++  icon-circ                                  ::  single icon circle
-    |=  lin=tape
+  ++  icon-logo                                  ::  single icon circle
+    |=  [box=bean lin=tape]
     ^-  manx
-    ;img@"{lin}"(class "fund-aset-circ {cas}");
+    ;img@"{lin}"(class "fund-aset-{(trip ?:(box %boxx %circ))} {cas}");
   ++  cheq-swix                                  ::  checkbox switch <o->
     |=  nam=tape
     ^-  manx

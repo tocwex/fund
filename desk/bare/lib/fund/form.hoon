@@ -107,6 +107,10 @@
     |=  sig=@t
     ^-  ^sign
     (rash sig ;~(pfix (jest '0x') hex))
+  ++  ship                                     ::  "~zod" => ~zod
+    |=  sip=@t
+    ^-  ^ship
+    (rash sip ;~(pfix sig fed:ag))
   ++  flag                                     ::  "~zod/nam" => [~zod %nam]
     |=  lag=@t
     ^-  ^flag
@@ -165,10 +169,14 @@
     |=  sig=^sign
     ^-  tape
     ['0' 'x' ((x-co:co 130) sig)]
+  ++  ship                                     ::  ~zod => "~zod"
+    |=  sip=^ship
+    ^-  tape
+    "{<sip>}"
   ++  flag                                     ::  [~zod %nam] => "~zod/nam"
     |=  lag=^flag
     ^-  tape
-    "{<p.lag>}/{(trip q.lag)}"
+    "{(ship p.lag)}/{(trip q.lag)}"
   ++  poke                                     ::  [%level [~zod %nam] %type …] => "level:~zod/nam:type"
     |=  pok=^poke
     ^-  tape

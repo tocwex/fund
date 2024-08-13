@@ -295,7 +295,7 @@
         ;+  ?:  ?=(?([%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:ff (snip `(list knot)`pat))}": ← back
             =+  dst=?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))
-            ;a/"{dst}"(class "h-10 p-2 rounded-2xl hover:bg-primary-550")
+            ;a/"{dst}"(class "h-10 p-2 rounded-md hover:bg-primary-550")
               ;img.h-full@"{(dest:enrl:ff /asset/[~.fund.svg])}";
             ==
         ;div(class "flex inline-flex gap-x-2")
@@ -330,16 +330,16 @@
         ==
         ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end")
           ;a/"https://github.com/tocwex"(target "_blank")
-            ;img@"{(dest:enrl:ff /asset/[~.github.svg])}";
+            ;img@"{(aset:enrl:ff %github)}";
           ==
           ;a/"{(trip !<(@t (slot:config %meta-tlon)))}"(target "_blank")
-            ;img@"{(dest:enrl:ff /asset/[~.urbit.svg])}";
+            ;img@"{(aset:enrl:ff %urbit)}";
           ==
           ;a/"https://x.com/tocwex"(target "_blank")
-            ;img@"{(dest:enrl:ff /asset/[~.x.svg])}";
+            ;img@"{(aset:enrl:ff %x)}";
           ==
           ;a/"https://tocwexsyndicate.com"(target "_blank")
-            ;img@"{(dest:enrl:ff /asset/[~.globe.svg])}";
+            ;img@"{(aset:enrl:ff %globe)}";
           ==
         ==
       ==
@@ -466,19 +466,18 @@
           ;span(class "hidden sm:block"): {(mony:enjs:ff cost.pod currency.pro)}
     ==
   ++  coin-selz                                  ::  coin select input fields
-    |=  [con=(unit coin) mod=tape xoc=tape]
+    |=  [emt=bean con=(unit coin) mod=tape xoc=tape]
     ^-  manx
-    =/  emt=tape  (bool:enjs:ff ?=(~ con))
     =/  ini=tape  ?~(con "undefined" "'{(trip symbol.u.con)}'")
     ;div(class cas, x-data ~)
       ;div(class "fund-form-group")
         ;select#proj-chain.fund-tsel  =name  "can"
             =required  ~
-            =x-init  "useTomSelect($el, {emt})"
+            =x-init  "useTomSelect($el, {(bool:enjs:ff emt)})"
             =x-on-change  "updateTokenSelect"
           ;*  =+  can=chain:?~(con *coin u.con)
               %+  welp
-                ?^  con  ~
+                ?.  emt  ~
                 :_  ~  ;option(value ""): No Chain
               %+  turn  xlis:fc
               |=  xet=xeta
@@ -497,7 +496,7 @@
       ;div(class "fund-form-group")
         ;select#proj-token-options.hidden(required ~)
           ;*  %+  welp
-                ?^  con  ~
+                ?.  emt  ~
                 :_  ~  ;option(value ""): No Token
               %+  turn  clis:fc
               |=  con=coin
@@ -512,13 +511,10 @@
         ==
         ;select#proj-token.fund-tsel  =name  "tok"
             =required  ~
-            =x-init  "useTomSelect($el, {emt}); updateTokenSelect({ini})"
+            =x-init  "useTomSelect($el, {(bool:enjs:ff emt)}); updateTokenSelect({ini})"
             =x-model  mod
-            =x-on-change  xoc
-          ;*  ?~  con  ~
-              :_  ~  ;option(value ~, data-image (aset:enrl:ff %box)): "…loading…"
-        ==
-        ;*  ?~  con  ~
+            =x-on-change  xoc;
+        ;*  ?:  emt  ~
             :_  ~  ;label(for "tok"): Token
       ==
     ==

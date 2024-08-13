@@ -112,8 +112,10 @@
               ==
             ==
             ;+  %:  ~(coin-selz ui:fh "flex")
+                    |
                     `?~(pru *coin:f currency.u.pru)
-                    "proj_stok"  "updateProj"
+                    "proj_stok"
+                    "updateProj"
                 ==
             ;div(class "fund-form-group")
               ;div(class "grow-wrap")

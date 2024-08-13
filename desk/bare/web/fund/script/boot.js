@@ -298,6 +298,7 @@ if (window.Alpine === undefined) {
     cmd,
     copyText,
     swapHTML,
+    openHREF,
     sendFormData,
     sendForm,
     checkWallet,
@@ -350,6 +351,17 @@ if (window.Alpine === undefined) {
     }, function(err) {
       console.error('Async: Could not copy text: ', err);
     });
+  }
+
+  // FIXME: It's better to use this instead of `window.open` for local URLs
+  // because the `<a>` click emulation prompts a partial turbojs reload where
+  // `window.open` prompts a full page reload
+  function openHREF(href) {
+    const link = document.createElement("a");
+    link.setAttribute("class", "hidden");
+    link.setAttribute("href", href);
+    document.body.appendChild(link);
+    link.click();
   }
 
   function sendForm(event, checks = [], action = Promise.resolve(undefined)) {

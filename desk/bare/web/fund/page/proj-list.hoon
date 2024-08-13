@@ -36,6 +36,22 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
+  =/  arm=(map @t @t)  (~(gas by *(map @t @t)) arz)
+  =/  arg
+    :*  sort=`@t`(~(gut by arm) %sort %time)
+        desc=`?`(bool:dejs:ff:fh (~(gut by arm) %desc %true))
+        filt=`@t`(~(gut by arm) %filt %coin)
+        text=`(unit @t)`(~(get by arm) %text)
+        work=`(unit @p)`(bind (~(get by arm) %work) ship:dejs:ff:fh)
+        orac=`(unit @p)`(bind (~(get by arm) %orac) ship:dejs:ff:fh)
+        stat=`(unit stat:f)`(bind (~(get by arm) %stat) |=(=@t ;;(stat:f t)))
+    ::
+          ^=  coin  ^-  (unit coin:f)
+        ?~  sym=(~(get by arm) %coin)  ~
+        ?~  con=(find:fx clis:fc |=(c=coin:f =(u.sym symbol.c)))  ~
+        `u.con
+    ==
+
   =/  dyp=@tas  (rear (slag:derl:ff:fh url.request.ord))
   =/  lin=tape
     "{(burl:fh bol)}/apps/groups/groups/~tocwex/syndicate-public/channels/heap/~tocwex/bulletin-board"
@@ -55,6 +71,52 @@
       =/  pre=prej:proj:f  (~(got by pes) -.kev)
       =/  roz=(set role:f)  (~(rols pj:fp -.pre) our.bol our.bol)
       ?:(=(~ roz) acc (~(put by acc) kev))
+    ==
+  =/  myz=(list [flag:f mete:meta:f])
+    =-  (sort (skim ~(tap by mez) ski) cmp)
+    ^-  [ski=$-([flag:f mete:meta:f] ?) cmp=$-([[flag:f mete:meta:f] [flag:f mete:meta:f]] ?)]
+    :-  |=  [lag=flag:f met=mete:meta:f]
+        ^-  bean
+        ?&  ?~(text.arg & ?=(^ (find (trip u.text.arg) (trip title.met))))
+            ?~(coin.arg & =(currency.met u.coin.arg))
+            ?~(work.arg & =(worker.met u.work.arg))
+            ?~(orac.arg & =(oracle.met u.orac.arg))
+            ::  ?~(sat=(~(get by arg) %stat) & …)  ::  NOTE: unavailabe on meta
+        ==
+    |=  [[laa=flag:f mea=mete:meta:f] [lab=flag:f meb=mete:meta:f]]
+    ^-  bean
+    ?+  sort.arg  !!
+      %time  (?:(desc.arg gth lth) launch.mea launch.meb)
+      %cost  (?:(desc.arg gth lth) cost.mea cost.meb)
+      %alph  ?:(desc.arg (aor title.meb title.mea) (aor title.mea title.meb))
+    ::
+        %pals
+      %+  ?:(desc.arg gth lth)
+        ~(wyt in (~(get ju f2p.meta-srcs.dat) laa))
+      ~(wyt in (~(get ju f2p.meta-srcs.dat) lab))
+    ==
+  =/  pyz=(list [flag:f prej:proj:f])
+    =-  (sort (skim ~(tap by pez) ski) cmp)
+    ^-  [ski=$-([flag:f prej:proj:f] ?) cmp=$-([[flag:f prej:proj:f] [flag:f prej:proj:f]] ?)]
+    :-  |=  [lag=flag:f pre=prej:proj:f]
+        ^-  bean
+        ?&  ?~(text.arg & ?=(^ (find (trip u.text.arg) (trip title.pre))))
+            ?~(coin.arg & =(currency.pre u.coin.arg))
+            ?~(work.arg & =(p.lag u.work.arg))
+            ?~(orac.arg & =(p.assessment.pre u.orac.arg))
+            ?~(stat.arg & =(~(stat pj:fp -.pre) u.stat.arg))
+        ==
+    |=  [[laa=flag:f pea=prej:proj:f] [lab=flag:f peb=prej:proj:f]]
+    ^-  bean
+    ?+  sort.arg  !!
+      %time  (?:(desc.arg gth lth) ~(bloq pj:fp -.pea) ~(bloq pj:fp -.peb))
+      %cost  (?:(desc.arg gth lth) ~(cost pj:fp -.pea) ~(cost pj:fp -.peb))
+      %alph  ?:(desc.arg (aor title.peb title.pea) (aor title.pea title.peb))
+    ::
+        %pals
+      %+  ?:(desc.arg gth lth)
+        ~(wyt in (~(get ju f2p.meta-srcs.dat) laa))
+      ~(wyt in (~(get ju f2p.meta-srcs.dat) lab))
     ==
   =/  ui
     |_  cas=tape
@@ -128,7 +190,7 @@
     ++  mota-well                              ::  project (metadata) well (%action)
       |=  [kas=tape msg=tape ski=$-([flag:f prej:proj:f] ?)]
       ^-  manx
-      ?~  maz=(turn (skim ~(tap by pez) ski) mota-card)
+      ?~  maz=(turn (skim pyz ski) mota-card)
         ;p.fund-warn: {msg}
       ;div(class kas)
         ;*  maz
@@ -161,20 +223,20 @@
             ==
           ?+    dyp  !!
               %following
-            ?~  paz=(turn ~(tap by pez) proj-card:ui)  wax
+            ?~  paz=(turn pyz proj-card:ui)  wax
             ;div(class pas)
               ;*  paz
             ==
           ::
               %discover
-            ?~  maz=(turn ~(tap by mez) meta-card:ui)  wax
+            ?~  maz=(turn myz meta-card:ui)  wax
             ;div(class mas)
               ;*  maz
             ==
           ::
               %action
             =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col overflow-x-auto"
-            =/  sus=tape  "w-[200px] sm:w-[250px]"
+            =/  sus=tape  "w-[50vw] sm:w-[250px]"
             ;div(class "flex flex-col gap-4")
               ;div                               ::  $prez with %prop status
                 ;h2: Service Requests
@@ -214,8 +276,14 @@
     ;footer(class "fund-foot font-serif flex flex-col")
       ;div(class "w-full flex flex-col p-3 gap-3 bg-gray-100", x-show "tray_status.open")
         ;div(class "w-full flex-1 flex flex-row gap-4")
-          ::  TODO: On enter, perform filter
-          ;input.p-1(class "flex-1 min-w-0", type "text", placeholder "Search projects…");
+          ;div(class "w-full flex-1 flex flex-row gap-1")
+            ;input.p-1.flex-1.min-w-0  =type  "text"
+              =placeholder  "Search projects"
+              =x-model  "filt_status.params.text";
+            ;button.fund-butn-de-m(type "button", x-on-click "submitQuery")
+              ;img@"{(aset:enrl:ff:fh %search)}";
+            ==
+          ==
           ;*  ?:  =(%action dyp)  ~
               %+  turn  `(list @tas)`~[%sort %filter]
               |=  mod=@tas
@@ -240,23 +308,25 @@
                         ;button(type "button", x-on-click "toggleFilter('{(trip mod)}')")
                           ;*  %+  turn  `(list @tas)`~[%$ %off]
                               |=  sat=@tas
-                              =/  ast=tape  (welp "filter-" ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}"))
+                              =/  ast=tape
+                                %+  welp  "filter-"
+                                ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
                               ;img.w-8@"{(aset:enrl:ff:fh (crip ast))}"
                                 =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
                         ==
                   ==
                   ;div(x-show "filt_status.mode == 'coin'")
-                    ;+  %:  ~(coin-selz ui:fh "flex flex-col gap-3")
-                            ~
-                            "filt_status.params.coin"  "updateFilter"
+                    ;+  %:  ~(coin-selz ui:fh "flex flex-row gap-3")
+                            &
+                            coin.arg
+                            "filt_status.params.coin"
+                            "updateFilter"
                         ==
                   ==
                   ;div(x-show "filt_status.mode == 'work'")
                     ;select#filt-worker.fund-tsel
                         =x-init  "useTomSelect($el, true)"
                         =x-model  "filt_status.params.work"
-                        =x-on-change  "updateFilter"
-                        =placeholder  "Select worker…"
                       ;*  =/  woz=(set @p)
                             %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
                             |=  [nex=(set flag:f) acc=(set @p)]
@@ -270,6 +340,7 @@
                           ;:  welp
                               [%value "{<wok>}"]~
                               [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`wok)}.svg"]~
+                              ?.(&(?=(^ work.arg) =(u.work.arg wok)) ~ [%selected ~]~)
                           ==
                     ==
                   ==
@@ -277,7 +348,6 @@
                     ;select#filt-oracle.fund-tsel
                         =x-init  "useTomSelect($el, true)"
                         =x-model  "filt_status.params.orac"
-                        =x-on-change  "updateFilter"
                       ;*  =/  orz=(set @p)
                             =-  (~(uni in (silt mel)) (silt pel))
                             ^-  [mel=(list @p) pel=(list @p)]
@@ -292,6 +362,7 @@
                           ;:  welp
                               [%value "{<ora>}"]~
                               [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`ora)}.svg"]~
+                              ?.(&(?=(^ orac.arg) =(u.orac.arg ora)) ~ [%selected ~]~)
                           ==
                     ==
                   ==
@@ -299,7 +370,6 @@
                     ;select#filt-status.fund-tsel
                         =x-init  "useTomSelect($el, true)"
                         =x-model  "filt_status.params.stat"
-                        =x-on-change  "updateFilter"
                       ;*  :-  ;option(value ""): No Status
                           %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]
                           |=  sat=stat:f
@@ -310,6 +380,7 @@
                               [%value "{(trip sat)}"]~
                               ::  FIXME: Really want SVG w/ custom colors for this in paritcular.
                               ::  [%data-image ""]~  ::  TODO: Should be color of status
+                              ?.(&(?=(^ stat.arg) =(u.stat.arg sat)) ~ [%selected ~]~)
                           ==
                     ==
                   ==
@@ -351,10 +422,11 @@
       %-  zing  %+  join  "\0a"
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_list', () => (\{"
-          "coin_chain: '',"
-          "tray_status: \{mode: 'base', open: false},"  ::  FIXME: Revert to 'base'/'false' here
-          "sort_status: \{mode: 'time', desc: true},"
-          "filt_status: \{mode: 'coin', params: \{coin: '', work: '', orac: '', stat: ''}},"  ::  FIXME: Revert to 'undefined' here
+          "tray_status: \{mode: 'base', open: false},"
+          :(weld "sort_status: \{mode: '" (trip sort.arg) "', desc: " (bool:enjs:ff:fh desc.arg) "},")
+          :(weld "filt_status: \{mode: '" (trip (~(gut by arm) %filt %coin)) "', params: \{text: '" (trip (~(gut by arm) %text %$)) "', coin: '" (trip (~(gut by arm) %coin %$)) "', work: '" (trip (~(gut by arm) %work %$)) "', orac: '" (trip (~(gut by arm) %orac %$)) "', stat: '" (trip (~(gut by arm) %stat %$)) "'}},")
+          ::  "sort_status: \{mode: 'time', desc: true},"
+          ::  "filt_status: \{mode: 'coin', params: \{coin: '', work: '', orac: '', stat: ''}},"
           ^-  tape  ^~
           %+  rip  3
           '''
@@ -382,21 +454,18 @@
             }
           },
           updateFilter() {
-            console.log(this.filt_status.params);
-            // TODO: Need to generate (map flag @ud) for "items being
-            // displayed and their order"
-            // TODO: How do we filter/order these elements?
+            // FIXME: Should probably remove this; only used for debugging
+            // console.log(this.filt_status.params);
           },
           wipeFilter() {
-            // this.filt_status.params = Object.fromEntries(
-            //   Object.keys(this.filt_status.params).map(key => ([key, '']))
-            // );
-            // FIXME: Invokes 'updateFilter' several times consecutively (for
-            // each selector that gets updated)
+            // NOTE: Changing the selected entries automatically updates the
+            // Alpinejs data model
             document.querySelectorAll(".fund-tsel").forEach(selElem => {
               selElem.tomselect?.addItem("");
             });
-            // this.updateFilter();
+            // this.filt_status.params = Object.fromEntries(
+            //   Object.keys(this.filt_status.params).map(key => ([key, '']))
+            // );
           },
           showTrayButton(mode, stat) {
             if (this.tray_status.mode === mode) {
@@ -426,6 +495,21 @@
               dif: "join",
               lag: flag,
             });
+          },
+          submitQuery() {
+            const params = new URLSearchParams({
+              ...((this.filt_status.mode === "coin" || this.filt_status.mode === undefined)
+                ? {}
+                : {filt: this.filt_status.mode}
+              ),
+              ...((this.sort_status.mode === "time") ? {} : {sort: this.sort_status.mode}),
+              desc: this.sort_status.desc,
+              ...(Object.fromEntries(Object.entries(this.filt_status.params).filter(
+                ([key, value]) => value !== ""
+              ))),
+              // TODO: Include chain number when symbols are not unique
+            });
+            this.openHREF(`${window.location.pathname}?${params}`);
           },
           })));
           '''

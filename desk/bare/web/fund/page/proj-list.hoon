@@ -1,13 +1,11 @@
 ::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
 /-  fd=fund-data, f=fund
-/+  fp=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
+/+  fj=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
-+*  mes  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
-    pes  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
@@ -16,6 +14,7 @@
           (crip "bad dif; expected join, not {(trip dif)}")
         %join
       ?+  arz=(parz:fh bod (sy ~[%lag]))  p.arz  [%| *]
+        =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
         =/  lag=flag:f  (flag:dejs:ff:fh (~(got by p.arz) %lag))
         :+  %proj  lag
         ::  FIXME: The %lure case doesn't actually do anything; it's
@@ -36,6 +35,7 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
+  =/  dyp=@tas  (rear (slag:derl:ff:fh url.request.ord))
   =/  arm=(map @t @t)  (~(gas by *(map @t @t)) arz)
   =/  arg
     :*  sort=`@t`(~(gut by arm) %sort %time)
@@ -47,14 +47,15 @@
         stat=`(unit stat:f)`(bind (~(get by arm) %stat) |=(=@t ;;(stat:f t)))
     ::
           ^=  coin  ^-  (unit coin:f)
+        ::  FIXME: This only works if all built-in coins have different
+        ::  symbols; this will need to be fixed when %fund supports e.g.
+        ::  USDC on an L2
         ?~  sym=(~(get by arm) %coin)  ~
         ?~  con=(find:fx clis:fc |=(c=coin:f =(u.sym symbol.c)))  ~
         `u.con
     ==
-
-  =/  dyp=@tas  (rear (slag:derl:ff:fh url.request.ord))
-  =/  lin=tape
-    "{(burl:fh bol)}/apps/groups/groups/~tocwex/syndicate-public/channels/heap/~tocwex/bulletin-board"
+  =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
+  =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
   =/  [mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
     ?+  dyp  !!
       %following  [~ pes]
@@ -69,49 +70,63 @@
       |=  [kev=_?>(?=(^ mep) n.mep) acc=_mep]
       ^+  acc
       =/  pre=prej:proj:f  (~(got by pes) -.kev)
-      =/  roz=(set role:f)  (~(rols pj:fp -.pre) our.bol our.bol)
+      =/  roz=(set role:f)  (~(rols pj:fj -.pre) our.bol our.bol)
       ?:(=(~ roz) acc (~(put by acc) kev))
     ==
-  =/  myz=(list [flag:f mete:meta:f])
-    =-  (sort (skim ~(tap by mez) ski) cmp)
-    ^-  [ski=$-([flag:f mete:meta:f] ?) cmp=$-([[flag:f mete:meta:f] [flag:f mete:meta:f]] ?)]
-    :-  |=  [lag=flag:f met=mete:meta:f]
-        ^-  bean
-        ?&  ?~(text.arg & ?=(^ (find (trip u.text.arg) (trip title.met))))
-            ?~(coin.arg & =(currency.met u.coin.arg))
-            ?~(work.arg & =(worker.met u.work.arg))
-            ?~(orac.arg & =(oracle.met u.orac.arg))
-            ::  ?~(sat=(~(get by arg) %stat) & …)  ::  NOTE: unavailabe on meta
+  =/  ex
+    |%
+    +$  mexa  [status=stat:f mete:meta:f]
+    ++  proj-meta
+      |=  [lag=flag:f pre=prej:proj:f]
+      ^-  mete:meta:f
+      :_  live.pre
+      ::  FIXME: Duplicated from '/app/fund/hoon'
+      :*  title=title.pre
+          image=image.pre
+          cost=~(cost pj:fj -.pre)
+          currency=currency.pre
+          launch=p:xact:(fall contract.pre *oath:f)
+          worker=p.lag
+          oracle=p.assessment.pre
+      ==
+    ++  proj-mexa
+      |=  [lag=flag:f pre=prej:proj:f]
+      ^-  mexa
+      =+  met=(proj-meta lag pre)
+      [~(stat pj:fj -.pre) `mete:meta:f`met(launch ~(bloq pj:fj -.pre))]
+    ++  meta-mexa
+      |=  [lag=flag:f met=mete:meta:f]
+      ^-  mexa
+      [%born met]
+    --
+  =/  [myz=(list [flag:f mete:meta:f]) pyz=(list [flag:f prej:proj:f])]
+    =/  mym=(map flag:f mexa:ex)
+      %-  ~(rep by mez)
+      |=([n=[flag:f mete:meta:f] a=(map flag:f mexa:ex)] (~(put by a) -.n (meta-mexa:ex n)))
+    =/  pym=(map flag:f mexa:ex)
+      %-  ~(rep by pez)
+      |=([n=[flag:f prej:proj:f] a=(map flag:f mexa:ex)] (~(put by a) -.n (proj-mexa:ex n)))
+    =-  :*  (turn (- mym) |=([n=flag:f mexa:ex] [n (~(got by mez) n)]))
+            (turn (- pym) |=([n=flag:f mexa:ex] [n (~(got by pez) n)]))
         ==
-    |=  [[laa=flag:f mea=mete:meta:f] [lab=flag:f meb=mete:meta:f]]
+    |=  aym=(map flag:f mexa:ex)
+    ^-  (list [flag:f mexa:ex])
+    =-  (sort (skim ~(tap by aym) ski) cmp)
+    ^-  [ski=$-([flag:f mexa:ex] ?) cmp=$-([[flag:f mexa:ex] [flag:f mexa:ex]] ?)]
+    :-  |=  [lag=flag:f mex=mexa:ex]
+        ^-  bean
+        ?&  ?~(text.arg & ?=(^ (find (trip u.text.arg) (trip title.mex))))
+            ?~(coin.arg & =(currency.mex u.coin.arg))
+            ?~(work.arg & =(worker.mex u.work.arg))
+            ?~(orac.arg & =(oracle.mex u.orac.arg))
+            ?~(stat.arg & =(status.mex u.stat.arg))
+        ==
+    |=  [[laa=flag:f mea=mexa:ex] [lab=flag:f meb=mexa:ex]]
     ^-  bean
     ?+  sort.arg  !!
       %time  (?:(desc.arg gth lth) launch.mea launch.meb)
       %cost  (?:(desc.arg gth lth) cost.mea cost.meb)
       %alph  ?:(desc.arg (aor title.meb title.mea) (aor title.mea title.meb))
-    ::
-        %pals
-      %+  ?:(desc.arg gth lth)
-        ~(wyt in (~(get ju f2p.meta-srcs.dat) laa))
-      ~(wyt in (~(get ju f2p.meta-srcs.dat) lab))
-    ==
-  =/  pyz=(list [flag:f prej:proj:f])
-    =-  (sort (skim ~(tap by pez) ski) cmp)
-    ^-  [ski=$-([flag:f prej:proj:f] ?) cmp=$-([[flag:f prej:proj:f] [flag:f prej:proj:f]] ?)]
-    :-  |=  [lag=flag:f pre=prej:proj:f]
-        ^-  bean
-        ?&  ?~(text.arg & ?=(^ (find (trip u.text.arg) (trip title.pre))))
-            ?~(coin.arg & =(currency.pre u.coin.arg))
-            ?~(work.arg & =(p.lag u.work.arg))
-            ?~(orac.arg & =(p.assessment.pre u.orac.arg))
-            ?~(stat.arg & =(~(stat pj:fp -.pre) u.stat.arg))
-        ==
-    |=  [[laa=flag:f pea=prej:proj:f] [lab=flag:f peb=prej:proj:f]]
-    ^-  bean
-    ?+  sort.arg  !!
-      %time  (?:(desc.arg gth lth) ~(bloq pj:fp -.pea) ~(bloq pj:fp -.peb))
-      %cost  (?:(desc.arg gth lth) ~(cost pj:fp -.pea) ~(cost pj:fp -.peb))
-      %alph  ?:(desc.arg (aor title.peb title.pea) (aor title.pea title.peb))
     ::
         %pals
       %+  ?:(desc.arg gth lth)
@@ -132,7 +147,7 @@
         ;div(class "aspect-video bg-cover bg-center rounded-md bg-[url('{bak}')]")
           ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
             ;div(class "bg-gray-100 rounded-md text-md p-1.5")
-              ; {(mony:enjs:ff:fh ~(cost pj:fp -.pre) currency.pre)}
+              ; {(mony:enjs:ff:fh ~(cost pj:fj -.pre) currency.pre)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5")
               ;+  %+  ~(icon-stax ui:fh "h-8")  |
@@ -173,24 +188,10 @@
         ==
         ;div(class "text-sm"): {(trip title.met)}
       ==
-    ++  mota-card                              ::  summary card for project (metadata)
-      |=  [lag=flag:f pre=prej:proj:f]
-      ^-  manx
-      %+  meta-card  lag
-      :_  live.pre
-      ::  FIXME: Duplicated from '/app/fund/hoon'
-      :*  title=title.pre
-          image=image.pre
-          cost=~(cost pj:fp -.pre)
-          currency=currency.pre
-          launch=p:xact:(fall contract.pre *oath:f)
-          worker=p.lag
-          oracle=p.assessment.pre
-      ==
     ++  mota-well                              ::  project (metadata) well (%action)
       |=  [kas=tape msg=tape ski=$-([flag:f prej:proj:f] ?)]
       ^-  manx
-      ?~  maz=(turn (skim pyz ski) mota-card)
+      ?~  maz=(turn (skim pyz ski) |=([l=flag:f p=prej:proj:f] (meta-card l (proj-meta:ex l p))))
         ;p.fund-warn: {msg}
       ;div(class kas)
         ;*  maz
@@ -217,7 +218,7 @@
               ; No projects found.
               ;span
                 ; Check out the
-                ;a.text-link/"{lin}": ~tocwex.syndicate %tlon group
+                ;a.text-link/"{(burl:fh bol)}/apps/groups/groups/~tocwex/syndicate-public/channels/heap/~tocwex/bulletin-board": ~tocwex.syndicate %tlon group
                 ;span:  to discover more projects.
               ==
             ==
@@ -242,7 +243,7 @@
                 ;h2: Service Requests
                 ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
                     |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  ?=(%prop ~(stat pj:fp -.pre))
+                    ?&  ?=(%prop ~(stat pj:fj -.pre))
                         =(p.assessment.pre our.bol)
                     ==
               ==
@@ -250,7 +251,7 @@
                 ;h2: Review Requests
                 ;+  %^  ~(mota-well ui sus)  sas  "No projets pending review."
                     |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  ?=(%sess ~(stat pj:fp -.pre))
+                    ?&  ?=(%sess ~(stat pj:fj -.pre))
                         =(p.assessment.pre our.bol)
                     ==
               ==
@@ -258,7 +259,7 @@
                 ;h2: Outstanding Pledges
                 ;+  %^  ~(mota-well ui sus)  sas  "No oustanding pledges."
                     |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fp -.pre))
+                    ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
                         (~(has by pledges.pre) our.bol)
                     ==
               ==
@@ -266,7 +267,7 @@
                 ;h2: Work Archive
                 ;+  %^  mota-well:ui  mas  "No archived projects."
                     |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  ?=(?(%done %dead) ~(stat pj:fp -.pre))
+                    ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                         (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
                     ==
               ==
@@ -274,7 +275,7 @@
           ==
     ==
     ;footer(class "fund-foot font-serif flex flex-col")
-      ;div(class "w-full flex flex-col p-3 gap-3 bg-gray-100", x-show "tray_status.open")
+      ;div(class "w-full flex flex-col p-3 gap-3 bg-gray-100 rounded-t-md", x-show "tray_status.open")
         ;div(class "w-full flex-1 flex flex-row gap-4")
           ;div(class "w-full flex-1 flex flex-row gap-1")
             ;input.p-1.flex-1.min-w-0  =type  "text"
@@ -316,7 +317,7 @@
                         ==
                   ==
                   ;div(x-show "filt_status.mode == 'coin'")
-                    ;+  %:  ~(coin-selz ui:fh "flex flex-row gap-3")
+                    ;+  %:  ~(coin-selz ui:fh "flex flex-row")
                             &
                             coin.arg
                             "filt_status.params.coin"
@@ -425,8 +426,6 @@
           "tray_status: \{mode: 'base', open: false},"
           :(weld "sort_status: \{mode: '" (trip sort.arg) "', desc: " (bool:enjs:ff:fh desc.arg) "},")
           :(weld "filt_status: \{mode: '" (trip (~(gut by arm) %filt %coin)) "', params: \{text: '" (trip (~(gut by arm) %text %$)) "', coin: '" (trip (~(gut by arm) %coin %$)) "', work: '" (trip (~(gut by arm) %work %$)) "', orac: '" (trip (~(gut by arm) %orac %$)) "', stat: '" (trip (~(gut by arm) %stat %$)) "'}},")
-          ::  "sort_status: \{mode: 'time', desc: true},"
-          ::  "filt_status: \{mode: 'coin', params: \{coin: '', work: '', orac: '', stat: ''}},"
           ^-  tape  ^~
           %+  rip  3
           '''

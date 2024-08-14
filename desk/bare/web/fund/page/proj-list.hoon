@@ -248,6 +248,22 @@
               %action
             =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col overflow-x-auto"
             =/  sus=tape  "w-[50vw] sm:w-[250px]"
+            ?^  text.arg
+              %^  mota-well:ui  mas  "No projects found."
+              |=  [lag=flag:f pre=prej:proj:f]
+              ?|  ?&  ?=(%prop ~(stat pj:fj -.pre))
+                      =(p.assessment.pre our.bol)
+                  ==
+                  ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
+                      (~(has by pledges.pre) our.bol)
+                  ==
+                  ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
+                      (~(has by pledges.pre) our.bol)
+                  ==
+                  ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
+                      (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
+                  ==
+              ==
             ;div(class "flex flex-col gap-4")
               ;div                               ::  $prez with %prop status
                 ;h2: Service Requests

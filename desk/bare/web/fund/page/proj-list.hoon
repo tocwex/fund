@@ -115,7 +115,7 @@
     ^-  [ski=$-([flag:f mexa:ex] ?) cmp=$-([[flag:f mexa:ex] [flag:f mexa:ex]] ?)]
     :-  |=  [lag=flag:f mex=mexa:ex]
         ^-  bean
-        ?&  ?~(text.arg & ?=(^ (find (trip u.text.arg) (trip title.mex))))
+        ?&  ?~(text.arg & ?=(^ (find (cass (trip u.text.arg)) (cass (trip title.mex)))))
             ?~(coin.arg & =(currency.mex u.coin.arg))
             ?~(work.arg & =(worker.mex u.work.arg))
             ?~(orac.arg & =(oracle.mex u.orac.arg))
@@ -125,8 +125,14 @@
     ^-  bean
     ?+  sort.arg  !!
       %time  (?:(desc.arg gth lth) launch.mea launch.meb)
-      %cost  (?:(desc.arg gth lth) cost.mea cost.meb)
       %alph  ?:(desc.arg (aor title.meb title.mea) (aor title.mea title.meb))
+    ::
+        %cost
+      ::  NOTE: Need to normalize currencies based on per-coin decimal counts
+      =+  mad=(max decimals.currency.mea decimals.currency.meb)
+      %+  ?:(desc.arg gth lth)
+        (mul cost.mea (pow 10 (sub mad decimals.currency.mea)))
+      (mul cost.meb (pow 10 (sub mad decimals.currency.meb)))
     ::
         %pals
       %+  ?:(desc.arg gth lth)
@@ -278,9 +284,13 @@
       ;div(class "w-full flex flex-col p-3 gap-3 bg-gray-100 rounded-t-md", x-show "tray_status.open")
         ;div(class "w-full flex-1 flex flex-row gap-4")
           ;div(class "w-full flex-1 flex flex-row gap-1")
-            ;input.p-1.flex-1.min-w-0  =type  "text"
-              =placeholder  "Search projects"
-              =x-model  "filt_status.params.text";
+            ;+  :_  ~  :-  %input
+                :~  [%type "text"]
+                    [%placeholder "Search projects"]
+                    [%class "p-1 flex-1 min-w-0"]
+                    [%x-model "filt_status.params.text"]
+                    [%'x-on:keyup.enter' "tray_status.open && submitQuery()"]
+                ==
             ;button.fund-butn-de-m(type "button", x-on-click "submitQuery")
               ;img@"{(aset:enrl:ff:fh %search)}";
             ==

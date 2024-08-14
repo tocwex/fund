@@ -125,7 +125,11 @@
     ^-  bean
     ?+  sort.arg  !!
       %time  (?:(desc.arg gth lth) launch.mea launch.meb)
-      %alph  ?:(desc.arg (aor title.meb title.mea) (aor title.mea title.meb))
+    ::
+        %alph
+      =+  tea=(cass (trip title.mea))
+      =+  teb=(cass (trip title.meb))
+      ?:(desc.arg (aor teb tea) (aor tea teb))
     ::
         %cost
       ::  NOTE: Need to normalize currencies based on per-coin decimal counts

@@ -12,10 +12,11 @@
   =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh hed)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     =+  lin=(dec (lent milestones.pro))
+    =+  dif=(~(got by p.arz) %dif)
+    ?:  ?=(%fave-proj dif)  [%prof our.bol %fave lag]
     =-  ?@(- - [%proj lag -])
     ^-  $@(@t prod:f)
-    ?+    dif=(~(got by p.arz) %dif)
-        (crip "bad dif; expected (bump-*|wipe-*|mula-*), not {(trip dif)}")
+    ?+    dif  (crip "bad dif; expected (bump-*|wipe-*|mula-*|(folo|fave)-proj), not {(trip dif)}")
       %bump-born  [%bump %born ~]
       %bump-work  [%bump %work ~]
       %bump-sess  [%bump %sess ~]
@@ -142,13 +143,17 @@
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
   =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  ::  FIXME: This is a hack caused by the fact that %fave is a profile
+  ::  action and profiles do not have an associted project
+  =/  pat=(list knot)  (slag:derl:ff:fh url.request.ord)
+  =?  lag  &(?=(%fave pyp) ?=([%project sip=@ nam=@ ~] pat))
+    [(slav %p +<.pat) (slav %tas +>-.pat)]
   :-  %next  :_  ~
   %-  desc:enrl:ff:fh
   /next/(scot %p p.lag)/[q.lag]/[?+(pyp %bump %mula-trib %trib, %mula-plej %plej)]
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  pat=(list knot)  (slag:derl:ff:fh url.request.ord)
   =/  [lag=flag:f pre=prej:f]  (greb:proj:preface:fh arz)
   =*  pro  -.pre
   =/  sat=stat:f  ~(stat pj:f pro)
@@ -192,10 +197,24 @@
             ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
           :_  ~  (pink-butn:ui:fh bol lag)
         ::
+            ?:  ?|  !wok
+                    ?=(?(%born %prop) sat)
+                ::
+                    ?~  pof=(~(get by ~(mine conn:prof:fd bol [prof-subs prof-pubs]:dat)) our.bol)  &
+                    (~(has in favorites.u.pof) lag)
+                ==
+            ~
+          :_  ~
+          ;form(method "post")
+            ;button#prod-butn-fave-proj(type "submit", name "dif", value "fave-proj")
+              ;img.fund-butn-icon@"{(aset:enrl:ff:fh %eye)}";
+            ==
+          ==
+        ::
             ?:  |(?=(?(%born %prop) sat) !(auth:fh bol) =(our src):bol (~(has in roz) %fund))  ~
           :_  ~
           ;form(method "post")
-            ;button(id "prod-butn-folo-proj", type "submit", name "dif", value "folo-proj")
+            ;button#prod-butn-folo-proj(type "submit", name "dif", value "folo-proj")
               ;img.fund-butn-icon@"{(aset:enrl:ff:fh %bookmark)}";
             ==
           ==

@@ -480,8 +480,6 @@
     =.  pro  -:(~(gut by pj-our) lag *prej:proj:f)
     =?  pj-core  &(pj-is-myn ?=(%lock ~(stat pj:fj pro)))
       (pj-me-push [%init pj-me-met])
-    =?  pj-core  !?=(?(%born %prop) ~(stat pj:fj pro))
-      (pj-pf-push [%fave lag])
     =?  pj-core  gon
       (pj-pf-push [%jilt lag])
     =?  cor  &(pj-is-myn !gon)

@@ -185,8 +185,8 @@
     :-  (trip -.pok)
     ?-  -.pok
       %fund  [[~zod %$] (trip +<.pok)]
-      %prof  [[p.pok %$] (trip +<.q.pok)]
-      %meta  [p.pok (trip +<.q.pok)]
+      %prof  [[p.pok %$] (trip -.q.pok)]
+      %meta  [p.pok (trip -.q.pok)]
       %proj  [p.pok "{(trip -.q.pok)}{?+(-.q.pok ~ ?(%bump %mula) ['-' (trip +<.q.pok)])}"]
     ==
   ++  coin                                     ::  [1 0x1 %wstr %wstr 6] => "$WSTR"

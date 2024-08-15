@@ -322,7 +322,8 @@
       ^-  manx
       ::  NOTE: CSS trick for pushing footer to page bottom
       ::  https://stackoverflow.com/a/71444859
-      ;footer(class "sticky top-[100vh] justify-center border-t-2 p-2 border-black hidden lg:block lg:flex lg:p-4 lg:items-center lg:justify-between")
+      ::  To hide on smaller devices: hidden lg:block
+      ;footer(class "top-[100vh] justify-center border-t-2 p-2 border-black lg:flex lg:p-4 lg:items-center lg:justify-between")
         ;div(class "text-center text-xs pt-1 lg:pt-0 lg:text-base")
           ;div(class "flex justify-center items-center lg:justify-start hover:underline")
             ;a/"https://tocwexsyndicate.com"(target "_blank"): crafted by ~tocwex.syndicate

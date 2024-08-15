@@ -39,6 +39,17 @@ div.ts-wrapper + label:after {
   color: #b80c09; /* text-highlight1-500 */
 }
 
+/* Drop-up for selectors near the bottom of the page (https://stackoverflow.com/a/78298291) */
+.ts-dropdown.dropup {
+    bottom: 100%;
+    top: auto;
+}
+
+/* Remove 'w-full' from .ts-control inputs (prevents weird multi-line input breakups) */
+.ts-control > input {
+  width: unset;
+}
+
 
 /* Styling for tippy.js elements (https://atomiks.github.io/tippyjs/v6/themes/) */
 /* https://unpkg.com/tippy.js@6.3.7/dist/tippy.css */

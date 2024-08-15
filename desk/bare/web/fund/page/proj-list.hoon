@@ -210,7 +210,11 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "{(trip dyp)} dashboard"
-  ;div(x-data "proj_list")
+  ::  NOTE: Using another trick to always push footer to the bottom
+  ::  https://stackoverflow.com/a/59865099
+  ::  FIXME: Could fiddle with 'min-h-[X%]' here for better results, but we
+  ::  leave it for now
+  ;div(class "min-h-full flex flex-col justify-between", x-data "proj_list")
     ;div(class "flex flex-col p-2 gap-2")
       ;div(class "flex justify-between")
         ;h1: {(trip dyp)}
@@ -251,11 +255,8 @@
             ?^  text.arg
               %^  mota-well:ui  mas  "No projects found."
               |=  [lag=flag:f pre=prej:proj:f]
-              ?|  ?&  ?=(%prop ~(stat pj:fj -.pre))
+              ?|  ?&  ?=(?(%prop %sess) ~(stat pj:fj -.pre))
                       =(p.assessment.pre our.bol)
-                  ==
-                  ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
-                      (~(has by pledges.pre) our.bol)
                   ==
                   ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
                       (~(has by pledges.pre) our.bol)

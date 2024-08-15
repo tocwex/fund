@@ -183,8 +183,8 @@ if (window.Alpine === undefined) {
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
-      ['fund-head', 'sticky fixed z-50 top-0'],
-      ['fund-foot', 'sticky fixed z-40 bottom-0'],
+      ['fund-head', 'sticky z-50 top-0'],
+      ['fund-foot', 'sticky z-40 bottom-0'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
       ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
@@ -447,6 +447,18 @@ if (window.Alpine === undefined) {
       render: {
         option(data, escape) { return renderSelector(data, escape); },
         item(data, escape) { return renderSelector(data, escape); },
+      },
+      onDropdownOpen: (dropdown) => {
+        if (
+            empty ||  // FIXME: Big hack to force this always for serach UI selects
+            (dropdown.getBoundingClientRect().bottom >
+            (window.innerHeight || document.documentElement.clientHeight))
+        ) {
+          dropdown.classList.add('dropup');
+        }
+      },
+      onDropdownClose: (dropdown) => {
+        dropdown.classList.remove('dropup');
       },
       ...(empty ? {} : {controlInput: null}),
     });

@@ -523,11 +523,12 @@ if (window.Alpine === undefined) {
           )).then((responseText) => {
             const responseDOM = new DOMParser().parseFromString(responseText, "text/html");
             const ship = responseDOM.querySelector("#ship").value;
+            const clan = responseDOM.querySelector("#clan").value;
             const wallets = responseDOM.querySelector("#wallets").value.split(" ");
-            return [ship, wallets];
-          }).then(([ship, wallets]) => {
+            return [ship, clan, wallets];
+          }).then(([ship, clan, wallets]) => {
             const address = getAddress();
-            if (wallets.includes(address)) {
+            if (wallets.includes(address) || clan === "pawn") {
               return Promise.resolve(undefined);
             } else {
               return signMessage(window.Wagmi, {

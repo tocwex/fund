@@ -273,9 +273,9 @@
                     ;span:  application.
                     ;span.font-bold: This action is irreversible, choose wisely.
                   ==
-                ==
-                ;div(class "flex justify-end pt-2 gap-x-2")
-                  ;+  (prod-butn:ui:fh %face-proj %true "publicize ✓" ~ ~)
+                  ;div(class "flex justify-end pt-2 gap-x-2")
+                    ;+  (prod-butn:ui:fh %fave-proj %true "publicize ✓" ~ ~)
+                  ==
                 ==
               ==
           ==

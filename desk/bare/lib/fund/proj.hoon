@@ -56,7 +56,7 @@
         %dead  [& ?~(withdrawal.mil 0 cash.u.withdrawal.mil)]
       ::
           %done
-        ?~  withdrawal.mil  [| 0]
+        ?~  withdrawal.mil  [| cost.mil]
         :_  cash.u.withdrawal.mil
         |(=(0x0 +:(fall xact.u.withdrawal.mil [0 0x1])) ?=(^ pruf.u.withdrawal.mil))
       ==

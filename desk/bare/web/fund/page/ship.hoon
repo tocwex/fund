@@ -28,6 +28,7 @@
     ;body
       ;p: For internal use only.
       ;data#ship(value "{<src.bol>}");
+      ;data#clan(value "{(trip (clan:title src.bol))}");
       ;+  =-  ;data#wallets(value wap);
           ^-  wap=tape
           =-  (zing (join " " (turn waz addr:enjs:ff:fh)))

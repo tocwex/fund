@@ -1,3 +1,36 @@
+/* scrollbar improvements (taken from tlon; https://github.com/tloncorp/tlon-apps) */
+* {
+  /* Scrollbar resizing for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--colors-gray-200)) transparent;
+  /* Hide gray box when tapping a link on iOS */
+  -webkit-tap-highlight-color: transparent;
+  /* Disable double-tap to zoom, removes click delay */
+  touch-action: manipulation;
+  /* Better font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Scrollbar resizing for Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  border: solid 2px transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--colors-gray-200));
+  border: solid 2px transparent;
+  border-radius: 20px;
+  background-clip: content-box;
+}
+
+
 /* Auto-grow Text Areas (css-tricks.com/the-cleanest-trick-for-autogrowing-textareas) */
 .grow-wrap {
   /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */

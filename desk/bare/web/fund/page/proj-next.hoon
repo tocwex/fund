@@ -59,7 +59,9 @@
     ::
         %join
       ::  FIXME: Implement the actual functional
-      %^  hero-plaq:ui:fh  "You are trying to join a project; please wait."  ~
+      %^    hero-plaq:ui:fh
+          "You are now joining project {(flag:enjs:ff:fh lag)}; please wait."
+        ~
       [pro.btn ~]
     ::
         %edit

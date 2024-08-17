@@ -59,9 +59,8 @@
   ++  surt                                     ::  s(hip) ur(l) t(ape) (url path)
     |=  sip=@p  ~+
     ^-  tape
-    ::  TODO: Comets should use the URL to a pure black image
     ?-    (clan:title sip)
-      %pawn  "https://azimuth.network/erc721/{(bloq:enjs 0)}.svg"
+      %pawn  "https://placehold.co/24x24/black/black?text=\\n"
       %earl  "https://azimuth.network/erc721/{(bloq:enjs `@`(end 5 sip))}.svg"
       *      "https://azimuth.network/erc721/{(bloq:enjs `@`sip)}.svg"
     ==
@@ -69,6 +68,18 @@
     |=  sip=@p  ~+
     ^-  cord
     (crip (surt sip))
+  ++  esat                                     ::  e(ther)s(c)a(n) t(ape) (url path)
+    |=  [adr=addr cid=@ud]  ~+
+    ^-  tape
+    =-  "https://{(trip -)}etherscan.io/address/{(addr:enjs adr)}"
+    ?+  cid        ''
+      %1           ''
+      %11.155.111  'sepolia.'
+    ==
+  ++  esac                                     ::  e(ther)s(c)a(n) c(ord) (url path)
+    |=  [adr=addr cid=@ud]  ~+
+    ^-  cord
+    (crip (esat adr cid))
 
 +|  %js
 ++  dejs                                       ::  js-tape => noun
@@ -127,7 +138,7 @@
   --
 ++  enjs                                       ::  noun => js-tape
   |%
-  ++  mony                                     ::  [12.345.000 [1 0x0 %wstr %wstr 6]] => "12.34 $WSTR"
+  ++  mony                                     ::  [12.345.000 [1 0x0 %wstr %wstr 18]] => "12.34 $WSTR"
     |=  [cas=^cash con=^coin]
     ^-  tape
     ?+  symbol.con  "{(cash cas decimals.con)} {(coin con)}"

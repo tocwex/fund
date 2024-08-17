@@ -56,13 +56,13 @@
     ==
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
-  =/  [mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
+  =/  [tyt=tape mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
     ?+  dyp  !!
-      %following  [~ pes]
-      %discover  [mes ~]
+      %following  ["Following" ~ pes]
+      %discover  ["Discover" mes ~]
     ::
         %action
-      =-  [(- mes) (- pes)]
+      =-  ["My Actions" (- mes) (- pes)]
       |*  mep=(map flag:f *)
       ^+  mep
       ?:  =(~ mep)  *_mep
@@ -217,7 +217,7 @@
   ;div(class "min-h-full flex flex-col justify-between", x-data "proj_list")
     ;div(class "flex flex-col p-2 gap-2")
       ;div(class "flex justify-between")
-        ;h1: {(trip dyp)}
+        ;h1: {tyt}
         ;*  ?.  ?=(%action dyp)  ~
             :_  ~
             ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
@@ -348,7 +348,7 @@
                         ==
                   ==
                   ;div(x-show "filt_status.mode == 'coin'")
-                    ;+  %:  ~(coin-selz ui:fh "flex flex-row")
+                    ;+  %:  ~(coin-selz ui:fh "flex flex-row gap-2")
                             &
                             coin.arg
                             "filt_status.params.coin"
@@ -363,7 +363,7 @@
                             %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
                             |=  [nex=(set flag:f) acc=(set @p)]
                             (~(uni in acc) `(set @p)`(~(run in nex) head))
-                          :-  ;option(value ""): No Worker
+                          :-  ;option(value ""): Any Worker
                           %+  turn  ~(tap in woz)
                           |=  wok=@p
                           ^-  manx
@@ -385,7 +385,7 @@
                             ^-  [mel=(list @p) pel=(list @p)]
                             :-  (turn ~(val by mez) |=(m=mete:meta:f oracle.m))
                             (turn ~(val by pez) |=(p=prej:proj:f p.assessment.p))
-                          :-  ;option(value ""): No Oracle
+                          :-  ;option(value ""): Any Oracle
                           %+  turn  ~(tap in orz)
                           |=  ora=@p
                           ^-  manx
@@ -402,16 +402,27 @@
                     ;select#filt-status.fund-tsel
                         =x-init  "useTomSelect($el, true)"
                         =x-model  "filt_status.params.stat"
-                      ;*  :-  ;option(value ""): No Status
+                      ;*  :-  ;option(value ""): Any Status
                           %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]
                           |=  sat=stat:f
                           ^-  manx
+                          ::  FIXME: This is so ugly, but there isn't any easy
+                          ::  way to grab the color through a Tailwind class
+                          =/  clr=tape
+                            ?-  sat
+                              %born  "a2a2a2"
+                              %prop  "404040"
+                              %lock  "5fb4bf"
+                              %work  "3e72cc"
+                              %sess  "1e3c71"
+                              %done  "71a481"
+                              %dead  "ff4d70"
+                            ==
                           :_  ; {(stat:enjs:ff:fh sat)}
                           :-  %option
                           ;:  welp
                               [%value "{(trip sat)}"]~
-                              ::  FIXME: Really want SVG w/ custom colors for this in paritcular.
-                              ::  [%data-image ""]~  ::  TODO: Should be color of status
+                              [%data-image "https://placehold.co/24x24/{clr}/{clr}?text=\\n"]~
                               ?.(&(?=(^ stat.arg) =(u.stat.arg sat)) ~ [%selected ~]~)
                           ==
                     ==
@@ -419,7 +430,7 @@
                 ==
                 ;div  =class  "w-full flex-1 flex flex-row justify-between items-center"
                     =x-show  "tray_status.mode == 'sort'"
-                  ;*  %+  turn  `(list @tas)`~[%time %cost %alph %pals %undo]
+                  ;*  %+  turn  `(list @tas)`~[%time %pals %cost %alph %undo]
                       |=  mod=@tas
                       ?:  ?=(%undo mod)
                         ;button(type "button", x-on-click "updateSort(undefined)"): RESET
@@ -433,12 +444,12 @@
             ==  ==
       ==
       ;div(class "w-full flex flex-row justify-center gap-2 py-3 bg-primary-300")  ::  bg-primary-400
-        ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
+        ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls-feed]
             |=  mod=@tas
             ^-  manx
             =+  [cas="px-4 py-3 rounded-md" cis="w-8"]
             =+  kas=?.(=(dyp mod) ~ "bg-gray-100")
-            ?:  ?=(%controls mod)
+            ?:  ?=(%controls-feed mod)
               ;button  =type  "button"
                   =x-on-click  "toggleTray(undefined)"
                   =class  "{cas} border-l border-gray-250"

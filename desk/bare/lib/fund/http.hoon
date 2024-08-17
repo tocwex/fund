@@ -294,9 +294,12 @@
       ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
         ;+  ?:  ?=(?([%create %proj ~] [%project @ @ %edit ~]) pat)
               ;a.fund-butn-de-m/"{(dest:enrl:ff (snip `(list knot)`pat))}": ← back
-            =+  dst=?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))
-            ;a/"{dst}"(class "h-10 p-2 rounded-md hover:bg-primary-550")
-              ;img.h-full@"{(dest:enrl:ff /asset/[~.fund.svg])}";
+            ;a.h-8/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
+                =x-data  "\{ hover: false }"
+                =x-on-mouseenter  "hover = true"
+                =x-on-mouseleave  "hover = false"
+              ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
+              ;img.h-full@"{(aset:enrl:ff %fund-off)}"(x-show "hover");
             ==
         ;div(class "flex inline-flex gap-x-2")
           ::  FIXME: Opening login page in a new tab because opening it
@@ -306,6 +309,7 @@
                     =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-md hover:bg-primary-550"
                   ;+  (ship-logo src.bol)
                   ;span(class "hidden sm:block font-bold"): {<src.bol>}
+                  ;img@"{(aset:enrl:ff %ellipsis)}"(class "hidden sm:block h-full");
                   ;div#fund-agis-opts(class "hidden")
                     ;div(class "flex flex-col gap-2")
                       ;*  ?.  =(our src):bol  ~
@@ -349,19 +353,48 @@
     ::  TODO: Consider changing the signature to take a (unit addr) for
     ::  cases when the address isn't yet available (e.g. project in
     ::  draft form)
-    |=  [sip=@p tyt=tape adr=addr buz=marl]
+    |=  [sip=@p tyt=tape hep=tape hel=tape adr=addr cid=@ud buz=marl]
     ^-  manx
+    =/  tid=tape  "fund-help-ship-{(trip (asci:fx (crip tyt)))}"
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
-      ;h6(class "leading-none tracking-widest"): {tyt}
+      ;div(class "inline-flex gap-1 items-center")
+        ;h6(class "leading-none tracking-widest"): {tyt}
+        ;button.fund-tipi(id tid, type "button")
+          ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
+        ==
+        ;div(id "{tid}-opts", class "hidden")
+          ;p: {hep}
+          ;p
+            ; To learn more,
+            ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/{hel}"(target "_blank")
+              ; read the docs.
+            ==
+          ==
+        ==
+      ==
       ;div(class "inline-flex self-stretch justify-start items-center gap-2")
         ;+  (~(ship-logo ..$ "h-20") sip)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
-          ;h3(class "leading-7 tracking-tight"): {<sip>}
-          ;h5.fund-addr.fund-addr-ens(title (addr:enjs:ff adr), data-addr (addr:enjs:ff adr))
-            …loading…
+          ;div(class "inline-flex items-center gap-1")
+            ;h5.font-bold.tracking-tight: {<sip>}
+            ;+  (copy-butn (ship:enjs:ff sip))
+          ==
+          ;div(class "inline-flex items-center gap-1")
+            ;a/"{(esat:enrl:ff adr cid)}"
+                =target  "_blank"
+                =data-addr  (addr:enjs:ff adr)
+                =class  "fund-addr fund-addr-ens text-link"
+              …loading…
+            ==
+            ;+  (copy-butn (addr:enjs:ff adr))
           ==
           ;div(class "self-stretch justify-between items-center inline-flex")
-            ;h5(class "font-normal leading-normal tracking-wide"): AZP: {<`@`sip>}
+            ;div(class "inline-flex items-center gap-1")
+              ;a.font-normal.text-link/"https://network.urbit.org/{<sip>}"(target "_blank")
+                ; AZP: {<`@`sip>}
+              ==
+              ;+  (copy-butn (bloq:enjs:ff `@`sip))
+            ==
             ;div(class "inline-flex gap-1")
               ;*  buz
             ==
@@ -471,7 +504,7 @@
     ^-  manx
     =/  ini=tape  ?~(con "undefined" "'{(trip symbol.u.con)}'")
     ;div(class cas, x-data ~)
-      ;div(class "fund-form-group")
+      ;div(class "fund-form-group p-0")
         ;select#proj-chain.fund-tsel  =name  "can"
             =required  ~
             =x-init  "useTomSelect($el, {(bool:enjs:ff emt)})"
@@ -479,7 +512,7 @@
           ;*  =+  can=chain:?~(con *coin u.con)
               %+  welp
                 ?.  emt  ~
-                :_  ~  ;option(value ""): No Chain
+                :_  ~  ;option(value ""): Any Chain
               %+  turn  xlis:fc
               |=  xet=xeta
               ^-  manx
@@ -494,11 +527,11 @@
         ;*  ?~  con  ~
             :_  ~  ;label(for "can"): Blockchain
       ==
-      ;div(class "fund-form-group")
+      ;div(class "fund-form-group p-0")
         ;select#proj-token-options.hidden(required ~)
           ;*  %+  welp
                 ?.  emt  ~
-                :_  ~  ;option(value ""): No Token
+                :_  ~  ;option(value ""): Any Token
               %+  turn  clis:fc
               |=  con=coin
               ^-  manx
@@ -678,6 +711,15 @@
     copyText('{(weld (burl bol) (flat:enrl:ff lag))}');
     alert('project url copied to clipboard');
     """
+  ++  copy-butn                                  ::  arbitrary text copy button
+    |=  txt=tape
+    ^-  manx
+    ;button(type "button", class cas, x-data ~, x-on-click "copyText('{txt}'); swapHTML($el, '✔️');")
+      ::  TODO: Remove static width here and control size from caller
+      ::  element instead (we can get away with static for now because
+      ::  it's the same height in all of its current use locations)
+      ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %copy)}";
+    ==
   ++  link-butn                                  ::  hyperlink/redirect button
     |=  [wer=tape tab=bean txt=tape dis=tape]
     ^-  manx

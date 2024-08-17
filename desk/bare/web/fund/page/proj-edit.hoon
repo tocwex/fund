@@ -108,7 +108,10 @@
                 ;input.p-1  =name  "pic"  =type  "url"
                   =placeholder  "https://example.com/example.png"
                   =value  (trip (fall ?~(pru ~ image.u.pru) ''));
-                ;label(for "pic"): Header Image URL
+                ;label(for "pic")
+                  ; Header Image URL
+                  ;span.text-xs: (Default: Urbit Sigil)
+                ==
               ==
             ==
             ;+  %:  ~(coin-selz ui:fh "flex")

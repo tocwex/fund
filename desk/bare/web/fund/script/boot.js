@@ -435,34 +435,38 @@ if (window.Alpine === undefined) {
   function useTomSelect(elem, empty) {
     function renderSelector(data, escape) {
       return `
-        <div class='flex flex-row items-center gap-x-1'>
-          <img class='fund-aset-circ' src='${data.image}' />
+        <div class='flex flex-row items-center gap-x-2'>
+          <img class='fund-aset-circ' src='${data.image ??
+            "https://placehold.co/24x24/white/black?font=roboto&text=~"
+          }' />
           <span>${data.text}</span>
         </div>
       `;
     };
 
-    const tselElem = new TomSelect(elem, {
-      allowEmptyOption: empty,
-      render: {
-        option(data, escape) { return renderSelector(data, escape); },
-        item(data, escape) { return renderSelector(data, escape); },
-      },
-      onDropdownOpen: (dropdown) => {
-        if (
-            empty ||  // FIXME: Big hack to force this always for serach UI selects
-            (dropdown.getBoundingClientRect().bottom >
-            (window.innerHeight || document.documentElement.clientHeight))
-        ) {
-          dropdown.classList.add('dropup');
-        }
-      },
-      onDropdownClose: (dropdown) => {
-        dropdown.classList.remove('dropup');
-      },
-      ...(empty ? {} : {controlInput: null}),
-    });
-    elem.matches(":disabled") && tselElem.disable();
+    if (elem.tomselect === undefined) {
+      const tselElem = new TomSelect(elem, {
+        allowEmptyOption: empty,
+        render: {
+          option(data, escape) { return renderSelector(data, escape); },
+          item(data, escape) { return renderSelector(data, escape); },
+        },
+        onDropdownOpen: (dropdown) => {
+          if (
+              empty ||  // FIXME: Big hack to force this always for serach UI selects
+              (dropdown.getBoundingClientRect().bottom >
+              (window.innerHeight || document.documentElement.clientHeight))
+          ) {
+            dropdown.classList.add('dropup');
+          }
+        },
+        onDropdownClose: (dropdown) => {
+          dropdown.classList.remove('dropup');
+        },
+        ...(empty ? {} : {controlInput: null}),
+      });
+      elem.matches(":disabled") && tselElem.disable();
+    }
   }
 
   function updateTokenSelect(initialOpt) {

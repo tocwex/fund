@@ -168,49 +168,82 @@
   =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  muz=(list mula:f)  ~(mula pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
-  =/  ioz=manx
-    %+  icon-stax:ui:fh  |
-    :~  (aset:enrl:ff:fh symbol.currency.pro)
-        (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.currency.pro))
-    ==
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  (trip title.pro)
   ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
         ;span: {(mony:enjs:ff:fh cost.pod currency.pro)}
-    ;*  ?~  image.pro  ~
-        :_  ~  ;img@"{(trip u.image.pro)}"(class "w-full");
+    ;img.w-full@"{(trip ?^(image.pro u.image.pro (surc:enrl:ff:fh p.lag)))}";
     ;*  =-  ?~  buz  ~
             :_  ~
             ;div(class "fund-head flex flex-row justify-end")
               ;div(class "fund-card flex gap-2 items-center p-1 my-1")
                 ;*  buz
-                ;+  ioz
               ==
             ==
         ^-  buz=marl
         ;:    welp
+        ::  explain button  ::
+          :~  ;button#fund-help-page.fund-tipi(type "button")
+                ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
+              ==
+              ;div#fund-help-page-opts(class "hidden")
+                ;p
+                  ;code: %fund
+                  ;span:  allows funders to pledge and fulfill contributions,
+                  ; and trusted oracles to approve payouts to project workers.
+                  ; Here are a few things you should know:
+                ==
+                ;ul
+                  ;li
+                    ;span.font-bold: Pledges:
+                    ;span:  Promises to a project worker to complete
+                    ; a fulfillment transaction at a later date, backed by
+                    ; your Urbit ID and personal reputation.
+                  ==
+                  ;li
+                    ;span.font-bold: Contributions:
+                    ;span:  Crypto transactions into an escrow
+                    ; contract, held either until a milestone is approved
+                    ; by the trusted oracle, or the project is canceled
+                    ; and crypto refunded to funders.
+                  ==
+                  ;li
+                    ;span.font-bold: Payouts:
+                    ;span:  Crypto withdrawals by project workers are
+                    ; only allowed once the trusted oracle reviews the
+                    ; milestone and provides an approval signature using
+                    ; their cryptographic keys.
+                  ==
+                ==
+                ;p
+                  ; To learn more,
+                  ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}"(target "_blank")
+                    ; read the docs.
+                  ==
+                ==
+              ==
+          ==
+        ::  edit button  ::
             ?.  &(wok ?=(?(%born %prop) sat))  ~
           :_  ~  (edit-butn:ui:fh lag)
-        ::
-            ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
-          :_  ~  (pink-butn:ui:fh bol lag)
-        ::
-            ?:  ?|  !wok
-                    ?=(?(%born %prop) sat)
-                ::
-                    ?~  pof=(~(get by ~(mine conn:prof:fd bol [prof-subs prof-pubs]:dat)) our.bol)  &
-                    (~(has in favorites.u.pof) lag)
-                ==
-            ~
+        ::  launch/finalize button  ::
+            ?.  &(wok ?=(%prop sat))  ~
           :_  ~
           ;form(method "post")
-            ;button#prod-butn-fave-proj(type "submit", name "dif", value "fave-proj")
-              ;img.fund-butn-icon@"{(aset:enrl:ff:fh %eye)}";
-            ==
+            ;+  %:  prod-butn:ui:fh
+                    %bump-lock  %true  "launch ✔️"  "finalizeContract"
+                    ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                ==
           ==
-        ::
+        ::  cancel button  ::
+            ?.  &(tym ?=(?(%lock %work %sess) sat))  ~
+          :_  ~
+          ;form(method "post")
+            ;+  (prod-butn:ui:fh %bump-dead %false "cancel ❌" "cancelContract" ~)
+          ==
+        ::  bookmark button  ::
             ?:  |(?=(?(%born %prop) sat) !(auth:fh bol) =(our src):bol (~(has in roz) %fund))  ~
           :_  ~
           ;form(method "post")
@@ -218,21 +251,58 @@
               ;img.fund-butn-icon@"{(aset:enrl:ff:fh %bookmark)}";
             ==
           ==
-        ::
+        ::  publicize button  ::
+            ?:  ?|  !wok
+                    ?=(?(%born %prop) sat)
+                      =+  myn=~(mine conn:prof:fd bol [prof-subs prof-pubs]:dat)
+                    ?~(pof=(~(get by myn) our.bol) & (~(has in favorites.u.pof) lag))
+                ==
+            ~
+          :~  ;button#fund-fave.fund-tipi(type "button")
+                ;img.fund-butn-icon@"{(aset:enrl:ff:fh %eye)}";
+              ==
+              ;div#fund-fave-opts(class "hidden")
+                ;form(method "post", class "flex flex-col gap-y-2 p-2 lg:p-6")
+                  ;h1: Publicize?
+                  ;p
+                    ; Currently your project is unlisted and can only be
+                    ; discovered by its clearweb url. By choosing publicize,
+                    ; it will be shared across the urbit network and discoverable
+                    ; by anyone with the
+                    ;code: %fund
+                    ;span:  application.
+                    ;span.font-bold: This action is irreversible, choose wisely.
+                  ==
+                ==
+                ;div(class "flex justify-end pt-2 gap-x-2")
+                  ;+  (prod-butn:ui:fh %face-proj %true "publicize ✓" ~ ~)
+                ==
+              ==
+          ==
+        ::  share button  ::
+            ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
+          :_  ~  (pink-butn:ui:fh bol lag)
+        ::  contract link button  ::
+            ?:  ?=(?(%born %prop) sat)  ~
+          :_  ~
+          ;a/"{(esat:enrl:ff:fh safe:(need contract.pro) chain.currency.pro)}"(target "_blank")
+            ;img.fund-butn-icon@"{(aset:enrl:ff:fh %contract)}";
+          ==
+        ::  sign off/contribute button  ::
             ?:  ?=(?(%born %done %dead) sat)  ~
           =-  ?~  fom  ~
               :~  ;button#fund-mula.fund-tipi.fund-butn-de-m: {txt}
                   ;div#fund-mula-opts(class "hidden")
                     ;form  =method  "post"
                         =autocomplete  "off"
-                        =class  "flex flex-col gap-y-2 p-2 lg:p-6 rounded-2xl"
+                        =class  "flex flex-col gap-y-2 p-2 lg:p-6"
                       ;*  fom
                     ==
               ==  ==
           ^-  [txt=tape fom=marl]
           ?.  ?=(%prop sat)  ::  contribute aside form
             =+  pej=(~(get by pledges.pro) src.bol)
-            :-  "contribute 💸"
+            :-  "contribute 💸"  ::  "contribute ${(trip symbol.currency.pro)}"
             :~  ;h1: {?~(pej "Contribute" "Fulfill Pledge")}
                 ;div(class "flex gap-2")
                   ;div(class "fund-form-group")
@@ -246,7 +316,10 @@
                             [%step "0.01"]~
                             [%placeholder "10"]~
                             [%class "p-1"]~  ::  FIXME: Needed to match <select> sibling
-                            ?~(pej ~ ~[[%readonly ~] [%value (cash:enjs:ff:fh cash.u.pej decimals.currency.pro)]])
+                              ?~  pej  ~
+                            :~  [%readonly ~]
+                                [%value (cash:enjs:ff:fh cash.u.pej decimals.currency.pro)]
+                            ==
                         ==
                     ;label(for "sum"): amount
                   ==
@@ -256,6 +329,7 @@
                                 [%id "proj-token"]~
                                 [%name "tok"]~
                                 [%class "fund-tsel"]~
+                                [%x-init "useTomSelect($el, false)"]~
                                 ?~(pej ~ [%disabled ~]~)
                             ==
                         :_  ~
@@ -312,21 +386,6 @@
                 ==
             ==
           [~ ~]  ::  no aside form
-        ::
-            ?.  &(wok ?=(%prop sat))  ~
-          :_  ~
-          ;form(method "post")
-            ;+  %:  prod-butn:ui:fh
-                    %bump-lock  %true  "launch ✔️"  "finalizeContract"
-                    ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
-                ==
-          ==
-        ::
-            ?.  &(tym ?=(?(%lock %work %sess) sat))  ~
-          :_  ~
-          ;form(method "post")
-            ;+  (prod-butn:ui:fh %bump-dead %false "cancel ❌" "cancelContract" ~)
-          ==
         ==
     ::  ;*  ?:  ?=(?(%born %done %dead) sat)  ~
     ;div(class "flex flex-col gap-1")
@@ -334,7 +393,10 @@
         ;h1: Funding Tracker
         ;div(class "flex flex-wrap gap-1 items-center")
           ;h6(class "leading-none tracking-widest"): Funded via
-          ;+  ioz
+          ;+  %+  icon-stax:ui:fh  |
+              :~  (aset:enrl:ff:fh symbol.currency.pro)
+                  (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.currency.pro))
+              ==
         ==
       ==
       ;+  (proj-ther:ui:fh pro &)
@@ -427,11 +489,22 @@
       ==
       ;div(class "col-span-1 flex flex-col gap-1")
         ;div(class "flex flex-col gap-2")
-          ;h1: Participants
+          ;h1(class "sm:hidden"): Participants
           ;+  %:  ship-card:ui:fh
                   p.lag
                   "Project Worker"
+                  ^-  tape  ^~
+                  %+  rip  3
+                  '''
+                  The project worker is the identity which does the work
+                  defined in the project overview and milestones. When a
+                  milestone is completed and approved by the trusted
+                  oracle, the project worker receives the listed payout
+                  for that milestone.
+                  '''
+                  "user-guides/project-workers"
                   ?~(contract.pro 0x0 work.u.contract.pro)
+                  chain.currency.pro
                   ;*  ?.  &(=(our src):bol !wok)  ~
                       :_  ~
                       ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): 💬
@@ -439,7 +512,18 @@
           ;+  %:  ship-card:ui:fh
                   p.assessment.pro
                   "Trusted Oracle"
+                  ^-  tape  ^~
+                  %+  rip  3
+                  '''
+                  The role of the trusted oracle is to assess completion
+                  of the scope of work. When a milestone review is
+                  requested, the oracle can chose to mark it as complete
+                  by providing a cryptographically signed message,
+                  allowing the worker to withdraw funds.
+                  '''
+                  "user-guides/trusted-oracles"
                   ?~(contract.pro 0x0 from.sigm.u.contract.pro)
+                  chain.currency.pro
                   ;*  ?.  &(=(our src):bol !ora)  ~
                       :_  ~
                       ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.assessment.pro)}"(target "_blank"): 💬
@@ -472,7 +556,9 @@
                           %plej  [(surt:enrl:ff:fh ship.mul) "{<ship.mul>}"]
                         ::
                             %trib
-                          ?~  ship.mul  [(aset:enrl:ff:fh %box) "anonymous"]
+                          ::  FIXME: Use 'surt' for the first case here,
+                          ::  putting in an arbitrary comet
+                          ?~  ship.mul  ["https://placehold.co/24x24/black/black?text=\\n" "anonymous"]
                           [(surt:enrl:ff:fh u.ship.mul) "{<u.ship.mul>}"]
                         ::
                             %pruf

@@ -504,7 +504,9 @@
     ^-  manx
     =/  ini=tape  ?~(con "undefined" "'{(trip symbol.u.con)}'")
     ;div(class cas, x-data ~)
-      ;div(class "fund-form-group p-0")
+      ::  FIXME: This is a hack to make the 'selz' use uniform padding
+      ::  in the filter UI
+      ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
         ;select#proj-chain.fund-tsel  =name  "can"
             =required  ~
             =x-init  "useTomSelect($el, {(bool:enjs:ff emt)})"
@@ -527,7 +529,9 @@
         ;*  ?~  con  ~
             :_  ~  ;label(for "can"): Blockchain
       ==
-      ;div(class "fund-form-group p-0")
+      ::  FIXME: This is a hack to make the 'selz' use uniform padding
+      ::  in the filter UI
+      ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
         ;select#proj-token-options.hidden(required ~)
           ;*  %+  welp
                 ?.  emt  ~

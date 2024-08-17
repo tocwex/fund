@@ -64,6 +64,12 @@
 }
 
 
+/* Styling for 'stuck' elements (css-tricks.com/how-to-detect-when-a-sticky-element-gets-pinned) */
+.pinned {
+  width: 100%;
+}
+
+
 /* Auto-add indicators for required fields (https://stackoverflow.com/q/49685336) */
 input[required] + label:after,
 select[required] + label:after,

@@ -214,7 +214,7 @@
   ::  https://stackoverflow.com/a/59865099
   ::  FIXME: Could fiddle with 'min-h-[X%]' here for better results, but we
   ::  leave it for now
-  ;div(class "min-h-full flex flex-col justify-between", x-data "proj_list")
+  ;div(class "min-h-[100vh] flex flex-col justify-between", x-data "proj_list")
     ;div(class "flex flex-col p-2 gap-2")
       ;div(class "flex justify-between")
         ;h1: {tyt}

@@ -177,7 +177,8 @@
     ;img.w-full@"{(trip ?^(image.pro u.image.pro (surc:enrl:ff:fh p.lag)))}";
     ;*  =-  ?~  buz  ~
             :_  ~
-            ;div(class "fund-head flex flex-row justify-end")
+            ::  NOTE: For "w-full on stick," add `x-init "initSticky($el)"`
+            ;div(class "fund-head -top-[1px] flex flex-row justify-end")
               ;div(class "fund-card flex gap-2 items-center p-1 my-1")
                 ;*  buz
               ==
@@ -634,6 +635,13 @@
           ^-  tape  ^~
           %+  rip  3
           '''
+          initSticky(elem) {
+            const observer = new IntersectionObserver(
+              ([e]) => e.target.firstChild.classList.toggle("pinned", e.intersectionRatio < 1),
+              { threshold: [1] }
+            );
+            observer.observe(elem);
+          },
           acceptContract(event) {
             this.sendForm(event, [], () => (
               this.safeSignDeploy({

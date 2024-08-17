@@ -38,7 +38,7 @@ cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*,ethio*,strand*} full/lib/
 cp urb/pkg/arvo/sur/{verb*,spider*} full/sur/
 cp urb/pkg/arvo/sur/json/rpc* full/sur/json/
 
-git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
+git clone -b sl/schooner-quirks-patch --depth 1 https://github.com/sidnym-ladrut/yard.git yar
 cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} full/lib/
 cp yar/desk/mar/{atom*,bill*,docket*,hoon*,json*,kelvin*,loob*,mime*,noun*,ship*,txt*,css*,png*,svg*,js*} full/mar/
 cp yar/desk/sur/docket* full/sur/

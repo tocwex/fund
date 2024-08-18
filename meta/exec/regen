@@ -29,20 +29,27 @@ regen__deskdir="${regen__basedir}/desk"
 
 cd "${regen__deskdir}"
 rm -rf full/
-find bare -type f | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
-mkdir -p full/lib/ full/mar full/sur
+find bare -type f,l | while read f; do { d=$(dirname "$f" | sed "s/^bare/full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
+mkdir -p full/app full/lib/ full/mar/pals full/sur/json full/ted
 ln -sr ../LICENSE.txt full/license.txt
 
 git clone -b 411k --depth 1 https://github.com/urbit/urbit.git urb
-cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*,strand*} full/lib/
+cp urb/pkg/arvo/lib/{verb*,naive*,tiny*,ethereum*,ethio*,strand*} full/lib/
 cp urb/pkg/arvo/sur/{verb*,spider*} full/sur/
+cp urb/pkg/arvo/sur/json/rpc* full/sur/json/
 
-git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
+git clone -b sl/schooner-quirks-patch --depth 1 https://github.com/sidnym-ladrut/yard.git yar
 cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} full/lib/
-cp yar/desk/mar/{bill*,docket*,hoon*,json*,kelvin*,mime*,noun*,ship*,txt*,css*,png*,svg*,js*} full/mar/
+cp yar/desk/mar/{atom*,bill*,docket*,hoon*,json*,kelvin*,loob*,mime*,noun*,ship*,txt*,css*,png*,svg*,js*} full/mar/
 cp yar/desk/sur/docket* full/sur/
 
-git clone -b sl/tonic-reload-any-file --depth 1 https://github.com/sidnym-ladrut/gin-tonic.git gat
+git clone --depth 1 https://github.com/tocwex/make.git mak
+cp mak/desk/app/fund-watcher* full/app/
+cp mak/desk/mar/fund-watcher* full/mar/
+cp mak/desk/sur/fund-watcher* full/sur/
+cp mak/desk/ted/fund-watcher* full/ted/
+
+git clone --depth 1 https://github.com/nocsyx-lassul/gin-tonic.git gat
 cp gat/tonic/lib/tonic.hoon full/lib/
 cp gat/tonic/mar/cass.hoon full/mar/
 
@@ -55,3 +62,7 @@ cp vit/vita-client/lib/vita-client.hoon full/lib/
 
 git clone --depth 1 https://github.com/tinnus-napbus/manx-utils.git mut
 cp mut/lib/manx-utils.hoon full/lib/
+
+git clone --depth 1 https://github.com/Fang-/suite.git pal
+cp pal/mar/pals/effect.hoon full/mar/pals/
+cp pal/sur/pals.hoon full/sur/

@@ -1,12 +1,12 @@
 import {
   getAccount, getClient, getChainId, getPublicClient, getBalance, getBlockNumber,
   signMessage, readContract, writeContract, waitForTransactionReceipt,
-} from 'https://esm.sh/@wagmi/core@2.x';
+} from 'https://esm.sh/@wagmi/core@2.10.0';
 import {
   encodeFunctionData, encodePacked, keccak256,
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
-} from 'https://esm.sh/viem@2.x';
+} from 'https://esm.sh/viem@2.16.0';
 import BigNumber from 'https://cdn.jsdelivr.net/npm/bignumber.js@9.1.2/+esm'
 import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, NETWORK, CONTRACT } from './const.js';
@@ -20,14 +20,14 @@ export const ethGetChain = () => (NETWORK.NAME?.[getChainId(window.Wagmi)] ?? NE
 export const txnGetURL = (address) => {
   const chain = ethGetChain().toLowerCase();
   return `https://${
-    (chain === "mainnet") ? "" : `${chain}.`
+    (chain === "ethereum") ? "" : `${chain}.`
   }etherscan.io/tx/${address}`
 };
 
 export const safeGetURL = (address) => {
   const chain = ethGetChain().toLowerCase();
   return `https://app.safe.global/home?safe=${
-    (chain === "mainnet") ? "" : `${chain.substring(0, 3)}:`
+    (chain === "ethereum") ? "" : `${chain.substring(0, 3)}:`
   }${address}`;
 };
 
@@ -48,6 +48,15 @@ export const safeGetAccount = (chainId) => {
     throw new SafeError(`using the wrong blockchain network for this project; please switch your network to '${NETWORK.NAME[chainId].toLowerCase()}' instead`);
   return account;
 }
+
+export const safeGetBalance = async ({fundToken, safeAddress}) => {
+  const TOKEN = safeTransactionToken({id: fundToken});
+  const safeBalance = await getBalance(window.Wagmi, {
+    address: safeAddress,
+    token: TOKEN.ADDRESS[ethGetChain()],
+  });
+  return Number(safeBalance.formatted);
+};
 
 export const safeSignDeploy = async ({projectChain, projectContent}) => {
   const { address } = safeGetAccount(projectChain);
@@ -202,11 +211,7 @@ const safeGetClaimTransactions = async ({fundAmount, fundToken, workerAddress, o
 
 const safeGetRefundTransactions = async ({fundToken, safeAddress, safeInitBlock}) => {
   const TOKEN = safeTransactionToken({id: fundToken});
-  const safeBalance = await getBalance(window.Wagmi, {
-    address: safeAddress,
-    token: TOKEN.ADDRESS[ethGetChain()],
-  });
-  const safeCurrTotal = Number(safeBalance.formatted);
+  const safeCurrTotal = await safeGetBalance({fundToken, safeAddress});
   // FIXME: If there are ever projects that exceed ~2k contributions, this will
   // need to be changed to paginate RPC queries.
   const transferLogs = await getPublicClient(window.Wagmi).getContractEvents({

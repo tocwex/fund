@@ -3,6 +3,8 @@
 ::    -fund!config & /xtra/verb/hoon
 ::    -fund!config | /verb/hoon
 ::
+::    -fund!config & /xtra/fake/hoon
+::
 /-  spider
 /+  io=strandio, fx=fund-xtra
 =,  strand=strand:spider
@@ -30,5 +32,4 @@
 ::  the web files are changed
 ;<  ~  bind:m  (sleep:io ~s1)
 ;<  tid=tid:spider   bind:m  (start-thread:io %web-reload)
-::  ;<  thread-result:io  bind:m  (await-thread:io %web-reload !>(~))
 (pure:m !>(~))

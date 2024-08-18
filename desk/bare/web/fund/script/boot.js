@@ -8,10 +8,10 @@ import presetAutoPrefix from 'https://cdn.jsdelivr.net/npm/@twind/preset-autopre
 import {
   http, createConfig, injected,
   connect, disconnect, reconnect,
-  getAccount, getEnsName,
-} from 'https://esm.sh/@wagmi/core@2.x';
-import { fromHex } from 'https://esm.sh/viem@2.x';
-import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.x/chains';
+  getAccount, getEnsName, signMessage,
+} from 'https://esm.sh/@wagmi/core@2.10.0';
+import { fromHex } from 'https://esm.sh/viem@2.16.0';
+import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
 import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
@@ -183,8 +183,8 @@ if (window.Alpine === undefined) {
       ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
-      ['fund-head', 'sticky fixed z-50 top-0'],
-      ['fund-foot', 'sticky fixed z-40 bottom-0'],
+      ['fund-head', 'sticky z-50 top-0'],
+      ['fund-foot', 'sticky z-40 bottom-0'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
       ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
@@ -214,7 +214,8 @@ if (window.Alpine === undefined) {
       ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
-      ['fund-aset-circ', 'h-5 bg-contain bg-white rounded-full'],
+      ['fund-aset-circ', 'h-5 bg-white rounded-full'],
+      ['fund-aset-boxx', 'h-5 bg-white rounded'],
       ['fund-odit-ther', 'w-full rounded-md flex h-4 sm:h-8 text-primary-700'], // FIXME: text-primary-600
       ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
     ],
@@ -240,6 +241,10 @@ if (window.Alpine === undefined) {
   customElements.define(
     'zero-md',
     class extends ZeroMd {
+      async parse(obj) {
+        const parsed = await super.parse(obj);
+        return DOMPurify.sanitize(parsed);
+      }
       async load() {
         const elem = document.createElement("div");
         elem.setAttribute("id", "fund-loader");
@@ -252,10 +257,6 @@ if (window.Alpine === undefined) {
         this.marked.use({
           gfm: true,
           breaks: false,
-          parse: async (obj) => {
-            const parsed = await super.parse(obj);
-            return DOMPurify.sanitize(parsed);
-          },
           renderer: {
             image: (href, title, text) => {
               // FIXME: This is a really gross way to test if the 'zero-md'
@@ -297,8 +298,12 @@ if (window.Alpine === undefined) {
     cmd,
     copyText,
     swapHTML,
+    openHREF,
+    sendFormData,
     sendForm,
     checkWallet,
+    useTomSelect,
+    updateTokenSelect,
     CONTRACT,
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
@@ -348,6 +353,17 @@ if (window.Alpine === undefined) {
     });
   }
 
+  // FIXME: It's better to use this instead of `window.open` for local URLs
+  // because the `<a>` click emulation prompts a partial turbojs reload where
+  // `window.open` prompts a full page reload
+  function openHREF(href) {
+    const link = document.createElement("a");
+    link.setAttribute("class", "hidden");
+    link.setAttribute("href", href);
+    document.body.appendChild(link);
+    link.click();
+  }
+
   function sendForm(event, checks = [], action = Promise.resolve(undefined)) {
     event.preventDefault();
     if ((event.target.form !== undefined) && !event.target.form.reportValidity()) {
@@ -361,43 +377,48 @@ if (window.Alpine === undefined) {
         } catch(error) {
           reject(error);
         }
-      }).then(action).then(formData => {
-        const form = document.createElement("form");
-        form.method = "post";
-        // FIXME: This is necessary in order to send the raw message
-        // payload to the BE (e.g. sending the signed contract text as
-        // part of the submission), but the %rudder's `+frisk` method
-        // would need to be extended to support this
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
-        // form.enctype = "multipart/form-data";
-        form.enctype = "application/x-www-form-urlencoded";
-        form.setAttribute("class", "hidden");
-        const button = event.target.cloneNode(true);
-        form.appendChild(button);
-
-        const appendInput = ([key, value]) => {
-          const useInput = !/\r|\n/.exec(value);
-          const field = document.createElement(useInput ? "input" : "textarea");
-          field.name = key;
-          field[useInput ? "value" : "innerHTML"] = value;
-          form.appendChild(field);
-        };
-        Object.entries(formData).forEach(appendInput);
-        if (event.target.form !== undefined) {
-          [...(new FormData(event.target.form).entries())].forEach(appendInput);
-        }
-        // NOTE: Safari doesn't recognize the form attributes of the
-        // `requestSubmit` button, so we redundantly include them as a field
-        appendInput([button.getAttribute("name"), button.getAttribute("value")]);
-
-        document.body.appendChild(form);
-        form.requestSubmit(button);
-      }).catch((error) => {
+      }).then(action).then(formData => (
+        sendFormData(formData, event)
+      )).catch((error) => {
         event.target.innerHTML = "error ✗";
         console.log(error);
         alert(error.message);
       });
     }
+  }
+
+  // NOTE: 'formData' is not a 'FormData' object; it's a {str => str} map
+  function sendFormData(formData, event = undefined) {
+    const form = document.createElement("form");
+    form.method = "post";
+    // FIXME: This is necessary in order to send the raw message
+    // payload to the BE (e.g. sending the signed contract text as
+    // part of the submission), but the %rudder's `+frisk` method
+    // would need to be extended to support this
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+    // form.enctype = "multipart/form-data";
+    form.enctype = "application/x-www-form-urlencoded";
+    form.setAttribute("class", "hidden");
+    const button = event?.target?.cloneNode(true) ?? document.createElement("button");
+    form.appendChild(button);
+
+    const appendInput = ([key, value]) => {
+      const useInput = !/\r|\n/.exec(value);
+      const field = document.createElement(useInput ? "input" : "textarea");
+      field.name = key;
+      field[useInput ? "value" : "innerHTML"] = value;
+      form.appendChild(field);
+    };
+    Object.entries(formData).forEach(appendInput);
+    if (event?.target?.form !== undefined) {
+      [...(new FormData(event.target.form).entries())].forEach(appendInput);
+    }
+    // NOTE: Safari doesn't recognize the form attributes of the
+    // `requestSubmit` button, so we redundantly include them as a field
+    appendInput([button.getAttribute("name"), button.getAttribute("value")]);
+
+    document.body.appendChild(form);
+    form.requestSubmit(button);
   }
 
   function checkWallet(expectedAddresses, roleTitle) {
@@ -411,14 +432,63 @@ if (window.Alpine === undefined) {
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
 
-  function renderSelector(data, escape) {
-    return `
-      <div class='flex flex-row items-center gap-x-1'>
-        <img class='fund-aset-circ' src='${data.image}' />
-        <span>${data.text}</span>
-      </div>
-    `;
-  };
+  function useTomSelect(elem, empty) {
+    function renderSelector(data, escape) {
+      return `
+        <div class='flex flex-row items-center gap-x-2'>
+          <img class='fund-aset-circ' src='${data.image ??
+            "https://placehold.co/24x24/white/black?font=roboto&text=~"
+          }' />
+          <span>${data.text}</span>
+        </div>
+      `;
+    };
+
+    if (elem.tomselect === undefined) {
+      const tselElem = new TomSelect(elem, {
+        allowEmptyOption: empty,
+        render: {
+          option(data, escape) { return renderSelector(data, escape); },
+          item(data, escape) { return renderSelector(data, escape); },
+        },
+        onDropdownOpen: (dropdown) => {
+          if (
+              empty ||  // FIXME: Big hack to force this always for serach UI selects
+              (dropdown.getBoundingClientRect().bottom >
+              (window.innerHeight || document.documentElement.clientHeight))
+          ) {
+            dropdown.classList.add('dropup');
+          }
+        },
+        onDropdownClose: (dropdown) => {
+          dropdown.classList.remove('dropup');
+        },
+        ...(empty ? {} : {controlInput: null}),
+      });
+      elem.matches(":disabled") && tselElem.disable();
+    }
+  }
+
+  function updateTokenSelect(initialOpt) {
+    const tokenChain = document.querySelector('#proj-chain').value;
+    const tokenSelect = document.querySelector('#proj-token').tomselect;
+    const tokenOpts = document.querySelectorAll('#proj-token-options > option');
+    const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
+      value: elem.value,
+      text: elem.innerText,
+      image: elem.dataset.image,
+      chain: elem.dataset.chain,
+    })).filter(({value, chain}) => (
+      chain === tokenChain || value === ""
+    ));
+
+    tokenSelect.clear(true);
+    tokenSelect.clearOptions();
+    tokenSelect.addOptions(tokenChainOpts);
+    tokenSelect.addItem(
+      (tokenChainOpts.find(({value}) => value === initialOpt) ?? tokenChainOpts[0]).value
+    );
+  }
 
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
@@ -444,7 +514,45 @@ if (window.Alpine === undefined) {
         if (connection) {
           reconnect(window.Wagmi, {connector: connection.connector});
         } else {
-          connect(window.Wagmi, {connector: Wagmi.connectors[0]});
+          const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
+          const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
+          connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => (
+            fetch(`${appUrl}/ship`, {method: "GET"})
+          )).then((responseStream) => (
+            responseStream.text()
+          )).then((responseText) => {
+            const responseDOM = new DOMParser().parseFromString(responseText, "text/html");
+            const ship = responseDOM.querySelector("#ship").value;
+            const clan = responseDOM.querySelector("#clan").value;
+            const wallets = responseDOM.querySelector("#wallets").value.split(" ");
+            return [ship, clan, wallets];
+          }).then(([ship, clan, wallets]) => {
+            const address = getAddress();
+            if (wallets.includes(address) || clan === "pawn") {
+              return Promise.resolve(undefined);
+            } else {
+              return signMessage(window.Wagmi, {
+                account: getAccount(window.Wagmi),
+                message: `I, ${ship}, am broadcasting to the Urbit network that I own wallet ${address}`,
+              });
+            }
+          }).then((signature) => {
+            if (signature === undefined) {
+              return Promise.resolve(undefined);
+            } else {
+              // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
+              const signData = new URLSearchParams({
+                dif: "prof-sign",
+                pos: signature,
+                poa: getAddress(),
+              });
+              return fetch(`${appUrl}/ship`, {
+                method: "POST",
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: signData,
+              });
+            }
+          });
         }
       } else if (status === "connected") {
         // FIXME: Actually calling disconnects tells MetaMask to stop giving
@@ -462,18 +570,6 @@ if (window.Alpine === undefined) {
           ? ensName
           : `${rawAddr.slice(0, 5)}…${rawAddr.slice(-4)}`;
       });
-    });
-
-    document.querySelectorAll(".fund-tsel").forEach(selElem => {
-      const telElem = new TomSelect(`#${selElem.id}`, {
-        allowEmptyOption: false,
-        controlInput: null,
-        render: {
-          option(data, escape) { return renderSelector(data, escape); },
-          item(data, escape) { return renderSelector(data, escape); },
-        },
-      });
-      selElem.matches(":disabled") && telElem.disable();
     });
 
     document.querySelectorAll(".fund-tipi").forEach(tipElem => {

@@ -1,15 +1,12 @@
-/-  f=fund
-::  /+  j=form-json
-|_  pro=proj:f
+/-  fp=fund-proj
+|_  pro=proj:fp
 ++  grad  %noun
 ++  grow
   |%
   ++  noun  pro
-  ::  ++  json  (proj:enjs:j pro)
   --
 ++  grab
   |%
-  ++  noun  proj:f
-  ::  ++  json  proj:dejs:j
+  ++  noun  proj:fp
   --
 --

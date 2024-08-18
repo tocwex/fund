@@ -1,7 +1,7 @@
 ::  /web/fund/page/asset/hoon: render an arbitrary asset file (png, svg, etc.)
 ::
 /-  fd=fund-data
-/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  fh=fund-http, fx=fund-xtra
 /+  config, rudder
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
@@ -13,11 +13,11 @@
   ::  NOTE: Files are loaded at run-time here through scries in order to
   ::  avoid expensive re-compilation when doing quick edits to js/css
   =>  |%
-      ++  beak  |=([d=@tas p=path] (weld /(scot %p our.bol)/[d]/(scot %da now.bol) p))
+      ++  beak  |=([d=@tas p=path] (en-beam [our.bol d da+now.bol] p))
       ++  forj  |=([d=@t l=(list @t)] (crip (roll (join d l) |=([n=@t a=tape] (weld a (trip n))))))
       +$  sath  (each path [@ta @t])  ::  pseudo-path
       --
-  =/  pat=(pole knot)  (slag:derl:format:fh url.request.ord)
+  =/  pat=(pole knot)  (slag:derl:ff:fh url.request.ord)
   ?>  ?=([%asset fyl=@t ~] pat)
   =/  max=(map @t sath)
     =<  +  %^  spin
@@ -40,7 +40,7 @@
   ::  if this file has no version specified, 307 to latest version
   ?~  ned
     :-  %next  :_  ~
-    %-  desc:enrl:format:fh
+    %-  desc:enrl:ff:fh
     pat(fyl (crip (welp (trip fyl.pat) "?v={<+2.hav>}.{<+6.hav>}.{<+7.hav>}")))
   ::  if this file has an old version specified, 404
   ?.  =(hav u.ned)
@@ -54,4 +54,4 @@
   :+  200  [%content-type (forj '/' p.mym)]  ::  1 week cache time
   ?:(!<(bean (slot:config %debug)) ~ ['cache-control' 'max-age=604800']~)
 --
-::  VERSION: [1 0 2]
+::  VERSION: [1 1 0]

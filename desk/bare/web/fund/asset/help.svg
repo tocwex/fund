@@ -1,0 +1,7 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon/help">
+<path id="Oval 2" d="M12 14C12 12 13.576 11.6653 14.1187 11.124C14.6631 10.5809 15 9.82977 15 9C15 7.34315 13.6569 6 12 6C11.1041 6 10.2999 6.39273 9.7502 7.01542C9.49603 7.30334 9.29626 7.64044 9.16699 8.01061" stroke="#04080F" stroke-linecap="round"/>
+<path id="Oval" fill-rule="evenodd" clip-rule="evenodd" d="M12 18C12.5523 18 13 17.5523 13 17C13 16.4477 12.5523 16 12 16C11.4477 16 11 16.4477 11 17C11 17.5523 11.4477 18 12 18Z" fill="#04080F"/>
+<path id="Oval_2" fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#04080F"/>
+</g>
+</svg>

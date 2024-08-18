@@ -1,7 +1,7 @@
 ::  /web/fund/page/config/hoon: render config page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund, fh=fund-http, fx=fund-xtra
+/+  fh=fund-http
 /+  rudder
 %-  mine:preface:fh
 ^-  page:fd
@@ -10,19 +10,16 @@
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
-    ?+    dif=(~(got by p.arz) %dif)
-        (crip "bad dif; expected vita-*, not {(trip dif)}")
-      ::  FIXME: This is a hack to support pokes that edit app-global
-      ::  (as opposed to project-specific) information
-      %vita-enable   [[our.bol %$] %join ~]
-      %vita-disable  [[our.bol %$] %exit ~]
+    ?+    dif=(~(got by p.arz) %dif)  (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")
+      %vita-enable   [%fund %vita &]
+      %vita-disable  [%fund %vita |]
     ==
   ==
 ++  final
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
   ?.  gud  [%code 500 txt]
-  [%next (desc:enrl:format:fh /) ~]
+  [%next (desc:enrl:ff:fh /) ~]
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -36,4 +33,4 @@
       ;+  (prod-butn:ui:fh %vita-disable %false "no ✗" ~ ~)
   ==
 --
-::  VERSION: [1 0 2]
+::  VERSION: [1 1 0]

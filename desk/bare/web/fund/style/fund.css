@@ -1,3 +1,36 @@
+/* scrollbar improvements (taken from tlon; https://github.com/tloncorp/tlon-apps) */
+* {
+  /* Scrollbar resizing for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--colors-gray-200)) transparent;
+  /* Hide gray box when tapping a link on iOS */
+  -webkit-tap-highlight-color: transparent;
+  /* Disable double-tap to zoom, removes click delay */
+  touch-action: manipulation;
+  /* Better font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Scrollbar resizing for Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  border: solid 2px transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--colors-gray-200));
+  border: solid 2px transparent;
+  border-radius: 20px;
+  background-clip: content-box;
+}
+
+
 /* Auto-grow Text Areas (css-tricks.com/the-cleanest-trick-for-autogrowing-textareas) */
 .grow-wrap {
   /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */
@@ -31,12 +64,29 @@
 }
 
 
+/* Styling for 'stuck' elements (css-tricks.com/how-to-detect-when-a-sticky-element-gets-pinned) */
+.pinned {
+  width: 100%;
+}
+
+
 /* Auto-add indicators for required fields (https://stackoverflow.com/q/49685336) */
 input[required] + label:after,
 select[required] + label:after,
 div.ts-wrapper + label:after {
   content: '*';
   color: #b80c09; /* text-highlight1-500 */
+}
+
+/* Drop-up for selectors near the bottom of the page (https://stackoverflow.com/a/78298291) */
+.ts-dropdown.dropup {
+    bottom: 100%;
+    top: auto;
+}
+
+/* Remove 'w-full' from .ts-control inputs (prevents weird multi-line input breakups) */
+.ts-control > input {
+  width: unset;
 }
 
 
@@ -169,7 +219,7 @@ div.ts-wrapper + label:after {
   padding: calc(8px - 2px - 0) 8px calc(8px - 2px - 3px - 0);
 }
 .full .ts-control {
-  background-color: #f5f5f0; /* bg-primary-250 */
+  background-color: #f6f6f6; /* bg-primary-250 */
 }
 .disabled .ts-control, .disabled .ts-control * {
   cursor: default !important;

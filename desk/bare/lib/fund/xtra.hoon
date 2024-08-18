@@ -77,6 +77,16 @@
   ?:  =(div -.log)  [pre +.log]
   $(pre (snoc pre -.log), log +.log)
 ::
+::  +chip: strip leading based from full site path (see decap:rudder)
+::
+++  chip
+  |=  [bas=(list @t) syt=(list @t)]
+  ^-  (unit (list @t))
+  ?~  bas  `syt
+  ?~  syt  ~
+  ?.  =(i.bas i.syt)  ~
+  $(bas t.bas, syt t.syt)
+::
 ::  +caps: capitalize the given input string (first character only)
 ::
 ++  caps

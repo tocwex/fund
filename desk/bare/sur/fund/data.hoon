@@ -1,17 +1,32 @@
-/-  fund, fund-proj
+/-  fund
+/-  sss-proj, sss-prof, sss-meta
 /+  sss, rudder
 |%
 ::
-::  +proj: convenience accessor for 'fund-proj' sss core
+::  +proj: convenience accessor for 'sss-proj' sss core
 ::
-++  proj  fund-proj
+++  proj  sss-proj
+::
+::  +meta: convenience accessor for 'sss-meta' sss core
+::
+++  meta  sss-meta
+::
+::  +prof: convenience accessor for 'sss-prof' sss core
+::
+++  prof  sss-prof
 ::
 ::  $data: top-level app data; forwarded to rudder-related requests
 ::
 +$  data
   $:  init=_|
-      subs=_(mk-subs:sss lake:fund-proj path:fund-proj)
-      pubs=_(mk-pubs:sss lake:fund-proj path:fund-proj)
+      adrz-loql=(map @p (map addr:fund sigm:fund))
+      meta-srcs=[f2p=(jug flag:fund @p) p2f=(jug @p flag:fund)]
+      proj-subs=_(mk-subs:sss lake:sss-proj path:sss-proj)
+      proj-pubs=_(mk-pubs:sss lake:sss-proj path:sss-proj)
+      meta-subs=_(mk-subs:sss lake:sss-meta path:sss-meta)
+      meta-pubs=_(mk-pubs:sss lake:sss-meta path:sss-meta)
+      prof-subs=_(mk-subs:sss lake:sss-prof path:sss-prof)
+      prof-pubs=_(mk-pubs:sss lake:sss-prof path:sss-prof)
   ==
 ::
 ::  $diff: data delta forwarded to rudder-related POST requests

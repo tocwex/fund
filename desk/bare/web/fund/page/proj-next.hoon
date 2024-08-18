@@ -3,17 +3,18 @@
 /-  fd=fund-data
 /+  f=fund-proj, fh=fund-http, fx=fund-xtra
 /+  rudder, config
-%-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
+%-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh |))
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
-  =/  [lag=flag:f *]  (greb:proj:preface:fh hed)
+  =/  [lau=(unit flag:f) *]  (grab:proj:preface:fh hed)
+  ?~  lau  'bad dif; no project flag in the POST URL'
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected bump-prop, not {(trip dif)}")
-      %bump-prop  [%proj lag %bump %prop ~]
+      %bump-prop  [%proj u.lau %bump %prop ~]
     ==
   ==
 ++  final
@@ -25,14 +26,16 @@
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   =/  pat=(pole knot)  (slag:derl:ff:fh url.request.ord)
-  =/  [lag=flag:f pro=prej:f]  (greb:proj:preface:fh arz)
+  =/  [lau=(unit flag:f) pru=(unit prej:f)]  (grab:proj:preface:fh arz)
+  =/  lag=flag:f  (fall lau *flag:f)
   =/  aut=?(%clear %eauth %admin)
     ?.((auth:fh bol) %clear ?:(=(our src):bol %admin %eauth))
   =/  roz=(list role:f)
-    (sort ~(tap in (~(rols pj:f -.pro) p.lag src.bol)) gth)
+    ?:  |(?=(~ lau) ?=(~ pru))  ~
+    (sort ~(tap in (~(rols pj:f -.u.pru) p.u.lau src.bol)) gth)
   :-  %page
   %-  page:ui:fh
-  :^  bol  ord  (trip title.pro)
+  :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))
   ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
     =/  syt
       :*  hep=(trip !<(@t (slot:config %meta-help)))
@@ -45,22 +48,16 @@
           pro=(link-butn:ui:fh pro.syt %| "back to project" ~)
           tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~)
           joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~)
-      ::
-            ^=  das
-          |=  rol=role:f
-          =+  roc=(role:enjs:ff:fh rol)
-          =+  rul=(dest:enrl:ff:fh /dashboard/[(crip roc)])
-          (link-butn:ui:fh rul %| "{roc} dashboard" ~)
+          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to following" ~)
       ==
     ?+    typ.pat  !!
         %bump
       %^  hero-plaq:ui:fh  "Your project action has been submitted."  ~
-      [pro.btn (turn (skip roz |=(r=role:f =(%fund r))) das.btn)]
+      [pro.btn das.btn ~]
     ::
         %join
-      ::  FIXME: Implement the actual functional
       %^    hero-plaq:ui:fh
-          "You are now joining project {(flag:enjs:ff:fh lag)}; please wait."
+          "You are now joining project '{(flag:enjs:ff:fh lag)}'!"
         ~
       [pro.btn ~]
     ::

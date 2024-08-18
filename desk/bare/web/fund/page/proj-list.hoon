@@ -69,8 +69,8 @@
       %-  ~(rep by mep)
       |=  [kev=_?>(?=(^ mep) n.mep) acc=_mep]
       ^+  acc
-      =/  pre=prej:proj:f  (~(got by pes) -.kev)
-      =/  roz=(set role:f)  (~(rols pj:fj -.pre) our.bol our.bol)
+      ?~  pre=(~(get by pes) -.kev)  acc
+      =/  roz=(set role:f)  (~(rols pj:fj -.u.pre) our.bol our.bol)
       ?:(=(~ roz) acc (~(put by acc) kev))
     ==
   =/  ex

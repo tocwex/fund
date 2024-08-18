@@ -263,7 +263,7 @@
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %eye)}";
               ==
               ;div#fund-fave-opts(class "hidden")
-                ;form(method "post", class "flex flex-col gap-y-2 p-2 lg:p-6")
+                ;form(method "post", class "flex flex-col gap-y-2 p-2")
                   ;h1: Publicize?
                   ;p
                     ; Currently your project is unlisted and can only be
@@ -296,7 +296,7 @@
                   ;div#fund-mula-opts(class "hidden")
                     ;form  =method  "post"
                         =autocomplete  "off"
-                        =class  "flex flex-col gap-y-2 p-2 lg:p-6"
+                        =class  "flex flex-col gap-y-2 p-2"
                       ;*  fom
                     ==
               ==  ==

@@ -225,7 +225,7 @@
     :-  (crip (poke:enjs:ff:fh dif))
     ?+    -.dif  (aply dif)
         %proj
-      ?:  =(p.p.dif our.bol)  (aply dif)
+      ?:  |(?=(?(%join %exit %lure) -.q.dif) =(p.p.dif our.bol))  (aply dif)
       [+.state [(pj-mk-card:(pj-abed:pj-core p.dif) p.p.dif q.dif)]~]
     ==
   ==

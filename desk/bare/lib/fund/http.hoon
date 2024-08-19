@@ -376,21 +376,23 @@
         ;+  (~(ship-logo ..$ "h-20") sip)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;div(class "inline-flex items-center gap-1")
-            ;h5.font-bold.tracking-tight: {<sip>}
+            ;h5.text-lg.font-bold.tracking-tight: {<sip>}
             ;+  (copy-butn (ship:enjs:ff sip))
           ==
           ;div(class "inline-flex items-center gap-1")
             ;a/"{(esat:enrl:ff adr cid)}"
                 =target  "_blank"
                 =data-addr  (addr:enjs:ff adr)
-                =class  "fund-addr fund-addr-ens text-link"
+                =class  "fund-addr fund-addr-ens hover:text-link"
               …loading…
             ==
             ;+  (copy-butn (addr:enjs:ff adr))
           ==
           ;div(class "self-stretch justify-between items-center inline-flex")
             ;div(class "inline-flex items-center gap-1")
-              ;a.font-normal.text-link/"https://network.urbit.org/{<sip>}"(target "_blank")
+              ;a/"https://network.urbit.org/{<sip>}"
+                  =target  "_blank"
+                  =class  "font-normal hover:text-link"
                 ; AZP: {<`@`sip>}
               ==
               ;+  (copy-butn (bloq:enjs:ff `@`sip))

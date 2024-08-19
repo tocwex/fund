@@ -7,7 +7,7 @@
 ::    :spider &spider-stop [~.~.dojo... |]
 ::
 /-  spider, fund-watcher
-/+  io=strandio, fx=fund-xtra
+/+  io=strandio
 =,  strand=strand:spider
 ^-  thread:spider
 |=  arg=vase

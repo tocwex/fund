@@ -1,0 +1,1 @@
+../../bare/ted/fix-launch.hoon

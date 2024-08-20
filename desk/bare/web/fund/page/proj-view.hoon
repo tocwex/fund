@@ -145,9 +145,7 @@
   =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
   ::  FIXME: This is a hack caused by the fact that %fave is a profile
   ::  action and profiles do not have an associted project
-  =/  pat=(list knot)  (slag:derl:ff:fh url.request.ord)
-  =?  lag  &(?=(%fave pyp) ?=([%project sip=@ nam=@ ~] pat))
-    [(slav %p +<.pat) (slav %tas +>-.pat)]
+  =?  lag  ?=(%fave pyp)  (need (flag:derl:ff:fh url.request.ord))
   :-  %next  :_  ~
   %-  desc:enrl:ff:fh
   /next/(scot %p p.lag)/[q.lag]/[?+(pyp %bump %mula-trib %trib, %mula-plej %plej)]
@@ -177,8 +175,8 @@
     ;img.w-full@"{(trip ?^(image.pro u.image.pro (surc:enrl:ff:fh p.lag)))}";
     ;*  =-  ?~  buz  ~
             :_  ~
-            ::  NOTE: For "w-full on stick," add `x-init "initSticky($el)"`
-            ;div(class "fund-head -top-[1px] flex flex-row justify-end")
+            ::  NOTE: For "w-full on stick," add `-top-[1px]`, `x-init "initSticky($el)"`
+            ;div(class "fund-head flex flex-row justify-end")
               ;div(class "fund-card flex gap-2 items-center p-1 my-1")
                 ;*  buz
               ==
@@ -193,29 +191,29 @@
                 ;p
                   ;code: %fund
                   ;span:  allows funders to pledge and fulfill contributions,
-                  ; and trusted oracles to approve payouts to project workers.
-                  ; Here are a few things you should know:
+                  ;span:  and trusted oracles to approve payouts to project workers.
+                  ;span:  Here are a few things you should know:
                 ==
                 ;ul
                   ;li
                     ;span.font-bold: Pledges:
                     ;span:  Promises to a project worker to complete
-                    ; a fulfillment transaction at a later date, backed by
-                    ; your Urbit ID and personal reputation.
+                    ;span:  a fulfillment transaction at a later date, backed by
+                    ;span:  your Urbit ID and personal reputation.
                   ==
                   ;li
                     ;span.font-bold: Contributions:
                     ;span:  Crypto transactions into an escrow
-                    ; contract, held either until a milestone is approved
-                    ; by the trusted oracle, or the project is canceled
-                    ; and crypto refunded to funders.
+                    ;span:  contract, held either until a milestone is approved
+                    ;span:  by the trusted oracle, or the project is canceled
+                    ;span:  and crypto refunded to funders.
                   ==
                   ;li
                     ;span.font-bold: Payouts:
                     ;span:  Crypto withdrawals by project workers are
-                    ; only allowed once the trusted oracle reviews the
-                    ; milestone and provides an approval signature using
-                    ; their cryptographic keys.
+                    ;span:  only allowed once the trusted oracle reviews the
+                    ;span:  milestone and provides an approval signature using
+                    ;span:  their cryptographic keys.
                   ==
                 ==
                 ;p
@@ -245,9 +243,9 @@
             ;+  (prod-butn:ui:fh %bump-dead %false "cancel ❌" "cancelContract" ~)
           ==
         ::  bookmark button  ::
-            ?:  |(?=(?(%born %prop) sat) !(auth:fh bol) =(our src):bol (~(has in roz) %fund))  ~
+          ?:  |(?=(?(%born %prop) sat) !(auth:fh bol) =(our src):bol (~(has in roz) %fund))  ~
           :_  ~
-          ;form(method "post")
+          ;form(method "post", class "flex flex-row items-center")
             ;button#prod-butn-folo-proj(type "submit", name "dif", value "folo-proj")
               ;img.fund-butn-icon@"{(aset:enrl:ff:fh %bookmark)}";
             ==
@@ -534,7 +532,7 @@
           ;div(class "flex flex-row justify-between items-center")
             ;h1: Transactions
             ;div(class "flex flex-wrap items-center gap-1")
-              ;*  =-  :~  (icon-stax:ui:fh | (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
+              ;*  =-  :~  (icon-stax:ui:fh & (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
                           ;h6: {<~(wyt in siz)>} total
                       ==
                   ^-  siz=(set @p)
@@ -572,7 +570,13 @@
                     ;+  =-  ;div(class "fund-pill text-{klr} border-{klr}"): {nam}
                         ^-  [nam=tape klr=tape]
                         ?-  -.mul
-                          %plej  ["pledged" "yellow-500"]
+                            %plej
+                          =+  pej=(~(got by pledges.pro) ship.mul)
+                          ?-  view.pej
+                            ~          ["pledged" "yellow-500"]
+                            [~ %stif]  ["welched" "yellow-600"]
+                            [~ %slyd]  ["forgiven" "yellow-400"]
+                          ==
                         ::
                             %trib
                           =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
@@ -835,4 +839,4 @@
     ==
   ==
 --
-::  VERSION: [1 1 0]
+::  VERSION: [1 1 1]

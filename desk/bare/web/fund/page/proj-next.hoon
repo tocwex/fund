@@ -30,9 +30,6 @@
   =/  lag=flag:f  (fall lau *flag:f)
   =/  aut=?(%clear %eauth %admin)
     ?.((auth:fh bol) %clear ?:(=(our src):bol %admin %eauth))
-  =/  roz=(list role:f)
-    ?:  |(?=(~ lau) ?=(~ pru))  ~
-    (sort ~(tap in (~(rols pj:f -.u.pru) p.u.lau src.bol)) gth)
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))
@@ -52,8 +49,10 @@
       ==
     ?+    typ.pat  !!
         %bump
-      %^  hero-plaq:ui:fh  "Your project action has been submitted."  ~
-      [pro.btn das.btn ~]
+      %^    hero-plaq:ui:fh
+          "Your project action has been submitted."
+        ~
+      [pro.btn ?.(?=(%admin aut) ~ [das.btn]~)]
     ::
         %join
       %^    hero-plaq:ui:fh
@@ -321,4 +320,4 @@
     ==
   ==
 --
-::  VERSION: [1 1 0]
+::  VERSION: [1 1 1]

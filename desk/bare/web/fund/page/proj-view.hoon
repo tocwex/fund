@@ -157,6 +157,9 @@
   =/  sat=stat:f  ~(stat pj:f pro)
   ::  NOTE: Gate non-`our` users to my ship's proposed-or-after projects
   ?:  &(!=(our src):bol |(!=(our.bol p.lag) ?=(%born sat)))  [%auth url.request.ord]
+  =/  pom=(map @p pref:prof:fd)  ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)
+  =/  pou=(unit pref:prof:fd)  (~(get by pom) our.bol)
+  =/  pow=(unit pref:prof:fd)  (~(get by pom) p.lag)
   =/  roz=(set role:f)  (~(rols pj:f pro) p.lag src.bol)
   =+  wok=(~(has in roz) %work)
   =+  ora=(~(has in roz) %orac)
@@ -251,10 +254,12 @@
             ==
           ==
         ::  publicize button  ::
-            ?:  ?|  !wok
+            ?:  ?|  !=(our src):bol
                     ?=(?(%born %prop) sat)
-                      =+  myn=~(mine conn:prof:fd bol [prof-subs prof-pubs]:dat)
-                    ?~(pof=(~(get by myn) our.bol) & (~(has in favorites.u.pof) lag))
+                    ?~  pow  &
+                    ?.  |(wok (~(has in favorites.u.pow) lag))  &
+                    ?~  pou  &
+                    (~(has in favorites.u.pou) lag)
                 ==
             ~
           :~  ;button#fund-fave.fund-tipi(type "button")
@@ -279,8 +284,9 @@
               ==
           ==
         ::  share button  ::
-            ?:  |(?=(%born sat) !=(our.bol p.lag))  ~
-          :_  ~  (pink-butn:ui:fh bol lag)
+            ?:  |(?=(%born sat) ?=(~ pow))  ~
+          :_  ~
+          (pink-butn:ui:fh lag (trip ship-url.u.pow))
         ::  contract link button  ::
             ?:  ?=(?(%born %prop) sat)  ~
           :_  ~

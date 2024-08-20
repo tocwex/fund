@@ -415,7 +415,7 @@
   =/  old=?  !(~(has by pf-myn) our.bol)
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  =?  cor  old  renew-projs:action
+  =.  cor  (renew-projs:action old)
   cor
 ++  action
   |%
@@ -452,6 +452,7 @@
         ?=(^ (find /gall/use/fund pat))
     ==
   ++  renew-projs                                ::  invoke project level triggers
+    |=  kiq=?
     ^+  cor
     =/  lis=(list flag:f)  ~(tap in ~(key by pj-our))
     |-
@@ -460,7 +461,7 @@
       lis  t.lis
     ::
         cor
-      ?.  =(p.i.lis our.bol)  pj-abet:(pj-abed:pj-core i.lis)
+      ?.  &(kiq =(p.i.lis our.bol))  pj-abet:(pj-abed:pj-core i.lis)
       pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~])
     ==
   ++  toggle-profs                               ::  toggle profile follow status
@@ -482,6 +483,8 @@
       (pj-me-push [%init pj-me-met])
     =?  pj-core  gon
       (pj-pf-push [%jilt lag])
+    =?  cor  &(!pj-is-myn !gon)
+      (toggle-profs:action & (silt [p.lag]~))
     =?  cor  &(pj-is-myn !gon)
       (toggle-profs:action & ~(whos pj:fj pro))
     =?  pj-core  &(pj-is-myn gon)

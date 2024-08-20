@@ -56,13 +56,13 @@
     ==
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
-  =/  [tyt=tape mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
+  =/  [mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
     ?+  dyp  !!
-      %following  ["Following" ~ pes]
-      %discover  ["Discover" mes ~]
+      %following  [~ pes]
+      %discover  [mes ~]
     ::
         %action
-      =-  ["My Actions" (- mes) (- pes)]
+      =-  [(- mes) (- pes)]
       |*  mep=(map flag:f *)
       ^+  mep
       ?:  =(~ mep)  *_mep
@@ -216,14 +216,6 @@
   ::  leave it for now
   ;div(class "min-h-[100vh] flex flex-col justify-between", x-data "proj_list")
     ;div(class "flex flex-col p-2 gap-2")
-      ;div(class "flex justify-between")
-        ;h1: {tyt}
-        ;*  ?.  ?=(%action dyp)  ~
-            :_  ~
-            ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
-              ; new project +
-            ==
-      ==
       ;+  =/  cas=tape  "w-full grid gap-4 justify-center"
           =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
           =/  mas=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
@@ -238,15 +230,31 @@
             ==
           ?+    dyp  !!
               %following
-            ?~  paz=(turn pyz proj-card:ui)  wax
-            ;div(class pas)
-              ;*  paz
+            ;div
+              ;h1: Following
+              ;+  ?~  paz=(turn pyz proj-card:ui)  wax
+                  ;div(class pas)
+                    ;*  paz
+                  ==
             ==
           ::
               %discover
-            ?~  maz=(turn myz meta-card:ui)  wax
-            ;div(class mas)
-              ;*  maz
+            ;div
+              ;div(class "flex flex-row gap-2 justify-start items-center")
+                ;h1: Discover
+                ;button#fund-help-disc.fund-tipi(type "button")
+                  ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
+                ==
+                ;div#fund-help-disc-opts(class "hidden")
+                  ;p
+                    ; TODO: This should be filled with help text.
+                  ==
+                ==
+              ==
+              ;+  ?~  maz=(turn myz meta-card:ui)  wax
+                  ;div(class mas)
+                    ;*  maz
+                  ==
             ==
           ::
               %action
@@ -265,38 +273,46 @@
                       (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
                   ==
               ==
-            ;div(class "flex flex-col gap-4")
-              ;div                               ::  $prez with %prop status
-                ;h2: Service Requests
-                ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
-                    |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  ?=(%prop ~(stat pj:fj -.pre))
-                        =(p.assessment.pre our.bol)
-                    ==
+            ;div
+              ;div(class "flex flex-row justify-between")
+                ;h1: My Actions
+                ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
+                  ; new project +
+                ==
               ==
-              ;div                               ::  $prez with %sess status
-                ;h2: Review Requests
-                ;+  %^  ~(mota-well ui sus)  sas  "No projets pending review."
-                    |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  ?=(%sess ~(stat pj:fj -.pre))
-                        =(p.assessment.pre our.bol)
-                    ==
-              ==
-              ;div                               ::  $prez with unfulfilled $plej
-                ;h2: Outstanding Pledges
-                ;+  %^  ~(mota-well ui sus)  sas  "No oustanding pledges."
-                    |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
-                        (~(has by pledges.pre) our.bol)
-                    ==
-              ==
-              ;div                               ::  worker|oracle done|dead $prez
-                ;h2: Work Archive
-                ;+  %^  mota-well:ui  mas  "No archived projects."
-                    |=  [lag=flag:f pre=prej:proj:f]
-                    ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
-                        (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
-                    ==
+              ;div(class "flex flex-col gap-4")
+                ;div                               ::  $prez with %prop status
+                  ;h2: Service Requests
+                  ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
+                      |=  [lag=flag:f pre=prej:proj:f]
+                      ?&  ?=(%prop ~(stat pj:fj -.pre))
+                          =(p.assessment.pre our.bol)
+                      ==
+                ==
+                ;div                               ::  $prez with %sess status
+                  ;h2: Review Requests
+                  ;+  %^  ~(mota-well ui sus)  sas  "No projets pending review."
+                      |=  [lag=flag:f pre=prej:proj:f]
+                      ?&  ?=(%sess ~(stat pj:fj -.pre))
+                          =(p.assessment.pre our.bol)
+                      ==
+                ==
+                ;div                               ::  $prez with unfulfilled $plej
+                  ;h2: Outstanding Pledges
+                  ;+  %^  ~(mota-well ui sus)  sas  "No oustanding pledges."
+                      |=  [lag=flag:f pre=prej:proj:f]
+                      ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
+                          (~(has by pledges.pre) our.bol)
+                      ==
+                ==
+                ;div                               ::  worker|oracle done|dead $prez
+                  ;h2: Work Archive
+                  ;+  %^  mota-well:ui  mas  "No archived projects."
+                      |=  [lag=flag:f pre=prej:proj:f]
+                      ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
+                          (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
+                      ==
+                ==
               ==
             ==
           ==

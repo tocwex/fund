@@ -707,14 +707,14 @@
       ;img.fund-butn-icon@"{(aset:enrl:ff %edit)}";
     ==
   ++  pink-butn                                  ::  project link copy button
-    |=  [bol=bowl:gall lag=flag]
+    |=  [lag=flag url=tape]
     ^-  manx
     =-  ;button(type "button", class cas, x-data ~, x-on-click xoc)
           ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
         ==
     ^=  xoc
     """
-    copyText('{(weld (burl bol) (flat:enrl:ff lag))}');
+    copyText('{url}{(flat:enrl:ff lag)}');
     alert('project url copied to clipboard');
     """
   ++  copy-butn                                  ::  arbitrary text copy button

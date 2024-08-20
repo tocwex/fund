@@ -86,8 +86,9 @@
             ;div(class "flex flex-row gap-x-3")
               ;+  pro.btn
               ;+  but
-              ;*  ?.  =(our.bol p.lag)  ~
-                  :_  ~  (pink-butn:ui:fh bol lag)
+              ;*  ?~  pow=(~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) p.lag)  ~
+                  :_  ~
+                  (pink-butn:ui:fh lag (trip ship-url.u.pow))
             ==
             ;+  bod
             ;p

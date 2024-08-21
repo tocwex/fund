@@ -5,12 +5,12 @@
 |%
 ++  xeta                                         ::  chain metadata core
   |%
+  ::  ++  none      `^xeta`[0 %none '']
   ++  ethereum  `^xeta`[1 %ethereum 'https://eth.drpc.org']
   ++  sepolia   `^xeta`[11.155.111 %sepolia 'https://sepolia.drpc.org']
   ::  ++  optimism  `^xeta`[10 %optimism ?]
   ::  ++  base      `^xeta`[8.453 %base ?]
   ::  ++  arbitrum  `^xeta`[42.161 %arbitrum ?]
-  ::  ++  none      `^xeta`[9.223.372.036.854.776.000 %none '']  ::  https://eips.ethereum.org/EIPS/eip-2294
   --
 ++  xmap                                         ::  chain metadata map
   ~+
@@ -26,48 +26,112 @@
   ^-  (list ^xeta)
   %-  turn  :_  |=(i=@ud (~(got by xmap) i))
   (sort ~(tap in (silt (turn ~(val by xmap) |=(x=^xeta id.x)))) lth)
-++  coin                                         ::  coin metadata core
+++  swap                                         ::  swap metadata core
   |%
-  ++  ethereum-usdc  [id:ethereum:xeta 0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48 'USDC' 'USDC' 6]
-  ++  ethereum-wstr  [id:ethereum:xeta 0xf0dc.76c2.2139.ab22.618d.dfb4.98be.1283.2546.12b1 'WrappedStar' 'WSTR' 18]
-  ++  sepolia-usdc   [id:sepolia:xeta 0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38 '%fund USDC' 'fundUSDC' 6]
-  ++  sepolia-wstr   [id:sepolia:xeta 0x3066.f428.d935.a44b.e7aa.845b.6c6b.8125.19ce.1e17 '%fund WSTR' 'fundWSTR' 18]
-  ::  ++  none-oobp      [id:none:xeta 0x0 'Out-of-band' 'OOBP' 2]
+  ++  ethereum-usdc
+    ^-  ^swap
+    :*  %coin
+        id:ethereum:xeta
+        0xa0b8.6991.c621.8b36.c1d1.9d4a.2e9e.b0ce.3606.eb48
+        'USDC'
+        'USDC'
+        6
+    ==
+  ++  ethereum-wstr
+    ^-  ^swap
+    :*  %coin
+        id:ethereum:xeta
+        0xf0dc.76c2.2139.ab22.618d.dfb4.98be.1283.2546.12b1
+        'WrappedStar'
+        'WSTR'
+        18
+    ==
+  ++  ethereum-azp-star
+    ^-  ^swap
+    :*  %enft
+        id:ethereum:xeta
+        0x33ee.cbf9.0847.8c10.6146.26a9.d304.bfe1.8b78.dd73
+        'Azimuth Points'
+        'AZP'
+        'https://azimuth.network/erc721/0000000000.json'
+        (malt ~[[%size |=(=@t =(%star t))]])
+    ==
+  ++  sepolia-usdc
+    ^-  ^swap
+    :*  %coin
+        id:sepolia:xeta
+        0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38
+        '%fund USDC'
+        'fundUSDC'
+        6
+    ==
+  ++  sepolia-wstr
+    ^-  ^swap
+    :*  %coin
+        id:sepolia:xeta
+        0x3066.f428.d935.a44b.e7aa.845b.6c6b.8125.19ce.1e17
+        '%fund WSTR'
+        'fundWSTR'
+        18
+    ==
+  ++  sepolia-azp-star
+    ^-  ^swap
+    :*  %enft
+        id:sepolia:xeta
+        0xabe2.8c76.e1c9.750e.b78f.32a0.7c29.5afa.99b5.57fd
+        'Urbit Azimuth NFT (TEST)'
+        'AZP-TEST'
+        'https://azimuth.network/erc721/0000000000.json'
+        (malt ~[[%size |=(=@t =(%star t))]])
+    ==
+  ::  ++  none-fusd
+  ::    ^-  ^swap
+  ::    :*  %chip
+  ::        %0
+  ::        %0x0
+  ::        'Fiat USD'
+  ::        'USD'
+  ::        2
+  ::    ==
   --
-++  cmap                                         ::  coin metadata map
+++  smap                                         ::  swap metadata map
   ~+
-  ^-  (map [@ @] ^coin)
-  =+  vas=!>(coin)
-  =<  +  %^  spin  (sloe p.vas)  *(map [@ @] ^coin)
-  |=  [nex=@tas acc=(map [@ @] ^coin)]
-  =+  con=;;(^coin +:(slap vas (ream nex)))
+  ^-  (map [@ @] ^swap)
+  =+  vas=!>(swap)
+  =<  +  %^  spin  (sloe p.vas)  *(map [@ @] ^swap)
+  |=  [nex=@tas acc=(map [@ @] ^swap)]
+  =+  swa=;;(^swap +:(slap vas (ream nex)))
   ::  NOTE: There could be collisions here, but it's quite unlikely
   :-  nex
   %-  ~(gas by acc)
-  %-  turn  :_  (late con)
-  :~  [`@`chain.con `@`addr.con]
-      [`@`tag:(~(got by xmap) chain.con) `@`addr.con]
-      [`@`chain.con `@`symbol.con]
-      [`@`tag:(~(got by xmap) chain.con) `@`symbol.con]
+  %-  turn  :_  (late swa)
+  :~  [`@`chain.swa `@`addr.swa]
+      [`@`tag:(~(got by xmap) chain.swa) `@`addr.swa]
+      [`@`chain.swa `@`symbol.swa]
+      [`@`tag:(~(got by xmap) chain.swa) `@`symbol.swa]
   ==
-++  clis
+++  slis                                         ::  swap metadata list
   ~+
-  ^-  (list ^coin)
+  ^-  (list ^swap)
   %-  zing
   %+  turn  xlis
   |=  xet=^xeta
-  ^-  (list ^coin)
-  %-  sort  :_  |=([a=^coin b=^coin] (aor symbol.a symbol.b))
-  ~(tap in (silt (skim ~(val by cmap) |=(c=^coin =(id.xet chain.c)))))
+  ^-  (list ^swap)
+  =+  swav=|=(s=^swap ?-(-.s %coin 0, %enft 1, %chip 2))
+  %+  sort  ~(tap in (silt (skim ~(val by smap) |=(b=^swap =(id.xet chain.b)))))
+  |=  [saa=^swap sab=^swap]
+  =/  [vaa=@ vab=@]  [(swav saa) (swav sab)]
+  ?.  =(vaa vab)  (lth vaa vab)
+  (aor symbol.saa symbol.sab)
 ++  scan-cfgz
-  |=  [oat=oath cin=^coin]
+  |=  [oat=oath swa=^swap]
   ^-  (list [path config])
-  ?:  =(0x0 safe.oat)  ~
-  ?~  con=(~(get by cmap) [chain addr]:cin)  ~
-  ::  ?:  =(id:none:xeta chain.u.con)  ~
+  ?:  |(=(0x0 safe.oat) ?=(%chip -.swa))  ~
+  ?~  con=(~(get by smap) [chain addr]:swa)  ~
   ?~  can=(~(get by xmap) chain.u.con)  ~
   %+  turn  `(list @tas)`~[%depo %with]
   |=  act=term
+  =/  [src=@ux dst=@ux]  ?:(?=(%depo act) [0x0 safe.oat] [safe.oat 0x0])
   :-  /scan/[act]
   :*  url=rpc.u.can
       eager=|
@@ -77,6 +141,6 @@
       to=~
       contracts=[addr.u.con]~
       confirms=`!<(@ud (slot:fund-config %scan-bloq))
-      topics=[0x0 ?:(=(%depo act) ~[0x0 safe.oat] ~[safe.oat 0x0])]
+      topics=?-(-.swa %coin ~[0x0 src dst], %enft ~[0x0 src dst 0x0])
   ==
 --

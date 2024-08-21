@@ -26,10 +26,6 @@
 ::
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
 ::
-::    x-on-* => x-on:*
-::    xlass => :class
-::    xtyle => :style
-::
 ++  alix
   |=  man=manx
   ^-  manx
@@ -37,12 +33,19 @@
   |=  [man=mane tap=tape]
   :_  tap
   ?^  man  man
-  ?:  =(%xlass man)  ':class'
-  ?:  =(%xtyle man)  ':style'
-  ?:  =(%x-on- (dis %x-on- man))
-    =+  pre=[3 (met 3 %x-on-)]
-    (con 'x-on:' (lsh pre (rsh pre man)))
-  man
+  =-  =<  +  %^  spin  rez  man
+      |=  [[pre=@tas nex=@t] acc=@tas]
+      ^-  [[@tas @t] @tas]
+      :-  [pre nex]
+      ?.  =(pre (dis pre man))  acc
+      =+  pro=[3 (met 3 pre)]
+      (con nex (lsh pro (rsh pro acc)))
+  ^-  rez=(list [@tas @t])
+  :~  [%xlass ':class']
+      [%xtyle ':style']
+      [%x-on- 'x-on:']
+      [%x-bind- 'x-bind:']
+  ==
 ::
 ::  +parz: parse POST request parameters considering required arguments
 ::
@@ -307,6 +310,7 @@
           ;+  ?:  (auth bol)
                 ;button  =id  "fund-agis"
                     =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-md hover:bg-primary-550"
+                    =x-init  "initTippy($el)"
                   ;+  (ship-logo src.bol)
                   ;span(class "hidden sm:block font-bold"): {<src.bol>}
                   ;img@"{(aset:enrl:ff %ellipsis)}"(class "hidden sm:block h-full");
@@ -320,6 +324,7 @@
                 ==
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-co-m: …loading…
+          ;select#fund-nfts-wallet.hidden;
         ==
       ==
     ++  foot
@@ -359,7 +364,7 @@
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}
-        ;button.fund-tipi(id tid, type "button")
+        ;button.fund-tipi(id tid, type "button", x-init "initTippy($el)")
           ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
         ==
         ;div(id "{tid}-opts", class "hidden")
@@ -382,8 +387,8 @@
           ;div(class "inline-flex items-center gap-1")
             ;a/"{(esat:enrl:ff adr cid)}"
                 =target  "_blank"
-                =data-addr  (addr:enjs:ff adr)
                 =class  "fund-addr fund-addr-ens hover:text-link"
+                =x-init  "initENS($el, '{(addr:enjs:ff adr)}')"
               …loading…
             ==
             ;+  (copy-butn (addr:enjs:ff adr))
@@ -485,11 +490,11 @@
             :_  ~
             ;div(class "hidden sm:(flex flex-row gap-2)")
               ;h3(class "text-tertiary-500 tracking-tight font-bold")
-                ; {(mony:enjs:ff fill.pod currency.pro)}
+                ; {(swam:enjs:ff fill.pod payment.pro)}
               ==
               ;h3(class "text-tertiary-400 tracking-tight"): /
               ;h3(class "text-tertiary-400 tracking-tight")
-                ; {(mony:enjs:ff plej.pod currency.pro)}
+                ; {(swam:enjs:ff plej.pod payment.pro)}
               ==
             ==
       ==
@@ -499,21 +504,21 @@
               ; {cen}% raised
               ;span(class "hidden sm:block"): of
             ==
-          ;span(class "hidden sm:block"): {(mony:enjs:ff cost.pod currency.pro)}
+          ;span(class "hidden sm:block"): {(swam:enjs:ff cost.pod payment.pro)}
     ==
-  ++  coin-selz                                  ::  coin select input fields
-    |=  [emt=bean con=(unit coin) mod=tape xoc=tape]
+  ++  swap-selz                                  ::  swap select input fields
+    |=  [emt=bean swa=(unit swap) mod=tape xoc=tape]
     ^-  manx
-    =/  ini=tape  ?~(con "undefined" "'{(trip symbol.u.con)}'")
+    =/  ini=tape  ?~(swa "undefined" "'{(trip symbol.u.swa)}'")
     ;div(class cas, x-data ~)
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
       ::  in the filter UI
       ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
         ;select#proj-chain.fund-tsel  =name  "can"
             =required  ~
-            =x-init  "useTomSelect($el, {(bool:enjs:ff emt)})"
+            =x-init  "initTomSelect($el, {(bool:enjs:ff emt)})"
             =x-on-change  "updateTokenSelect"
-          ;*  =+  can=chain:?~(con *coin u.con)
+          ;*  =+  can=?~(swa -:ethereum:xeta:fc chain.u.swa)
               %+  welp
                 ?.  emt  ~
                 :_  ~  ;option(value ""): Any Chain
@@ -528,7 +533,7 @@
                   ?.(=(can id.xet) ~ [%selected ~]~)
               ==
         ==
-        ;*  ?~  con  ~
+        ;*  ?~  swa  ~
             :_  ~  ;label(for "can"): Blockchain
       ==
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
@@ -538,20 +543,21 @@
           ;*  %+  welp
                 ?.  emt  ~
                 :_  ~  ;option(value ""): Any Token
-              %+  turn  clis:fc
-              |=  con=coin
+              %+  turn  slis:fc
+              |=  swa=swap
               ^-  manx
-              :_  ; {(trip name.con)}
+              :_  ; {(trip name.swa)}
               :-  %option
               ;:  welp
-                  [%value (trip symbol.con)]~
-                  [%data-chain (bloq:enjs:ff chain.con)]~
-                  [%data-image (aset:enrl:ff symbol.con)]~
+                  [%value (trip symbol.swa)]~
+                  [%data-type (trip -.swa)]~
+                  [%data-chain (bloq:enjs:ff chain.swa)]~
+                  [%data-image (aset:enrl:ff symbol.swa)]~
               ==
         ==
         ;select#proj-token.fund-tsel  =name  "tok"
             =required  ~
-            =x-init  "useTomSelect($el, {(bool:enjs:ff emt)}); updateTokenSelect({ini})"
+            =x-init  "initTomSelect($el, {(bool:enjs:ff emt)}); updateTokenSelect({ini})"
             =x-model  mod
             =x-on-change  xoc;
         ;*  ?:  emt  ~
@@ -748,7 +754,7 @@
     :-  %button
     ;:  welp
         ?~(diz ~ ~[[%disabled ~] [%title diz]])
-        ?~(xon ~ ~[[%x-data ~] [%x-on-click xon]])
+        ?~(xon ~ ~[[%x-on-click xon]])
         [%id "prod-butn-{(trip pod)}"]~
         [%type "submit"]~
         [%name "dif"]~

@@ -59,7 +59,7 @@
   ++  surt                                     ::  s(hip) ur(l) t(ape) (url path)
     |=  sip=@p  ~+
     ^-  tape
-    ?-    (clan:title sip)
+    ?-  (clan:title sip)
       %pawn  "https://placehold.co/24x24/black/black?text=\\n"
       %earl  "https://azimuth.network/erc721/{(bloq:enjs `@`(end 5 sip))}.svg"
       *      "https://azimuth.network/erc721/{(bloq:enjs `@`sip)}.svg"
@@ -84,6 +84,14 @@
 +|  %js
 ++  dejs                                       ::  js-tape => noun
   |%
+  ++  comp                                     ::  "12.345" => 12.345.000
+    |=  [amo=@t swa=swap]
+    ^-  ^cash
+    ?-  -.swa
+      %coin  (cash amo decimals.swa)
+      %enft  (bloq amo)
+      %chip  (cash amo decimals.swa)
+    ==
   ++  cash                                     ::  "12.345" => 12.345.000
     |=  [cas=@t dex=@ud]
     ^-  ^cash
@@ -138,11 +146,21 @@
   --
 ++  enjs                                       ::  noun => js-tape
   |%
-  ++  mony                                     ::  [12.345.000 [1 0x0 %wstr %wstr 18]] => "12.34 $WSTR"
-    |=  [cas=^cash con=^coin]
+  ++  swam                                     ::  [12.345.000 *swap] => "12.34 $USD"
+    |=  [amo=^cash swa=^swap]
     ^-  tape
-    ?+  symbol.con  "{(cash cas decimals.con)} {(coin con)}"
-      ?(%'USDC' %'fundUSDC' %'OOBP')  "${(cash cas decimals.con)}"
+    =/  com=tape  (comp amo swa)
+    =/  sym=@t  ?-(-.swa %coin symbol.swa, %enft symbol.swa, %chip symbol.swa)
+    ?+  sym  "{com} {(swap swa)}"
+      ?(%'USD' %'USDC' %'fundUSDC')  "${com}"
+    ==
+  ++  comp                                     ::  12.345.000 => "12.34"
+    |=  [amo=^cash swa=^swap]
+    ^-  tape
+    ?-  -.swa
+      %coin  (cash amo decimals.swa)
+      %enft  (bloq amo)
+      %chip  (cash amo decimals.swa)  ::  FIXME: Decimals should be more custom
     ==
   ++  cash                                     ::  12.345.000 => "12.34"
     |=  [cas=^cash dex=@ud]
@@ -204,6 +222,22 @@
     |=  con=^coin
     ^-  tape
     "${(cuss (trip symbol.con))}"
+  ++  enft                                     ::  [1 0x1 %azimuth %azp …] => "@AZP"
+    |=  nft=^enft
+    ^-  tape
+    "@{(cuss (trip symbol.nft))}"
+  ++  chip                                     ::  [%udc %udc 2] => "-USD"
+    |=  chi=^chip
+    ^-  tape
+    "-{(cuss (trip symbol.chi))}"
+  ++  swap                                     ::  [%coin 1 0x1 %wstr %wstr 6] => "$WSTR"
+    |=  swa=^swap
+    ^-  tape
+    ?-  -.swa
+      %coin  (coin +.swa)
+      %enft  (enft +.swa)
+      %chip  (chip +.swa)
+    ==
   ++  role                                     ::  %orac => "oracle"
     |=  rol=^role
     ^-  tape

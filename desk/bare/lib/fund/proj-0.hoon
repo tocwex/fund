@@ -1,4 +1,4 @@
-/-  *fund-proj
+/-  *fund-proj-0
 /+  fc=fund-core, ff=fund-form, fx=fund-xtra
 |%
 ::
@@ -125,8 +125,8 @@
         %+  weld
           ^-  (list tape)
           :~  "title: {(trip title)}"
-              "oracle: {<p.assessment>} (for {(comp-enjs q.assessment [%chip %0 %0x0 '' '' 6])}%)"
-              (swap-enjs payment)
+              "oracle: {<p.assessment>} (for {(cash-enjs q.assessment 6)}%)"
+              (coin-enjs currency)
               "summary: {(trip summary)}"
           ==
         %+  turn  (enum:fx miz)
@@ -136,42 +136,36 @@
         ^-  (list tape)
         :~  "milestone #{<+(min)>}:"
             "title: {(trip title.mil)}"
-            "cost: {(comp-enjs cost.mil payment)}"
+            "cost: {(cash-enjs cost.mil decimals.currency)}"
             "summary: {(trip summary.mil)}"
         ==
-    ++  comp-enjs
-      |=  [amo=cash swa=swap]
+    ++  cash-enjs
+      |=  [cas=cash dex=@ud]
       ^-  tape
-      =/  dex=@ud  ?+(-.swa 0 %coin decimals.swa)
-      ?+  ver  (comp:enjs:ff amo swa)
+      ?+  ver    (cash:enjs:ff cas dex)
           %v0-0-0
-        (r-co:co [%d & (pro:si -1 (sun:si dex)) amo])
+        (r-co:co [%d & (pro:si -1 (sun:si dex)) cas])
       ::
           %v0-4-0
-        =+  cax=(drg:fl (sun:fl amo))
+        =+  cax=(drg:fl (sun:fl cas))
         ?>  ?=(%d -.cax)
         (flot:fx cax(e (dif:si e.cax (sun:si dex))) ~)
       ==
-    ++  swap-enjs
-      |=  swa=swap
+    ++  coin-enjs
+      |=  con=coin
       ^-  tape
       ?:  ?=(%v0-0-0 ver)  ~
-      =-  "{tyt}: {pay}{adr} {med}"
-      ^-  [tyt=tape adr=tape med=tape pay=tape]
-      :*  tyt=?+(ver "payment" ?(%v1-1-0 %v1-0-0 %v0-4-0) "currency")
-          adr=?+(-.swa " ({(addr:enjs:ff addr.swa)})" %chip ~)
-          med=?+(-.swa "on eth chain {(bloq:enjs:ff chain.swa)}" %chip "out of band")
-      ::
-            ^=  pay
-          ?+    ver  (swap:enjs:ff swa)
-              ?(%v1-0-0 %v0-4-0)
-            ?+  symbol.swa  "usdc"
-              %'USDC'       "usdc"
-              %'WSTR'       "wstr"
-              %'fundUSDC'   "usdc"
-              %'fundWSTR'   "wstr"
-            ==
-          ==
+      =-  "currency: {-} ({(addr:enjs:ff addr.con)}) on eth chain {(bloq:enjs:ff chain.con)}"
+      ?+    ver  (coin:enjs:ff con)
+          ?(%v1-0-0 %v0-4-0)
+        ::  NOTE: These should be the only coin possibilities for
+        ::  v0.4.0 and v1.0.0 contracts
+        ?+  symbol.con  "usdc"
+          %'USDC'       "usdc"
+          %'WSTR'       "wstr"
+          %'fundUSDC'   "usdc"
+          %'fundWSTR'   "wstr"
+        ==
       ==
     --
   ++  bail                                       ::  text of bail statement (no payout)

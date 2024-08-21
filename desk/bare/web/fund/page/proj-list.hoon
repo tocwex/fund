@@ -2,7 +2,7 @@
 ::
 /-  fd=fund-data, f=fund
 /+  fj=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
-/+  rudder
+/+  rudder, config
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
@@ -247,7 +247,14 @@
                 ==
                 ;div#fund-help-disc-opts(class "hidden")
                   ;p
-                    ; TODO: This should be filled with help text.
+                    ; Discovery of new projects depends on the %pals
+                    ; network. Projects are publicized to your %pals, and
+                    ; they can optionally republicize them to their %pals.
+                    ; Tell your friends and see who can discover the
+                    ; largest project collection!
+                  ==
+                  ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/project-discovery"(target "_blank")
+                    ; Read the docs to learn more.
                   ==
                 ==
               ==

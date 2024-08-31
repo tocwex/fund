@@ -1,4 +1,5 @@
 /-  *fund-meta
+/-  mold=sss-meta-0
 /+  sss
 |%
 +|  %misc
@@ -29,23 +30,47 @@
   --
 
 +|  %core
-+$  vers  _%0
++$  vers  [_%1 _%1]
 +$  path  [%fund %meta sip=@ nam=@ ~]
 ++  lake
+  =/  up
+    |_  met=meta:mold
+    ++  meta
+      ^-  ^meta
+      :*  title=title.met
+          image=image.met
+          cost=cost.met
+          payment=[%coin currency.met]
+          launch=launch.met
+          worker=worker.met
+          oracle=oracle.met
+      ==
+    --
   |%
   ++  name  %meta
   +$  rock  [vers meta]
-  +$  vock  rock
+  +$  vock  $%(vock:lake:mold rock)
   +$  wave  [vers bol=bowl:gall pok=poke]
-  +$  vave  wave
+  +$  vave  $%(vave:lake:mold wave)
   ++  urck
     |=  voc=vock
     ^-  rock
-    voc
+    ?-  -.voc
+      vers        voc
+      vers:mold   $(voc [*vers ~(meta up +.voc)])
+    ==
   ++  uwve
     |=  vav=vave
     ^-  wave
-    vav
+    ?-  -.vav
+      vers        vav
+    ::
+        vers:mold
+      =-  $(vav [*vers -])
+      ?+    +.vav      +.vav
+        [* * %init *]  [bol.vav p.pok.vav %init ~(meta up met.q.pok.vav)]
+      ==
+    ==
   ++  wash
     |=  [[vers met=meta] [vers bol=bowl:gall lag=^flag pod=prod]]
     ^-  rock

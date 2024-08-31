@@ -72,7 +72,7 @@
       =addr
       name=@t
       symbol=@t
-      uri=@t
+      uri=$-(@ud tape)
       limits=limz
   ==
 ::

@@ -325,22 +325,29 @@
                           :~  [%readonly ~]
                               [%value (comp:enjs:ff:fh cash.u.pej payment.pro)]
                           ==
+                          ::  FIXME: Remove this after multi-send NFTs are supported
+                            ?.  nft  ~
+                          :~  [%readonly ~]
+                              [%value "1"]
+                          ==
                       ==
                   ;label(for "sum"): amount
                 ==
                 ;div(class "fund-form-group")
                   ;+  :_  :_  ~
+                          ?:  nft
+                            ;option(value "-1", data-image (colt:enrl:ff:fh %black)): …loading…
                           ;option
                               =value  (trip symbol.payment.pro)
                               =data-image  (aset:enrl:ff:fh symbol.payment.pro)
-                            ; {?:(nft "…loading…" (trip name.payment.pro))}
+                            ; {(trip name.payment.pro)}
                           ==
                       :-  %select
                       ;:  welp
                           [%id "proj-token"]~
                           [%name "tok"]~
                           [%class "fund-tsel"]~
-                          ?.(nft ~ [%multiple ~]~)
+                          ::  ?.(nft ~ [%multiple ~]~)
                           ?~(pej ~ ?:(nft [%required ~]~ [%disabled ~]~))
                           :_  ~  :-  %x-init
                           %-  zing  %+  join  "\0a"
@@ -351,7 +358,9 @@
                               %+  rip  3
                               '''
                               if (typeof initTomSelect !== 'undefined') {
-                                initTomSelect($el, nft, false, !nft ? undefined : pej);
+                                initTomSelect($el, false, false);
+                                // FIXME: Restore this once multi-send NFTs are supported
+                                // initTomSelect($el, nft, false, !nft ? undefined : pej);
                                 nft && updateNftsSelect($el);
                               }
                               '''
@@ -574,9 +583,7 @@
                           %plej  [(surt:enrl:ff:fh ship.mul) "{<ship.mul>}"]
                         ::
                             %trib
-                          ::  FIXME: Use 'surt' for the first case here,
-                          ::  putting in an arbitrary comet
-                          ?~  ship.mul  ["https://placehold.co/24x24/black/black?text=\\n" "anonymous"]
+                          ?~  ship.mul  [(colt:enrl:ff:fh %black) "anonymous"]
                           [(surt:enrl:ff:fh u.ship.mul) "{<u.ship.mul>}"]
                         ::
                             %pruf

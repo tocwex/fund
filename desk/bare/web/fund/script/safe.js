@@ -169,24 +169,18 @@ export const safeExecDeploy = async ({projectChain, oracleAddress}) => {
 
 export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, fundTransfers, safeAddress}) => {
   const TOKEN = safeTransactionToken({tok: fundToken});
-  const isERC721 = (TOKEN.ABI === ABI.ERC721);
-
-  if (isERC721 && fundAmount !== '' && Number(fundAmount) !== fundTransfers.length) {
+  if ((TOKEN.ABI === ABI.ERC721) && fundAmount !== '' && Number(fundAmount) !== fundTransfers.length)
     throw new SafeError(`pledge mismatch; pledged ${fundAmount} NFTs but selected ${fundTransfers.length}`);
-  }
 
   const { address: funderAddress } = safeGetAccount(projectChain);
-  const wrappedTransaction = safeWrapTransactions({
-    safe: safeAddress,
-    transactions: fundTransfers.map(tokenId => ({
+  const wrappedTransaction = safeWrapTransactions(
+    fundTransfers.map(tokenId => ({
       tok: fundToken,
-      val: isERC721 ? tokenId : parseUnits(fundAmount, TOKEN.DECIMALS),
+      val: (TOKEN.ABI === ABI.ERC721) ? tokenId : parseUnits(fundAmount, TOKEN.DECIMALS),
       from: getAccount(window.Wagmi)?.address,
       to: safeAddress,
-    })),
-  });
-
-  console.log(wrappedTransaction);
+    }))
+  );
 
   const sendTransaction = await writeContract(window.Wagmi, wrappedTransaction);
   const sendReceipt = await waitForTransactionReceipt(window.Wagmi, {
@@ -361,8 +355,6 @@ const safeDistribTransactions = ({token, safe, amount, cuts}) => {
   if (TOKEN.ABI !== ABI.ERC20)
     throw new SafeError(`cannot calculate a token distribution for non-ERC20 token '${token}'`);
 
-  // TODO: This needs to return a transfer of all the safe's contained
-  // NFTs to the destination address in the case of ERC721s
   const transactionMap = cuts
     .map(({cut, to}) => ({
       from: safe,
@@ -394,8 +386,8 @@ const safeDistribTransactions = ({token, safe, amount, cuts}) => {
   return transactions;
 };
 
-const safeWrapTransactions = ({safe, transactions}) => {
-  console.log(`constructing transaction for safe ${safe} with arguments:`);
+const safeWrapTransactions = (transactions) => {
+  console.log(`constructing wrapped transaction with arguments:`);
   console.log(transactions);
   return (transactions.length === 1)
     ? safeWrapTransaction(transactions[0])
@@ -422,7 +414,7 @@ const safeWrapTransactions = ({safe, transactions}) => {
 const safeGetWithdrawalArgs = async ({safe, transactions}) => {
   if (transactions.length === 0)
     throw new SafeError(`unable to construct withdrawal for safe; no transactions provided (probably no funds available)`);
-  const wrappedTransaction = safeWrapTransactions({safe, transactions});
+  const wrappedTransaction = safeWrapTransactions(transactions);
   const safeNonce = await readContract(window.Wagmi, {
     abi: CONTRACT.SAFE_TEMPLATE.ABI,
     address: safe,

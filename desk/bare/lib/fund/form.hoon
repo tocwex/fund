@@ -4,9 +4,9 @@
 /+  fx=fund-xtra
 |%
 +|  %url
-++  derl                                       ::  rl-path => noun
+++  derl                                         ::  rl-path => noun
   |%
-  ++  slag                                     ::  (url path) suffix
+  ++  slag                                       ::  (url path) suffix
     |=  cor=cord  ~+
     ^-  path
     =/  [pre=tape suf=tape]  (chop:fx (trip cor) '?')
@@ -14,61 +14,61 @@
     ::  `path`(rash '/a/b/' ;~(sfix stap fas))
     =?  pre  ?=([%'/' *] (flop pre))  (snip pre)
     (need (chip:fx /apps/fund (stab (crip pre))))
-  ++  flag                                     ::  (url path) (project) flag
+  ++  flag                                       ::  (url path) (project) flag
     |=  cor=cord  ~+
     ^-  (unit ^flag)
     ?+  pat=`(pole knot)`(slag cor)  ~
       [@ sip=@ nam=@ *]  (both (slaw %p sip.pat) (slaw %tas nam.pat))
     ==
   --
-++  enrl                                       ::  noun => rl-path
+++  enrl                                         ::  noun => rl-path
   |%
-  ++  dest                                     ::  des(k) t(ape) (url path)
+  ++  dest                                       ::  des(k) t(ape) (url path)
     |=  pat=path  ~+
     ^-  tape
     (spud [%apps %fund pat])
-  ++  desc                                     ::  des(k) c(ord) (url path)
+  ++  desc                                       ::  des(k) c(ord) (url path)
     |=  pat=path  ~+
     ^-  cord
     (spat [%apps %fund pat])
-  ++  chat                                     ::  cha(t) t(ape) (url path)
+  ++  chat                                       ::  cha(t) t(ape) (url path)
     |=  sip=@p  ~+
     ^-  tape
     (spud /apps/groups/dm/(scot %p sip))
-  ++  chac                                     ::  cha(t) c(ord) (url path)
+  ++  chac                                       ::  cha(t) c(ord) (url path)
     |=  sip=@p  ~+
     ^-  cord
     (spat /apps/groups/dm/(scot %p sip))
-  ++  flat                                     ::  fla(g) t(ape) (url path)
+  ++  flat                                       ::  fla(g) t(ape) (url path)
     |=  lag=flag  ~+
     ^-  tape
     (dest /project/(scot %p p.lag)/[q.lag])
-  ++  flac                                     ::  fla(g) c(ord) (url path)
+  ++  flac                                       ::  fla(g) c(ord) (url path)
     |=  lag=flag  ~+
     ^-  cord
     (desc /project/(scot %p p.lag)/[q.lag])
-  ++  aset                                     ::  as(s)e(t) t(ape) (url path)
+  ++  aset                                       ::  as(s)e(t) t(ape) (url path)
     |=  ast=@t  ~+
     ^-  tape
     (dest /asset/[(crip "{(cass (trip ast))}.svg")])
-  ++  asec                                     ::  as(s)e(t) c(ord) (url path)
+  ++  asec                                       ::  as(s)e(t) c(ord) (url path)
     |=  ast=@t  ~+
     ^-  cord
     (desc /asset/[(crip "{(cass (trip ast))}.svg")])
   --
-  ++  surt                                     ::  s(hip) ur(l) t(ape) (url path)
+  ++  surt                                       ::  s(hip) ur(l) t(ape) (url path)
     |=  sip=@p  ~+
     ^-  tape
     ?-  (clan:title sip)
-      %pawn  "https://placehold.co/24x24/black/black?text=\\n"
+      %pawn  (colt %black)
       %earl  "https://azimuth.network/erc721/{(bloq:enjs `@`(end 5 sip))}.svg"
       *      "https://azimuth.network/erc721/{(bloq:enjs `@`sip)}.svg"
     ==
-  ++  surc                                     ::  s(hip) ur(l) c(ord) (url path)
+  ++  surc                                       ::  s(hip) ur(l) c(ord) (url path)
     |=  sip=@p  ~+
     ^-  cord
     (crip (surt sip))
-  ++  esat                                     ::  e(ther)s(c)a(n) t(ape) (url path)
+  ++  esat                                       ::  e(ther)s(c)a(n) t(ape) (url path)
     |=  [adr=addr cid=@ud]  ~+
     ^-  tape
     =-  "https://{(trip -)}etherscan.io/address/{(addr:enjs adr)}"
@@ -76,10 +76,18 @@
       %1           ''
       %11.155.111  'sepolia.'
     ==
-  ++  esac                                     ::  e(ther)s(c)a(n) c(ord) (url path)
+  ++  esac                                       ::  e(ther)s(c)a(n) c(ord) (url path)
     |=  [adr=addr cid=@ud]  ~+
     ^-  cord
     (crip (esat adr cid))
+  ++  colt                                       ::  col(or) t(ape) (url path)
+    |=  clr=@t
+    ^-  tape
+     "https://placehold.co/24x24/{(trip clr)}/{(trip clr)}?text=\\n"
+  ++  colc                                       ::  col(or) c(ord) (url path)
+    |=  clr=@t
+    ^-  cord
+    (crip (colt clr))
 
 +|  %js
 ++  dejs                                       ::  js-tape => noun

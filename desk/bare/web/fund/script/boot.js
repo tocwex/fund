@@ -525,10 +525,18 @@ if (window.Alpine === undefined) {
       text: elem.innerText,
       image: elem.dataset.image,
     }));
+    if (tokenNftOpts.length === 0) {
+      tokenNftOpts.push({
+        value: "-1",
+        text: "(no nfts in wallet)",
+        image: "https://placehold.co/24x24/black/black?text=\\n",
+      });
+    }
 
     tokenSelect.clear(true);
     tokenSelect.clearOptions();
     tokenSelect.addOptions(tokenNftOpts);
+    tokenSelect.addItem(tokenNftOpts[0].value);
   }
 
   window.Wagmi = createConfig({

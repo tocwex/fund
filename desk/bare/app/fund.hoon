@@ -1,5 +1,5 @@
 /-  f=fund, p=pals
-/-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
+/-  fd=fund-data, fd-2=fund-data-2, fd-1=fund-data-1, fd-0=fund-data-0
 /+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
@@ -7,7 +7,7 @@
 |%
 +$  card       card:agent:gall
 +$  sign-gall  sign:agent:gall
-+$  state-now  [%2 data:fd]
++$  state-now  [%3 data:fd]
 --
 ^-  agent:gall
 =|  state-now
@@ -73,14 +73,113 @@
       =-  =.(state.cor nat open)
       |-  ^-  nat=state-now
       ?-  -.sat
-        %2  sat
+        %3  sat
+        %2  $(sat (move-2-3 sat))
         %1  $(sat (move-1-2 sat))
         %0  $(sat (move-0-1 sat))
       ==
-  +$  state-any  $%(state-now state-1 state-0)
-  +$  state-2    state-now
+  +$  state-any  $%(state-now state-2 state-1 state-0)
+  +$  state-3    state-now
+  +$  state-2    [%2 data:fd-2]
   +$  state-1    [%1 data:fd-1]
   +$  state-0    [%0 data:fd-0]
+  ++  move-2-3
+    |=  old=state-2
+    ^-  state-3
+    |^  :*  %3
+            init.old
+            adrz-loql.old
+            meta-srcs.old
+            proj-subs.old
+            proj-pubs.old
+            (sove-meta meta-subs.old)
+            (pove-meta meta-pubs.old)
+            (sove-prof prof-subs.old)
+            (pove-prof prof-pubs.old)
+        ==
+    ++  urck-prof  |=(old=vock:lake:prof:fd-2 `vock:lake:prof:fd`[%1 +.old])
+    ++  uwve-prof  |=(old=vave:lake:prof:fd-2 `vave:lake:prof:fd`[%1 +.old])
+    +$  trok-prof  ((mop aeon vock:lake:prof:fd) gte)
+    +$  twav-prof  ((mop aeon vave:lake:prof:fd) lte)
+    ++  sove-prof
+      |=  old=_prof-subs:*data:fd-2
+      ^-  _prof-subs:*data:fd
+      ?:  =(~ +.old)  *_prof-subs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_prof-subs:*data:fd
+      |=  [kev=_?>(?=([%0 ^] old) n.+.old) acc=_prof-subs:*data:fd]
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      ?~  q.kev  q.kev
+      `u.q.kev(rock (urck-prof rock.u.q.kev))
+    ++  pove-prof
+      |=  old=_prof-pubs:*data:fd-2
+      ^-  _prof-pubs:*data:fd
+      ?>  ?=(%1 -.old)
+      ?:  =(~ +.old)  *_prof-pubs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_prof-pubs:*data:fd
+      |=  [kev=_?>(?=([%1 ^] old) n.+.old) acc=_prof-pubs:*data:fd]
+      ?>  ?=(%1 -.acc)
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      =-  q.kev(tid -)
+      ?@  tid.q.kev  tid.q.kev
+      %=    tid.q.kev
+          rok
+        =<  -  %^  (dip:((on aeon vock:lake:prof:fd-2) gte) trok-prof)
+            rok.tid.q.kev
+          *trok-prof
+        |=  [a=trok-prof k=aeon v=vock:lake:prof:fd-2]
+        [`v | (put:((on aeon vock:lake:prof:fd) gte) a k (urck-prof v))]
+      ::
+          wav
+        =<  -  %^  (dip:((on aeon vave:lake:prof:fd-2) lte) twav-prof)
+            wav.tid.q.kev
+          *twav-prof
+        |=  [a=twav-prof k=aeon v=vave:lake:prof:fd-2]
+        [`v | (put:((on aeon vave:lake:prof:fd) lte) a k (uwve-prof v))]
+      ==
+    ++  urck-meta  |=(old=vock:lake:meta:fd-2 `vock:lake:meta:fd`[%1 +.old])
+    ++  uwve-meta  |=(old=vave:lake:meta:fd-2 `vave:lake:meta:fd`[%1 +.old])
+    +$  trok-meta  ((mop aeon vock:lake:meta:fd) gte)
+    +$  twav-meta  ((mop aeon vave:lake:meta:fd) lte)
+    ++  sove-meta
+      |=  old=_meta-subs:*data:fd-2
+      ^-  _meta-subs:*data:fd
+      ?:  =(~ +.old)  *_meta-subs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_meta-subs:*data:fd
+      |=  [kev=_?>(?=([%0 ^] old) n.+.old) acc=_meta-subs:*data:fd]
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      ?~  q.kev  q.kev
+      `u.q.kev(rock (urck-meta rock.u.q.kev))
+    ++  pove-meta
+      |=  old=_meta-pubs:*data:fd-2
+      ^-  _meta-pubs:*data:fd
+      ?>  ?=(%1 -.old)
+      ?:  =(~ +.old)  *_meta-pubs:*data:fd  ::  avoid invalid bunt in +rib:by gate
+      =<  -  %+  ~(rib by +.old)  *_meta-pubs:*data:fd
+      |=  [kev=_?>(?=([%1 ^] old) n.+.old) acc=_meta-pubs:*data:fd]
+      ?>  ?=(%1 -.acc)
+      :_  kev
+      :-  -.acc  %+  ~(put by +.acc)  p.kev
+      =-  q.kev(tid -)
+      ?@  tid.q.kev  tid.q.kev
+      %=    tid.q.kev
+          rok
+        =<  -  %^  (dip:((on aeon vock:lake:meta:fd-2) gte) trok-meta)
+            rok.tid.q.kev
+          *trok-meta
+        |=  [a=trok-meta k=aeon v=vock:lake:meta:fd-2]
+        [`v | (put:((on aeon vock:lake:meta:fd) gte) a k (urck-meta v))]
+      ::
+          wav
+        =<  -  %^  (dip:((on aeon vave:lake:meta:fd-2) lte) twav-meta)
+            wav.tid.q.kev
+          *twav-meta
+        |=  [a=twav-meta k=aeon v=vave:lake:meta:fd-2]
+        [`v | (put:((on aeon vave:lake:meta:fd) lte) a k (uwve-meta v))]
+      ==
+    --
   ++  move-1-2
     |=  old=state-1
     ^-  state-2

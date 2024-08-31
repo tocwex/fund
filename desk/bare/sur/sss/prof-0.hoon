@@ -28,17 +28,23 @@
   --
 
 +|  %core
-+$  vers  _%1
++$  vers  _%0
 +$  path  [%fund %prof sip=@ ~]
 ++  lake
   |%
   ++  name  %prof
   +$  rock  [vers prof]
-  +$  vock  $%(rock)
+  +$  vock  rock
   +$  wave  [vers bol=bowl:gall pok=poke]
-  +$  vave  $%(wave)
-  ++  urck  |=(voc=vock `rock`voc)
-  ++  uwve  |=(vav=wave `wave`vav)
+  +$  vave  wave
+  ++  urck
+    |=  voc=vock
+    ^-  rock
+    voc
+  ++  uwve
+    |=  vav=vave
+    ^-  wave
+    vav
   ++  wash
     |=  [[vers pro=prof] [vers bol=bowl:gall sip=@p pod=prod]]
     ^-  rock

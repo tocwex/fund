@@ -196,6 +196,7 @@ export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, fund
 export const safeSignClaim = async ({projectChain, safeAddress, fundAmount, fundToken, workerAddress, oracleCut, safeInitBlock}) => {
   const { address: oracleAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
+    projectChain,
     fundAmount,
     fundToken,
     safeAddress,
@@ -210,6 +211,7 @@ export const safeSignClaim = async ({projectChain, safeAddress, fundAmount, fund
 export const safeExecClaim = async ({projectChain, safeAddress, fundAmount, fundToken, oracleSignature, oracleAddress, oracleCut, safeInitBlock}) => {
   const { address: workerAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
+    projectChain,
     fundAmount,
     fundToken,
     safeAddress,
@@ -272,7 +274,7 @@ const safeWrapTransaction = ({tok, val, from, to}) => {
   };
 };
 
-const safeGetClaimTransactions = async ({fundAmount, fundToken, safeAddress, workerAddress, oracleAddress, oracleCut, safeInitBlock}) => {
+const safeGetClaimTransactions = async ({projectChain, fundAmount, fundToken, safeAddress, workerAddress, oracleAddress, oracleCut, safeInitBlock}) => {
   const TOKEN = safeTransactionToken({tok: fundToken});
   if (TOKEN.ABI === ABI.ERC20) {
     const ORACLE_CUT = Number(oracleCut) / 100.0;
@@ -289,7 +291,14 @@ const safeGetClaimTransactions = async ({fundAmount, fundToken, safeAddress, wor
     });
   } else if (TOKEN.ABI === ABI.ERC721) {
     const transfers = await safeGetTransfers({fundToken, safeAddress, safeInitBlock});
+    const remainingTokens = await nftsGetAll(safeAddress, projectChain, fundToken);
+    const validTokenSet = new Set(remainingTokens.filter(nft => (
+      (nft?.raw?.metadata?.attributes ?? []).some(attr => (
+        (attr?.trait_type === "size" && attr?.value === "star")
+      ))
+    )).map(nft => nft.tokenId));
     const claims = transfers
+      .filter(({args: {tokenId}}) => validTokenSet.has(String(tokenId)))
       .sort((a, b) => (b.blockHeight - a.blockHeight))
       .slice(0, fundAmount)
       .map(({args: {from, to, tokenId}}) => ({

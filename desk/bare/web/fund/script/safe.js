@@ -9,7 +9,7 @@ import {
 } from 'https://esm.sh/viem@2.16.0';
 import BigNumber from 'https://cdn.jsdelivr.net/npm/bignumber.js@9.1.2/+esm'
 import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
-import { FUND_CUT, ADDRESS, NETWORK, CONTRACT } from './const.js';
+import { FUND_CUT, ADDRESS, NETWORK, ABI, CONTRACT } from './const.js';
 
 //////////////////////
 // Module Functions //
@@ -23,6 +23,23 @@ export const txnGetURL = (address) => {
     (chain === "ethereum") ? "" : `${chain}.`
   }etherscan.io/tx/${address}`
 };
+
+export const nftsGetURL = (wallet, chainId, token) => {
+  const chainName = NETWORK.NAME[chainId];
+   const queryUrl = new URL(`https://eth${
+     (chainId === NETWORK.ID.ETHEREUM) ? "-mainnet"
+     : (chainId === NETWORK.ID.SEPOLIA) ? "-sepolia"
+     : ""
+   }.g.alchemy.com/nft/v3/${NETWORK.APIKEY[chainName]}/getNFTsForOwner`);
+
+   queryUrl.searchParams.append("owner", wallet);
+   queryUrl.searchParams.append("contractAddresses[]",
+     CONTRACT[token.toUpperCase()].ADDRESS[chainName]);
+   queryUrl.searchParams.append("withMetadata", "true");
+   queryUrl.searchParams.append("pageSize", "100");
+
+  return queryUrl;
+}
 
 export const safeGetURL = (address) => {
   const chain = ethGetChain().toLowerCase();
@@ -49,13 +66,56 @@ export const safeGetAccount = (chainId) => {
   return account;
 }
 
+export const nftsGetAll = async (wallet, chainId, token) => {
+  const getNFTs = (pageKey = undefined, results = [], isLastCall = false) => {
+    const queryUrl = nftsGetURL(wallet, chainId, token);
+    if (pageKey !== undefined) {
+      queryUrl.searchParams.append("pageKey", pageKey);
+    }
+    return isLastCall
+      ? new Promise(resolve => resolve(results))
+      : fetch(queryUrl)
+          .then(response => response.json())
+          .then(json => getNFTs(
+            json.pageKey,
+            results.concat(json?.ownedNfts ?? []),
+            json.ownedNfts.length < 100 || json.pageKey === undefined,
+          ));
+  };
+  return getNFTs();
+}
+
 export const safeGetBalance = async ({fundToken, safeAddress}) => {
-  const TOKEN = safeTransactionToken({id: fundToken});
-  const safeBalance = await getBalance(window.Wagmi, {
-    address: safeAddress,
-    token: TOKEN.ADDRESS[ethGetChain()],
+  const TOKEN = safeTransactionToken({tok: fundToken});
+  if (TOKEN.ABI === ABI.ERC20) {
+    const safeBalance = await getBalance(window.Wagmi, {
+      address: safeAddress,
+      token: TOKEN.ADDRESS[ethGetChain()],
+    });
+    return Number(safeBalance.formatted);
+  } else if (TOKEN.ABI === ABI.ERC721) {
+    const nftsUrl = nftsGetURL(safeAddress, getChainId(window.Wagmi), fundToken);
+    return fetch(nftsUrl)
+      .then(response => response.json())
+      .then(json => json.totalCount);
+  } else {
+    throw new SafeError(`error with getting chain balance; unsupported token type`);
+  }
+};
+
+export const safeGetTransfers = async ({fundToken, safeAddress, safeInitBlock}) => {
+  const TOKEN = safeTransactionToken({tok: fundToken});
+  // FIXME: If there are ever projects that exceed ~2k contributions, this will
+  // need to be changed to paginate RPC queries.
+  const transferLogs = await getPublicClient(window.Wagmi).getContractEvents({
+    address: TOKEN.ADDRESS[ethGetChain()],
+    abi: TOKEN.ABI,
+    eventName: "Transfer",
+    args: {to: safeAddress},
+    fromBlock: BigInt(safeInitBlock),
+    // toBlock: "safe",
   });
-  return Number(safeBalance.formatted);
+  return transferLogs;
 };
 
 export const safeSignDeploy = async ({projectChain, projectContent}) => {
@@ -107,23 +167,22 @@ export const safeExecDeploy = async ({projectChain, oracleAddress}) => {
   ];
 };
 
-export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, safeAddress}) => {
-  const TOKEN = safeTransactionToken({id: fundToken});
+export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, fundTransfers, safeAddress}) => {
+  const TOKEN = safeTransactionToken({tok: fundToken});
+  if ((TOKEN.ABI === ABI.ERC721) && fundAmount !== '' && Number(fundAmount) !== fundTransfers.length)
+    throw new SafeError(`pledge mismatch; pledged ${fundAmount} NFTs but selected ${fundTransfers.length}`);
+
   const { address: funderAddress } = safeGetAccount(projectChain);
-  // const tokenDecimals = await readContract(window.Wagmi, {
-  //   abi: TOKEN.ABI,
-  //   address: TOKEN.ADDRESS[ethGetChain()],
-  //   functionName: "decimals",
-  // });
-  const sendTransaction = await writeContract(window.Wagmi, {
-    abi: TOKEN.ABI,
-    address: TOKEN.ADDRESS[ethGetChain()],
-    functionName: "transfer",
-    args: [
-      safeAddress,
-      parseUnits(fundAmount, TOKEN.DECIMALS),
-    ],
-  });
+  const wrappedTransaction = safeWrapTransactions(
+    fundTransfers.map(tokenId => ({
+      tok: fundToken,
+      val: (TOKEN.ABI === ABI.ERC721) ? tokenId : parseUnits(fundAmount, TOKEN.DECIMALS),
+      from: getAccount(window.Wagmi)?.address,
+      to: safeAddress,
+    }))
+  );
+
+  const sendTransaction = await writeContract(window.Wagmi, wrappedTransaction);
   const sendReceipt = await waitForTransactionReceipt(window.Wagmi, {
     hash: sendTransaction,
   });
@@ -134,39 +193,45 @@ export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, safe
   ];
 };
 
-export const safeSignClaim = async ({projectChain, safeAddress, fundAmount, fundToken, workerAddress, oracleCut}) => {
+export const safeSignClaim = async ({projectChain, safeAddress, fundAmount, fundToken, workerAddress, oracleCut, safeInitBlock}) => {
   const { address: oracleAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
+    projectChain,
     fundAmount,
     fundToken,
+    safeAddress,
     workerAddress,
     oracleAddress,
     oracleCut,
+    safeInitBlock,
   });
   return safeSignWithdrawal({transactions, oracleAddress, safeAddress});
 };
 
-export const safeExecClaim = async ({projectChain, safeAddress, fundAmount, fundToken, oracleSignature, oracleAddress, oracleCut}) => {
+export const safeExecClaim = async ({projectChain, safeAddress, fundAmount, fundToken, oracleSignature, oracleAddress, oracleCut, safeInitBlock}) => {
   const { address: workerAddress } = safeGetAccount(projectChain);
   const transactions = await safeGetClaimTransactions({
+    projectChain,
     fundAmount,
     fundToken,
+    safeAddress,
     workerAddress,
     oracleAddress,
     oracleCut,
+    safeInitBlock,
   });
   return safeExecWithdrawal({transactions, oracleSignature, oracleAddress, workerAddress, safeAddress});
 };
 
 export const safeSignRefund = async ({projectChain, fundToken, safeAddress, safeInitBlock}) => {
   const { address: oracleAddress } = safeGetAccount(projectChain);
-  const transactions = await safeGetRefundTransactions({fundToken, safeAddress, safeInitBlock});
+  const transactions = await safeGetRefundTransactions({projectChain, fundToken, safeAddress, safeInitBlock});
   return safeSignWithdrawal({transactions, oracleAddress, safeAddress});
 };
 
 export const safeExecRefund = async ({projectChain, fundToken, safeAddress, safeInitBlock, oracleSignature, oracleAddress}) => {
   const { address: workerAddress } = safeGetAccount(projectChain);
-  const transactions = await safeGetRefundTransactions({fundToken, safeAddress, safeInitBlock});
+  const transactions = await safeGetRefundTransactions({projectChain, fundToken, safeAddress, safeInitBlock});
   return safeExecWithdrawal({transactions, oracleSignature, oracleAddress, workerAddress, safeAddress});
 };
 
@@ -174,9 +239,11 @@ export const safeExecRefund = async ({projectChain, fundToken, safeAddress, safe
 // Helper Functions //
 //////////////////////
 
-// type Token = "usdc" | "usdt" | "dai";
+//
 // interface Cut = {cut: number, to: `0x${string}`};
-// interface Transaction = {id: Token, amt: bigint, to: `0x${string}`};
+// interface Transaction = {tok: Token, val: bigint, from: `0x${string}`, to: `0x${string}`};
+// interface WrappedTransaction = {abi: object, functionName: string, args: string[]};
+//
 
 // Solution from: https://stackoverflow.com/a/871646/837221
 export function SafeError(message = "") {
@@ -185,79 +252,136 @@ export function SafeError(message = "") {
 }; SafeError.prototype = Error.prototype;
 
 const safeNextSaltNonce = () => (fromHex(keccak256(toHex(Date.now())), "bigint"));
-const safeTransactionToken = ({id = "usdc"} = {}) => (CONTRACT[id.toUpperCase()]);
+const safeTransactionToken = ({tok = "usdc"} = {}) => (CONTRACT[tok.toUpperCase()]);
 
 const safeAddressSort = (getAddress = (v) => v) => (a, b) => {
   return (([a, b]) => (a === b) ? 0 : ((a < b) ? -1 : 1))(
     [a, b].map(v => fromHex(getAddress(v), "bigint")));
 };
 
-const safeEncodeTransaction = ({id, amt, to}) => {
-  return encodeFunctionData({
-    abi: safeTransactionToken({id, amt, to}).ABI,
-    functionName: "transfer",
-    args: [to, amt],
-  });
-};
-
-const safeGetClaimTransactions = async ({fundAmount, fundToken, workerAddress, oracleAddress, oracleCut}) => {
-  const adminCuts = [
-    {to: FUND_SAFE_ADDR, cut: FUND_CUT},
-    {to: oracleAddress, cut: Number(oracleCut) / 100.0},
-    {to: workerAddress, cut: 1.0 - (FUND_CUT + (Number(oracleCut) / 100.0))},
-  ];
-  return safeGetTransactions({token: fundToken, amount: fundAmount, cuts: adminCuts});
-};
-
-const safeGetRefundTransactions = async ({fundToken, safeAddress, safeInitBlock}) => {
-  const TOKEN = safeTransactionToken({id: fundToken});
-  const safeCurrTotal = await safeGetBalance({fundToken, safeAddress});
-  // FIXME: If there are ever projects that exceed ~2k contributions, this will
-  // need to be changed to paginate RPC queries.
-  const transferLogs = await getPublicClient(window.Wagmi).getContractEvents({
-    address: TOKEN.ADDRESS[ethGetChain()],
+const safeWrapTransaction = ({tok, val, from, to}) => {
+  const TOKEN = safeTransactionToken({tok, val, from, to});
+  return {
     abi: TOKEN.ABI,
-    eventName: "Transfer",
-    args: {to: safeAddress},
-    fromBlock: BigInt(safeInitBlock),
-    // toBlock: "safe",
-  });
-  const contributors = transferLogs.reduce((acc, {args: {from, value}}) => {
-    let cur = acc[from] ?? 0n;
-    acc[from] = cur + value;
-    return acc;
-  }, {});
-  const safeFullTotal = Object.values(contributors).reduce((acc, val) => acc + val, 0n);
-  const contribCuts = Object.entries(contributors).map(([from, value]) => ({
-    to: from,
-    // TODO: Can this sort of math ever overload the Number type? Should
-    // these fractions be computed another way to prevent overflows?
-    cut: Number(value) / Number(safeFullTotal),
-  }));
-  return safeGetTransactions({token: fundToken, amount: safeCurrTotal, cuts: contribCuts});
+    address: TOKEN.ADDRESS[ethGetChain()],
+    ...((TOKEN.ABI === ABI.ERC20) ? {
+      functionName: "transfer",
+      args: [to, val],
+    } : (TOKEN.ABI === ABI.ERC721) ? {
+      functionName: "safeTransferFrom",
+      args: [from, to, val],
+    } : {}),
+  };
+};
+
+const safeGetClaimTransactions = async ({projectChain, fundAmount, fundToken, safeAddress, workerAddress, oracleAddress, oracleCut, safeInitBlock}) => {
+  const TOKEN = safeTransactionToken({tok: fundToken});
+  if (TOKEN.ABI === ABI.ERC20) {
+    const ORACLE_CUT = Number(oracleCut) / 100.0;
+    const adminCuts = [
+      {to: FUND_SAFE_ADDR, cut: FUND_CUT},
+      {to: oracleAddress, cut: ORACLE_CUT},
+      {to: workerAddress, cut: 1.0 - (FUND_CUT + ORACLE_CUT)},
+    ];
+    return safeDistribTransactions({
+      token: fundToken,
+      safe: safeAddress,
+      amount: fundAmount,
+      cuts: adminCuts,
+    });
+  } else if (TOKEN.ABI === ABI.ERC721) {
+    const transfers = await safeGetTransfers({fundToken, safeAddress, safeInitBlock});
+    const remainingTokens = await nftsGetAll(safeAddress, projectChain, fundToken);
+    const validTokenSet = new Set(remainingTokens.filter(nft => (
+      (nft?.raw?.metadata?.attributes ?? []).some(attr => (
+        (attr?.trait_type === "size" && attr?.value === "star")
+      ))
+    )).map(nft => nft.tokenId));
+    const claims = transfers
+      .filter(({args: {tokenId}}) => validTokenSet.has(String(tokenId)))
+      .sort((a, b) => (b.blockHeight - a.blockHeight))
+      .slice(0, fundAmount)
+      .map(({args: {from, to, tokenId}}) => ({
+        from: safeAddress,
+        to: workerAddress,
+        val: tokenId,
+        tok: fundToken,
+      }));
+    return claims;
+  } else {
+    throw new SafeError(`error with calculating claim transactions; unsupported token type`);
+  }
+};
+
+const safeGetRefundTransactions = async ({projectChain, fundToken, safeAddress, safeInitBlock}) => {
+  const TOKEN = safeTransactionToken({tok: fundToken});
+  const transfers = await safeGetTransfers({fundToken, safeAddress, safeInitBlock});
+  if (TOKEN.ABI === ABI.ERC20) {
+    const safeCurrTotal = await safeGetBalance({fundToken, safeAddress});
+    const contributors = transfers.reduce((acc, {args: {from, value}}) => {
+      let cur = acc[from] ?? 0n;
+      acc[from] = cur + value;
+      return acc;
+    }, {});
+    const safeFullTotal = Object.values(contributors).reduce((acc, val) => acc + val, 0n);
+    const contribCuts = Object.entries(contributors).map(([from, value]) => ({
+      to: from,
+      // TODO: Can this sort of math ever overload the Number type? Should
+      // these fractions be computed another way to prevent overflows?
+      cut: Number(value) / Number(safeFullTotal),
+    }));
+    return safeDistribTransactions({
+      token: fundToken,
+      safe: safeAddress,
+      amount: safeCurrTotal,
+      cuts: contribCuts,
+    });
+  } else if (TOKEN.ABI === ABI.ERC721) {
+    const remainingTokens = await nftsGetAll(safeAddress, projectChain, fundToken);
+    const validTokenSet = new Set(remainingTokens.filter(nft => (
+      (nft?.raw?.metadata?.attributes ?? []).some(attr => (
+        (attr?.trait_type === "size" && attr?.value === "star")
+      ))
+    )).map(nft => nft.tokenId));
+    const refunds = transfers
+      .filter(({args: {tokenId}}) => validTokenSet.has(String(tokenId)))
+      .map(({args: {from, to, tokenId}}) => ({
+        from: safeAddress,
+        to: from,
+        val: tokenId,
+        tok: fundToken,
+      }));
+    return refunds;
+  } else {
+    throw new SafeError(`error with calculating refund transactions; unsupported token type`);
+  }
 };
 
 // NOTE: "amount" is a "Number" of decimal presentation, which is then
 // converted to a "BigInt" for fractionalizing
-const safeGetTransactions = ({token, amount, cuts}) => {
-  const TOKEN = safeTransactionToken({id: token});
+const safeDistribTransactions = ({token, safe, amount, cuts}) => {
+  const TOKEN = safeTransactionToken({tok: token});
+  if (TOKEN.ABI !== ABI.ERC20)
+    throw new SafeError(`cannot calculate a token distribution for non-ERC20 token '${token}'`);
+
   const transactionMap = cuts
     .map(({cut, to}) => ({
+      from: safe,
       to: to,
-      id: token,
-      amt: (new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).times(cut).integerValue(),
-    })).reduce((acc, {to, id, amt}) => {
-      const tid = `${id}:${to}`;
-      let cur = acc[tid] ?? {to, id, amt: BigNumber(0)};
-      acc[tid] = {to, id, amt: cur.amt.plus(amt)};
+      tok: token,
+      val: (new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).times(cut).integerValue(),
+    })).reduce((acc, {from, to, tok, val}) => {
+      const tid = `${tok}:${from}:${to}`;
+      let cur = acc[tid] ?? {from, to, tok, val: BigNumber(0)};
+      acc[tid] = {from, to, tok, val: cur.val.plus(val)};
       return acc;
     }, {});
   const transactions = Object.values(transactionMap)
-    .map(({to, id, amt}) => ({to, id, amt: BigInt(amt.toString())}))
-    .filter(({to, id, amt}) => (amt > 0n))
+    .map(({from, to, tok, val}) => ({from, to, tok, val: BigInt(val.toString())}))
+    .filter(({from, to, tok, val}) => (val > 0n))
     .sort(safeAddressSort(v => v.to));
 
-  const transactionTotal = transactions.reduce((acc, {amt}) => acc + amt, 0n);
+  const transactionTotal = transactions.reduce((acc, {val}) => acc + val, 0n);
   const bigintAmount = BigInt((new BigNumber(10)).pow(TOKEN.DECIMALS).times(amount).toString());
   const transactionRemainder = (([a, b]) => b - a)([transactionTotal, bigintAmount].sort());
   // NOTE: This _can_ happen (e.g. {cuts: [0.33333, 0.66666], amount: 1000000});
@@ -265,49 +389,54 @@ const safeGetTransactions = ({token, amount, cuts}) => {
   if (transactionRemainder > 100n) {
     throw new SafeError(`big roundoff when distributing costs: ${transactionRemainder}`);
   } else if (transactionRemainder !== 0n) {
-    transactions[0].amt += transactionRemainder;
+    transactions[0].val += transactionRemainder;
   }
 
   return transactions;
 };
 
+const safeWrapTransactions = (transactions) => {
+  console.log(`constructing wrapped transaction with arguments:`);
+  console.log(transactions);
+  return (transactions.length === 1)
+    ? safeWrapTransaction(transactions[0])
+    : {
+      abi: CONTRACT.SAFE_MULTISEND.ABI,
+      address: CONTRACT.SAFE_MULTISEND.ADDRESS[ethGetChain()],
+      functionName: "multiSend",
+      args: [encodePacked(["bytes[]"], [
+        transactions.map(transaction => {
+          const TOKEN = safeTransactionToken(transaction);
+          const encodedTransaction = encodeFunctionData(safeWrapTransaction(transaction));
+          const encodedByteCount = (encodedTransaction.length - 2) / 2;
+          return encodePacked(
+            // NOTE: 0, callAddress, value (eth), call data length (bytes), call data
+            // sepolia.etherscan.io/address/0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b#code#F1#L10
+            ["uint8", "address", "uint256", "uint256", "bytes"],
+            [0, TOKEN.ADDRESS[ethGetChain()], 0n, encodedByteCount, encodedTransaction],
+          );
+        })
+      ])],
+    };
+}
+
 const safeGetWithdrawalArgs = async ({safe, transactions}) => {
   if (transactions.length === 0)
     throw new SafeError(`unable to construct withdrawal for safe; no transactions provided (probably no funds available)`);
-  console.log(`constructing transaction for safe ${safe} with arguments:`);
-  console.log(transactions);
-  const isDelegateCall = (transactions.length > 1) ? 1 : 0;
-  const transactionContract = !isDelegateCall
-    ? safeTransactionToken(transactions[0]).ADDRESS[ethGetChain()]
-    : CONTRACT.SAFE_MULTISEND.ADDRESS[ethGetChain()];
-  const transactionData = !isDelegateCall
-    ? safeEncodeTransaction(transactions[0])
-    : encodeFunctionData({
-        abi: CONTRACT.SAFE_MULTISEND.ABI,
-        functionName: "multiSend",
-        args: [encodePacked(["bytes[]"], [
-          transactions.map(transaction => {
-            const TOKEN = safeTransactionToken(transaction);
-            const encodedTransaction = safeEncodeTransaction(transaction);
-            return encodePacked(
-              // NOTE: 0, toAddress, value (eth), call data length (bytes), call data
-              // sepolia.etherscan.io/address/0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b#code#F1#L10
-              ["uint8", "address", "uint256", "uint256", "bytes"],
-              [0, TOKEN.ADDRESS[ethGetChain()], 0n, (encodedTransaction.length - 2) / 2, encodedTransaction],
-            );
-          })
-        ])],
-      });
+  const wrappedTransaction = safeWrapTransactions(transactions);
   const safeNonce = await readContract(window.Wagmi, {
     abi: CONTRACT.SAFE_TEMPLATE.ABI,
     address: safe,
     functionName: "nonce",
   });
+
   return [
-    transactionContract,
-    // NOTE: amount (eth), data (transaction calls), isDelegateCall?
+    wrappedTransaction.address,
     // sepolia.etherscan.io/address/0xfb1bffC9d739B8D520DaF37dF666da4C687191EA#code#F12#L7
-    0n, transactionData, isDelegateCall,
+    // NOTE: amount (eth), data (transaction calls)
+    0n, encodeFunctionData(wrappedTransaction),
+    //  NOTE: isDelegateCall?
+    (wrappedTransaction.abi === CONTRACT.SAFE_MULTISEND.ABI) ? 1 : 0,
     // NOTE: safeTxGas, baseGas, gasPrice, gasToken, refundReceiver
     0n, 0n, 0n, ADDRESS.NULL, ADDRESS.NULL,
     safeNonce,

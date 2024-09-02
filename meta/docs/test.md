@@ -187,6 +187,8 @@ Here are some basic commands to track Ethereum contract interactions:
 :fund-watcher &fund-watcher-poke [%watch path=/fund/usdc config=['https://sepolia.drpc.org' | ~s10 ~m1 5.621.625 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~]]
 ::  track all %fund usdc transactions to a specific safe
 :fund-watcher &fund-watcher-poke [%watch path=/fund/safe config=['https://sepolia.drpc.org' | ~s10 ~m1 6.227.269 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~[0x0 0x0 0x1117.bfea.1e43.d16b.a9c2.6d06.1a77.a347.3908.330e]]]
+::  track all %fund azp transactins to a specific safe
+:fund-watcher &fund-watcher-poke [%watch path=/fund/sazp config=['https://sepolia.drpc.org' | ~s10 ~m1 5.823.305 ~ [0xabe2.8c76.e1c9.750e.b78f.32a0.7c29.5afa.99b5.57fd]~ `6 ~[0x0 0x0 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf 0x0]]]
 ::  cancel the tracking for a specific path
 :fund-watcher &fund-watcher-poke [%clear path=/fund/usdc]
 ```

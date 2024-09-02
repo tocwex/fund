@@ -40,19 +40,19 @@
   =/  arg
     :*  sort=`@t`(~(gut by arm) %sort %time)
         desc=`?`(bool:dejs:ff:fh (~(gut by arm) %desc %true))
-        filt=`@t`(~(gut by arm) %filt %coin)
+        filt=`@t`(~(gut by arm) %filt %swap)
         text=`(unit @t)`(~(get by arm) %text)
         work=`(unit @p)`(bind (~(get by arm) %work) ship:dejs:ff:fh)
         orac=`(unit @p)`(bind (~(get by arm) %orac) ship:dejs:ff:fh)
         stat=`(unit stat:f)`(bind (~(get by arm) %stat) |=(=@t ;;(stat:f t)))
     ::
-          ^=  coin  ^-  (unit coin:f)
+          ^=  swap  ^-  (unit swap:f)
         ::  FIXME: This only works if all built-in coins have different
         ::  symbols; this will need to be fixed when %fund supports e.g.
         ::  USDC on an L2
-        ?~  sym=(~(get by arm) %coin)  ~
-        ?~  con=(find:fx clis:fc |=(c=coin:f =(u.sym symbol.c)))  ~
-        `u.con
+        ?~  sym=(~(get by arm) %swap)  ~
+        ?~  swa=(find:fx slis:fc |=(b=swap:f =(u.sym symbol.b)))  ~
+        `u.swa
     ==
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
@@ -84,7 +84,7 @@
       :*  title=title.pre
           image=image.pre
           cost=~(cost pj:fj -.pre)
-          currency=currency.pre
+          payment=payment.pre
           launch=p:xact:(fall contract.pre *oath:f)
           worker=p.lag
           oracle=p.assessment.pre
@@ -116,7 +116,7 @@
     :-  |=  [lag=flag:f mex=mexa:ex]
         ^-  bean
         ?&  ?~(text.arg & ?=(^ (find (cass (trip u.text.arg)) (cass (trip title.mex)))))
-            ?~(coin.arg & =(currency.mex u.coin.arg))
+            ?~(swap.arg & =(payment.mex u.swap.arg))
             ?~(work.arg & =(worker.mex u.work.arg))
             ?~(orac.arg & =(oracle.mex u.orac.arg))
             ?~(stat.arg & =(status.mex u.stat.arg))
@@ -133,10 +133,12 @@
     ::
         %cost
       ::  NOTE: Need to normalize currencies based on per-coin decimal counts
-      =+  mad=(max decimals.currency.mea decimals.currency.meb)
+      =+  dea=?+(-.payment.mea 0 %coin decimals.payment.mea)
+      =+  deb=?+(-.payment.meb 0 %coin decimals.payment.meb)
+      =+  mad=(max dea deb)
       %+  ?:(desc.arg gth lth)
-        (mul cost.mea (pow 10 (sub mad decimals.currency.mea)))
-      (mul cost.meb (pow 10 (sub mad decimals.currency.meb)))
+        (mul cost.mea (pow 10 (sub mad dea)))
+      (mul cost.meb (pow 10 (sub mad deb)))
     ::
         %pals
       %+  ?:(desc.arg gth lth)
@@ -157,12 +159,12 @@
         ;div(class "aspect-video bg-cover bg-center rounded-md bg-[url('{bak}')]")
           ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
             ;div(class "bg-gray-100 rounded-md text-md p-1.5")
-              ; {(mony:enjs:ff:fh ~(cost pj:fj -.pre) currency.pre)}
+              ; {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5")
               ;+  %+  ~(icon-stax ui:fh "h-8")  |
-                  :~  (aset:enrl:ff:fh symbol.currency.pre)
-                      (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.currency.pre))
+                  :~  (aset:enrl:ff:fh symbol.payment.pre)
+                      (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pre))
                   ==
             ==
           ==
@@ -189,7 +191,7 @@
         ;div(class "aspect-square bg-cover bg-center rounded-md bg-[url('{bak}')]")
           ;div(class "flex flex-row flex-wrap justify-between items-center p-2")
             ;div(class "bg-gray-100 rounded-md text-xs p-1.5")
-              ; {(mony:enjs:ff:fh cost.met currency.met)}
+              ; {(swam:enjs:ff:fh cost.met payment.met)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5 line-clamp-2")
               ;+  (icon-stax:ui:fh & (turn ~[worker.met oracle.met] surt:enrl:ff:fh))
@@ -355,7 +357,7 @@
                   ;div(class "flex flex-row justify-between items-center")
                     ;*  %+  turn
                           ^-  (list @tas)
-                          %+  welp  ~[%coin %work %orac]
+                          %+  welp  ~[%swap %work %orac]
                           ?:(=(%discover dyp) ~[%undo] ~[%stat %undo])
                         |=  mod=@tas
                         ?:  ?=(%undo mod)
@@ -370,17 +372,17 @@
                                 =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
                         ==
                   ==
-                  ;div(x-show "filt_status.mode == 'coin'")
-                    ;+  %:  ~(coin-selz ui:fh "flex flex-row gap-2")
+                  ;div(x-show "filt_status.mode == 'swap'")
+                    ;+  %:  ~(swap-selz ui:fh "flex flex-row gap-2")
                             &
-                            coin.arg
-                            "filt_status.params.coin"
+                            swap.arg
+                            "filt_status.params.swap"
                             "updateFilter"
                         ==
                   ==
                   ;div(x-show "filt_status.mode == 'work'")
                     ;select#filt-worker.fund-tsel
-                        =x-init  "useTomSelect($el, true)"
+                        =x-init  "initTomSelect($el, true, true)"
                         =x-model  "filt_status.params.work"
                       ;*  =/  woz=(set @p)
                             %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
@@ -401,7 +403,7 @@
                   ==
                   ;div(x-show "filt_status.mode == 'orac'")
                     ;select#filt-oracle.fund-tsel
-                        =x-init  "useTomSelect($el, true)"
+                        =x-init  "initTomSelect($el, true, true)"
                         =x-model  "filt_status.params.orac"
                       ;*  =/  orz=(set @p)
                             =-  (~(uni in (silt mel)) (silt pel))
@@ -423,7 +425,7 @@
                   ==
                   ;div(x-show "filt_status.mode == 'stat'")
                     ;select#filt-status.fund-tsel
-                        =x-init  "useTomSelect($el, true)"
+                        =x-init  "initTomSelect($el, true, true)"
                         =x-model  "filt_status.params.stat"
                       ;*  :-  ;option(value ""): Any Status
                           %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]
@@ -490,7 +492,7 @@
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_list', () => (\{"
           "tray_status: \{mode: 'base', open: false},"
           :(weld "sort_status: \{mode: '" (trip sort.arg) "', desc: " (bool:enjs:ff:fh desc.arg) "},")
-          :(weld "filt_status: \{mode: '" (trip (~(gut by arm) %filt %coin)) "', params: \{text: '" (trip (~(gut by arm) %text %$)) "', coin: '" (trip (~(gut by arm) %coin %$)) "', work: '" (trip (~(gut by arm) %work %$)) "', orac: '" (trip (~(gut by arm) %orac %$)) "', stat: '" (trip (~(gut by arm) %stat %$)) "'}},")
+          :(weld "filt_status: \{mode: '" (trip (~(gut by arm) %filt %swap)) "', params: \{text: '" (trip (~(gut by arm) %text %$)) "', swap: '" (trip (~(gut by arm) %swap %$)) "', work: '" (trip (~(gut by arm) %work %$)) "', orac: '" (trip (~(gut by arm) %orac %$)) "', stat: '" (trip (~(gut by arm) %stat %$)) "'}},")
           ^-  tape  ^~
           %+  rip  3
           '''
@@ -562,7 +564,7 @@
           },
           submitQuery() {
             const params = new URLSearchParams({
-              ...((this.filt_status.mode === "coin" || this.filt_status.mode === undefined)
+              ...((this.filt_status.mode === "swap" || this.filt_status.mode === undefined)
                 ? {}
                 : {filt: this.filt_status.mode}
               ),
@@ -581,4 +583,4 @@
     ==
   ==
 --
-::  VERSION: [1 1 2]
+::  VERSION: [1 2 0]

@@ -33,7 +33,7 @@
       summary=@t
       image=(unit @t)
       assessment=sess
-      payment=swap
+      currency=coin
       milestones=(lest mile)
       contract=(unit oath)
       pledges=(map ship [plej peta])

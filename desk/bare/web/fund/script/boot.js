@@ -302,8 +302,11 @@ if (window.Alpine === undefined) {
     sendFormData,
     sendForm,
     checkWallet,
-    useTomSelect,
+    initENS,
+    initTippy,
+    initTomSelect,
     updateTokenSelect,
+    updateNftsSelect,
     CONTRACT,
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
@@ -432,7 +435,30 @@ if (window.Alpine === undefined) {
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
 
-  function useTomSelect(elem, empty) {
+  function initENS(elem, address) {
+    getEnsName(window.Wagmi, {address}).then(ensName => {
+      elem.innerHTML = ensName
+        ? ensName
+        : `${address.slice(0, 5)}…${address.slice(-4)}`;
+    });
+  }
+
+  function initTippy(elem) {
+    const elemId = `#${elem.id}`;
+    const optElem = document.querySelector(`${elemId}-opts`);
+    optElem.style.display = 'block';
+    TippyJs(elemId, {
+      content: optElem,
+      allowHTML: true,
+      interactive: true,
+      arrow: false,
+      trigger: "click",
+      theme: "fund",
+      offset: [0, 5],
+    });
+  }
+
+  function initTomSelect(elem, empty, upOnly = false, maxItems = undefined) {
     function renderSelector(data, escape) {
       return `
         <div class='flex flex-row items-center gap-x-2'>
@@ -453,7 +479,7 @@ if (window.Alpine === undefined) {
         },
         onDropdownOpen: (dropdown) => {
           if (
-              empty ||  // FIXME: Big hack to force this always for serach UI selects
+              upOnly ||
               (dropdown.getBoundingClientRect().bottom >
               (window.innerHeight || document.documentElement.clientHeight))
           ) {
@@ -464,6 +490,7 @@ if (window.Alpine === undefined) {
           dropdown.classList.remove('dropup');
         },
         ...(empty ? {} : {controlInput: null}),
+        ...((maxItems === undefined || maxItems === 0) ? {} : {maxItems})
       });
       elem.matches(":disabled") && tselElem.disable();
     }
@@ -490,6 +517,28 @@ if (window.Alpine === undefined) {
     );
   }
 
+  function updateNftsSelect(elem) {
+    const walletNfts = document.querySelector("#fund-nfts-wallet");
+    const tokenSelect = document.querySelector('#proj-token').tomselect;
+    const tokenNftOpts = Array.from(walletNfts.children).map(elem => ({
+      value: elem.value,
+      text: elem.innerText,
+      image: elem.dataset.image,
+    }));
+    if (tokenNftOpts.length === 0) {
+      tokenNftOpts.push({
+        value: "-1",
+        text: "(no nfts in wallet)",
+        image: "https://placehold.co/24x24/black/black?text=\\n",
+      });
+    }
+
+    tokenSelect.clear(true);
+    tokenSelect.clearOptions();
+    tokenSelect.addOptions(tokenNftOpts);
+    tokenSelect.addItem(tokenNftOpts[0].value);
+  }
+
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
     connectors: [injected()],
@@ -500,11 +549,11 @@ if (window.Alpine === undefined) {
   });
   window.Wagmi.subscribe(
     (state) => state,
-    (state) => setWalletButton(state),
+    (state) => setPageWallet(state),
   );
   // https://turbo.hotwired.dev/reference/events#turbo%3Aload
   document.addEventListener("turbo:load", (event) => {
-    setWalletButton(window.Wagmi.state);
+    setPageWallet(window.Wagmi.state);
 
     document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {
       const { status, current, connections } = window.Wagmi.state;
@@ -562,35 +611,14 @@ if (window.Alpine === undefined) {
         disconnect(window.Wagmi, {connector: connection.connector});
       }
     });
-
-    document.querySelectorAll(".fund-addr-ens").forEach(adrElem => {
-      const rawAddr = adrElem.dataset.addr;
-      getEnsName(window.Wagmi, {address: rawAddr}).then(ensName => {
-        adrElem.innerHTML = ensName
-          ? ensName
-          : `${rawAddr.slice(0, 5)}…${rawAddr.slice(-4)}`;
-      });
-    });
-
-    document.querySelectorAll(".fund-tipi").forEach(tipElem => {
-      const tipElemId = `#${tipElem.id}`;
-      TippyJs(tipElemId, {
-        content: document.querySelector(`${tipElemId}-opts`).innerHTML,
-        allowHTML: true,
-        interactive: true,
-        arrow: false,
-        trigger: "click",
-        theme: "fund",
-        offset: [0, 5],
-      });
-    });
   });
 
-  const setWalletButton = ({connections, current, status}) => {
+  const setPageWallet = ({connections, current, status}) => {
     const walletButton = document.querySelector("#fund-butn-wallet");
-    const connection = connections.get(current);
+    const walletNfts = document.querySelector("#fund-nfts-wallet");
 
     if (status === "disconnected") {
+      const connection = connections.get(current);
       if (!connection) {
         walletButton.innerHTML = "connect 💰";
       } else {
@@ -599,8 +627,35 @@ if (window.Alpine === undefined) {
     } else if (status === "reconnecting") {
       walletButton.innerHTML = "…loading…";
     } else if (status === "connected") {
-      const { address } = getAccount(window.Wagmi);
+      const { address, chainId } = getAccount(window.Wagmi);
+
       walletButton.innerHTML = `${address.slice(0, 5)}…${address.slice(-4)}`;
+
+      const walletSwapType = document.querySelector("#fund-swap-type");
+      if (walletSwapType && walletSwapType.value === "enft") {
+        const walletSwapSymbol = document.querySelector("#fund-swap-symb");
+        SAFE.nftsGetAll(address, chainId, walletSwapSymbol.value).then(nfts => {
+          const options = nfts
+            .filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
+              (attr?.trait_type === "size" && attr?.value === "star")
+            )))).map(({name, image, tokenId}) => ({
+              value: tokenId,
+              text: name,
+              image: image.cachedUrl,
+            }));
+          console.log(`loading ${options.length} nfts`);
+          while (walletNfts.firstChild) {
+            walletNfts.removeChild(walletNfts.lastChild);
+          }
+          options.forEach(({value, text, image}) => {
+            const elem = document.createElement("option");
+            elem.setAttribute("value", value);
+            elem.setAttribute("data-image", image);
+            elem.innerText = text;
+            walletNfts.appendChild(elem);
+          });
+        });
+      }
     }
   };
 

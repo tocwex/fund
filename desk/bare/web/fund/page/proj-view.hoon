@@ -122,7 +122,7 @@
       ?+  arz=(parz:fh bod (sy ~[%mxb %sum %msg]))  p.arz  [%| *]
         =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
         =/  wen=@ud  (bloq:dejs:ff:fh (~(got by p.arz) %mxb))
-        =/  sum=cash:f  (cash:dejs:ff:fh (~(got by p.arz) %sum) decimals.currency.pro)
+        =/  sum=cash:f  (comp:dejs:ff:fh (~(got by p.arz) %sum) payment.pro)
         =/  msg=@t  (~(got by p.arz) %msg)
         ?-  dif
           %mula-plej  [%mula %plej (need who) sum wen msg]
@@ -174,7 +174,7 @@
   :^  bol  ord  (trip title.pro)
   ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
-        ;span: {(mony:enjs:ff:fh cost.pod currency.pro)}
+        ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
     ;img.w-full@"{(trip ?^(image.pro u.image.pro (surc:enrl:ff:fh p.lag)))}";
     ;*  =-  ?~  buz  ~
             :_  ~
@@ -187,7 +187,7 @@
         ^-  buz=marl
         ;:    welp
         ::  explain button  ::
-          :~  ;button#fund-help-page.fund-tipi(type "button")
+          :~  ;button#fund-help-page.fund-tipi(type "button", x-init "initTippy($el)")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
               ==
               ;div#fund-help-page-opts(class "hidden")
@@ -262,7 +262,7 @@
                     (~(has in favorites.u.pou) lag)
                 ==
             ~
-          :~  ;button#fund-fave.fund-tipi(type "button")
+          :~  ;button#fund-fave.fund-tipi(type "button", x-init "initTippy($el)")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %eye)}";
               ==
               ;div#fund-fave-opts(class "hidden")
@@ -290,13 +290,13 @@
         ::  contract link button  ::
             ?:  ?=(?(%born %prop) sat)  ~
           :_  ~
-          ;a/"{(esat:enrl:ff:fh safe:(need contract.pro) chain.currency.pro)}"(target "_blank")
+          ;a/"{(esat:enrl:ff:fh safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
             ;img.fund-butn-icon@"{(aset:enrl:ff:fh %contract)}";
           ==
         ::  sign off/contribute button  ::
             ?:  ?=(?(%born %done %dead) sat)  ~
           =-  ?~  fom  ~
-              :~  ;button#fund-mula.fund-tipi.fund-butn-de-m: {txt}
+              :~  ;button#fund-mula.fund-tipi.fund-butn-de-m(x-init "initTippy($el)"): {txt}
                   ;div#fund-mula-opts(class "hidden")
                     ;form  =method  "post"
                         =autocomplete  "off"
@@ -306,45 +306,67 @@
               ==  ==
           ^-  [txt=tape fom=marl]
           ?.  ?=(%prop sat)  ::  contribute aside form
+            =/  nft=?  ?=(%enft -.payment.pro)
             =+  pej=(~(get by pledges.pro) src.bol)
-            :-  "contribute 💸"  ::  "contribute ${(trip symbol.currency.pro)}"
+            :-  "contribute 💸"  ::  "contribute ${(trip symbol.payment.pro)}"
             :~  ;h1: {?~(pej "Contribute" "Fulfill Pledge")}
-                ;div(class "flex gap-2")
-                  ;div(class "fund-form-group")
-                    ;+  :_  ~  :-  %input
-                        ;:  welp
-                            [%name "sum"]~
-                            [%type "number"]~
-                            [%required ~]~
-                            [%min "0.01"]~
-                            [%max "100000000"]~
-                            [%step "0.01"]~
-                            [%placeholder "10"]~
-                            [%class "p-1"]~  ::  FIXME: Needed to match <select> sibling
-                              ?~  pej  ~
-                            :~  [%readonly ~]
-                                [%value (cash:enjs:ff:fh cash.u.pej decimals.currency.pro)]
-                            ==
-                        ==
-                    ;label(for "sum"): amount
-                  ==
-                  ;div(class "fund-form-group")
-                    ;+  :-  :-  %select
-                            ;:  welp
-                                [%id "proj-token"]~
-                                [%name "tok"]~
-                                [%class "fund-tsel"]~
-                                [%x-init "useTomSelect($el, false)"]~
-                                ?~(pej ~ [%disabled ~]~)
-                            ==
-                        :_  ~
-                        ;option
-                            =value  (trip symbol.currency.pro)
-                            =data-image  (aset:enrl:ff:fh symbol.currency.pro)
-                          ; {(trip name.currency.pro)}
-                        ==
-                    ;label(for "tok"): token
-                  ==
+                ;div(class "fund-form-group")
+                  ;+  :_  ~  :-  %input
+                      ;:  welp
+                          [%name "sum"]~
+                          [%type "number"]~
+                          [%required ~]~
+                          [%min ?+(-.payment.pro "0.01" %enft "1")]~
+                          [%max "100000000"]~
+                          [%step ?+(-.payment.pro "0.01" %enft "1")]~
+                          [%placeholder "10"]~
+                          [%class "p-1"]~  ::  FIXME: Needed to match <select> sibling
+                            ?~  pej  ~
+                          :~  [%readonly ~]
+                              [%value (comp:enjs:ff:fh cash.u.pej payment.pro)]
+                          ==
+                          ::  FIXME: Remove this after multi-send NFTs are supported
+                            ?.  nft  ~
+                          :~  [%readonly ~]
+                              [%value "1"]
+                          ==
+                      ==
+                  ;label(for "sum"): amount
+                ==
+                ;div(class "fund-form-group")
+                  ;+  :_  :_  ~
+                          ?:  nft
+                            ;option(value "-1", data-image (colt:enrl:ff:fh %black)): …loading…
+                          ;option
+                              =value  (trip symbol.payment.pro)
+                              =data-image  (aset:enrl:ff:fh symbol.payment.pro)
+                            ; {(trip name.payment.pro)}
+                          ==
+                      :-  %select
+                      ;:  welp
+                          [%id "proj-token"]~
+                          [%name "tok"]~
+                          [%class "fund-tsel"]~
+                          ::  ?.(nft ~ [%multiple ~]~)
+                          ?~(pej ~ ?:(nft [%required ~]~ [%disabled ~]~))
+                          :_  ~  :-  %x-init
+                          %-  zing  %+  join  "\0a"
+                          ^-  (list tape)
+                          :~  :(weld "const nft = " (bool:enjs:ff:fh nft) ";")
+                              :(weld "const pej = " (bloq:enjs:ff:fh ?~(pej 0 cash.u.pej)) ";")
+                              ^-  tape  ^~
+                              %+  rip  3
+                              '''
+                              if (typeof initTomSelect !== 'undefined') {
+                                initTomSelect($el, false, false);
+                                // FIXME: Restore this once multi-send NFTs are supported
+                                // initTomSelect($el, nft, false, !nft ? undefined : pej);
+                                nft && updateNftsSelect($el);
+                              }
+                              '''
+                          ==
+                      ==
+                  ;label(for "tok"): token
                 ==
                 ;div(class "fund-form-group")
                   ;input(name "msg", type "text", placeholder "awesome work!");
@@ -399,8 +421,8 @@
         ;div(class "flex flex-wrap gap-1 items-center")
           ;h6(class "leading-none tracking-widest"): Funded via
           ;+  %+  icon-stax:ui:fh  |
-              :~  (aset:enrl:ff:fh symbol.currency.pro)
-                  (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.currency.pro))
+              :~  (aset:enrl:ff:fh symbol.payment.pro)
+                  (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pro))
               ==
         ==
       ==
@@ -423,7 +445,7 @@
                   =class  "fund-card flex flex-col gap-2 px-2 py-4 lg:px-4 lg:py-6"
                 ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
                 ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
-                    ;span: {(mony:enjs:ff:fh cost.mil currency.pro)}
+                    ;span: {(swam:enjs:ff:fh cost.mil payment.pro)}
                 ;+  (mark-well:ui:fh (trip summary.mil) %togl)
                 ;*  =-  ?~  buz  ~
                         :_  ~
@@ -509,7 +531,7 @@
                   '''
                   "user-guides/project-workers"
                   ?~(contract.pro 0x0 work.u.contract.pro)
-                  chain.currency.pro
+                  chain.payment.pro
                   ;*  ?.  &(=(our src):bol !wok)  ~
                       :_  ~
                       ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): 💬
@@ -528,7 +550,7 @@
                   '''
                   "user-guides/trusted-oracles"
                   ?~(contract.pro 0x0 from.sigm.u.contract.pro)
-                  chain.currency.pro
+                  chain.payment.pro
                   ;*  ?.  &(=(our src):bol !ora)  ~
                       :_  ~
                       ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.assessment.pro)}"(target "_blank"): 💬
@@ -561,9 +583,7 @@
                           %plej  [(surt:enrl:ff:fh ship.mul) "{<ship.mul>}"]
                         ::
                             %trib
-                          ::  FIXME: Use 'surt' for the first case here,
-                          ::  putting in an arbitrary comet
-                          ?~  ship.mul  ["https://placehold.co/24x24/black/black?text=\\n" "anonymous"]
+                          ?~  ship.mul  [(colt:enrl:ff:fh %black) "anonymous"]
                           [(surt:enrl:ff:fh u.ship.mul) "{<u.ship.mul>}"]
                         ::
                             %pruf
@@ -572,7 +592,7 @@
                         ==
                   ==
                   ;div(class "flex items-center gap-x-2")
-                    ;p(class "font-serif leading-tight"): {(mony:enjs:ff:fh cash.mul currency.pro)}
+                    ;p(class "font-serif leading-tight"): {(swam:enjs:ff:fh cash.mul payment.pro)}
                     ;+  =-  ;div(class "fund-pill text-{klr} border-{klr}"): {nam}
                         ^-  [nam=tape klr=tape]
                         ?-  -.mul
@@ -623,6 +643,10 @@
       ;data#fund-meta-flag(value (flag:enjs:ff:fh lag));
       ;*  ?~  image.pro  ~
           :_  ~  ;data#fund-meta-logo(value (trip u.image.pro));
+      ::  FIXME: These fields are included to supply cross-element
+      ::  information
+      ;data#fund-swap-type(value (trip -.payment.pro));
+      ;data#fund-swap-symb(value (cuss (trip symbol.payment.pro)));
     ==
     ;script
       ;+  ;/
@@ -635,13 +659,13 @@
           :(weld "safe_bloq: " (bloq:enjs:ff:fh ?~(contract.pro 0 p.xact.u.contract.pro)) ",")
           :(weld "work_addr: '" (addr:enjs:ff:fh ?~(contract.pro 0x0 work.u.contract.pro)) "',")
           :(weld "orac_addr: '" (addr:enjs:ff:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)) "',")
-          :(weld "coin_chain: " (bloq:enjs:ff:fh chain.currency.pro) ",")
-          :(weld "coin_symbol: '" (trip symbol.currency.pro) "',")
+          :(weld "swap_chain: " (bloq:enjs:ff:fh chain.payment.pro) ",")
+          :(weld "swap_symbol: '" (trip symbol.payment.pro) "',")
           :(weld "orac_cut: " (cash:enjs:ff:fh q.assessment.pro 6) ",")
-          :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (cash:enjs:ff:fh fill.n decimals.currency.pro) ","))) "],")
+          :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (comp:enjs:ff:fh fill.n payment.pro) ","))) "],")
           :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:ff:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")
           :(weld "mile_sign: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (sign:enjs:ff:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n)) "',"))) "],")
-          :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (cash:enjs:ff:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n) decimals.currency.pro) ","))) "],")
+          :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (comp:enjs:ff:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n) payment.pro) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''
@@ -655,7 +679,7 @@
           acceptContract(event) {
             this.sendForm(event, [], () => (
               this.safeSignDeploy({
-                projectChain: this.coin_chain,
+                projectChain: this.swap_chain,
                 projectContent: document.querySelector('#fund-proj-oath').value,
               }).then(([address, signature]) => ({
                 oas: signature,
@@ -666,7 +690,7 @@
           finalizeContract(event) {
             this.sendForm(event, [], () => (
               this.safeExecDeploy({
-                projectChain: this.coin_chain,
+                projectChain: this.swap_chain,
                 oracleAddress: this.orac_addr,
               }).then(([xblock, xhash, workerAddress, oracleAddress, safeAddress]) => {
                 console.log(`safe creation successful; view at: ${this.safeGetURL(safeAddress)}`);
@@ -688,11 +712,13 @@
           sendFunds(event) {
             this.sendForm(event, [], () => (
               this.safeExecDeposit({
-                projectChain: this.coin_chain,
+                projectChain: this.swap_chain,
                 safeAddress: this.safe_addr,
                 fundAmount: event.target.form.querySelector('[name=sum]').value,
-                // fundToken: event.target.form.querySelector('[name=tok]').value,
-                fundToken: this.coin_symbol,
+                fundToken: this.swap_symbol,
+                fundTransfers: Array.from(
+                  event.target.form.querySelector('[name=tok]').selectedOptions
+                ).map(v => v.value),
               }).then(([address, xblock, xhash]) => {
                 console.log(`contribution successful; view at: ${this.txnGetURL(xhash)}`);
                 return {
@@ -709,7 +735,7 @@
                 const payload = document.querySelector('#fund-proj-bane').value
                   .replace(/milestone \d+/, `milestone ${this.mile_idex + 1}`);
                 return this.safeSignDeploy({
-                  projectChain: this.coin_chain,
+                  projectChain: this.swap_chain,
                   projectContent: payload,
                 }).then(([address, signature]) => ({
                   mii: this.mile_idex,
@@ -720,12 +746,13 @@
                 }));
               } else {
                 return this.safeSignClaim({
-                  projectChain: this.coin_chain,
+                  projectChain: this.swap_chain,
                   safeAddress: this.safe_addr,
                   workerAddress: this.work_addr,
                   oracleCut: this.orac_cut,
                   fundAmount: this.mile_fill[this.mile_idex],
-                  fundToken: this.coin_symbol,
+                  fundToken: this.swap_symbol,
+                  safeInitBlock: this.safe_bloq,
                 }).then(([address, signature, payload]) => ({
                   mii: this.mile_idex,
                   mia: address,
@@ -751,13 +778,14 @@
                 }));
               } else {
                 return this.safeExecClaim({
-                  projectChain: this.coin_chain,
+                  projectChain: this.swap_chain,
                   safeAddress: this.safe_addr,
                   fundAmount: this.mile_take[this.mile_idex],
-                  fundToken: this.coin_symbol,
+                  fundToken: this.swap_symbol,
                   oracleSignature: this.mile_sign[this.mile_idex],
                   oracleAddress: this.orac_addr,
                   oracleCut: this.orac_cut,
+                  safeInitBlock: this.safe_bloq,
                 }).then(([xblock, xhash]) => {
                   console.log(`claim successful; view at: ${this.txnGetURL(xhash)}`);
                   return {
@@ -774,13 +802,13 @@
               [() => this.checkWallet([this.work_addr, this.orac_addr], 'worker/oracle')],
               () => {
                 return this.safeGetBalance({
-                  fundToken: this.coin_symbol,
+                  fundToken: this.swap_symbol,
                   safeAddress: this.safe_addr,
                 }).then((balance) => {
                   if (balance === 0) {
                     const payload = document.querySelector('#fund-proj-baad').value;
                     return this.safeSignDeploy({
-                      projectChain: this.coin_chain,
+                      projectChain: this.swap_chain,
                       projectContent: payload,
                     }).then(([address, signature]) => ({
                       des: signature,
@@ -790,8 +818,8 @@
                     }));
                   } else {
                     return this.safeSignRefund({
-                      projectChain: this.coin_chain,
-                      fundToken: this.coin_symbol,
+                      projectChain: this.swap_chain,
+                      fundToken: this.swap_symbol,
                       safeAddress: this.safe_addr,
                       safeInitBlock: this.safe_bloq,
                     }).then(([address, signature, payload]) => ({
@@ -811,7 +839,7 @@
               [() => this.checkWallet([this.work_addr, this.orac_addr], 'worker/oracle')],
               () => {
                 return this.safeGetBalance({
-                  fundToken: this.coin_symbol,
+                  fundToken: this.swap_symbol,
                   safeAddress: this.safe_addr,
                 }).then((balance) => {
                   if (balance === 0) {
@@ -821,8 +849,8 @@
                     }));
                   } else {
                     return this.safeExecRefund({
-                      projectChain: this.coin_chain,
-                      fundToken: this.coin_symbol,
+                      projectChain: this.swap_chain,
+                      fundToken: this.swap_symbol,
                       safeAddress: this.safe_addr,
                       safeInitBlock: this.safe_bloq,
                       oracleAddress: this.mile_whom[this.mile_idex],
@@ -845,4 +873,4 @@
     ==
   ==
 --
-::  VERSION: [1 1 2]
+::  VERSION: [1 2 0]

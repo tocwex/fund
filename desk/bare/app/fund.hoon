@@ -367,7 +367,19 @@
           |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f cash:f]))]
           =/  act=xact:f  [block-number transaction-hash]:(need mined.nex)
           =/  who=addr:f  (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.nex)
-          =/  cas=cash:f  `@ud`(addr:dejs:ff:fh data.nex)
+          ::  NOTE: If there are 4 topics, then this is an NFT transfer, for
+          ::  which the 4th entry is the NFT ID (discarded for now)
+          =/  cas=cash:f
+            ?+    topics.nex  !!
+                [* * * ~]
+              `@ud`(addr:dejs:ff:fh data.nex)
+            ::
+                [* * * * ~]
+              ::  FIXME: This is a hack to get AZP NFTs working; we only
+              ::  count a contributed NFT as valid if it has a star NFT ID.
+              =/  nid=@  +>+<.topics.nex
+              ?:(=(2 (met 3 nid)) 1 0)
+            ==
           (~(put by acc) act [[who cas] (~(gut by acc) act ~)])
         =/  xaz=(list [xact:f cash:f (set addr:f)])
           %-  ~(rep by xap)
@@ -506,7 +518,7 @@
     :*  title=title.pro
         image=image.pro
         cost=~(cost pj:fj pro)
-        currency=currency.pro
+        payment=payment.pro
         launch=p:xact:(fall contract.pro *oath:f)
         worker=p.lag
         oracle=p.assessment.pro
@@ -542,7 +554,7 @@
     ^-  (list card)
     =+  oaf=(fall (clap oat contract.pro head) *oath:f)
     %-  zing
-    %+  turn  (scan-cfgz:fc oaf currency.pro)
+    %+  turn  (scan-cfgz:fc oaf payment.pro)
     |=  [suf=path cfg=config:fc]
     ^-  (list card)
     =/  pat=path  (welp pj-pa-pub suf)

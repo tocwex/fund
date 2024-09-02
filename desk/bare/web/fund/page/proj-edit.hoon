@@ -18,9 +18,9 @@
         %+  scan  (flop (trip cor))
         ;~(pfix (star (mask " \0a\0d\09")) (star next))
       ++  pars                                 ::  parse real number
-        |=  [cor=@t dex=@ud]
+        |=  [cor=@t swa=swap:f]
         ^-  (unit cash:f)
-        ?-  val=(mule |.((cash:dejs:ff:fh cor dex)))
+        ?-  val=(mule |.((comp:dejs:ff:fh cor swa)))
           [%| *]  ~
           [%& *]  `+.val
         ==
@@ -40,18 +40,19 @@
         %init
       ?+  arz=(parz:fh bod (sy ~[%nam %sum %pic %can %tok %sea %seo %m0n %m0s %m0c]))  p.arz  [%| *]
         :-  %init
-        =/  con=coin:f
-          %+  ~(got by cmap:fc)
+        =/  swa=swap:f
+          %+  ~(got by smap:fc)
             (bloq:dejs:ff:fh (~(got by p.arz) %can))
           (~(got by p.arz) %tok)
         =+  pro=*proj:f  %_  pro
-          title       (~(got by p.arz) %nam)
-          summary     (trim (~(got by p.arz) %sum))
-          currency    con
+          title      (~(got by p.arz) %nam)
+          summary    (trim (~(got by p.arz) %sum))
+          payment    swa
         ::
             assessment
           :-  (fall (slaw %p (~(got by p.arz) %sea)) !<(@p (slot:config %point)))
-          (fall (pars (~(got by p.arz) %seo) 6) 1.000.000)
+          %+  fall  (pars (~(got by p.arz) %seo) [%coin 1 0x0 '' '' 6])
+          ?-(-.swa %coin 1.000.000, %enft 0, %chip 0)
         ::
             image
           =+  pic=(~(got by p.arz) %pic)
@@ -67,7 +68,7 @@
           =+  mil=*mile:f  %_  mil
             title    u.nam
             summary  (trim (~(gut by p.arz) (crip "m{<ind>}s") ''))
-            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '') decimals.con) 0)
+            cost     (fall (pars (~(gut by p.arz) (crip "m{<ind>}c") '') swa) 0)
           ==
         ==
       ==
@@ -114,9 +115,9 @@
                 ==
               ==
             ==
-            ;+  %:  ~(coin-selz ui:fh "flex")
+            ;+  %:  ~(swap-selz ui:fh "flex")
                     |
-                    `?~(pru *coin:f currency.u.pru)
+                    `?~(pru *swap:f payment.u.pru)
                     "proj_stok"
                     "updateProj"
                 ==
@@ -136,7 +137,7 @@
         ;div
           ;h1.pt-2: Milestones
           ;div#milz-well.mx-2
-            ;*  =+  dex=?~(pru 6 decimals.currency.u.pru)
+            ;*  =+  pay=?~(pru ethereum-usdc:swap:fc payment.u.pru)
                 %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                 |=  [min=@ mil=mile:f]
                 ^-  manx
@@ -158,13 +159,14 @@
                     ==
                     ;div(class "fund-form-group")
                       ;input.p-1  =name  "m{<min>}c"  =type  "number"
-                        =min  "0"  =max  "100000000"  =step  "0.01"
+                        =min  "0"  =max  "100000000"
                         =placeholder  "0"
-                        =value  ?:(=(0 cost.mil) "" (cash:enjs:ff:fh cost.mil dex))
+                        =value  ?:(=(0 cost.mil) "" (comp:enjs:ff:fh cost.mil pay))
+                        =x-bind-step  "proj_stok.includes('AZP') ? 1 : 0.01"
                         =x-on-change  "updateMile";
                       ;label(for "m{<min>}c")
                         ; Amount
-                        ;span(x-text "'($' + proj_stok + ')'");
+                        ;span(x-text "'(' + (proj_stok.includes('AZP') ? '@' : '$') + proj_stok + ')'");
                       ==
                     ==
                   ==
@@ -195,7 +197,7 @@
           ==
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;select#proj-oracle.fund-tsel(name "sea", x-init "useTomSelect($el, false)")
+              ;select#proj-oracle.fund-tsel(name "sea", x-init "initTomSelect($el, false)")
                 ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
                     =+  dad=(sein:title our.bol now.bol our.bol)
                     ::  FIXME: These options are hard-coded from the
@@ -207,7 +209,7 @@
                     :-  %option
                     ;:  welp
                         [%value "{<ora>}"]~
-                        [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`ora)}.svg"]~
+                        [%data-image (surt:enrl:ff:fh ora)]~
                         ?.(=(ses ora) ~ [%selected ~]~)
                     ==
               ==
@@ -216,7 +218,8 @@
             ;div(class "fund-form-group")
               ;input.p-1  =name  "seo"  =type  "number"
                 =min  "0"  =max  "100"  =step  "0.01"
-                =placeholder  "1%"
+                =x-bind-placeholder  "proj_stok.includes('AZP') ? '0%' : '1%'"
+                =x-bind-readonly  "proj_stok.includes('AZP')"
                 =value  ?~(pru "" (cash:enjs:ff:fh q.assessment.u.pru 6));
               ;label(for "seo"): Fee Offer (%)
             ==
@@ -261,9 +264,9 @@
       %-  zing  %+  join  "\0a"
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
-          :(weld "proj_scan: '" (bloq:enjs:ff:fh ?~(pru id:(snag 0 xlis:fc) chain.currency.u.pru)) "',")
-          :(weld "proj_stok: '" ?~(pru "USDC" (trip symbol.currency.u.pru)) "',")
-          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (cash:enjs:ff:fh cost.n ?~(pru 6 decimals.currency.u.pru)) ","))) "],")
+          :(weld "proj_scan: '" (bloq:enjs:ff:fh ?~(pru id:(snag 0 xlis:fc) chain.payment.u.pru)) "',")
+          :(weld "proj_stok: '" ?~(pru "USDC" (trip symbol.payment.u.pru)) "',")
+          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (comp:enjs:ff:fh cost.n ?~(pru ethereum-usdc:swap:fc payment.u.pru)) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''
@@ -274,10 +277,11 @@
             ));
           },
           updateProj() {
-            const amount = this.mile_cost.reduce((a, n) => a + n, 0).toFixed(2);
-            this.proj_cost = (this.proj_stok.includes('USDC') || this.proj_stok === 'OOBP')
+            const isNFT = this.proj_stok.includes('AZP');
+            const amount = this.mile_cost.reduce((a, n) => a + n, 0).toFixed(isNFT ? 0 : 2);
+            this.proj_cost = (this.proj_stok.includes('USDC'))
               ? `\$${amount}`
-              : `${amount} \$${this.proj_stok}`;
+              : `${amount} ${isNFT ? '@' : '$'}${this.proj_stok}`
           },
           updateTextarea(event) {
             event.target.parentNode.dataset.replicatedValue = event.target.value;
@@ -336,4 +340,4 @@
     ==
   ==
 --
-::  VERSION: [1 1 2]
+::  VERSION: [1 2 0]

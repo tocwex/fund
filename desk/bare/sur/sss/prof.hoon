@@ -1,4 +1,5 @@
-/+  *fund-prof, fc=fund-core, sss
+/+  *fund-prof
+/+  sss
 |%
 +|  %misc
 ++  flag

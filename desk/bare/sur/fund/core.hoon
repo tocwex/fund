@@ -28,6 +28,10 @@
 ::
 +$  xact  (pair bloq addr)
 ::
+::  $limz: blockchain metadata constraints/limitations
+::
++$  limz  (map @t $-(@t ?))
+::
 ::  $sigm: blockchain message signature
 ::
 +$  sigm
@@ -51,7 +55,7 @@
       rpc=@t
   ==
 ::
-::  $coin: blockchain token information
+::  $coin: blockchain coin (ERC-20) information
 ::
 +$  coin
   $:  chain=@ud
@@ -60,6 +64,36 @@
       symbol=@t
       decimals=@ud
   ==
+::
+::  $enft: blockchain token (ERC-721) information
+::
++$  enft
+  $:  chain=@ud
+      =addr
+      name=@t
+      symbol=@t
+      uri=$-(@ud tape)
+      limits=limz
+  ==
+::
+::  $chip: informal exchange (out-of-band) information
+::
++$  chip
+  $:  chain=%0
+      addr=%0x0
+      name=@t
+      symbol=@t
+      decimals=@ud
+  ==
+::
+::  $swap: medium of exchange ($coin, $enft, $chip, etc.)
+::
++$  swap
+  $%  [%coin coin]
+      [%enft enft]
+      [%chip chip]
+  ==
+::
 ::
 ::  $perm: permission level (associated with $poke/$prod)
 ::
@@ -119,6 +153,7 @@
       %v0-4-0
       %v1-0-0
       %v1-1-0
+      %v1-2-0
   ==
 ::
 ::  $sess: assessment information (ship, cut)

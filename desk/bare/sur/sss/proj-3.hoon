@@ -1,5 +1,5 @@
-/-  pold=sss-proj-3
-/+  *fund-proj, fc=fund-core, config, sss
+/-  pold=sss-proj-2
+/+  *fund-proj-0, fc=fund-core, config, sss
 |%
 +|  %misc
 ++  flag
@@ -29,23 +29,63 @@
   --
 
 +|  %core
-+$  vers  _%4
++$  vers  _%3
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
   =/  up
     |_  pro=proj:pold
+    ::  NOTE: For convenience, v1.1.0- listed $WSTR currencies as having
+    ::  6 decimals. v1.1.0 corrects this to 18 decimals, so all of
+    ::  these cash values need to be readjusted.
+    ++  cash  |=(c=cash:pold `^cash`?.(=(%wstr symbol.currency.pro) c (mul c (pow 10 12))))
+    ++  plej  |=(p=plej:pold `^plej`p(cash (cash cash.p)))
+    ++  trib  |=(t=trib:pold `^trib`t(cash (cash cash.t)))
     ++  proj
       ^-  ^proj
       :*  title=title.pro
           summary=summary.pro
           image=image.pro
           assessment=assessment.pro
-          payment=[%coin currency.pro]
-          milestones=milestones.pro
+      ::
+            ^=  currency
+          =-  currency.pro(name nam, symbol sym)
+          ^-  [nam=@t sym=@t]
+          ?+  [chain.currency.pro symbol.currency.pro]  ['USDC' 'USDC']
+            [%1 %usdc]           ['USDC' 'USDC']
+            [%1 %wstr]           ['WrappedStar' 'WSTR']
+            [%11.155.111 %usdc]  ['%fund USDC' 'fundUSDC']
+            [%11.155.111 %wstr]  ['%fund WSTR' 'fundWSTR']
+          ==
+      ::
+            ^=  milestones
+          ;;  (lest mile)
+          %+  turn  milestones.pro
+          |=  mil=mile:pold
+          ^-  mile
+          :*  title=title.mil
+              summary=summary.mil
+              image=image.mil
+              cost=(cash cost.mil)
+              status=status.mil
+              withdrawal=(bind withdrawal.mil |=(w=with:pold `with`[xact.w sigm.w (cash cash.w) ~]))
+          ==
+      ::
           contract=contract.pro
-          pledges=pledges.pro
-          contribs=contribs.pro
-          proofs=proofs.pro
+      ::
+            ^=  pledges
+          =+  off=(lent contribs.pro)
+          =<  -  %-  ~(rep by pledges.pro)
+          |=  [[key=ship val=plej:pold] acc=[ma=(map ship [^plej peta]) id=@ud]]
+          :_  +(id.acc)
+          (~(put by ma.acc) key [(plej val) ~ (add off id.acc) &])
+      ::
+            ^=  contribs
+          =<  -  %+  reel  contribs.pro
+          |=  [nex=trib:pold acc=[ma=(map addr [treb deta]) id=@ud]]
+          :_  +(id.acc)
+          (~(put by ma.acc) q.xact.when.nex [[(trib nex) ~ ~] id.acc &])
+      ::
+          proofs=*(map addr pruf)
       ==
     --
   |%
@@ -70,7 +110,14 @@
         vers:pold
       =-  $(vav [*vers -])
       ?+    +.vav      +.vav
-        [* * %init *]  [bol.vav p.pok.vav %init ~(proj up pro.q.pok.vav)]
+          [* * %init *]
+        :^  bol.vav  p.pok.vav  %init
+        %-  fall  :_  *proj
+        (bind pro.q.pok.vav |=(p=proj:pold ~(proj up p)))
+      ::
+        ::  NOTE: %mula from v1.1.0- will just be underreported! There
+        ::  should be no victims of this omission (on mainnet at least)
+        ::  [* * %mula *]  ...
       ==
     ==
   ++  wash

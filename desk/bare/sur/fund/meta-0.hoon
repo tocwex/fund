@@ -7,7 +7,7 @@
   $:  title=@t
       image=(unit @t)
       cost=cash
-      payment=swap
+      currency=coin
       launch=bloq
       worker=@p
       oracle=@p

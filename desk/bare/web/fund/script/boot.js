@@ -192,7 +192,7 @@ if (window.Alpine === undefined) {
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
-      ['fund-butn-icon', 'p-1 max-w-none rounded-full text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
+      ['fund-butn-icon', 'p-1 max-w-none rounded-md text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       //  ['fund-butn-lorj', 'fund-butn-base text-sm px-3 py-1.5'], // h-8

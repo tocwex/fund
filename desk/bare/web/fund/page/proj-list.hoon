@@ -469,12 +469,12 @@
             ==  ==
       ==
       ;div(class "w-full flex flex-row justify-center gap-2 py-3 bg-primary-300")  ::  bg-primary-400
-        ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls-feed]
+        ;*  %+  turn  `(list @tas)`~[%discover %following %action %controls]
             |=  mod=@tas
             ^-  manx
             =+  [cas="px-4 py-3 rounded-md" cis="w-8"]
             =+  kas=?.(=(dyp mod) ~ "bg-gray-100")
-            ?:  ?=(%controls-feed mod)
+            ?:  ?=(%controls mod)
               ;button  =type  "button"
                   =x-on-click  "toggleTray(undefined)"
                   =class  "{cas} border-l border-gray-250"

@@ -263,7 +263,7 @@
                 ==
             ~
           :~  ;button#fund-fave.fund-tipi(type "button", x-init "initTippy($el)")
-                ;img.fund-butn-icon@"{(aset:enrl:ff:fh %eye)}";
+                ;img.fund-butn-icon@"{(aset:enrl:ff:fh %publicize)}";
               ==
               ;div#fund-fave-opts(class "hidden")
                 ;form(method "post", class "flex flex-col gap-y-2 p-2")
@@ -291,7 +291,7 @@
             ?:  ?=(?(%born %prop) sat)  ~
           :_  ~
           ;a/"{(esat:enrl:ff:fh safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
-            ;img.fund-butn-icon@"{(aset:enrl:ff:fh %contract)}";
+            ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
           ==
         ::  sign off/contribute button  ::
             ?:  ?=(?(%born %done %dead) sat)  ~
@@ -873,4 +873,4 @@
     ==
   ==
 --
-::  VERSION: [1 2 0]
+::  VERSION: [1 2 1]

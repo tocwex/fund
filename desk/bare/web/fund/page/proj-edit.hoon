@@ -202,7 +202,7 @@
                     =+  dad=(sein:title our.bol now.bol our.bol)
                     ::  FIXME: These options are hard-coded from the
                     ::  ~tocwex.syndicate group's oracle directory
-                    %+  turn  ~[!<(@p (slot:config %point)) dad ~reb ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg]
+                    %+  turn  ~[!<(@p (slot:config %point)) dad ~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg]
                     |=  ora=@p
                     ^-  manx
                     :_  ; {<ora>}
@@ -237,7 +237,8 @@
         ;span: Please note there is a
         ;span(class "font-semibold"):  1% protocol fee
         ;span:  on all successfully completed milestone withdrawals.
-        ;span:  Refund transactions do not incur any fees.
+        ;span:  Neither refund transactions nor NFT-denominated campaigns
+        ;span:  incur any fees.
       ==
       ;div(class "flex w-full justify-center gap-x-2 mx-auto")
         ;*  |^  ?+  sat  !!  ::  ~[dead-butn drop-butn]

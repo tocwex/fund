@@ -290,6 +290,14 @@
                 ==
               ==
               ;div(class "flex flex-col gap-4")
+                ;div                               ::  my $prez
+                  ;h2: My Open Projects
+                  ;+  %^  ~(mota-well ui sus)  sas  "No live projects."
+                      |=  [lag=flag:f pre=prej:proj:f]
+                      ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
+                          =(our.bol p.lag)
+                      ==
+                ==
                 ;div                               ::  $prez with %prop status
                   ;h2: Service Requests
                   ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
@@ -300,7 +308,7 @@
                 ==
                 ;div                               ::  $prez with %sess status
                   ;h2: Review Requests
-                  ;+  %^  ~(mota-well ui sus)  sas  "No projets pending review."
+                  ;+  %^  ~(mota-well ui sus)  sas  "No projects pending review."
                       |=  [lag=flag:f pre=prej:proj:f]
                       ?&  ?=(%sess ~(stat pj:fj -.pre))
                           =(p.assessment.pre our.bol)
@@ -308,7 +316,7 @@
                 ==
                 ;div                               ::  $prez with unfulfilled $plej
                   ;h2: Outstanding Pledges
-                  ;+  %^  ~(mota-well ui sus)  sas  "No oustanding pledges."
+                  ;+  %^  ~(mota-well ui sus)  sas  "No outstanding pledges."
                       |=  [lag=flag:f pre=prej:proj:f]
                       ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
                           (~(has by pledges.pre) our.bol)

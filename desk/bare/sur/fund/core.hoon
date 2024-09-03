@@ -121,6 +121,14 @@
       %slyd  ::  positive view; "forgiven"
   ==
 ::
+::  $xfer: transfer direction
+::
++$  xfer
+  $~  %depo
+  $?  %depo  ::  deposit (incoming transfer)
+      %with  ::  withdrawal (outgoing transfer)
+  ==
+::
 ::  $role: peer role relative to a work unit
 ::
 +$  role
@@ -166,7 +174,7 @@
   $:  ship=(unit @p)
       =cash
       when=stub
-      note=?(%with %depo)
+      note=xfer
   ==
 ::
 ::  $plej: ship promise for contribution

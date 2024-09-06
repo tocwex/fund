@@ -68,7 +68,7 @@
           (malt ~[[%size |=(=@t =(%star t))]])
       ==
       ::  [%chip %0 %0x0 'Fiat USD' 'USD' 2]  ::  none-fusd
-      ::  [%chip %0 %0x0 'Azimuth Points (Fiat)' 'AZP-FIAT' 2]  ::  none-fazp
+      ::  [%chip %0 %0x0 'Azimuth Points (Fiat)' 'AZP-FIAT' 0]  ::  none-fazp
   ==
 ++  smap                                         ::  swap metadata map
   ~+

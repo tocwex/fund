@@ -12,18 +12,23 @@
 |=  arg=vase
 =/  m  (strand ,vase)
 ^-  form:m
-=+  !<([~ nfz=(list [nid=@ url=tape]) fil=(map @t $-(@t ?)) tru=(unit @ud)] arg)
-=/  try=@ud  (fall tru 3)
-~&  >>>  nfz
+=+  !<([~ nfz=(list [nid=@ url=tape]) fil=(map @t $-(@t ?)) try=(unit @ud)] arg)
+=/  cfg=outbound-config:iris  [redirects=5 retries=(fall try 3)]
 ;<    joz=(list json)
     bind:m
   =/  m  (strand ,(list json))
   =|  cur=(list json)
   |-  ^-  form:m
   ?~  nfz  (pure:m (flop cur))
-  ::  FIXME: Implement 'try' number of retries (with exponential backoff?)
-  ;<  jon=json  bind:m  (fetch-json:io url.i.nfz)
-  $(nfz t.nfz, cur [jon cur])
+  =/  url=@t  (crip url.i.nfz)
+  ;<  ~  bind:m  (send-raw-card:io %pass /request %arvo %i %request [%'GET' url ~ ~] cfg)
+  ;<  res=client-response:iris  bind:m  take-client-response:io
+  =/  bod=@t  ?>(?=(%finished -.res) ?~(full-file.res '' q.data.u.full-file.res))
+  =/  jon=(unit json)  (de:json:html bod)
+  ::  TODO: If any of the given endpoints has invalid JSON, throw error
+  ::  for the whole thread; should this be more forgiving?
+  ?~  jon  (strand-fail:strand %json-parse-error ~)
+  $(nfz t.nfz, cur [u.jon cur])
 =-  (pure:m !>(gud))
 ^-  gud=(set @)
 %+  roll  (izip:fx nfz joz)

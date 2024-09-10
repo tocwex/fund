@@ -10,7 +10,7 @@
 ++  auth
   |=  bol=bowl:gall  ~+
   ^-  bean
-  =+  peers=.^((map ship *) /ax/(scot %p our.bol)//(scot %da now.bol)/peers)
+  =+  peers=.^((map ship *) %ax (en-beam [our.bol %$ da+now.bol] /peers))
   ?|  !=(%pawn (clan:title src.bol))
       (~(has by peers) src.bol)
   ==
@@ -43,6 +43,15 @@
   ?@  for.u.con                 ~
   ?@  con.for.u.con             ~
   `con.for.u.con
+::
+::  +styt: s(hip) t(i)t(le) (ship name information, from %contacts)
+::
+++  styt
+  |=  [sip=@p bol=bowl:gall]  ~+
+  ^-  tape
+  ?~  con=(scon sip bol)    "{<sip>}"
+  ?:  =(%$ nickname.u.con)  "{<sip>}"
+  (trip nickname.u.con)
 ::
 ::  +simg: s(hip) im(a)g(e) (ship image information, from %contacts)
 ::
@@ -738,7 +747,7 @@
   ++  ship-tytl                                  ::  title for a user ship
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
-    ;span(class cas): {?~(con=(scon sip bol) "{<sip>}" (trip nickname.u.con))}
+    ;span(class "line-clamp-1 {cas}"): {(styt sip bol)}
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx

@@ -1,6 +1,6 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
-/-  fd=fund-data, fm=fund-meta
+/-  fd=fund-data, cn=contacts
 /+  *fund-proj, fk=fund-core, ff=fund-form, fc=fund-chain, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
@@ -20,9 +20,38 @@
 ++  burl
   |=  bol=bowl:gall  ~+
   ^-  tape
-  =+  erl=.^((unit @t) %ex /(scot %p our.bol)//(scot %da now.bol)/eauth/url)
+  =+  erl=.^((unit @t) %ex (en-beam [our.bol %$ da+now.bol] /eauth/url))
   ?^  erl  (scaj:fx (lent "/~/eauth") (trip u.erl))
-  (head:en-purl:html .^(hart:eyre %e /(scot %p our.bol)/host/(scot %da now.bol)))
+  (head:en-purl:html .^(hart:eyre %e (en-beam [our.bol %host da+now.bol] /)))
+::
+::  +rolo: rolo(dex) (ship to contact information map, from %contacts)
+::
+++  rolo
+  |=  bol=bowl:gall  ~+
+  ^-  rolodex:cn
+  =/  pre=path  (en-beam [our.bol %contacts da+now.bol] /)
+  ?.  .^(? %gu (snoc pre %$))  *rolodex:cn
+  .^(rolodex:cn %gx (weld pre /all/noun))
+::
+::  +scon: s(hip) con(tact) (ship contact information, from %contacts)
+::
+++  scon
+  |=  [sip=@p bol=bowl:gall]  ~+
+  ^-  (unit contact:cn)
+  =/  rol=rolodex:cn  (rolo bol)
+  ?~  con=(~(get by rol) sip)   ~
+  ?@  for.u.con                 ~
+  ?@  con.for.u.con             ~
+  `con.for.u.con
+::
+::  +simg: s(hip) im(a)g(e) (ship image information, from %contacts)
+::
+++  simg
+  |=  [sip=@p bol=bowl:gall]  ~+
+  ^-  tape
+  ?~  con=(scon sip bol)  (surt:enrl:ff sip)
+  ?~  avatar.u.con        (surt:enrl:ff sip)
+  (trip u.avatar.u.con)
 ::
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
 ::
@@ -311,7 +340,7 @@
                 ;button  =id  "fund-agis"
                     =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-md hover:bg-primary-550"
                     =x-init  "initTippy($el)"
-                  ;+  (ship-logo src.bol)
+                  ;+  (ship-logo src.bol bol)
                   ;span(class "hidden sm:block font-bold"): {<src.bol>}
                   ;img@"{(aset:enrl:ff %ellipsis)}"(class "hidden sm:block h-full");
                   ;div#fund-agis-opts(class "hidden")
@@ -355,12 +384,41 @@
       ==
     --
   ++  ship-card                                  ::  summary card for user ship
-    ::  TODO: Consider changing the signature to take a (unit addr) for
-    ::  cases when the address isn't yet available (e.g. project in
-    ::  draft form)
-    |=  [sip=@p tyt=tape hep=tape hel=tape nun=tape adr=addr cid=@ud buz=marl]
+    |=  [sip=@p bol=bowl:gall rol=role cid=@ud adr=addr]
     ^-  manx
-    =/  tid=tape  "fund-help-ship-{(trip (asci:fx (crip tyt)))}"
+    =/  [tyt=tape lin=tape nun=tape hep=tape]
+      ?+    rol  [~ ~ ~ ~]
+          %work
+        :*  tyt="Project Worker"
+            lin="user-guides/project-workers"
+            nun="no payment address set"
+              ^=  hep
+            ^-  tape  ^~
+            %+  rip  3
+            '''
+            The project worker is the identity which does the work defined in
+            the project overview and milestones. When a milestone is completed
+            and approved by the trusted oracle, the project worker receives the
+            listed payout for that milestone.
+            '''
+        ==
+      ::
+          %orac
+        :*  tyt="Trusted Oracle"
+            lin="user-guides/trusted-oracles"
+            nun="no approval keys set"
+              ^=  hep
+            ^-  tape  ^~
+            %+  rip  3
+            '''
+            The role of the trusted oracle is to assess completion of the scope
+            of work. When a milestone review is requested, the oracle can chose
+            to mark it as complete by providing a cryptographically signed
+            message, allowing the worker to withdraw funds.
+            '''
+        ==
+      ==
+    =/  tid=tape  "fund-help-ship-{(bloq:enjs:ff `@`sip)}"
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}
@@ -371,17 +429,19 @@
           ;p: {hep}
           ;p
             ; To learn more,
-            ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/{hel}"(target "_blank")
+            ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/{lin}"(target "_blank")
               ; read the docs.
             ==
           ==
         ==
       ==
       ;div(class "inline-flex self-stretch justify-start items-center gap-2")
-        ;+  (~(ship-logo ..$ "h-20") sip)
+        ;+  (~(ship-logo ..$ "h-20") sip bol)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;div(class "inline-flex items-center gap-1")
-            ;h5.text-lg.font-bold.tracking-tight: {<sip>}
+            ;h5.text-lg.font-bold.tracking-tight
+              ;+  (ship-tytl sip bol)
+            ==
             ;+  (copy-butn (ship:enjs:ff sip))
           ==
           ;div(class "inline-flex items-center gap-1")
@@ -405,7 +465,9 @@
               ;+  (copy-butn (bloq:enjs:ff `@`sip))
             ==
             ;div(class "inline-flex gap-1")
-              ;*  buz
+               ;*  ?:  |(!=(our src):bol =(sip src.bol))  ~
+               :_  ~
+               ;a.fund-butn-ac-s/"{(chat:enrl:ff sip)}"(target "_blank"): 💬
             ==
           ==
         ==
@@ -670,9 +732,13 @@
       ==
     ==
   ++  ship-logo                                  ::  icon for a user ship
-    |=  sip=@p
+    |=  [sip=@p bol=bowl:gall]
     ^-  manx
-    (icon-logo & (surt:enrl:ff sip))
+    (icon-logo %rect (simg sip bol))
+  ++  ship-tytl                                  ::  title for a user ship
+    |=  [sip=@p bol=bowl:gall]
+    ^-  manx
+    ;span(class cas): {?~(con=(scon sip bol) "{<sip>}" (trip nickname.u.con))}
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx
@@ -700,18 +766,18 @@
       %dead  "highlight1-400"
     ==
   ++  icon-stax                                  ::  stack of icons (leftmost on top)
-    |=  [box=bean liz=(list tape)]
+    |=  [typ=?(%circ %rect) liz=(list tape)]
     ^-  manx
     ;div(class "flex flex-row-reverse h-6 {cas}")
       ;*  %+  turn  (enum:fx (flop liz))
           |=  [lid=@ lin=tape]
           =+  lim=?:(=(0 lid) "" "-mr-3")
-          (~(icon-logo ..$ "relative h-full {lim}") box lin)
+          (~(icon-logo ..$ "relative h-full {lim}") typ lin)
     ==
-  ++  icon-logo                                  ::  single icon circle
-    |=  [box=bean lin=tape]
+  ++  icon-logo                                  ::  single icon image
+    |=  [typ=?(%circ %rect) lin=tape]
     ^-  manx
-    ;img@"{lin}"(class "fund-aset-{(trip ?:(box %boxx %circ))} {cas}");
+    ;img@"{lin}"(class "fund-aset-{(trip typ)} {cas}");
   ++  cheq-swix                                  ::  checkbox switch <o->
     |=  nam=tape
     ^-  manx

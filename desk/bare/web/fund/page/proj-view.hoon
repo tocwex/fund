@@ -420,7 +420,7 @@
         ;h1: Funding Tracker
         ;div(class "flex flex-wrap gap-1 items-center")
           ;h6(class "leading-none tracking-widest"): Funded via
-          ;+  %+  icon-stax:ui:fh  |
+          ;+  %+  icon-stax:ui:fh  %circ
               :~  (aset:enrl:ff:fh symbol.payment.pro)
                   (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pro))
               ==
@@ -518,51 +518,19 @@
         ;div(class "flex flex-col gap-2")
           ;h1(class "sm:hidden"): Participants
           ;+  %:  ship-card:ui:fh
-                  p.lag
-                  "Project Worker"
-                  ^-  tape  ^~
-                  %+  rip  3
-                  '''
-                  The project worker is the identity which does the work
-                  defined in the project overview and milestones. When a
-                  milestone is completed and approved by the trusted
-                  oracle, the project worker receives the listed payout
-                  for that milestone.
-                  '''
-                  "user-guides/project-workers"
-                  "no payment address set"
-                  ?~(contract.pro 0x0 work.u.contract.pro)
-                  chain.payment.pro
-                  ;*  ?.  &(=(our src):bol !wok)  ~
-                      :_  ~
-                      ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): 💬
+                  p.lag  bol  %work
+                  chain.payment.pro  ?~(contract.pro 0x0 work.u.contract.pro)
               ==
           ;+  %:  ship-card:ui:fh
-                  p.assessment.pro
-                  "Trusted Oracle"
-                  ^-  tape  ^~
-                  %+  rip  3
-                  '''
-                  The role of the trusted oracle is to assess completion
-                  of the scope of work. When a milestone review is
-                  requested, the oracle can chose to mark it as complete
-                  by providing a cryptographically signed message,
-                  allowing the worker to withdraw funds.
-                  '''
-                  "user-guides/trusted-oracles"
-                  "no approval keys set"
-                  ?~(contract.pro 0x0 from.sigm.u.contract.pro)
-                  chain.payment.pro
-                  ;*  ?.  &(=(our src):bol !ora)  ~
-                      :_  ~
-                      ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.assessment.pro)}"(target "_blank"): 💬
+                  p.assessment.pro  bol  %orac
+                  chain.payment.pro  ?~(contract.pro 0x0 from.sigm.u.contract.pro)
               ==
         ==
         ;div(class "flex flex-col gap-2")
           ;div(class "flex flex-row justify-between items-center")
             ;h1: Transactions
             ;div(class "flex flex-wrap items-center gap-1")
-              ;*  =-  :~  (icon-stax:ui:fh & (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
+              ;*  =-  :~  (icon-stax:ui:fh %rect (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
                           ;h6: {<~(wyt in siz)>} total
                       ==
                   ^-  siz=(set @p)
@@ -579,7 +547,7 @@
               ;div(class "p-2.5 flex flex-col gap-y-2 fund-card")
                 ;div(class "flex flex-wrap items-center justify-between")
                   ;div(class "flex items-center gap-x-2")
-                    ;*  =-  ~[(icon-logo:ui:fh & url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
+                    ;*  =-  ~[(icon-logo:ui:fh %rect url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
                         ^-  [url=tape txt=tape]
                         ?-  -.mul
                           %plej  [(surt:enrl:ff:fh ship.mul) "{<ship.mul>}"]

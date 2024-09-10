@@ -16,6 +16,7 @@ import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
 import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
 import TomSelect from 'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/+esm';
+import UrbitOb from 'https://cdn.jsdelivr.net/npm/urbit-ob@5.0.1/+esm';
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
@@ -359,15 +360,16 @@ if (window.Alpine === undefined) {
   // FIXME: It's better to use this instead of `window.open` for local URLs
   // because the `<a>` click emulation prompts a partial turbojs reload where
   // `window.open` prompts a full page reload
-  function openHREF(href) {
+  function openHREF(href, tab=false) {
     const link = document.createElement("a");
     link.setAttribute("class", "hidden");
     link.setAttribute("href", href);
+    if (tab) { link.setAttribute("target", "_blank"); }
     document.body.appendChild(link);
     link.click();
   }
 
-  function sendForm(event, checks = [], action = Promise.resolve(undefined)) {
+  function sendForm(event, checks=[], action=Promise.resolve(undefined)) {
     event.preventDefault();
     if ((event.target.form !== undefined) && !event.target.form.reportValidity()) {
       return Promise.resolve(undefined);
@@ -391,7 +393,7 @@ if (window.Alpine === undefined) {
   }
 
   // NOTE: 'formData' is not a 'FormData' object; it's a {str => str} map
-  function sendFormData(formData, event = undefined) {
+  function sendFormData(formData, event=undefined) {
     const form = document.createElement("form");
     form.method = "post";
     // FIXME: This is necessary in order to send the raw message
@@ -458,7 +460,9 @@ if (window.Alpine === undefined) {
     });
   }
 
-  function initTomSelect(elem, empty, upOnly = false, maxItems = undefined) {
+  // FIXME: Support for 'create' very specifically targeting galaxy/star
+  // inputs is pretty hacky here
+  function initTomSelect(elem, empty, upOnly=false, maxItems=undefined, create=false) {
     function renderSelector(data, escape) {
       return `
         <div class='flex flex-row items-center gap-x-2'>
@@ -473,9 +477,31 @@ if (window.Alpine === undefined) {
     if (elem.tomselect === undefined) {
       const tselElem = new TomSelect(elem, {
         allowEmptyOption: empty,
+        create: create,
         render: {
-          option(data, escape) { return renderSelector(data, escape); },
-          item(data, escape) { return renderSelector(data, escape); },
+          option: (data, escape) => renderSelector(data, escape),
+          item: (data, escape) => renderSelector(data, escape),
+          ...(!create ? {} : {
+            no_results: (data,escape) => null,
+            option_create: (data, escape) => `
+              <div class="create">
+                Use custom oracle <strong>${escape(data.input)}</strong>
+              </div>`,
+          }),
+        },
+        onOptionAdd: (value, data) => {
+          if (create) {
+            const okClans = new Set(["galaxy", "star"]);
+            if (!UrbitOb.isValidPatp(value) || !okClans.has(UrbitOb.clan(value))) {
+              elem.tomselect.removeOption(value);
+            } else if (data?.image === undefined) {
+              elem.tomselect.updateOption(value, {
+                value: data.value,
+                text: data.text,
+                image: `https://azimuth.network/erc721/${UrbitOb.patp2dec(value)}.svg`,
+              });
+            }
+          }
         },
         onDropdownOpen: (dropdown) => {
           if (
@@ -505,6 +531,7 @@ if (window.Alpine === undefined) {
       text: elem.innerText,
       image: elem.dataset.image,
       chain: elem.dataset.chain,
+      href: elem.dataset.href,
     })).filter(({value, chain}) => (
       chain === tokenChain || value === ""
     ));

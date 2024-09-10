@@ -358,7 +358,7 @@
     ::  TODO: Consider changing the signature to take a (unit addr) for
     ::  cases when the address isn't yet available (e.g. project in
     ::  draft form)
-    |=  [sip=@p tyt=tape hep=tape hel=tape adr=addr cid=@ud buz=marl]
+    |=  [sip=@p tyt=tape hep=tape hel=tape nun=tape adr=addr cid=@ud buz=marl]
     ^-  manx
     =/  tid=tape  "fund-help-ship-{(trip (asci:fx (crip tyt)))}"
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
@@ -385,13 +385,15 @@
             ;+  (copy-butn (ship:enjs:ff sip))
           ==
           ;div(class "inline-flex items-center gap-1")
-            ;a/"{(esat:enrl:ff adr cid)}"
-                =target  "_blank"
-                =class  "fund-addr fund-addr-ens hover:text-link"
-                =x-init  "initENS($el, '{(addr:enjs:ff adr)}')"
-              …loading…
-            ==
-            ;+  (copy-butn (addr:enjs:ff adr))
+            ;*  ?:  =(0x0 adr)  :_  ~  ;p: {nun}
+                :~  ;a/"{(esat:enrl:ff adr cid)}"
+                        =target  "_blank"
+                        =class  "fund-addr fund-addr-ens hover:text-link"
+                        =x-init  "initENS($el, '{(addr:enjs:ff adr)}')"
+                      …loading…
+                    ==
+                    (copy-butn (addr:enjs:ff adr))
+                ==
           ==
           ;div(class "self-stretch justify-between items-center inline-flex")
             ;div(class "inline-flex items-center gap-1")
@@ -525,7 +527,7 @@
               %+  turn  xlis:fc
               |=  xet=xeta
               ^-  manx
-              :_  ; {(caps:fx (trip tag.xet))}
+              :_  ; {(xeta:enjs:ff xet)}
               :-  %option
               ;:  welp
                   [%value (bloq:enjs:ff id.xet)]~
@@ -546,22 +548,40 @@
               %+  turn  slis:fc
               |=  swa=swap
               ^-  manx
-              :_  ; {(trip name.swa)}
+              :_  ; {(swad:enjs:ff swa)}
               :-  %option
-              ;:  welp
-                  [%value (trip symbol.swa)]~
-                  [%data-type (trip -.swa)]~
-                  [%data-chain (bloq:enjs:ff chain.swa)]~
-                  [%data-image (aset:enrl:ff symbol.swa)]~
+              :~  [%value (trip symbol.swa)]
+                  [%data-type (trip -.swa)]
+                  [%data-chain (bloq:enjs:ff chain.swa)]
+                  [%data-image (aset:enrl:ff symbol.swa)]
+                  ::  FIXME: Should handle %chip case more elegantly
+                  [%data-href (esat:enrl:ff addr.swa chain.swa)]
               ==
         ==
         ;select#proj-token.fund-tsel  =name  "tok"
             =required  ~
             =x-init  "initTomSelect($el, {(bool:enjs:ff emt)}); updateTokenSelect({ini})"
             =x-model  mod
+            =x-ref  "token"
             =x-on-change  xoc;
         ;*  ?:  emt  ~
-            :_  ~  ;label(for "tok"): Token
+            :_  ~
+            ;div(class "inline-flex gap-1 items-center")
+              ::  FIXME: Better if this were automatically populated by CSS
+              ::  rules like all of the other <input>s
+              ;label(for "tok")
+                ; Token
+                ;span(class "-ml-1 text-highlight1-500"): *
+              ==
+              ::  FIXME: It would be better if this were an <a> element,
+              ::  but that doesn't properly auto-update via 'x-bind-href'
+              ;button  =type  "button"
+                  =x-on-click  "openHREF($refs.token.tomselect.options[$refs.token.tomselect.activeOption.dataset.value].href, true)"
+                ::  TODO: Remove static width & replace with outer
+                ::  sizing control
+                ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %etherscan)}";
+              ==
+            ==
       ==
     ==
   ++  mile-ther                                  ::  milestone funding thermometer

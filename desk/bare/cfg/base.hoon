@@ -12,6 +12,7 @@
     [%scan-herz !>(~s30)]
     [%scan-tout !>(~m1)]
     [%scan-bloq !>(10)]
+    [%feat-oraz !>(`(list @p)`~[~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg ~firbex ~moddux ~pandux ~fogbus])]
     [%meta-site !>('https://tocwexsyndicate.com')]
     [%meta-help !>('https://docs.tocwexsyndicate.com')]
     [%meta-tlon !>('https://tlon.network/lure/~tocwex/syndicate-public')]

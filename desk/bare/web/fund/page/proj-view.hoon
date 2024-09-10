@@ -530,6 +530,7 @@
                   for that milestone.
                   '''
                   "user-guides/project-workers"
+                  "no payment address set"
                   ?~(contract.pro 0x0 work.u.contract.pro)
                   chain.payment.pro
                   ;*  ?.  &(=(our src):bol !wok)  ~
@@ -549,6 +550,7 @@
                   allowing the worker to withdraw funds.
                   '''
                   "user-guides/trusted-oracles"
+                  "no approval keys set"
                   ?~(contract.pro 0x0 from.sigm.u.contract.pro)
                   chain.payment.pro
                   ;*  ?.  &(=(our src):bol !ora)  ~

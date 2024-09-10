@@ -23,7 +23,7 @@
   =-  "export const FUND_{var} = {dat};"
   ^-  [var=tape dat=tape]
   :-  (cuss (turn (trip key) |=(t=@tD ?.(=('-' t) t '_'))))
-  ?+  -.val  !!
+  ?+  -.val  "undefined"
     [%atom %f *]  ?:(!<(bean val) "true" "false")
     [%atom %ux *]  "'{['0' 'x' ((x-co:co 40) !<(@ux val))]}'"
     [%atom %ud *]  "'{(a-co:co !<(@ val))}'"

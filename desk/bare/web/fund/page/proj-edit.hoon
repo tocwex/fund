@@ -197,12 +197,10 @@
           ==
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;select#proj-oracle.fund-tsel(name "sea", x-init "initTomSelect($el, false)")
+              ;select#proj-oracle.fund-tsel(name "sea", x-init "initTomSelect($el, true, false, undefined, true)")
                 ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
                     =+  dad=(sein:title our.bol now.bol our.bol)
-                    ::  FIXME: These options are hard-coded from the
-                    ::  ~tocwex.syndicate group's oracle directory
-                    %+  turn  ~[!<(@p (slot:config %point)) dad ~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg]
+                    %+  turn  [ses !<(@p (slot:config %point)) dad !<((list @p) (slot:config %feat-oraz))]
                     |=  ora=@p
                     ^-  manx
                     :_  ; {<ora>}

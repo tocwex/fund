@@ -226,6 +226,25 @@
       %meta  [p.pok (trip -.q.pok)]
       %proj  [p.pok "{(trip -.q.pok)}{?+(-.q.pok ~ ?(%bump %mula) ['-' (trip +<.q.pok)])}"]
     ==
+  ++  swad                                     ::  [%coin 1 0x1 %wstr %wstr 6] => "Wrapped Star"
+    |=  swa=^swap
+    ^-  tape
+    =-  "{tyt} ({typ})"
+    ^-  [typ=tape tyt=tape]
+    :-  ?-(-.swa %coin "Coin", %enft "NFT", %chip "Fiat")
+    ?+  symbol.swa  (trip name.swa)
+      ?(%'USDC' %'fundUSDC')  "USD Coin"
+      ?(%'WSTR' %'fundWSTR')  "Wrapped Star"
+      ?(%'AZP' %'AZP-TEST')   "Urbit Star"
+    ==
+  ++  swap                                     ::  [%coin 1 0x1 %wstr %wstr 6] => "$WSTR"
+    |=  swa=^swap
+    ^-  tape
+    ?-  -.swa
+      %coin  (coin +.swa)
+      %enft  (enft +.swa)
+      %chip  (chip +.swa)
+    ==
   ++  coin                                     ::  [1 0x1 %wstr %wstr 6] => "$WSTR"
     |=  con=^coin
     ^-  tape
@@ -238,13 +257,11 @@
     |=  chi=^chip
     ^-  tape
     "-{(cuss (trip symbol.chi))}"
-  ++  swap                                     ::  [%coin 1 0x1 %wstr %wstr 6] => "$WSTR"
-    |=  swa=^swap
+  ++  xeta                                     ::  [1 %ethereum ''] => "Ethereum"
+    |=  xet=^xeta
     ^-  tape
-    ?-  -.swa
-      %coin  (coin +.swa)
-      %enft  (enft +.swa)
-      %chip  (chip +.swa)
+    ?+  tag.xet  (caps:fx (trip tag.xet))
+      %sepolia   "Sepolia (Testnet)"
     ==
   ++  role                                     ::  %orac => "oracle"
     |=  rol=^role

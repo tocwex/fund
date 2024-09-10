@@ -75,7 +75,7 @@ input[required] + label:after,
 select[required] + label:after,
 div.ts-wrapper + label:after {
   content: '*';
-  color: #b80c09; /* text-highlight1-500 */
+  color: #ff0033; /* text-highlight1-500 */
 }
 
 /* Drop-up for selectors near the bottom of the page (https://stackoverflow.com/a/78298291) */

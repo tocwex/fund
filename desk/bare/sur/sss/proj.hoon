@@ -199,6 +199,7 @@
             `mile`mil(status sat.pod, withdrawal `[~ sig fill.mod ~])
           ::
               pledges
+            ?.  =((lent miz) +(min))  pledges.pro
             %-  ~(run by pledges.pro)
             |=([p=plej d=peta] [p d(view `%stif)])
           ==

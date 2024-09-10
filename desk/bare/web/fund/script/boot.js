@@ -216,7 +216,7 @@ if (window.Alpine === undefined) {
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
       ['fund-aset-circ', 'h-6 bg-white rounded-full'],
-      ['fund-aset-boxx', 'h-6 bg-white rounded'],
+      ['fund-aset-rect', 'h-6 bg-white rounded'],
       ['fund-odit-ther', 'w-full rounded-md flex h-4 sm:h-8 text-primary-700'], // FIXME: text-primary-600
       ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
     ],

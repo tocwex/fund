@@ -162,7 +162,7 @@
               ; {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5")
-              ;+  %+  ~(icon-stax ui:fh "h-8")  |
+              ;+  %+  ~(icon-stax ui:fh "h-8")  %circ
                   :~  (aset:enrl:ff:fh symbol.payment.pre)
                       (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pre))
                   ==
@@ -172,7 +172,7 @@
         ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
           ;div(class "flex-1 min-w-0 text-lg"): {(trip title.pre)}
           ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
-            ;+  %+  ~(icon-stax ui:fh "h-8")  &
+            ;+  %+  ~(icon-stax ui:fh "h-8")  %rect
                 (turn ~[p.lag p.assessment.pre] surt:enrl:ff:fh)
           ==
         ==
@@ -194,7 +194,7 @@
               ; {(swam:enjs:ff:fh cost.met payment.met)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5 line-clamp-2")
-              ;+  (icon-stax:ui:fh & (turn ~[worker.met oracle.met] surt:enrl:ff:fh))
+              ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] surt:enrl:ff:fh))
             ==
           ==
         ==
@@ -404,7 +404,7 @@
                           :-  %option
                           ;:  welp
                               [%value "{<wok>}"]~
-                              [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`wok)}.svg"]~
+                              [%data-image (simg:fh wok bol)]~
                               ?.(&(?=(^ work.arg) =(u.work.arg wok)) ~ [%selected ~]~)
                           ==
                     ==
@@ -426,7 +426,7 @@
                           :-  %option
                           ;:  welp
                               [%value "{<ora>}"]~
-                              [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`ora)}.svg"]~
+                              [%data-image (simg:fh ora bol)]~
                               ?.(&(?=(^ orac.arg) =(u.orac.arg ora)) ~ [%selected ~]~)
                           ==
                     ==

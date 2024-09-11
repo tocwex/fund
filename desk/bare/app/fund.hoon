@@ -593,12 +593,13 @@
         ?:  (~(has in pyr) src.bol)  %peer
         %peon
     ^-  ned=perm:f
-    ?+  -.pod    %peon
-      %init  %boss
-      %drop  %boss
-      %draw  %peer
-      %wipe  %peer
-      %bump  %peer
+    ?+  -.pod  %peon
+      %init    %boss
+      %drop    %boss
+      %draw    %peer
+      %wipe    %peer
+      %bump    %peer
+      %save    %boss
     ==
   ::
   ++  pj-pull
@@ -615,7 +616,7 @@
     ^+  pj-core
     =*  mes  `(mess:f prod:proj:f)`[src.bol pj-pa-pub pod]
     ?+    -.pod
-    ::  proj prods ::
+    ::  proj prods  ::
       ?.  pj-is-myn  pj-core(cor (emit (pj-mk-card p.lag pod)))
       ?>  ~|(bad-pj-push+mes (pj-do-writ pod))
       ?>  ~|(bad-pj-push+mes |(?=(?(%init %drop) -.pod) !pj-is-new))
@@ -670,14 +671,22 @@
           (pj-mk-scan oat.pod)
         ==
       ==
-    ::  meta prods ::
+    ::  meta prods  ::
         %lure
       ::  FIXME: For a more complete version, maintain a per-ship lure
       ::  list (like group invites from %tlon)
       ?:  =(our.bol who.pod)  $(pod [%join ~])
       ?<  ~|(bad-pj-push+mes pj-is-new)
       pj-core(cor (emit (pj-mk-card ?:(pj-is-myn who.pod p.lag) pod)))
-    ::  meta prods ::
+    ::
+        %save
+      ?>  ~|(bad-pj-push+mes =(our src):bol)
+      ?<  ~|(bad-pj-push+mes pj-is-new)
+      ?<  ~|(bad-pj-push+mes (~(has by pj-our) our.bol wer.pod))
+      ?:  pj-is-myn  pj-core
+      =+  wat=[%fund %proj (scot %p our.bol) wer.pod ~]
+      pj-core(cor (proj-push ~ (copy:pj-puz proj-subs pj-pa-sub wat)))
+    ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is
       ::  in place (see %lure clause above).
@@ -720,7 +729,7 @@
     ^+  me-core
     =*  mes  `(mess:f prod:meta:f)`[src.bol me-pa-pub pod]
     ?+    -.pod
-    ::  meta prods ::
+    ::  meta prods  ::
       ?>  ~|(bad-me-push+mes me-is-myn)
       ?-    -.pod
           %init
@@ -812,7 +821,7 @@
     ^+  pf-core
     =*  mes  `(mess:f prod:prof:f)`[src.bol pf-pa-pub pod]
     ?+    -.pod
-    ::  prof prods ::
+    ::  prof prods  ::
       ::  NOTE: Signs directed at a foreign ship are handled specially; we allow
       ::  these to be placed in a local cache
       ?:  &(?=(%sign -.pod) !pf-is-myn)
@@ -830,7 +839,7 @@
         %fave  !(~(has in favorites.pro) lag.pod)
         %jilt  (~(has in favorites.pro) lag.pod)
       ==
-    ::  meta prods ::
+    ::  meta prods  ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is
       ::  in place (see %lure clause above).

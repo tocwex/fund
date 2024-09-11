@@ -1,5 +1,5 @@
 /-  pold=sss-proj-3
-/+  *fund-proj, fc=fund-core, config, sss
+/+  *fund-proj-1, fc=fund-core, config, sss
 |%
 +|  %misc
 ++  flag

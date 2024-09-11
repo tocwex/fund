@@ -680,12 +680,15 @@
       pj-core(cor (emit (pj-mk-card ?:(pj-is-myn who.pod p.lag) pod)))
     ::
         %save
+      =/  pag=flag:f  [our.bol wer.pod]
+      =+  wat=[%fund %proj (scot %p our.bol) wer.pod ~]
       ?>  ~|(bad-pj-push+mes =(our src):bol)
       ?<  ~|(bad-pj-push+mes pj-is-new)
-      ?<  ~|(bad-pj-push+mes (~(has by pj-our) our.bol wer.pod))
+      ?<  ~|(bad-pj-push+mes (~(has by pj-our) pag))
       ?:  pj-is-myn  pj-core
-      =+  wat=[%fund %proj (scot %p our.bol) wer.pod ~]
-      pj-core(cor (proj-push ~ (copy:pj-puz proj-subs pj-pa-sub wat)))
+      =.  cor  (proj-push ~ (copy:pj-puz proj-subs pj-pa-sub wat))
+      =.  cor  (emit [%pass wat %agent [our dap]:bol %poke fund-poke+!>([%proj pag %redo ~])])
+      pj-core
     ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is

@@ -242,7 +242,10 @@
   |=  pat=(pole knot)
   ^-  (unit (unit cage))
   ?+    pat  [~ ~]
-      [%x %view ~]
+      [%x %dbug %state ~]
+    ``noun+!>(state)
+  ::
+      [%x %dbug %short ~]
     =+  flat=(cork flag:enjs:ff:fh crip)
     :^  ~  ~  %noun  !>
     :*  host=(~(run in ~(key by pj-myn)) flat)
@@ -339,7 +342,7 @@
     ::  scan response  ::
         [%scan typ=@ ~]
       ?>  =(our.bol sip)
-      ?>  ?=(?(%with %depo) typ.pat.pat)
+      ?>  ?=(xfer:f typ.pat.pat)
       ?+    -.syn  cor
       ::  init response  ::
           %poke-ack
@@ -358,53 +361,46 @@
         ?.  ?=(%fund-watcher-diff p.cage.syn)  cor
         =+  !<(dif=diff:fc q.cage.syn)
         ::  TODO: Handle the %disavow case properly
-        =/  loz=loglist:fc  ?+(-.dif loglist.dif %disavow ~)
+        =/  loz=loglist:fc   ?+(-.dif loglist.dif %disavow ~)
+        =*  por  (pj-abed:pj-core sip nam)
+        =/  pro=proj:proj:f  pro:por
         ::  NOTE: We group by transaction for multisend cases (which
-        ::  always occur for withdrawals), which pack multiple
-        ::  transfers into one atomic transaction
-        =/  xap=(map xact:f (list [addr:f cash:f]))
+        ::  always occur for withdrawals)
+        =/  xap=(map xact:f (list [addr:f @]))
           %+  roll  loz
           |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f cash:f]))]
           =/  act=xact:f  [block-number transaction-hash]:(need mined.nex)
           =/  who=addr:f  (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.nex)
           ::  NOTE: If there are 4 topics, then this is an NFT transfer, for
-          ::  which the 4th entry is the NFT ID (discarded for now)
-          =/  cas=cash:f
-            ?+    topics.nex  !!
-                [* * * ~]
-              `@ud`(addr:dejs:ff:fh data.nex)
+          ::  which the 4th entry is the NFT ID
+          =/  val=@
+            ?+  topics.nex  !!
+              [* * * ~]  `@`(addr:dejs:ff:fh data.nex)
             ::
                 [* * * * ~]
-              ::  FIXME: This is a hack to get AZP NFTs working; we only
-              ::  count a contributed NFT as valid if it has a star NFT ID.
-              =/  nid=@  +>+<.topics.nex
-              ?:(=(2 (met 3 nid)) 1 0)
+              ?.  ?=(%enft -.payment.pro)  !!
+              ?~(limits.payment.pro 1 `@`+>+<.topics.nex)
             ==
-          (~(put by acc) act [[who cas] (~(gut by acc) act ~)])
-        =/  xaz=(list [xact:f cash:f (set addr:f)])
-          %-  ~(rep by xap)
-          |=  [[act=xact:f fez=(list [addr:f cash:f])] acc=(list [xact:f cash:f (set addr:f)])]
-          :_  acc
-          :-  act
-          %+  roll  fez
-          |=  [[nea=addr:f nec=cash:f] [acc=cash:f acs=(set addr:f)]]
-          [(add nec acc) (~(put in acs) nea)]
+          (~(put by acc) act [[who val] (~(gut by acc) act ~)])
         %-  emil
-        %+  turn  xaz
-        |=  [act=xact:f cas=cash:f adz=(set addr:f)]
-        ^-  card
-        =*  por  (pj-abed:pj-core sip nam)
-        =-  (pj-mk-card:por sip [%mula %pruf zip cas [act adr] typ.pat.pat])
-        ^-  [zip=(unit @p) adr=addr:f]
-        ?-  typ.pat.pat
-          %depo  [~ (head ~(tap in adz))]
-          ::  FIXME: Assumes that all withdrawals (including refunds)
-          ::  are prompted by the worker.
-          %with  [~ work:(need contract:pro:por)]
-          ::    %with
-          ::  =/  wok=addr:f  work:(need contract:pro:por)
-          ::  ?:((~(has in adz) wok) [`sip wok] [~ (head ~(tap in adz))])
-        ==
+        ?:  &(?=(%enft -.payment.pro) ?=(^ limits.payment.pro))
+          %-  ~(rep by xap)
+          |=  [[act=xact:f fez=(list [addr:f @])] acc=(list card)]
+          :_  acc
+          =/  nfz=(list [@ tape])  (turn fez |=([a=addr:f i=@] [i (uri.payment.pro i)]))
+          :*  %pass  `path`(welp pat /(scot %ud p.act)/(scot %ux q.act))
+              %arvo  %k  %fard  q.byk.bol
+              %nfz-okay  noun+!>([~ nfz limits.payment.pro ~])
+          ==
+        %-  turn  :_  |=([x=xact:f c=cash:f a=(set addr:f)] (pj-mk-pruf:por x c typ.pat.pat))
+        ^-  (list [xact:f cash:f (set addr:f)])
+        %-  ~(rep by xap)
+        |=  [[act=xact:f fez=(list [addr:f cash:f])] acc=(list [xact:f cash:f (set addr:f)])]
+        :_  acc
+        :-  act
+        %+  roll  fez
+        |=  [[nea=addr:f nec=cash:f] [acc=cash:f acs=(set addr:f)]]
+        [(add nec acc) (~(put in acs) nea)]
       ==
     ==
   ==
@@ -419,6 +415,17 @@
       ?^  error.syn  ((slog u.error.syn) cor)
       ~?  !<(? (slot:config %debug))   "%fund: updating profile"
       renew-surl:action
+    ==
+  ::
+      [%fund %proj sip=@ nam=@ %scan typ=@ boq=@ adr=@ ~]
+    ?+    syn  cor
+        [%khan %arow *]
+      ?:  ?=(%.n -.p.syn)  ((slog leaf+<p.p.syn> ~) cor)
+      =/  lag=flag:f  [(slav %p sip.pat) (slav %tas nam.pat)]
+      =/  typ=xfer:f  ;;(xfer:f typ.pat)
+      =/  act=xact:f  [(slav %ud boq.pat) (slav %ux adr.pat)]
+      =+  !<(gud=(set @) q.p.p.syn)
+      (emit (pj-mk-pruf:(pj-abed:pj-core lag) act ~(wyt in gud) typ))
     ==
   ==
 ::
@@ -549,6 +556,13 @@
         %agent  [who dap.bol]
         %poke   fund-poke+!>([%proj lag pod])
     ==
+  ++  pj-mk-pruf
+    |=  [act=xact:f amo=cash:f dir=xfer:f]
+    ^-  card
+    =*  con  (need contract:pro)
+    ::  FIXME: Assumes that all withdrawals are prompted by the worker
+    =/  adr=addr:f  ?-(dir %depo safe:con, %with work:con)
+    (pj-mk-card p.lag [%mula %pruf ship=~ cash=amo when=[act adr] note=dir])
   ++  pj-mk-scan
     |=  oat=(unit oath:f)
     ^-  (list card)
@@ -582,12 +596,15 @@
         ?:  (~(has in pyr) src.bol)  %peer
         %peon
     ^-  ned=perm:f
-    ?+  -.pod    %peon
-      %init  %boss
-      %drop  %boss
-      %draw  %peer
-      %wipe  %peer
-      %bump  %peer
+    ?+  -.pod  %peon
+      %init    %boss
+      %drop    %boss
+      %bump    %peer
+      %blot    %peer
+      %draw    %peer
+      %wipe    %peer
+      %redo    %peer
+      %copy    %boss
     ==
   ::
   ++  pj-pull
@@ -604,7 +621,7 @@
     ^+  pj-core
     =*  mes  `(mess:f prod:proj:f)`[src.bol pj-pa-pub pod]
     ?+    -.pod
-    ::  proj prods ::
+    ::  proj prods  ::
       ?.  pj-is-myn  pj-core(cor (emit (pj-mk-card p.lag pod)))
       ?>  ~|(bad-pj-push+mes (pj-do-writ pod))
       ?>  ~|(bad-pj-push+mes |(?=(?(%init %drop) -.pod) !pj-is-new))
@@ -659,14 +676,25 @@
           (pj-mk-scan oat.pod)
         ==
       ==
-    ::  meta prods ::
+    ::  meta prods  ::
         %lure
       ::  FIXME: For a more complete version, maintain a per-ship lure
       ::  list (like group invites from %tlon)
       ?:  =(our.bol who.pod)  $(pod [%join ~])
       ?<  ~|(bad-pj-push+mes pj-is-new)
       pj-core(cor (emit (pj-mk-card ?:(pj-is-myn who.pod p.lag) pod)))
-    ::  meta prods ::
+    ::
+        %copy
+      =/  pag=flag:f  [our.bol wer.pod]
+      =+  wat=[%fund %proj (scot %p our.bol) wer.pod ~]
+      ?>  ~|(bad-pj-push+mes =(our src):bol)
+      ?<  ~|(bad-pj-push+mes pj-is-new)
+      ?<  ~|(bad-pj-push+mes (~(has by pj-our) pag))
+      ?:  pj-is-myn  pj-core
+      =.  cor  (proj-push ~ (copy:pj-puz proj-subs pj-pa-sub wat))
+      =.  cor  (emit [%pass wat %agent [our dap]:bol %poke fund-poke+!>([%proj pag %redo ~])])
+      pj-core
+    ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is
       ::  in place (see %lure clause above).
@@ -709,7 +737,7 @@
     ^+  me-core
     =*  mes  `(mess:f prod:meta:f)`[src.bol me-pa-pub pod]
     ?+    -.pod
-    ::  meta prods ::
+    ::  meta prods  ::
       ?>  ~|(bad-me-push+mes me-is-myn)
       ?-    -.pod
           %init
@@ -801,7 +829,7 @@
     ^+  pf-core
     =*  mes  `(mess:f prod:prof:f)`[src.bol pf-pa-pub pod]
     ?+    -.pod
-    ::  prof prods ::
+    ::  prof prods  ::
       ::  NOTE: Signs directed at a foreign ship are handled specially; we allow
       ::  these to be placed in a local cache
       ?:  &(?=(%sign -.pod) !pf-is-myn)
@@ -819,7 +847,7 @@
         %fave  !(~(has in favorites.pro) lag.pod)
         %jilt  (~(has in favorites.pro) lag.pod)
       ==
-    ::  meta prods ::
+    ::  meta prods  ::
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is
       ::  in place (see %lure clause above).

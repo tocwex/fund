@@ -137,7 +137,7 @@
         ;div
           ;h1.pt-2: Milestones
           ;div#milz-well.mx-2
-            ;*  =+  pay=?~(pru ethereum-usdc:swap:fc payment.u.pru)
+            ;*  =+  pay=?~(pru (~(got by smap:fc) %ethereum 'USDC') payment.u.pru)
                 %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                 |=  [min=@ mil=mile:f]
                 ^-  manx
@@ -202,7 +202,7 @@
                     =+  dad=(sein:title our.bol now.bol our.bol)
                     ::  FIXME: These options are hard-coded from the
                     ::  ~tocwex.syndicate group's oracle directory
-                    %+  turn  ~[!<(@p (slot:config %point)) dad ~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg]
+                    %+  turn  ~[!<(@p (slot:config %point)) dad ~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg ~dalten]
                     |=  ora=@p
                     ^-  manx
                     :_  ; {<ora>}
@@ -267,7 +267,7 @@
       :~  "document.addEventListener('alpine:init', () => Alpine.data('proj_edit', () => (\{"
           :(weld "proj_scan: '" (bloq:enjs:ff:fh ?~(pru id:(snag 0 xlis:fc) chain.payment.u.pru)) "',")
           :(weld "proj_stok: '" ?~(pru "USDC" (trip symbol.payment.u.pru)) "',")
-          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (comp:enjs:ff:fh cost.n ?~(pru ethereum-usdc:swap:fc payment.u.pru)) ","))) "],")
+          :(weld "mile_cost: [" (roll `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru) |=([n=mile:f a=tape] :(weld a (comp:enjs:ff:fh cost.n ?~(pru (~(got by smap:fc) %ethereum 'USDC') payment.u.pru)) ","))) "],")
           ^-  tape  ^~
           %+  rip  3
           '''
@@ -341,4 +341,4 @@
     ==
   ==
 --
-::  VERSION: [1 2 1]
+::  VERSION: [1 3 0]

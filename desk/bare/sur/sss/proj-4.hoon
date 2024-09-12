@@ -1,5 +1,5 @@
-/-  pold=sss-proj-4
-/+  *fund-proj, fc=fund-core, config, sss
+/-  pold=sss-proj-3
+/+  *fund-proj-1, fc=fund-core, config, sss
 |%
 +|  %misc
 ++  flag
@@ -29,7 +29,7 @@
   --
 
 +|  %core
-+$  vers  _%5
++$  vers  _%4
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
   =/  up
@@ -40,20 +40,7 @@
           summary=summary.pro
           image=image.pro
           assessment=assessment.pro
-      ::
-            ^=  payment
-          ?.  ?=(%enft -.payment.pro)  payment.pro
-          :*  %enft
-              chain=chain.payment.pro
-              addr=addr.payment.pro
-              name=name.payment.pro
-              symbol=symbol.payment.pro
-              ::  NOTE: Hardcoded so as not to create a dependency on the
-              ::  /lib/fund/chain/hoon file
-              uri=|=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
-              limits=(malt ~[[%size |=(=@t =(%star t))]])
-          ==
-      ::
+          payment=[%coin currency.pro]
           milestones=milestones.pro
           contract=contract.pro
           pledges=pledges.pro

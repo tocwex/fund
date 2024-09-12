@@ -518,7 +518,7 @@
             =required  ~
             =x-init  "initTomSelect($el, {(bool:enjs:ff emt)})"
             =x-on-change  "updateTokenSelect"
-          ;*  =+  can=?~(swa -:ethereum:xeta:fc chain.u.swa)
+          ;*  =+  can=?~(swa id:(~(got by xmap:fc) %ethereum) chain.u.swa)
               %+  welp
                 ?.  emt  ~
                 :_  ~  ;option(value ""): Any Chain

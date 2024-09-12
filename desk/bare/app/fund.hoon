@@ -242,9 +242,10 @@
   |=  pat=(pole knot)
   ^-  (unit (unit cage))
   ?+    pat  [~ ~]
-    [%x %dbug %state ~]  ``noun+!>(state)
+      [%x %dbug %state ~]
+    ``noun+!>(state)
   ::
-      [%x %view ~]
+      [%x %dbug %short ~]
     =+  flat=(cork flag:enjs:ff:fh crip)
     :^  ~  ~  %noun  !>
     :*  host=(~(run in ~(key by pj-myn)) flat)

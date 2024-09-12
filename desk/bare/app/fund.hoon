@@ -242,6 +242,8 @@
   |=  pat=(pole knot)
   ^-  (unit (unit cage))
   ?+    pat  [~ ~]
+    [%x %dbug %state ~]  ``noun+!>(state)
+  ::
       [%x %view ~]
     =+  flat=(cork flag:enjs:ff:fh crip)
     :^  ~  ~  %noun  !>
@@ -596,10 +598,12 @@
     ?+  -.pod  %peon
       %init    %boss
       %drop    %boss
+      %bump    %peer
+      %blot    %peer
       %draw    %peer
       %wipe    %peer
-      %bump    %peer
-      %save    %boss
+      %redo    %peer
+      %copy    %boss
     ==
   ::
   ++  pj-pull
@@ -679,7 +683,7 @@
       ?<  ~|(bad-pj-push+mes pj-is-new)
       pj-core(cor (emit (pj-mk-card ?:(pj-is-myn who.pod p.lag) pod)))
     ::
-        %save
+        %copy
       =/  pag=flag:f  [our.bol wer.pod]
       =+  wat=[%fund %proj (scot %p our.bol) wer.pod ~]
       ?>  ~|(bad-pj-push+mes =(our src):bol)

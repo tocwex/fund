@@ -69,7 +69,7 @@
       [%join ~]
       [%exit ~]
       [%lure who=@p wut=role]
-      [%save wer=@tas]
+      [%copy wer=@tas]
   ==
 ::
 ::  $poke: project-bound delta ($prod)

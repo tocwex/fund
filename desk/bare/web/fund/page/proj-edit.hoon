@@ -202,7 +202,7 @@
                     =+  dad=(sein:title our.bol now.bol our.bol)
                     ::  FIXME: These options are hard-coded from the
                     ::  ~tocwex.syndicate group's oracle directory
-                    %+  turn  ~[!<(@p (slot:config %point)) dad ~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg ~dalten]
+                    %+  turn  ~[!<(@p (slot:config %point)) dad ~reb ~bitdeg ~dalten ~darlur ~hosdys ~mocbel ~nisfeb ~pandux ~posdeg ~ridlyd ~roswet]
                     |=  ora=@p
                     ^-  manx
                     :_  ; {<ora>}

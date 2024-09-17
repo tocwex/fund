@@ -1,5 +1,5 @@
-/-  pold=sss-proj-5
-/+  *fund-proj, fc=fund-core, config, sss
+/-  pold=sss-proj-4
+/+  *fund-proj-2, fc=fund-core, config, sss
 |%
 +|  %misc
 ++  flag
@@ -29,9 +29,38 @@
   --
 
 +|  %core
-+$  vers  _%6
++$  vers  _%5
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
+  =/  up
+    |_  pro=proj:pold
+    ++  proj
+      ^-  ^proj
+      :*  title=title.pro
+          summary=summary.pro
+          image=image.pro
+          assessment=assessment.pro
+      ::
+            ^=  payment
+          ?.  ?=(%enft -.payment.pro)  payment.pro
+          :*  %enft
+              chain=chain.payment.pro
+              addr=addr.payment.pro
+              name=name.payment.pro
+              symbol=symbol.payment.pro
+              ::  NOTE: Hardcoded so as not to create a dependency on the
+              ::  /lib/fund/chain/hoon file
+              uri=|=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
+              limits=(malt ~[[%size |=(=@t =(%star t))]])
+          ==
+      ::
+          milestones=milestones.pro
+          contract=contract.pro
+          pledges=pledges.pro
+          contribs=contribs.pro
+          proofs=proofs.pro
+      ==
+    --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
@@ -43,7 +72,7 @@
     ^-  rock
     ?+  -.voc     $(voc (urck:lake:pold voc))
       vers        voc
-      vers:pold   $(voc [*vers +.voc])
+      vers:pold   $(voc [*vers ~(proj up +.voc)])
     ==
   ++  uwve
     |=  vav=vave
@@ -54,7 +83,7 @@
         vers:pold
       =-  $(vav [*vers -])
       ?+    +.vav      +.vav
-        [* * %redo *]  [bol.vav p.pok.vav %redo ~ ~]
+        [* * %init *]  [bol.vav p.pok.vav %init ~(proj up pro.q.pok.vav)]
       ==
     ==
   ++  wash
@@ -281,42 +310,14 @@
       (edit-mile min mil(withdrawal `[~ u.sig.pod fil ~]))
     ::
         %redo
-      =/  sob=bloq  (fall sob.pod ?~(contract.pro 0 p.xact.u.contract.pro))
-      =/  tob=bloq  (fall tob.pod 1.000.000.000.000.000)  ::  NOTE: Basically 'Number.MAX'
-      =+  gud=|=(p=pruf &((gte sob p.xact.when.p) (lte tob p.xact.when.p)))
       %_    pro
-          proofs
-        %-  ~(rep by proofs.pro)
-        |=  [[key=addr val=pruf] acc=(map addr pruf)]
-        ^-  (map addr pruf)
-        ?.((gud val) acc (~(put by acc) key val))
-      ::
-          contribs
-        %-  ~(run by contribs.pro)
-        |=  [teb=treb det=deta]
-        :_  det
-        %_    teb
-            pruf
-          ?~  pruf.teb  ~
-          ?.  (gud u.pruf.teb)  ~
-          pruf.teb
-        ==
+        proofs    proofs:*proj
+        contribs  (~(run by contribs.pro) |=([t=treb d=deta] [t(pruf ~) d]))
       ::
           milestones
         ;;  (lest mile)
         %+  turn  milestones.pro
-        |=  mil=mile
-        %_    mil
-            withdrawal
-          %+  bind  withdrawal.mil
-          |=  wit=with
-          %_    wit
-              pruf
-            ?~  pruf.wit  ~
-            ?.  (gud u.pruf.wit)  ~
-            pruf.wit
-          ==
-        ==
+        |=(m=mile m(withdrawal (bind withdrawal.m |=(w=with w(pruf ~)))))
       ==
     ==
   --

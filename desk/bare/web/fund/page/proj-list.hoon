@@ -152,9 +152,7 @@
       ^-  manx
       ::  TODO: Replace the latter with a ship-generated sigil pair
       ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape
-        ?^  image.pre  (trip u.image.pre)
-        (surt:enrl:ff:fh p.lag)
+      =/  bak=tape  ?^(image.pre (trip u.image.pre) (simg:fh p.lag bol))
       ;a/"{(flat:enrl:ff:fh lag)}"(class "flex flex-col gap-2 font-serif {cas}")
         ;div(class "aspect-video bg-cover bg-center rounded-md bg-[url('{bak}')]")
           ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
@@ -173,7 +171,7 @@
           ;div(class "flex-1 min-w-0 text-lg"): {(trip title.pre)}
           ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
             ;+  %+  ~(icon-stax ui:fh "h-8")  %rect
-                (turn ~[p.lag p.assessment.pre] surt:enrl:ff:fh)
+                (turn ~[p.lag p.assessment.pre] (curr simg:fh bol))
           ==
         ==
       ==
@@ -182,9 +180,7 @@
       ^-  manx
       ::  TODO: Replace the latter with a ship-generated sigil pair
       ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape
-        ?^  image.met  (trip u.image.met)
-        (surt:enrl:ff:fh worker.met)
+      =/  bak=tape  ?^(image.met (trip u.image.met) (simg:fh worker.met bol))
       ::  TODO: Add data attributes to allow for FE sorting/filtering
       ;div  =x-on-click  "joinProject('{(flag:enjs:ff:fh lag)}')"
           =class  "flex flex-col gap-2 font-serif hover:cursor-pointer {cas}"
@@ -194,7 +190,7 @@
               ; {(swam:enjs:ff:fh cost.met payment.met)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5 line-clamp-2")
-              ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] surt:enrl:ff:fh))
+              ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] (curr simg:fh bol)))
             ==
           ==
         ==

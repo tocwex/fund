@@ -62,10 +62,9 @@
       [%bump sat=stat oat=(unit oath)]
       [%mula mula]
       [%blot mid=@ dif=blot]
-      [%view mid=@ dif=view]
       [%draw min=@ dif=xact]
       [%wipe min=@ sig=(unit sigm)]
-      [%redo sob=(unit bloq) tob=(unit bloq)]
+      [%redo ~]
       ::  meta prods  ::
       [%join ~]
       [%exit ~]

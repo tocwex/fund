@@ -49,8 +49,9 @@
 ++  styt
   |=  [sip=@p bol=bowl:gall]  ~+
   ^-  tape
-  ?~  con=(scon sip bol)    "{<sip>}"
-  ?:  =(%$ nickname.u.con)  "{<sip>}"
+  =/  def=tape  "{<sip>}"
+  ?~  con=(scon sip bol)    def
+  ?:  =(%$ nickname.u.con)  def
   (trip nickname.u.con)
 ::
 ::  +simg: s(hip) im(a)g(e) (ship image information, from %contacts)
@@ -58,8 +59,10 @@
 ++  simg
   |=  [sip=@p bol=bowl:gall]  ~+
   ^-  tape
-  ?~  con=(scon sip bol)  (surt:enrl:ff sip)
-  ?~  avatar.u.con        (surt:enrl:ff sip)
+  =/  def=tape  (surt:enrl:ff sip)
+  ?~  con=(scon sip bol)    def
+  ?~  avatar.u.con          def
+  ?:  =(%$ u.avatar.u.con)  def
   (trip u.avatar.u.con)
 ::
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)

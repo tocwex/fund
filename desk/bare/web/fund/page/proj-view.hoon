@@ -137,6 +137,48 @@
           ==
         ==
       ==
+    ::
+        ?(%mula-blot %mula-view %mula-mine %mula-redo)
+      ?+  arz=(parz:fh bod (sy ~[%mut %mui]))  p.arz  [%| *]
+        =/  mut=@t  (~(got by p.arz) %mut)
+        =/  mui=@t  (~(got by p.arz) %mui)
+        =/  med=@   ?+(mut (addr:dejs:ff:fh mui) %plej (ship:dejs:ff:fh mui))
+        =/  mid=@
+          ?+    mut  0
+            %plej  ?~(pej=(~(get by pledges.pro) `@p`med) 0 id.u.pej)
+            %trib  ?~(teb=(~(get by contribs.pro) `addr:f`med) 0 id.u.teb)
+          ==
+        ?-    dif
+            %mula-blot
+          =-  [%blot mid ?:(sow %hide %show)]
+          ^-  sow=?
+          ?+    mut  !!
+            %plej  show:(~(got by pledges.pro) `@p`med)
+            %trib  show:(~(got by contribs.pro) `addr:f`med)
+          ==
+        ::
+            %mula-view
+          =-  [%view mid ?:(sly %stif %slyd)]
+          ^-  sly=?
+          ?.  ?=(%plej mut)  !!
+          =+  pej=(~(got by pledges.pro) `@p`med)
+          ?~(vyw=view.pej !! =(%slyd u.vyw))
+        ::
+            %mula-mine
+          ?.  ?=(%pruf mut)  !!
+          =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
+          =/  puf=pruf:f  (~(got by proofs.pro) `addr:f`med)
+          [%mula %trib who cash.puf when.puf %$]
+        ::
+            %mula-redo
+          =/  win=@ud  :(mul 4 60 10)  ::  4 blocks/sec * 60 sec/min * 10 mins
+          =-  [%redo `(sub boq win) `(add boq win)]
+          ^-  boq=bloq:f
+          ?.  ?=(%trib mut)  !!
+          =+  tib=(~(got by contribs.pro) `addr:f`med)
+          p.xact.when.tib
+        ==
+      ==
     ==
   ==
 ++  final  ::  POST render
@@ -175,7 +217,7 @@
   ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
         ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
-    ;img.w-full@"{(trip ?^(image.pro u.image.pro (surc:enrl:ff:fh p.lag)))}";
+    ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (simg:fh p.lag bol))))}";
     ;*  =-  ?~  buz  ~
             :_  ~
             ::  NOTE: For "w-full on stick," add `-top-[1px]`, `x-init "initSticky($el)"`
@@ -544,21 +586,31 @@
               %+  turn  muz
               |=  mul=mula:f
               ^-  manx
-              ;div(class "p-2.5 flex flex-col gap-y-2 fund-card")
+              =/  [myp=tape mid=tape]
+                :-  (trip -.mul)
+                ?-  -.mul
+                  %plej  "{(ship:enjs:ff:fh ship.mul)}"
+                  %trib  "{(addr:enjs:ff:fh q.xact.when.mul)}"
+                  %pruf  "{(addr:enjs:ff:fh q.xact.when.mul)}"
+                ==
+              ;div
+                  =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}' }"
+                  =class   "p-2.5 flex flex-col gap-y-2 fund-card"
                 ;div(class "flex flex-wrap items-center justify-between")
                   ;div(class "flex items-center gap-x-2")
                     ;*  =-  ~[(icon-logo:ui:fh %rect url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
                         ^-  [url=tape txt=tape]
                         ?-  -.mul
-                          %plej  [(surt:enrl:ff:fh ship.mul) "{<ship.mul>}"]
+                          %plej  [(surt:enrl:ff:fh ship.mul) (ship:enjs:ff:fh ship.mul)]
                         ::
                             %trib
                           ?~  ship.mul  [(colt:enrl:ff:fh %black) "anonymous"]
-                          [(surt:enrl:ff:fh u.ship.mul) "{<u.ship.mul>}"]
+                          [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
                         ::
                             %pruf
-                          ?~  ship.mul  [(aset:enrl:ff:fh %link) "chain data"]
-                          [(surt:enrl:ff:fh u.ship.mul) "{<u.ship.mul>}"]
+                          ::  TODO: Add ENS support here for 'chain data'
+                          ?~  ship.mul  [(aset:enrl:ff:fh %link) (addr:enjs:ff:fh from.when.mul)]
+                          [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
                         ==
                   ==
                   ;div(class "flex items-center gap-x-2")
@@ -597,6 +649,43 @@
                       ;p(class "fund-warn"): No message included.
                     ::  TODO: Consider including the pledge message here too
                     ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
+                ;*  =-  ?~  buz  ~
+                        :_  ~
+                        ;div(class "flex flex-row justify-end gap-2 items-center")
+                          ;*  buz
+                        ==
+                    ^-  buz=marl
+                    ;:    welp
+                    ::  mula blot button  ::
+                        ?.  &(pyr !?=(%pruf -.mul))  ~
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-blot %action "toggle shown ~" "editMula" ~)
+                      ==
+                    ::  pledge edit view button  ::
+                        ?.  &(pyr ?=(%plej -.mul))  ~  ::  ?=(?(%done %dead) sat)
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-view %action "toggle view ~" "editMula" ~)
+                      ==
+                    ::  chain data claim button  ::
+                        ?.  &(?=(%pruf -.mul) ?=(%depo note.mul))  ~
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-mine %action "claim data ~" "editMula" ~)
+                      ==
+                    ::  attested redo button  ::
+                        ?.  ?&  pyr
+                                ?=(%trib -.mul)
+                                  =+  teb=(~(got by contribs.pro) q.xact.when.mul)
+                                ?=(~ pruf.teb)
+                            ==
+                          ~
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-redo %action "query chain ~" "editMula" ~)
+                      ==
+                    ==
               ==
         ==
       ==
@@ -836,6 +925,11 @@
                 });
               }
             );
+          },
+          editMula(event) {
+            this.sendForm(event, [], () => (
+              Promise.resolve({mut: this.mula_type, mui: this.mula_idex})
+            ));
           },
           })));
           '''

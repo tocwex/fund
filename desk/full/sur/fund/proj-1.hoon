@@ -1,1 +1,0 @@
-../../../bare/sur/fund/proj-1.hoon

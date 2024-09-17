@@ -1,1 +1,0 @@
-../../../bare/sur/fund/meta-0.hoon

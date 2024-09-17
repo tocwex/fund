@@ -1,6 +1,6 @@
 /-  f=fund, p=pals
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
-/+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof
+/+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fx=fund-xtra
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -340,7 +340,7 @@
       ?~  p.syn  cor
       ((slog u.p.syn) cor)
     ::  scan response  ::
-        [%scan typ=@ ~]
+        [%scan typ=@ sob=@ tob=@ ~]
       ?>  =(our.bol sip)
       ?>  ?=(xfer:f typ.pat.pat)
       ?+    -.syn  cor
@@ -364,6 +364,10 @@
         =/  loz=loglist:fc   ?+(-.dif loglist.dif %disavow ~)
         =*  por  (pj-abed:pj-core sip nam)
         =/  pro=proj:proj:f  pro:por
+        ::  NOTE: Unused for now, but may be useful for notifications later
+        =/  [sob=(unit bloq:f) tob=(unit bloq:f)]
+          =+  par=|=(v=@ `(unit bloq:f)`?:(=(%$ v) ~ `(slav %ud v)))
+          [(par sob.pat.pat) (par tob.pat.pat)]
         ::  NOTE: We group by transaction for multisend cases (which
         ::  always occur for withdrawals)
         =/  xap=(map xact:f (list [addr:f @]))
@@ -431,10 +435,11 @@
 ::
 ++  open
   ^+  cor
-  =/  old=?  !(~(has by pf-myn) our.bol)
+  ::  TODO: kiq if %5 to %6 proj type
+  =/  kiq=?  !(~(has by pf-myn) our.bol)
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  =.  cor  (renew-projs:action old)
+  =.  cor  (renew-projs:action kiq)
   cor
 ++  action
   |%
@@ -481,7 +486,7 @@
     ::
         cor
       ?.  &(kiq =(p.i.lis our.bol))  pj-abet:(pj-abed:pj-core i.lis)
-      pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~])
+      pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~ ~])
     ==
   ++  toggle-profs                               ::  toggle profile follow status
     |=  [ahn=? siz=(set @p)]
@@ -534,9 +539,13 @@
   ++  pj-pj-bloq
     ^-  @
     =/  pre=path  (en-beam [our.bol %fund-watcher da+now.bol] /)
-    =/  pat=path  (welp pj-pa-pub /scan/depo)
+    =-  ?~(pat 0 .^(@ %gx :(welp pre /block u.pat /atom)))
+    ^-  pat=(unit path)
     =+  .^(pap=(map path *) %gx (welp pre /dogs/configs/noun))
-    ?.((~(has by pap) pat) 0 .^(@ %gx :(welp pre /block pat /atom)))
+    %+  find:fx  ~(tap in ~(key by pap))
+    =/  pre=path  (welp pj-pa-pub /scan/depo)
+    =/  pen=@ud   (lent (welp pj-pa-pub /scan/depo))
+    |=(n=path &(=(pre (scag pen n)) =(%$ (rear n))))
   ++  pj-pj-push
     |=  pod=prod:proj:f
     ^+  pj-core
@@ -564,18 +573,25 @@
     =/  adr=addr:f  ?-(dir %depo safe:con, %with work:con)
     (pj-mk-card p.lag [%mula %pruf ship=~ cash=amo when=[act adr] note=dir])
   ++  pj-mk-scan
-    |=  oat=(unit oath:f)
+    |=  [oat=(unit oath:f) sob=(unit bloq:f) tob=(unit bloq:f)]
     ^-  (list card)
     =+  oaf=(fall (clap oat contract.pro head) *oath:f)
     %-  zing
-    %+  turn  (scan-cfgz:fc oaf payment.pro)
+    %+  turn  (scan-cfgz:fc oaf sob tob payment.pro)
     |=  [suf=path cfg=config:fc]
     ^-  (list card)
     =/  pat=path  (welp pj-pa-pub suf)
-    =+  car=[%pass pat %agent [our.bol %fund-watcher] act=~]
-    ;:  welp
-        ?.((~(has by wex.bol) pat our.bol %fund-watcher) ~ [car(act [%leave ~])]~)
-        [car(act [%poke %fund-watcher-poke !>([%watch pat cfg])])]~
+    =+  car=[%pass pat=~ %agent [our.bol %fund-watcher] act=~]
+    %-  snoc  :_  `card`car(pat pat, act [%poke %fund-watcher-poke !>([%watch pat cfg])])
+    ?^  tob  ~
+    %-  turn  :_  |=([w=wire s=@p a=@tas] `card`car(pat w, act [%leave ~]))
+    %+  skim  ~(tap in ~(key by wex.bol))
+    =/  pen=@ud  (sub (lent pat) 2)  ::  path w/o start/end delimiters
+    |=  [wyr=wire sip=@p dap=@tas]
+    ?&  =(sip our.bol)
+        =(dap %fund-watcher)
+        =((scag pen pat) (scag pen wyr))
+        =(%$ (rear wyr))
     ==
   ::
   ++  pj-do-read
@@ -638,7 +654,7 @@
         (pj-pj-push pod(p.dif pj-pj-bloq))
       ::
           %redo
-        =?  cor  !?=(?(%born %prop) ~(stat pj:fj pro))  (emil (pj-mk-scan ~))
+        =?  cor  !?=(?(%born %prop) ~(stat pj:fj pro))  (emil (pj-mk-scan ~ +.pod))
         (pj-pj-push pod)
       ::
           %mula
@@ -673,7 +689,7 @@
         ::
             %lock
           =-  pj-core(cor (emil -))
-          (pj-mk-scan oat.pod)
+          (pj-mk-scan oat.pod ~ ~)
         ==
       ==
     ::  meta prods  ::
@@ -692,7 +708,7 @@
       ?<  ~|(bad-pj-push+mes (~(has by pj-our) pag))
       ?:  pj-is-myn  pj-core
       =.  cor  (proj-push ~ (copy:pj-puz proj-subs pj-pa-sub wat))
-      =.  cor  (emit [%pass wat %agent [our dap]:bol %poke fund-poke+!>([%proj pag %redo ~])])
+      =.  cor  (emit [%pass wat %agent [our dap]:bol %poke fund-poke+!>([%proj pag %redo ~ ~])])
       pj-core
     ::
         ?(%join %exit)

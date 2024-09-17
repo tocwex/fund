@@ -435,11 +435,13 @@
 ::
 ++  open
   ^+  cor
-  ::  TODO: kiq if %5 to %6 proj type
-  =/  kiq=?  !(~(has by pf-myn) our.bol)
+  =/  old=?  !(~(has by pf-myn) our.bol)
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  =.  cor  (renew-projs:action kiq)
+  =.  cor  %-  renew-projs:action
+    ?:  old  ~(key by pj-myn)
+    %-  sy  %+  turn  (skim ~(tap in ~(key by wex.bol)) v0-5-wath:audit)
+    |=([w=wire s=@p a=@tas] `flag:f`[(slav %p (snag 2 w)) (slav %tas (snag 3 w))])
   cor
 ++  action
   |%
@@ -476,7 +478,7 @@
         ?=(^ (find /gall/use/fund pat))
     ==
   ++  renew-projs                                ::  invoke project level triggers
-    |=  kiq=?
+    |=  kiz=(set flag:f)
     ^+  cor
     =/  lis=(list flag:f)  ~(tap in ~(key by pj-our))
     |-
@@ -485,7 +487,8 @@
       lis  t.lis
     ::
         cor
-      ?.  &(kiq =(p.i.lis our.bol))  pj-abet:(pj-abed:pj-core i.lis)
+      ?.  &((~(has in kiz) i.lis) =(our.bol p.i.lis))
+        pj-abet:(pj-abed:pj-core i.lis)
       pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~ ~])
     ==
   ++  toggle-profs                               ::  toggle profile follow status
@@ -496,6 +499,18 @@
     ?~  lis  cor
     =/  pod=prod:prof:f  ?:(ahn [%join ~] [%exit ~])
     $(cor pf-abet:(pf-push:(pf-abed:pf-core i.lis) pod), lis t.lis)
+  --
+::
+++  audit
+  |%
+  ++  v0-5-wath                                  ::  v0-5 %fund-watcher proj watch path?
+    |=  [wyr=wire sip=@p dap=@tas]
+    ^-  bean
+    ?&  =(sip our.bol)
+        =(dap %fund-watcher)
+        =(%$ (rear wyr))
+        =((lent /fund/proj/sip/nam/scan/typ) (lent wyr))
+    ==
   --
 ::
 ++  pj-core
@@ -544,7 +559,7 @@
     =+  .^(pap=(map path *) %gx (welp pre /dogs/configs/noun))
     %+  find:fx  ~(tap in ~(key by pap))
     =/  pre=path  (welp pj-pa-pub /scan/depo)
-    =/  pen=@ud   (lent (welp pj-pa-pub /scan/depo))
+    =/  pen=@ud   (lent pre)
     |=(n=path &(=(pre (scag pen n)) =(%$ (rear n))))
   ++  pj-pj-push
     |=  pod=prod:proj:f
@@ -587,12 +602,7 @@
     %-  turn  :_  |=([w=wire s=@p a=@tas] `card`car(pat w, act [%leave ~]))
     %+  skim  ~(tap in ~(key by wex.bol))
     =/  pen=@ud  (sub (lent pat) 2)  ::  path w/o start/end delimiters
-    |=  [wyr=wire sip=@p dap=@tas]
-    ?&  =(sip our.bol)
-        =(dap %fund-watcher)
-        =((scag pen pat) (scag pen wyr))
-        =(%$ (rear wyr))
-    ==
+    |=([w=wire s=@p a=@tas] &((v0-5-wath:audit +<) =((scag pen pat) (scag pen w))))
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f

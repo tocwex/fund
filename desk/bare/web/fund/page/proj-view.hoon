@@ -390,8 +390,6 @@
                           [%class "fund-tsel"]~
                           ?.(nft ~ [%multiple ~]~)
                           ?~(pej ~ ?:(nft [%required ~]~ [%disabled ~]~))
-                          ::  FIXME: Imperfect because this only reloads when
-                          ::  the dialog is open
                           ['@fund-wallet.window' "$el?.tomselect?.load && $el.tomselect.load()"]~
                           :_  ~  :-  %x-init
                           %-  zing  %+  join  "\0a"
@@ -402,11 +400,15 @@
                               %+  rip  3
                               '''
                               if (typeof initTomSelect !== 'undefined') {
-                                initTomSelect($el, {
-                                  empty: isNFT,
-                                  maxItems: !isNFT ? undefined : 1, // maxItems,
-                                  load: !isNFT ? undefined : tsLoadNFTs($el),
-                                });
+                                if (!!$el?.tomselect) {
+                                  $el?.tomselect?.load && $el.tomselect.load();
+                                } else {
+                                  initTomSelect($el, {
+                                    empty: isNFT,
+                                    maxItems: !isNFT ? undefined : 1, // maxItems,
+                                    load: !isNFT ? undefined : tsLoadNFTs($el),
+                                  });
+                                }
                               }
                               '''
                           ==

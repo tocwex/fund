@@ -37,6 +37,7 @@ These tests must be run on `~zod` in order to work!
 :fund &fund-poke [%proj [our %test] %mula %trib `our 1.000.000 s(xact [5 0x0]) '']
 :fund &fund-poke [%proj [our %test] %mula %plej our 50.000.000 6 (crip "{<our>} plej")]
 :fund &fund-poke [%proj [our %test] %draw 0 [7 0x0]]
+:fund &fund-poke [%proj [our %test] %redo ~ ~]
 :fund &fund-poke [%proj [our %tes2] %init p(title '5', summary '%', assessment [~nec 1.000.000], currency sepolia-usdc:coin:x, milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
 :fund &fund-poke [%proj [our %tes2] %bump %prop ~]
 :fund &fund-poke [%prof ~nec %join ~]

@@ -312,10 +312,15 @@ if (window.Alpine === undefined) {
   Alpine.store("project", {
     swap: undefined,
     symbol: undefined,
+    nfts: {},
     update(swap, symbol) {
       this.swap = swap;
       this.symbol = symbol;
+      this.nfts = {};
       window.dispatchEvent(new CustomEvent("fund-project", {detail: symbol}));
+    },
+    loadNFTs(addr, nfts) {
+      this.nfts[addr] = nfts;
     },
   });
 
@@ -518,6 +523,7 @@ if (window.Alpine === undefined) {
       const tselElem = new TomSelect(elem, {
         allowEmptyOption: empty,
         render: {
+          loading: (data, escape) => "<div class='fund-loader'>⏳</div>",
           option: (data, escape) => renderSelector(data, escape),
           item: (data, escape) => renderSelector(data, escape),
           ...(!create ? {} : {
@@ -592,28 +598,33 @@ if (window.Alpine === undefined) {
 
   function tsLoadNFTs(elem) {
     return (query, callback) => {
-      var self = elem.tomselect;
+      const self = elem.tomselect;
       if (self.loading > 1) return callback();
 
-      console.log(`loading NFTs for ${Alpine.store("wallet").address}`);
-      if (!(Alpine.store("wallet").address && Alpine.store("project").swap === "enft")) {
+      const address = Alpine.store("wallet").address;
+      const chain = Alpine.store("wallet").chain;
+      console.log(`loading NFTs for ${address}`);
+      if (!(address && (Alpine.store("project").swap === "enft"))) {
         callback();
       } else {
-        SAFE.nftsGetAll(
-          Alpine.store("wallet").address,
-          Alpine.store("wallet").chain,
-          Alpine.store("project").symbol,
-        ).then(nfts => {
-          const options = nfts
-            .filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
-              (attr?.trait_type === "size" && attr?.value === "star")
-            )))).map(({name, image, tokenId}) => ({
-              value: tokenId,
-              text: name,
-              image: image.cachedUrl,
-            }));
-          self.clear(true);
-          self.clearOptions();
+        self.clear(true);
+        self.clearOptions();
+
+        const loadedNFTs = Alpine.store("project").nfts?.[address];
+        const loadNFTOptions = loadedNFTs
+          ? Promise.resolve(loadedNFTs)
+          : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
+              // TODO: Generalize this logic by querying metadata filters from the BE
+              nfts.filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
+                (attr?.trait_type === "size" && attr?.value === "star")
+              )))).map(({name, image, tokenId}) => ({
+                value: tokenId,
+                text: name,
+                image: image.cachedUrl,
+              }))
+            ));
+        loadNFTOptions.then(options => {
+          Alpine.store("project").loadNFTs(address, options);
           callback(options);
           delete self.loadedSearches[query];
         }).catch(() => callback());

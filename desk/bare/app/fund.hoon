@@ -428,7 +428,7 @@
       renew-surl:action
     ==
   ::
-      [%fund %proj sip=@ nam=@ %scan typ=@ boq=@ hax=@ fom=@ ~]
+      [%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ boq=@ hax=@ fom=@ ~]
     ?+    syn  cor
         [%khan %arow *]
       ?:  ?=(%.n -.p.syn)  ((slog leaf+<p.p.syn> ~) cor)

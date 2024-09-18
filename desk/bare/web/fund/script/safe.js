@@ -73,7 +73,7 @@ export const nftsGetAll = async (wallet, chainId, token) => {
       queryUrl.searchParams.append("pageKey", pageKey);
     }
     return isLastCall
-      ? new Promise(resolve => resolve(results))
+      ? Promise.resolve(results)
       : fetch(queryUrl)
           .then(response => response.json())
           .then(json => getNFTs(

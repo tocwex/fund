@@ -591,12 +591,19 @@
               %+  turn  muz
               |=  mul=mula:f
               ^-  manx
-              =/  [myp=tape muf=tape mid=tape]
-                :+  (trip -.mul)  ?+(-.mul (addr:enjs:ff:fh from.when.mul) %plej ~)
-                ?-  -.mul
-                  %plej  (ship:enjs:ff:fh ship.mul)
-                  %trib  (addr:enjs:ff:fh q.xact.when.mul)
-                  %pruf  (addr:enjs:ff:fh q.xact.when.mul)
+              =/  [myp=tape muf=tape mid=tape mow=bean]
+                :-  myp=(trip -.mul)
+                ?-    -.mul
+                    %plej
+                  =+  pej=(~(got by pledges.pro) ship.mul)
+                  [muf=~ mid=(ship:enjs:ff:fh ship.mul) mow=show.pej]
+                ::
+                    %trib
+                  =+  teb=(~(got by contribs.pro) q.xact.when.mul)
+                  [muf=(addr:enjs:ff:fh from.when.mul) mid=(addr:enjs:ff:fh q.xact.when.mul) mow=show.teb]
+                ::
+                    %pruf
+                  [muf=(addr:enjs:ff:fh from.when.mul) mid=(addr:enjs:ff:fh q.xact.when.mul) mow=&]
                 ==
               ;div
                   =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
@@ -651,10 +658,19 @@
                         ==
                   ==
                 ==
-                ;+  ?:  |(=('' note.mul) ?=(%pruf -.mul))
-                      ;p(class "fund-warn"): No message included.
-                    ::  TODO: Consider including the pledge message here too
-                    ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
+                ;div(class "flex flex-col gap-2", x-data "\{expanded: {(bool:enjs:ff:fh mow)}}")
+                  ;div(x-show "expanded")
+                    ;+  ?:  |(=('' note.mul) ?=(%pruf -.mul))
+                          ;p(class "fund-warn"): No message included.
+                        ::  TODO: Consider including the pledge message here too
+                        ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
+                  ==
+                  ;button.fund-butn-ac-s.mx-auto  =type  "button"
+                      =x-show  "!{(bool:enjs:ff:fh mow)}"
+                      =x-on-click  "expanded = ! expanded"
+                    ; toggle ~
+                  ==
+                ==
                 ;*  =-  ?~  buz  ~
                         :_  ~
                         ;div(class "flex flex-row justify-end gap-2 items-center")
@@ -663,7 +679,7 @@
                     ^-  buz=marl
                     ;:    welp
                     ::  mula blot button  ::
-                        ?:  %.y  ~  ::  ?.  &(pyr !?=(%pruf -.mul))  ~
+                        ?.  &(pyr !?=(%pruf -.mul))  ~
                       :_  ~
                       ;form(method "post")
                         ;+  (prod-butn:ui:fh %mula-blot %action "toggle shown ~" "editMula" ~)

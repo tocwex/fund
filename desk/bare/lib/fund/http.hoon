@@ -490,7 +490,7 @@
     ::  FIXME: This is hacky and wasteful, but attempting to use Alpine.js to
     ::  just edit in/out the 'line-clamp-5' class doesn't work due to
     ::  collisions with Twind.js.
-    ;div(class "w-full", x-data "\{expanded: {(trip ?:(?=(%verb typ) 'true' 'false'))}}")
+    ;div(class "w-full", x-data "\{expanded: {(bool:enjs:ff ?=(%verb typ))}}")
       ::  FIXME: Attempting to apply a "to transparent" graident, but
       ::  it's not working...
       ::  after:bg-gradient-to-b after:from-inherit

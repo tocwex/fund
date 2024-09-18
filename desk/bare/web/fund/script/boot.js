@@ -295,6 +295,19 @@ if (window.Alpine === undefined) {
     }
   });
 
+  Alpine.store("wallet", {
+    address: null,
+    status: "…loading…",
+    // nfts: {}, // {contract address => nft data list}
+    update(address) {
+      this.address = address;
+      this.status =
+        (address === undefined) ? "connect 💰"
+        : (address === null) ? "…loading…"
+        : `${address.slice(0, 5)}…${address.slice(-4)}`;
+    },
+  });
+
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     cmd,
     copyText,
@@ -436,6 +449,16 @@ if (window.Alpine === undefined) {
     )
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
+
+  // FIXME: This doesn't work well for calculating line clamps on the
+  // 'zero-md' elements because they generate content dynamically
+  //
+  // function needsClamp(elem, clamp) {
+  //   const divHeight = elem.offsetHeight
+  //   const lineHeight = parseInt(elem.style.lineHeight);
+  //   const lines = divHeight / lineHeight;
+  //   return lines > clamp;
+  // }
 
   function initENS(elem, address) {
     getEnsName(window.Wagmi, {address}).then(ensName => {
@@ -641,22 +664,21 @@ if (window.Alpine === undefined) {
   });
 
   const setPageWallet = ({connections, current, status}) => {
-    const walletButton = document.querySelector("#fund-butn-wallet");
     const walletNfts = document.querySelector("#fund-nfts-wallet");
 
     if (status === "disconnected") {
       const connection = connections.get(current);
       if (!connection) {
-        walletButton.innerHTML = "connect 💰";
+        Alpine.store("wallet").update(undefined);
       } else {
         reconnect(window.Wagmi, {connector: connection.connector});
       }
     } else if (status === "reconnecting") {
-      walletButton.innerHTML = "…loading…";
+      Alpine.store("wallet").update(null);
     } else if (status === "connected") {
       const { address, chainId } = getAccount(window.Wagmi);
 
-      walletButton.innerHTML = `${address.slice(0, 5)}…${address.slice(-4)}`;
+      Alpine.store("wallet").update(address);
 
       const walletSwapType = document.querySelector("#fund-swap-type");
       if (walletSwapType && walletSwapType.value === "enft") {

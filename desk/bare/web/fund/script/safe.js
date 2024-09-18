@@ -260,6 +260,8 @@ const safeAddressSort = (getAddress = (v) => v) => (a, b) => {
     [a, b].map(v => fromHex(getAddress(v), "bigint")));
 };
 
+// NOTE: Needed due to aggressive load balancing on RPC endpoints; see here:
+// https://github.com/wevm/wagmi/issues/3152
 const safeAwaitTransaction = async ({hash}) => {
   let attempts = 0;
   const maxAttempts = 3;

@@ -249,6 +249,28 @@
         ==
       ==
     ::
+        %blot
+      =/  sow=?  ?=(%show dif.pod)
+      %_    pro
+          contribs
+        %-  ~(run by contribs.pro)
+        |=  [teb=treb det=deta]
+        [teb ?.(=(id.det mid.pod) det det(show sow))]
+      ::
+          pledges
+        %-  ~(run by pledges.pro)
+        |=  [pej=plej pet=peta]
+        [pej ?.(=(id.pet mid.pod) pet pet(show sow))]
+      ==
+    ::
+        %view
+      %_    pro
+          pledges
+        %-  ~(run by pledges.pro)
+        |=  [pej=plej pet=peta]
+        [pej ?.(=(id.pet mid.pod) pet pet(view `dif.pod))]
+      ==
+    ::
         %draw
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
       ?>  ?=(?(%dead %done) status.mil)

@@ -364,15 +364,18 @@
         =/  loz=loglist:fc   ?+(-.dif loglist.dif %disavow ~)
         =*  por  (pj-abed:pj-core sip nam)
         =/  pro=proj:proj:f  pro:por
+        ::  NOTE: Worker is assumed to initiate all withdrawal transactions
+        =/  wad=addr:f  work:(need contract.pro)
         ::  NOTE: Unused for now, but may be useful for notifications later
         =/  [sob=(unit bloq:f) tob=(unit bloq:f)]
           =+  par=|=(v=@ `(unit bloq:f)`?:(=(%$ v) ~ `(slav %ud v)))
           [(par sob.pat.pat) (par tob.pat.pat)]
         ::  NOTE: We group by transaction for multisend cases (which
         ::  always occur for withdrawals)
+        ::  NOTE: We assume that all incoming transactions are single send
         =/  xap=(map xact:f (list [addr:f @]))
           %+  roll  loz
-          |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f cash:f]))]
+          |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f @]))]
           =/  act=xact:f  [block-number transaction-hash]:(need mined.nex)
           =/  who=addr:f  (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.nex)
           ::  NOTE: If there are 4 topics, then this is an NFT transfer, for
@@ -391,12 +394,16 @@
           %-  ~(rep by xap)
           |=  [[act=xact:f fez=(list [addr:f @])] acc=(list card)]
           :_  acc
+          =/  fom=addr:f  ?-(typ.pat.pat %depo -:(head fez), %with wad)
           =/  nfz=(list [@ tape])  (turn fez |=([a=addr:f i=@] [i (uri.payment.pro i)]))
-          :*  %pass  `path`(welp pat /(scot %ud p.act)/(scot %ux q.act))
+          :*  %pass  `path`(welp pat /(scot %ud p.act)/(scot %ux q.act)/(scot %ux fom))
               %arvo  %k  %fard  q.byk.bol
               %nfz-okay  noun+!>([~ nfz limits.payment.pro ~])
           ==
-        %-  turn  :_  |=([x=xact:f c=cash:f a=(set addr:f)] (pj-mk-pruf:por x c typ.pat.pat))
+        %-  turn  :_
+          |=  [act=xact:f cas=cash:f adz=(set addr:f)]
+          =/  fom=addr:f  ?-(typ.pat.pat %depo (head ~(tap in adz)), %with wad)
+          (pj-mk-pruf:por act fom cas typ.pat.pat)
         ^-  (list [xact:f cash:f (set addr:f)])
         %-  ~(rep by xap)
         |=  [[act=xact:f fez=(list [addr:f cash:f])] acc=(list [xact:f cash:f (set addr:f)])]
@@ -421,15 +428,16 @@
       renew-surl:action
     ==
   ::
-      [%fund %proj sip=@ nam=@ %scan typ=@ boq=@ adr=@ ~]
+      [%fund %proj sip=@ nam=@ %scan typ=@ boq=@ hax=@ fom=@ ~]
     ?+    syn  cor
         [%khan %arow *]
       ?:  ?=(%.n -.p.syn)  ((slog leaf+<p.p.syn> ~) cor)
       =/  lag=flag:f  [(slav %p sip.pat) (slav %tas nam.pat)]
       =/  typ=xfer:f  ;;(xfer:f typ.pat)
-      =/  act=xact:f  [(slav %ud boq.pat) (slav %ux adr.pat)]
+      =/  act=xact:f  [(slav %ud boq.pat) (slav %ux hax.pat)]
+      =/  fom=addr:f  (slav %ux fom.pat)
       =+  !<(gud=(set @) q.p.p.syn)
-      (emit (pj-mk-pruf:(pj-abed:pj-core lag) act ~(wyt in gud) typ))
+      (emit (pj-mk-pruf:(pj-abed:pj-core lag) act fom ~(wyt in gud) typ))
     ==
   ==
 ::
@@ -504,12 +512,23 @@
 ++  audit
   |%
   ++  v0-5-wath                                  ::  v0-5 %fund-watcher proj watch path?
-    |=  [wyr=wire sip=@p dap=@tas]
+    |=  [wyr=(pole knot) sip=@p dap=@tas]
     ^-  bean
     ?&  =(sip our.bol)
         =(dap %fund-watcher)
-        =(%$ (rear wyr))
-        =((lent /fund/proj/sip/nam/scan/typ) (lent wyr))
+        ?=([%fund %proj sip=@ nam=@ typ=@ ~] wyr)
+        ?=(^ (slaw %p sip.wyr))
+        ?=(xfer:f typ.wyr)
+    ==
+  ++  v6---wath                                  ::  v6+ %fund-watcher proj watch path?
+    |=  [wyr=(pole knot) sip=@p dap=@tas]
+    ^-  bean
+    ?&  =(sip our.bol)
+        =(dap %fund-watcher)
+        ?=([%fund %proj sip=@ nam=@ typ=@ sob=@ tob=@ ~] wyr)
+        ?=(^ (slaw %p sip.wyr))
+        ?=(xfer:f typ.wyr)
+        ?=(%$ tob.wyr)  ::  NOTE: empty end indicates ongoing watch path
     ==
   --
 ::
@@ -581,12 +600,9 @@
         %poke   fund-poke+!>([%proj lag pod])
     ==
   ++  pj-mk-pruf
-    |=  [act=xact:f amo=cash:f dir=xfer:f]
+    |=  [act=xact:f fom=addr:f amo=cash:f dir=xfer:f]
     ^-  card
-    =*  con  (need contract:pro)
-    ::  FIXME: Assumes that all withdrawals are prompted by the worker
-    =/  adr=addr:f  ?-(dir %depo safe:con, %with work:con)
-    (pj-mk-card p.lag [%mula %pruf ship=~ cash=amo when=[act adr] note=dir])
+    (pj-mk-card p.lag [%mula %pruf ship=~ cash=amo when=[act fom] note=dir])
   ++  pj-mk-scan
     |=  [oat=(unit oath:f) sob=(unit bloq:f) tob=(unit bloq:f)]
     ^-  (list card)
@@ -602,7 +618,7 @@
     %-  turn  :_  |=([w=wire s=@p a=@tas] `card`car(pat w, act [%leave ~]))
     %+  skim  ~(tap in ~(key by wex.bol))
     =/  pen=@ud  (sub (lent pat) 2)  ::  path w/o start/end delimiters
-    |=([w=wire s=@p a=@tas] &((v0-5-wath:audit +<) =((scag pen pat) (scag pen w))))
+    |=([w=wire s=@p a=@tas] &((v6---wath:audit +<) =((scag pen pat) (scag pen w))))
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f

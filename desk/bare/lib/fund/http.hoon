@@ -364,7 +364,7 @@
                   ==
                 ==
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
-          ;button#fund-butn-wallet.fund-butn-co-m: …loading…
+          ;button#fund-butn-wallet.fund-butn-co-m(x-text "$store.wallet.status");
           ;select#fund-nfts-wallet.hidden;
         ==
       ==
@@ -508,6 +508,9 @@
           ;div(class "flex justify-center pt-2")
             ;*  %+  turn  ~[["!expanded" "true" "show more +"] ["expanded" "false" "show less -"]]
                 |=  [sow=tape qiq=tape txt=tape]
+                ::  FIXME: Attempt at eliminating the button when the
+                ::  clamp doesn't even truncate extra lines
+                ::  =x-show  "{sow} && needsClamp($el.parentElement.previousElementSibling, 5)"
                 ;button.fund-butn-ac-s(type "button", x-show sow, x-on-click "expanded = {qiq}"): {txt}
           ==
     ==

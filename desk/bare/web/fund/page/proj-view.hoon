@@ -171,7 +171,7 @@
           [%mula %trib who cash.puf when.puf %$]
         ::
             %mula-redo
-          =/  win=@ud  :(mul 4 60 10)  ::  4 blocks/sec * 60 sec/min * 10 mins
+          =/  win=@ud  :(mul 4 60 2)  ::  4 blocks/sec * 60 sec/min * 2 mins
           =-  [%redo `(sub boq win) `(add boq win)]
           ^-  boq=bloq:f
           ?.  ?=(%trib mut)  !!
@@ -586,19 +586,21 @@
               %+  turn  muz
               |=  mul=mula:f
               ^-  manx
-              =/  [myp=tape mid=tape]
-                :-  (trip -.mul)
+              =/  [myp=tape muf=tape mid=tape]
+                :+  (trip -.mul)  ?+(-.mul (addr:enjs:ff:fh from.when.mul) %plej ~)
                 ?-  -.mul
-                  %plej  "{(ship:enjs:ff:fh ship.mul)}"
-                  %trib  "{(addr:enjs:ff:fh q.xact.when.mul)}"
-                  %pruf  "{(addr:enjs:ff:fh q.xact.when.mul)}"
+                  %plej  (ship:enjs:ff:fh ship.mul)
+                  %trib  (addr:enjs:ff:fh q.xact.when.mul)
+                  %pruf  (addr:enjs:ff:fh q.xact.when.mul)
                 ==
               ;div
-                  =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}' }"
+                  =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
                   =class   "p-2.5 flex flex-col gap-y-2 fund-card"
                 ;div(class "flex flex-wrap items-center justify-between")
                   ;div(class "flex items-center gap-x-2")
-                    ;*  =-  ~[(icon-logo:ui:fh %rect url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
+                    ;*  =-  :~  (icon-logo:ui:fh %rect url)
+                                ;h5(x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")): {txt}
+                            ==
                         ^-  [url=tape txt=tape]
                         ?-  -.mul
                           %plej  [(surt:enrl:ff:fh ship.mul) (ship:enjs:ff:fh ship.mul)]
@@ -608,8 +610,7 @@
                           [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
                         ::
                             %pruf
-                          ::  TODO: Add ENS support here for 'chain data'
-                          ?~  ship.mul  [(aset:enrl:ff:fh %link) (addr:enjs:ff:fh from.when.mul)]
+                          ?~  ship.mul  [(aset:enrl:ff:fh %link) (sadr:enjs:ff:fh from.when.mul)]
                           [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
                         ==
                   ==
@@ -657,13 +658,18 @@
                     ^-  buz=marl
                     ;:    welp
                     ::  mula blot button  ::
-                        ?.  &(pyr !?=(%pruf -.mul))  ~
+                        ?:  %.y  ~  ::  ?.  &(pyr !?=(%pruf -.mul))  ~
                       :_  ~
                       ;form(method "post")
                         ;+  (prod-butn:ui:fh %mula-blot %action "toggle shown ~" "editMula" ~)
                       ==
                     ::  pledge edit view button  ::
-                        ?.  &(pyr ?=(%plej -.mul))  ~  ::  ?=(?(%done %dead) sat)
+                        ?.  ?&  pyr
+                                ?=(%plej -.mul)
+                                  =+  pej=(~(got by pledges.pro) ship.mul)
+                                ?=(^ view.pej)
+                            ==
+                        ~
                       :_  ~
                       ;form(method "post")
                         ;+  (prod-butn:ui:fh %mula-view %action "toggle view ~" "editMula" ~)
@@ -671,7 +677,8 @@
                     ::  chain data claim button  ::
                         ?.  &(?=(%pruf -.mul) ?=(%depo note.mul))  ~
                       :_  ~
-                      ;form(method "post")
+                      ;form  =method  "post"
+                          =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"
                         ;+  (prod-butn:ui:fh %mula-mine %action "claim data ~" "editMula" ~)
                       ==
                     ::  attested redo button  ::

@@ -386,7 +386,7 @@
                   ==
                   ;div(x-show "filt_status.mode == 'work'")
                     ;select#filt-worker.fund-tsel
-                        =x-init  "initTomSelect($el, true, true)"
+                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
                         =x-model  "filt_status.params.work"
                       ;*  =/  woz=(set @p)
                             %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
@@ -407,7 +407,7 @@
                   ==
                   ;div(x-show "filt_status.mode == 'orac'")
                     ;select#filt-oracle.fund-tsel
-                        =x-init  "initTomSelect($el, true, true)"
+                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
                         =x-model  "filt_status.params.orac"
                       ;*  =/  orz=(set @p)
                             =-  (~(uni in (silt mel)) (silt pel))
@@ -429,7 +429,7 @@
                   ==
                   ;div(x-show "filt_status.mode == 'stat'")
                     ;select#filt-status.fund-tsel
-                        =x-init  "initTomSelect($el, true, true)"
+                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
                         =x-model  "filt_status.params.stat"
                       ;*  :-  ;option(value ""): Any Status
                           %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]

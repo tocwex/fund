@@ -297,14 +297,25 @@ if (window.Alpine === undefined) {
 
   Alpine.store("wallet", {
     address: null,
+    chain: null,
     status: "…loading…",
-    // nfts: {}, // {contract address => nft data list}
-    update(address) {
+    update(address, chain) {
       this.address = address;
+      this.chain = chain;
       this.status =
         (address === undefined) ? "connect 💰"
         : (address === null) ? "…loading…"
         : `${address.slice(0, 5)}…${address.slice(-4)}`;
+      window.dispatchEvent(new CustomEvent("fund-wallet", {detail: address}));
+    },
+  });
+  Alpine.store("project", {
+    swap: undefined,
+    symbol: undefined,
+    update(swap, symbol) {
+      this.swap = swap;
+      this.symbol = symbol;
+      window.dispatchEvent(new CustomEvent("fund-project", {detail: symbol}));
     },
   });
 
@@ -320,7 +331,8 @@ if (window.Alpine === undefined) {
     initTippy,
     initTomSelect,
     updateTokenSelect,
-    updateNftsSelect,
+    tsCreateOracle,
+    tsLoadNFTs,
     CONTRACT,
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
@@ -483,9 +495,14 @@ if (window.Alpine === undefined) {
     });
   }
 
-  // FIXME: Support for 'create' very specifically targeting galaxy/star
-  // inputs is pretty hacky here
-  function initTomSelect(elem, empty, upOnly=false, maxItems=undefined, create=false) {
+  // function initTomSelect(elem, empty, upOnly=false, maxItems=undefined, create=false) {
+  function initTomSelect(elem, {
+    empty=false, // Bool
+    forceUp=false, // Bool
+    maxItems=undefined, // Number?
+    create=undefined, // ((value, data) => void)?
+    load=undefined, // ((query, callback) => void)?
+  } = {}) {
     function renderSelector(data, escape) {
       return `
         <div class='flex flex-row items-center gap-x-2'>
@@ -500,35 +517,20 @@ if (window.Alpine === undefined) {
     if (elem.tomselect === undefined) {
       const tselElem = new TomSelect(elem, {
         allowEmptyOption: empty,
-        create: create,
         render: {
           option: (data, escape) => renderSelector(data, escape),
           item: (data, escape) => renderSelector(data, escape),
           ...(!create ? {} : {
-            no_results: (data,escape) => null,
+            no_results: (data, escape) => null,
             option_create: (data, escape) => `
               <div class="create">
-                Use custom oracle <strong>${escape(data.input)}</strong>
+                Use custom option <strong>${escape(data.input)}</strong>
               </div>`,
           }),
         },
-        onOptionAdd: (value, data) => {
-          if (create) {
-            const okClans = new Set(["galaxy", "star"]);
-            if (!UrbitOb.isValidPatp(value) || !okClans.has(UrbitOb.clan(value))) {
-              elem.tomselect.removeOption(value);
-            } else if (data?.image === undefined) {
-              elem.tomselect.updateOption(value, {
-                value: data.value,
-                text: data.text,
-                image: `https://azimuth.network/erc721/${UrbitOb.patp2dec(value)}.svg`,
-              });
-            }
-          }
-        },
         onDropdownOpen: (dropdown) => {
           if (
-              upOnly ||
+              forceUp ||
               (dropdown.getBoundingClientRect().bottom >
               (window.innerHeight || document.documentElement.clientHeight))
           ) {
@@ -539,8 +541,14 @@ if (window.Alpine === undefined) {
           dropdown.classList.remove('dropup');
         },
         ...(empty ? {} : {controlInput: null}),
-        ...((maxItems === undefined || maxItems === 0) ? {} : {maxItems})
+        ...((maxItems === undefined || maxItems === 0) ? {} : {maxItems}),
+        ...(!load ? {} : {load}),
+        ...(!create ? {} : {
+          create: !!create,
+          onOptionAdd: create,
+        }),
       });
+      tselElem?.load && tselElem.load();
       elem.matches(":disabled") && tselElem.disable();
     }
   }
@@ -567,26 +575,50 @@ if (window.Alpine === undefined) {
     );
   }
 
-  function updateNftsSelect(elem) {
-    const walletNfts = document.querySelector("#fund-nfts-wallet");
-    const tokenSelect = document.querySelector('#proj-token').tomselect;
-    const tokenNftOpts = Array.from(walletNfts.children).map(elem => ({
-      value: elem.value,
-      text: elem.innerText,
-      image: elem.dataset.image,
-    }));
-    if (tokenNftOpts.length === 0) {
-      tokenNftOpts.push({
-        value: "-1",
-        text: "(no nfts in wallet)",
-        image: "https://placehold.co/24x24/black/black?text=\\n",
-      });
-    }
+  function tsCreateOracle(elem) {
+    return (value, data) => {
+      const okClans = new Set(["galaxy", "star"]);
+      if (!UrbitOb.isValidPatp(value) || !okClans.has(UrbitOb.clan(value))) {
+        elem.tomselect.removeOption(value);
+      } else if (data?.image === undefined) {
+        elem.tomselect.updateOption(value, {
+          value: data.value,
+          text: data.text,
+          image: `https://azimuth.network/erc721/${UrbitOb.patp2dec(value)}.svg`,
+        });
+      }
+    };
+  }
 
-    tokenSelect.clear(true);
-    tokenSelect.clearOptions();
-    tokenSelect.addOptions(tokenNftOpts);
-    tokenSelect.addItem(tokenNftOpts[0].value);
+  function tsLoadNFTs(elem) {
+    return (query, callback) => {
+      var self = elem.tomselect;
+      if (self.loading > 1) return callback();
+
+      console.log(`loading NFTs for ${Alpine.store("wallet").address}`);
+      if (!(Alpine.store("wallet").address && Alpine.store("project").swap === "enft")) {
+        callback();
+      } else {
+        SAFE.nftsGetAll(
+          Alpine.store("wallet").address,
+          Alpine.store("wallet").chain,
+          Alpine.store("project").symbol,
+        ).then(nfts => {
+          const options = nfts
+            .filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
+              (attr?.trait_type === "size" && attr?.value === "star")
+            )))).map(({name, image, tokenId}) => ({
+              value: tokenId,
+              text: name,
+              image: image.cachedUrl,
+            }));
+          self.clear(true);
+          self.clearOptions();
+          callback(options);
+          delete self.loadedSearches[query];
+        }).catch(() => callback());
+      }
+    };
   }
 
   window.Wagmi = createConfig({
@@ -664,47 +696,18 @@ if (window.Alpine === undefined) {
   });
 
   const setPageWallet = ({connections, current, status}) => {
-    const walletNfts = document.querySelector("#fund-nfts-wallet");
-
     if (status === "disconnected") {
       const connection = connections.get(current);
       if (!connection) {
-        Alpine.store("wallet").update(undefined);
+        Alpine.store("wallet").update(undefined, undefined);
       } else {
         reconnect(window.Wagmi, {connector: connection.connector});
       }
     } else if (status === "reconnecting") {
-      Alpine.store("wallet").update(null);
+      Alpine.store("wallet").update(null, null);
     } else if (status === "connected") {
       const { address, chainId } = getAccount(window.Wagmi);
-
-      Alpine.store("wallet").update(address);
-
-      const walletSwapType = document.querySelector("#fund-swap-type");
-      if (walletSwapType && walletSwapType.value === "enft") {
-        const walletSwapSymbol = document.querySelector("#fund-swap-symb");
-        SAFE.nftsGetAll(address, chainId, walletSwapSymbol.value).then(nfts => {
-          const options = nfts
-            .filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
-              (attr?.trait_type === "size" && attr?.value === "star")
-            )))).map(({name, image, tokenId}) => ({
-              value: tokenId,
-              text: name,
-              image: image.cachedUrl,
-            }));
-          console.log(`loading ${options.length} nfts`);
-          while (walletNfts.firstChild) {
-            walletNfts.removeChild(walletNfts.lastChild);
-          }
-          options.forEach(({value, text, image}) => {
-            const elem = document.createElement("option");
-            elem.setAttribute("value", value);
-            elem.setAttribute("data-image", image);
-            elem.innerText = text;
-            walletNfts.appendChild(elem);
-          });
-        });
-      }
+      Alpine.store("wallet").update(address, chainId);
     }
   };
 

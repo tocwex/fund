@@ -197,7 +197,7 @@
           ==
           ;div(class "flex")
             ;div(class "fund-form-group")
-              ;select#proj-oracle.fund-tsel(name "sea", x-init "initTomSelect($el, true, false, undefined, true)")
+              ;select#proj-oracle.fund-tsel(name "sea", x-init "initTomSelect($el, \{empty: true, create: tsCreateOracle($el)})")
                 ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
                     =+  dad=(sein:title our.bol now.bol our.bol)
                     %+  turn  [ses !<(@p (slot:config %point)) dad !<((list @p) (slot:config %feat-oraz))]

@@ -376,9 +376,8 @@
                   ;label(for "sum"): amount
                 ==
                 ;div(class "fund-form-group")
-                  ;+  :_  :_  ~
-                          ?:  nft
-                            ;option(value "-1", data-image (colt:enrl:ff:fh %black)): …loading…
+                  ;+  :_  ?:  nft  ~
+                          :_  ~
                           ;option
                               =value  (trip symbol.payment.pro)
                               =data-image  (aset:enrl:ff:fh symbol.payment.pro)
@@ -389,21 +388,25 @@
                           [%id "proj-token"]~
                           [%name "tok"]~
                           [%class "fund-tsel"]~
-                          ::  ?.(nft ~ [%multiple ~]~)
+                          ?.(nft ~ [%multiple ~]~)
                           ?~(pej ~ ?:(nft [%required ~]~ [%disabled ~]~))
+                          ::  FIXME: Imperfect because this only reloads when
+                          ::  the dialog is open
+                          ['@fund-wallet.window' "$el?.tomselect?.load && $el.tomselect.load()"]~
                           :_  ~  :-  %x-init
                           %-  zing  %+  join  "\0a"
                           ^-  (list tape)
-                          :~  :(weld "const nft = " (bool:enjs:ff:fh nft) ";")
-                              :(weld "const pej = " (bloq:enjs:ff:fh ?~(pej 0 cash.u.pej)) ";")
+                          :~  :(weld "const isNFT = " (bool:enjs:ff:fh nft) ";")
+                              :(weld "const maxItems = " (bloq:enjs:ff:fh ?~(pej 0 cash.u.pej)) ";")
                               ^-  tape  ^~
                               %+  rip  3
                               '''
                               if (typeof initTomSelect !== 'undefined') {
-                                initTomSelect($el, false, false);
-                                // FIXME: Restore this once multi-send NFTs are supported
-                                // initTomSelect($el, nft, false, !nft ? undefined : pej);
-                                nft && updateNftsSelect($el);
+                                initTomSelect($el, {
+                                  empty: isNFT,
+                                  maxItems: !isNFT ? undefined : 1, // maxItems,
+                                  load: !isNFT ? undefined : tsLoadNFTs($el),
+                                });
                               }
                               '''
                           ==
@@ -709,10 +712,6 @@
       ;data#fund-meta-flag(value (flag:enjs:ff:fh lag));
       ;*  ?~  image.pro  ~
           :_  ~  ;data#fund-meta-logo(value (trip u.image.pro));
-      ::  FIXME: These fields are included to supply cross-element
-      ::  information
-      ;data#fund-swap-type(value (trip -.payment.pro));
-      ;data#fund-swap-symb(value (cuss (trip symbol.payment.pro)));
     ==
     ;script
       ;+  ;/
@@ -725,6 +724,7 @@
           :(weld "safe_bloq: " (bloq:enjs:ff:fh ?~(contract.pro 0 p.xact.u.contract.pro)) ",")
           :(weld "work_addr: '" (addr:enjs:ff:fh ?~(contract.pro 0x0 work.u.contract.pro)) "',")
           :(weld "orac_addr: '" (addr:enjs:ff:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)) "',")
+          :(weld "swap_type: '" (trip -.payment.pro) "',")
           :(weld "swap_chain: " (bloq:enjs:ff:fh chain.payment.pro) ",")
           :(weld "swap_symbol: '" (trip symbol.payment.pro) "',")
           :(weld "orac_cut: " (cash:enjs:ff:fh q.assessment.pro 6) ",")
@@ -735,6 +735,9 @@
           ^-  tape  ^~
           %+  rip  3
           '''
+          init() {
+            Alpine.store("project").update(this.swap_type, this.swap_symbol);
+          },
           initSticky(elem) {
             const observer = new IntersectionObserver(
               ([e]) => e.target.firstChild.classList.toggle("pinned", e.intersectionRatio < 1),

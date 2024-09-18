@@ -365,7 +365,6 @@
                 ==
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
           ;button#fund-butn-wallet.fund-butn-co-m(x-text "$store.wallet.status");
-          ;select#fund-nfts-wallet.hidden;
         ==
       ==
     ++  foot
@@ -589,18 +588,20 @@
     |=  [emt=bean swa=(unit swap) mod=tape xoc=tape]
     ^-  manx
     =/  ini=tape  ?~(swa "undefined" "'{(trip symbol.u.swa)}'")
+    =/  its=tape  "initTomSelect($el, \{empty: {(bool:enjs:ff emt)}})"
+    =/  uts=tape  "updateTokenSelect({ini})"
     ;div(class cas, x-data ~)
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
       ::  in the filter UI
       ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
         ;select#proj-chain.fund-tsel  =name  "can"
             =required  ~
-            =x-init  "initTomSelect($el, {(bool:enjs:ff emt)})"
+            =x-init  its
             =x-on-change  "updateTokenSelect"
           ;*  =+  can=?~(swa id:(~(got by xmap:fc) %ethereum) chain.u.swa)
               %+  welp
                 ?.  emt  ~
-                :_  ~  ;option(value ""): Any Chain
+                :_  ~  ;option(value ~): Any Chain
               %+  turn  xlis:fc
               |=  xet=xeta
               ^-  manx
@@ -621,7 +622,7 @@
         ;select#proj-token-options.hidden(required ~)
           ;*  %+  welp
                 ?.  emt  ~
-                :_  ~  ;option(value ""): Any Token
+                :_  ~  ;option(value ~): Any Token
               %+  turn  slis:fc
               |=  swa=swap
               ^-  manx
@@ -637,7 +638,7 @@
         ==
         ;select#proj-token.fund-tsel  =name  "tok"
             =required  ~
-            =x-init  "initTomSelect($el, {(bool:enjs:ff emt)}); updateTokenSelect({ini})"
+            =x-init  :(welp its "; " uts)
             =x-model  mod
             =x-ref  "token"
             =x-on-change  xoc;

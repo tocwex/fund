@@ -443,13 +443,13 @@
 ::
 ++  open
   ^+  cor
-  =/  old=?  !(~(has by pf-myn) our.bol)
+  =/  kiq=?
+    ?|  !(~(has by pf-myn) our.bol)        ::  pre-v1.1 need any watch paths
+        =>(scan-vold:watch:audit ?=(^ .))  ::  pre-%6 %proj need new-style watch paths
+    ==
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  =.  cor  %-  renew-projs:action
-    ?:  old  ~(key by pj-myn)
-    %-  sy  %+  turn  (skim ~(tap in ~(key by wex.bol)) v0-5-wath:audit)
-    |=([w=wire s=@p a=@tas] `flag:f`[(slav %p (snag 2 w)) (slav %tas (snag 3 w))])
+  =.  cor  (renew-projs:action kiq)
   cor
 ++  action
   |%
@@ -486,7 +486,7 @@
         ?=(^ (find /gall/use/fund pat))
     ==
   ++  renew-projs                                ::  invoke project level triggers
-    |=  kiz=(set flag:f)
+    |=  kiq=bean
     ^+  cor
     =/  lis=(list flag:f)  ~(tap in ~(key by pj-our))
     |-
@@ -495,8 +495,7 @@
       lis  t.lis
     ::
         cor
-      ?.  &((~(has in kiz) i.lis) =(our.bol p.i.lis))
-        pj-abet:(pj-abed:pj-core i.lis)
+      ?.  &(kiq =(p.i.lis our.bol))  pj-abet:(pj-abed:pj-core i.lis)
       pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~ ~])
     ==
   ++  toggle-profs                               ::  toggle profile follow status
@@ -511,30 +510,41 @@
 ::
 ++  audit
   |%
-  ++  v0-5-wath                                  ::  v0-5 %fund-watcher proj watch path?
-    |=  [wyr=(pole knot) sip=@p dap=@tas]
-    ^-  bean
-    ?&  =(sip our.bol)
-        =(dap %fund-watcher)
-        ?=([%fund %proj sip=@ nam=@ %scan typ=@ ~] wyr)
-        ?=(^ (slaw %p sip.wyr))
-        ?=(xfer:f typ.wyr)
-    ==
-  ++  v6---wath                                  ::  v6+ %fund-watcher proj watch path?
-    |=  [wyr=(pole knot) sip=@p dap=@tas]
-    ^-  bean
-    ?&  =(sip our.bol)
-        =(dap %fund-watcher)
-        ?=([%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ ~] wyr)
-        ?=(^ (slaw %p sip.wyr))
-        ?=(xfer:f typ.wyr)
-        ?=(%$ tob.wyr)  ::  NOTE: empty end indicates ongoing watch path
-    ==
-  ++  vany-wath                                  ::  v* %fund-watcher proj watch path?
-    |=  [wyr=(pole knot) sip=@p dap=@tas]
-    ^-  bean
-    |((v0-5-wath +<) (v6---wath +<))
+  ++  watch
+    |%
+    ++  boat                                     ::  filtered outgoing watch paths
+      |=  fil=$-([wire @p @tas] ?)
+      ^-  (set path)
+      %-  ~(rep in ~(key by wex.bol))
+      |=  [[wyr=(pole knot) sip=@p dap=@tas] acc=(set path)]
+      ?.((fil wyr sip dap) acc (~(put in acc) wyr))
+    ++  scan-vold                                ::  %fund-watcher old-style watch paths
+      ^-  (set path)
+      %-  boat
+      |=  [wyr=(pole knot) sip=@p dap=@tas]
+      ?&  =(sip our.bol)
+          =(dap %fund-watcher)
+          ?=([%fund %proj sip=@ nam=@ %scan typ=@ ~] wyr)
+          ?=(^ (slaw %p sip.wyr))
+          ?=(xfer:f typ.wyr)
+      ==
+    ++  scan-vnow                                ::  %fund-watcher new-style watch paths
+      ^-  (set path)
+      %-  boat
+      |=  [wyr=(pole knot) sip=@p dap=@tas]
+      ^-  bean
+      ?&  =(sip our.bol)
+          =(dap %fund-watcher)
+          ?=([%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ ~] wyr)
+          ?=(^ (slaw %p sip.wyr))
+          ?=(xfer:f typ.wyr)
+          ?=(%$ tob.wyr)  ::  NOTE: empty end indicates ongoing watch path
+      ==
+    ++  scan-vany                                ::  %fund-watcher any-style watch paths
+      ^-  (set path)
+      (~(uni in scan-vold) scan-vnow)
   --
+--
 ::
 ++  pj-core
   |_  [lag=flag:f pro=proj:proj:f gon=_|]
@@ -616,13 +626,12 @@
     |=  [suf=path cfg=config:fc]
     ^-  (list card)
     =/  pat=path  (welp pj-pa-pub suf)
+    =/  pen=@ud   (sub (lent pat) 2)  ::  path w/o start/end delimiters
     =+  car=[%pass pat=~ %agent [our.bol %fund-watcher] act=~]
     %-  snoc  :_  `card`car(pat pat, act [%poke %fund-watcher-poke !>([%watch pat cfg])])
     ?^  tob  ~
-    %-  turn  :_  |=([w=wire s=@p a=@tas] `card`car(pat w, act [%leave ~]))
-    %+  skim  ~(tap in ~(key by wex.bol))
-    =/  pen=@ud  (sub (lent pat) 2)  ::  path w/o start/end delimiters
-    |=([w=wire s=@p a=@tas] &((vany-wath:audit +<) =((scag pen pat) (scag pen w))))
+    %-  turn  :_  |=(p=path `card`car(pat p, act [%leave ~]))
+    (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f

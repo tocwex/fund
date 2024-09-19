@@ -516,7 +516,7 @@
     ^-  bean
     ?&  =(sip our.bol)
         =(dap %fund-watcher)
-        ?=([%fund %proj sip=@ nam=@ typ=@ ~] wyr)
+        ?=([%fund %proj sip=@ nam=@ %scan typ=@ ~] wyr)
         ?=(^ (slaw %p sip.wyr))
         ?=(xfer:f typ.wyr)
     ==
@@ -525,11 +525,15 @@
     ^-  bean
     ?&  =(sip our.bol)
         =(dap %fund-watcher)
-        ?=([%fund %proj sip=@ nam=@ typ=@ sob=@ tob=@ ~] wyr)
+        ?=([%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ ~] wyr)
         ?=(^ (slaw %p sip.wyr))
         ?=(xfer:f typ.wyr)
         ?=(%$ tob.wyr)  ::  NOTE: empty end indicates ongoing watch path
     ==
+  ++  vany-wath                                  ::  v* %fund-watcher proj watch path?
+    |=  [wyr=(pole knot) sip=@p dap=@tas]
+    ^-  bean
+    |((v0-5-wath +<) (v6---wath +<))
   --
 ::
 ++  pj-core
@@ -618,7 +622,7 @@
     %-  turn  :_  |=([w=wire s=@p a=@tas] `card`car(pat w, act [%leave ~]))
     %+  skim  ~(tap in ~(key by wex.bol))
     =/  pen=@ud  (sub (lent pat) 2)  ::  path w/o start/end delimiters
-    |=([w=wire s=@p a=@tas] &((v6---wath:audit +<) =((scag pen pat) (scag pen w))))
+    |=([w=wire s=@p a=@tas] &((vany-wath:audit +<) =((scag pen pat) (scag pen w))))
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f

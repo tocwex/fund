@@ -603,32 +603,34 @@ if (window.Alpine === undefined) {
 
       const address = Alpine.store("wallet").address;
       const chain = Alpine.store("wallet").chain;
-      console.log(`loading NFTs for ${address}`);
-      if (!(address && (Alpine.store("project").swap === "enft"))) {
-        callback();
-      } else {
-        self.clear(true);
-        self.clearOptions();
+      const loadedNFTs = Alpine.store("project").nfts?.[address];
+      const loadNFTOptions = loadedNFTs
+        ? Promise.resolve(loadedNFTs)
+        : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
+            // TODO: Generalize this logic by querying metadata filters from the BE
+            nfts.filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
+              (attr?.trait_type === "size" && attr?.value === "star")
+            )))).map(({name, image, tokenId}) => ({
+              value: tokenId,
+              text: name,
+              image: image.cachedUrl,
+            }))
+          )).catch(() => []);
 
-        const loadedNFTs = Alpine.store("project").nfts?.[address];
-        const loadNFTOptions = loadedNFTs
-          ? Promise.resolve(loadedNFTs)
-          : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
-              // TODO: Generalize this logic by querying metadata filters from the BE
-              nfts.filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
-                (attr?.trait_type === "size" && attr?.value === "star")
-              )))).map(({name, image, tokenId}) => ({
-                value: tokenId,
-                text: name,
-                image: image.cachedUrl,
-              }))
-            ));
-        loadNFTOptions.then(options => {
-          Alpine.store("project").loadNFTs(address, options);
-          callback(options);
-          delete self.loadedSearches[query];
-        }).catch(() => callback());
-      }
+      self.clear(true);
+      self.clearOptions();
+      loadNFTOptions.then(options => {
+        const nftOptions = (options.length > 0) ? options : [{
+          value: "-1",
+          text: "(no nfts in wallet)",
+          image: "https://placehold.co/24x24/black/black?text=\\n",
+        }];
+        Alpine.store("project").loadNFTs(address, nftOptions);
+        callback(nftOptions);
+        // NOTE: Auto-select if only one available; iffy on the ui/ux
+        // if (nftOptions.length === 0) { self.addItem(-1); }
+        delete self.loadedSearches[query];
+      }).catch(() => callback());
     };
   }
 

@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
-/-  fd=fund-data, cn=contacts
-/+  *fund-proj, fk=fund-core, ff=fund-form, fc=fund-chain, fx=fund-xtra
+/-  fd=fund-data
+/+  *fund-proj, fk=fund-core, ff=fund-form, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -23,47 +23,6 @@
   =+  erl=.^((unit @t) %ex (en-beam [our.bol %$ da+now.bol] /eauth/url))
   ?^  erl  (scaj:fx (lent "/~/eauth") (trip u.erl))
   (head:en-purl:html .^(hart:eyre %e (en-beam [our.bol %host da+now.bol] /)))
-::
-::  +rolo: rolo(dex) (ship to contact information map, from %contacts)
-::
-++  rolo
-  |=  bol=bowl:gall  ~+
-  ^-  rolodex:cn
-  =/  pre=path  (en-beam [our.bol %contacts da+now.bol] /)
-  ?.  .^(? %gu (snoc pre %$))  *rolodex:cn
-  .^(rolodex:cn %gx (weld pre /all/noun))
-::
-::  +scon: s(hip) con(tact) (ship contact information, from %contacts)
-::
-++  scon
-  |=  [sip=@p bol=bowl:gall]  ~+
-  ^-  (unit contact:cn)
-  =/  rol=rolodex:cn  (rolo bol)
-  ?~  con=(~(get by rol) sip)   ~
-  ?@  for.u.con                 ~
-  ?@  con.for.u.con             ~
-  `con.for.u.con
-::
-::  +styt: s(hip) t(i)t(le) (ship name information, from %contacts)
-::
-++  styt
-  |=  [sip=@p bol=bowl:gall]  ~+
-  ^-  tape
-  =/  def=tape  "{<sip>}"
-  ?~  con=(scon sip bol)    def
-  ?:  =(%$ nickname.u.con)  def
-  (trip nickname.u.con)
-::
-::  +simg: s(hip) im(a)g(e) (ship image information, from %contacts)
-::
-++  simg
-  |=  [sip=@p bol=bowl:gall]  ~+
-  ^-  tape
-  =/  def=tape  (surt:enrl:ff sip)
-  ?~  con=(scon sip bol)    def
-  ?~  avatar.u.con          def
-  ?:  =(%$ u.avatar.u.con)  def
-  (trip u.avatar.u.con)
 ::
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
 ::
@@ -750,11 +709,11 @@
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
-    (icon-logo %rect (simg sip bol))
+    (icon-logo %rect (~(ship-logo fa bol) sip))
   ++  ship-tytl                                  ::  title for a user ship
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
-    ;span(class "line-clamp-1 {cas}"): {(styt sip bol)}
+    ;span(class "line-clamp-1 {cas}"): {(~(ship-tytl fa bol) sip)}
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx

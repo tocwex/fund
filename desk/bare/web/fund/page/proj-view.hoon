@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
+/+  f=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  page:fd
@@ -217,7 +217,7 @@
   ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
         ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
-    ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (simg:fh p.lag bol))))}";
+    ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))}";
     ;*  =-  ?~  buz  ~
             :_  ~
             ::  NOTE: For "w-full on stick," add `-top-[1px]`, `x-init "initSticky($el)"`

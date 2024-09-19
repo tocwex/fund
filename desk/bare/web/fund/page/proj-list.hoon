@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
+/+  fj=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  rudder, config
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
@@ -152,7 +152,7 @@
       ^-  manx
       ::  TODO: Replace the latter with a ship-generated sigil pair
       ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape  ?^(image.pre (trip u.image.pre) (simg:fh p.lag bol))
+      =/  bak=tape  ?^(image.pre (trip u.image.pre) (~(ship-logo fa bol) p.lag))
       ;a/"{(flat:enrl:ff:fh lag)}"(class "flex flex-col gap-2 font-serif {cas}")
         ;div(class "aspect-video bg-cover bg-center rounded-md bg-[url('{bak}')]")
           ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
@@ -171,7 +171,7 @@
           ;div(class "flex-1 min-w-0 text-lg"): {(trip title.pre)}
           ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
             ;+  %+  ~(icon-stax ui:fh "h-8")  %rect
-                (turn ~[p.lag p.assessment.pre] (curr simg:fh bol))
+                (turn ~[p.lag p.assessment.pre] ~(ship-logo fa bol))
           ==
         ==
       ==
@@ -180,7 +180,7 @@
       ^-  manx
       ::  TODO: Replace the latter with a ship-generated sigil pair
       ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape  ?^(image.met (trip u.image.met) (simg:fh worker.met bol))
+      =/  bak=tape  ?^(image.met (trip u.image.met) (~(ship-logo fa bol) worker.met))
       ::  TODO: Add data attributes to allow for FE sorting/filtering
       ;div  =x-on-click  "joinProject('{(flag:enjs:ff:fh lag)}')"
           =class  "flex flex-col gap-2 font-serif hover:cursor-pointer {cas}"
@@ -190,7 +190,7 @@
               ; {(swam:enjs:ff:fh cost.met payment.met)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5 line-clamp-2")
-              ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] (curr simg:fh bol)))
+              ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] ~(ship-logo fa bol)))
             ==
           ==
         ==
@@ -400,7 +400,7 @@
                           :-  %option
                           ;:  welp
                               [%value "{<wok>}"]~
-                              [%data-image (simg:fh wok bol)]~
+                              [%data-image (~(ship-logo fa bol) wok)]~
                               ?.(&(?=(^ work.arg) =(u.work.arg wok)) ~ [%selected ~]~)
                           ==
                     ==
@@ -422,7 +422,7 @@
                           :-  %option
                           ;:  welp
                               [%value "{<ora>}"]~
-                              [%data-image (simg:fh ora bol)]~
+                              [%data-image (~(ship-logo fa bol) ora)]~
                               ?.(&(?=(^ orac.arg) =(u.orac.arg ora)) ~ [%selected ~]~)
                           ==
                     ==

@@ -388,7 +388,7 @@
             '''
         ==
       ==
-    =/  tid=tape  "fund-help-ship-{(bloq:enjs:ff `@`sip)}"
+    =/  tid=tape  "fund-help-ship-{(trip rol)}-{(bloq:enjs:ff `@`sip)}"
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}

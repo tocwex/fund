@@ -214,7 +214,7 @@
   ::  leave it for now
   ;div(class "min-h-[100vh] flex flex-col justify-between", x-data "proj_list")
     ;div(class "flex flex-col p-2 gap-2")
-      ;+  =/  cas=tape  "w-full grid gap-4 justify-center"
+      ;*  =/  cas=tape  "w-full grid gap-4 justify-center"
           =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
           =/  mas=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
           =/  wax=manx
@@ -228,44 +228,44 @@
             ==
           ?+    dyp  !!
               %following
-            ;div
-              ;h1: Following
-              ;+  ?~  paz=(turn pyz proj-card:ui)  wax
-                  ;div(class pas)
-                    ;*  paz
-                  ==
+            :~  ;h1: Following
+                  ?~  paz=(turn pyz proj-card:ui)  wax
+                ;div(class pas)
+                  ;*  paz
+                ==
             ==
           ::
               %discover
-            ;div
-              ;div(class "flex flex-row gap-2 justify-start items-center")
-                ;h1: Discover
-                ;button#fund-help-disc.fund-tipi(type "button")
-                  ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
+            =/  hel=tape  (trip !<(@t (slot:config %meta-help)))
+            :~  ;div(class "flex flex-row gap-2 justify-start items-center")
+                  ;h1: Discover
+                  ;button#fund-help-disc.fund-tipi(type "button", x-init "initTippy($el)")
+                    ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
+                  ==
+                  ;div#fund-help-disc-opts(class "hidden")
+                    ;p
+                      ; Discovery of new projects depends on the %pals
+                      ; network. Projects are publicized to your %pals, and
+                      ; they can optionally republicize them to their %pals.
+                      ; Tell your friends and see who can discover the
+                      ; largest project collection!
+                    ==
+                    ;a.text-link/"{hel}/project-discovery"(target "_blank")
+                      ; Read the docs to learn more.
+                    ==
+                  ==
                 ==
-                ;div#fund-help-disc-opts(class "hidden")
-                  ;p
-                    ; Discovery of new projects depends on the %pals
-                    ; network. Projects are publicized to your %pals, and
-                    ; they can optionally republicize them to their %pals.
-                    ; Tell your friends and see who can discover the
-                    ; largest project collection!
-                  ==
-                  ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/project-discovery"(target "_blank")
-                    ; Read the docs to learn more.
-                  ==
+                  ?~  maz=(turn myz meta-card:ui)  wax
+                ;div(class mas)
+                  ;*  maz
                 ==
-              ==
-              ;+  ?~  maz=(turn myz meta-card:ui)  wax
-                  ;div(class mas)
-                    ;*  maz
-                  ==
             ==
           ::
               %action
             =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col overflow-x-auto"
             =/  sus=tape  "w-[50vw] sm:w-[250px]"
             ?^  text.arg
+              :_  ~
               %^  mota-well:ui  mas  "No projects found."
               |=  [lag=flag:f pre=prej:proj:f]
               ?|  ?&  ?=(?(%prop %sess) ~(stat pj:fj -.pre))
@@ -278,55 +278,54 @@
                       (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
                   ==
               ==
-            ;div
-              ;div(class "flex flex-row justify-between")
-                ;h1: My Actions
-                ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
-                  ; new project +
+            :~  ;div(class "flex flex-row justify-between")
+                  ;h1: My Actions
+                  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
+                    ; new project +
+                  ==
                 ==
-              ==
-              ;div(class "flex flex-col gap-4")
-                ;div                               ::  my $prez
-                  ;h2: My Open Projects
-                  ;+  %^  ~(mota-well ui sus)  sas  "No live projects."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
-                          =(our.bol p.lag)
-                      ==
+                ;div(class "flex flex-col gap-4")
+                  ;div                               ::  my $prez
+                    ;h2: My Open Projects
+                    ;+  %^  ~(mota-well ui sus)  sas  "No live projects."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
+                            =(our.bol p.lag)
+                        ==
+                  ==
+                  ;div                               ::  $prez with %prop status
+                    ;h2: Service Requests
+                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?=(%prop ~(stat pj:fj -.pre))
+                            =(p.assessment.pre our.bol)
+                        ==
+                  ==
+                  ;div                               ::  $prez with %sess status
+                    ;h2: Review Requests
+                    ;+  %^  ~(mota-well ui sus)  sas  "No projects pending review."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?=(%sess ~(stat pj:fj -.pre))
+                            =(p.assessment.pre our.bol)
+                        ==
+                  ==
+                  ;div                               ::  $prez with unfulfilled $plej
+                    ;h2: Outstanding Pledges
+                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding pledges."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
+                            (~(has by pledges.pre) our.bol)
+                        ==
+                  ==
+                  ;div                               ::  worker|oracle done|dead $prez
+                    ;h2: Work Archive
+                    ;+  %^  mota-well:ui  mas  "No archived projects."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
+                            (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
+                        ==
+                  ==
                 ==
-                ;div                               ::  $prez with %prop status
-                  ;h2: Service Requests
-                  ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?=(%prop ~(stat pj:fj -.pre))
-                          =(p.assessment.pre our.bol)
-                      ==
-                ==
-                ;div                               ::  $prez with %sess status
-                  ;h2: Review Requests
-                  ;+  %^  ~(mota-well ui sus)  sas  "No projects pending review."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?=(%sess ~(stat pj:fj -.pre))
-                          =(p.assessment.pre our.bol)
-                      ==
-                ==
-                ;div                               ::  $prez with unfulfilled $plej
-                  ;h2: Outstanding Pledges
-                  ;+  %^  ~(mota-well ui sus)  sas  "No outstanding pledges."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
-                          (~(has by pledges.pre) our.bol)
-                      ==
-                ==
-                ;div                               ::  worker|oracle done|dead $prez
-                  ;h2: Work Archive
-                  ;+  %^  mota-well:ui  mas  "No archived projects."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
-                          (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
-                      ==
-                ==
-              ==
             ==
           ==
     ==

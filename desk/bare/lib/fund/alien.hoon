@@ -32,6 +32,7 @@
   ^-  bucket:se
   =/  pre=path  (en-beam [our.bol %settings da+now.bol] /)
   ?.  .^(? %gu (snoc pre %$))  *bucket:se
+  ?.  .^(? %gx (weld pre /has-bucket/landscape/'calmEngine'/noun))  *bucket:se
   =+  .^(non=noun %gx (weld pre /bucket/landscape/'calmEngine'/noun))
   =/  dat=data:se  (fall ((soft data:se) non) [%bucket *bucket:se])
   ?.(?=(%bucket -.dat) *bucket:se bucket.dat)

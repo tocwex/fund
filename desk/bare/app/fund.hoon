@@ -513,12 +513,13 @@
   ++  watch
     |%
     ++  boat                                     ::  filtered outgoing watch paths
-      |=  fil=$-([wire @p @tas] ?)
+      |=  fil=$-([wire @p @tas] ?)  ~+
       ^-  (set path)
       %-  ~(rep in ~(key by wex.bol))
       |=  [[wyr=(pole knot) sip=@p dap=@tas] acc=(set path)]
       ?.((fil wyr sip dap) acc (~(put in acc) wyr))
     ++  scan-vold                                ::  %fund-watcher old-style watch paths
+      ~+
       ^-  (set path)
       %-  boat
       |=  [wyr=(pole knot) sip=@p dap=@tas]
@@ -529,6 +530,7 @@
           ?=(xfer:f typ.wyr)
       ==
     ++  scan-vnow                                ::  %fund-watcher new-style watch paths
+      ~+
       ^-  (set path)
       %-  boat
       |=  [wyr=(pole knot) sip=@p dap=@tas]
@@ -541,6 +543,7 @@
           ?=(%$ tob.wyr)  ::  NOTE: empty end indicates ongoing watch path
       ==
     ++  scan-vany                                ::  %fund-watcher any-style watch paths
+      ~+
       ^-  (set path)
       (~(uni in scan-vold) scan-vnow)
   --
@@ -621,17 +624,21 @@
     |=  [oat=(unit oath:f) sob=(unit bloq:f) tob=(unit bloq:f)]
     ^-  (list card)
     =+  oaf=(fall (clap oat contract.pro head) *oath:f)
-    %-  zing
-    %+  turn  (scan-cfgz:fc oaf sob tob payment.pro)
+    %-  zing  %+  turn  (scan-cfgz:fc oaf sob tob payment.pro)
     |=  [suf=path cfg=config:fc]
     ^-  (list card)
     =/  pat=path  (welp pj-pa-pub suf)
     =/  pen=@ud   (sub (lent pat) 2)  ::  path w/o start/end delimiters
     =+  car=[%pass pat=~ %agent [our.bol %fund-watcher] act=~]
     %-  snoc  :_  `card`car(pat pat, act [%poke %fund-watcher-poke !>([%watch pat cfg])])
+    ^-  (list card)
     ?^  tob  ~
-    %-  turn  :_  |=(p=path `card`car(pat p, act [%leave ~]))
-    (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
+    %-  zing  %+  turn
+      (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
+    |=  old=path
+    :-  car(pat old, act [%leave ~])
+    ?:  =(pat old)  ~
+    [car(pat old, act [%poke %fund-watcher-poke !>([%clear old])])]~
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f

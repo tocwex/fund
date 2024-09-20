@@ -636,8 +636,11 @@
     %-  zing  %+  turn
       (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
     |=  old=path
-    :-  car(pat old, act [%leave ~])
-    ?:  =(pat old)  ~
+    :-  car(pat old, act [%leave ~])                    ::  clear out:
+    ?.  ?|  (~(has in scan-vold:watch:audit) old)       ::  - all old watch paths
+            &(!=(old pat) =(~ tob) =(%$ (rear old)))    ::  - all new indefinite paths
+        ==
+      ~
     [car(pat old, act [%poke %fund-watcher-poke !>([%clear old])])]~
   ::
   ++  pj-do-read

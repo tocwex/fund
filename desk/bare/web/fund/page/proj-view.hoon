@@ -658,18 +658,21 @@
                         ==
                   ==
                 ==
-                ;div(class "flex flex-col gap-2", x-data "\{expanded: {(bool:enjs:ff:fh mow)}}")
-                  ;div(x-show "expanded")
-                    ;+  ?:  |(=('' note.mul) ?=(%pruf -.mul))
-                          ;p(class "fund-warn"): No message included.
-                        ::  TODO: Consider including the pledge message here too
-                        ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
-                  ==
-                  ;button.fund-butn-ac-s.mx-auto  =type  "button"
-                      =x-show  "!{(bool:enjs:ff:fh mow)}"
-                      =x-on-click  "expanded = ! expanded"
-                    ; toggle ~
-                  ==
+                ;div(class "flex flex-col gap-2")
+                  ;+  =/  msg=@t
+                        ?-  -.mul
+                          %pruf  %$
+                          %plej  note.mul
+                        ::
+                            %trib
+                          =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
+                          ?.(=(%$ note.teb) note.teb ?~(plej.teb %$ note.u.plej.teb))
+                        ==
+                      ?.  mow
+                        ;p(class "fund-warn"): Message hidden by administrator.
+                      ?:  =(%$ msg)
+                        ;p(class "fund-warn"): No message included.
+                      ;p(class "leading-normal tracking-wide"): {(trip msg)}
                 ==
                 ;*  =-  ?~  buz  ~
                         :_  ~
@@ -678,11 +681,12 @@
                         ==
                     ^-  buz=marl
                     ;:    welp
-                    ::  mula blot button  ::
-                        ?.  &(pyr !?=(%pruf -.mul))  ~
+                    ::  chain data claim button  ::
+                        ?.  &((auth:fh bol) ?=(%pruf -.mul) ?=(%depo note.mul))  ~
                       :_  ~
-                      ;form(method "post")
-                        ;+  (prod-butn:ui:fh %mula-blot %action "toggle shown ~" "editMula" ~)
+                      ;form  =method  "post"
+                          =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"
+                        ;+  (prod-butn:ui:fh %mula-mine %action "claim transaction ~" "editMula" ~)
                       ==
                     ::  pledge edit view button  ::
                         ?.  ?&  pyr
@@ -693,14 +697,7 @@
                         ~
                       :_  ~
                       ;form(method "post")
-                        ;+  (prod-butn:ui:fh %mula-view %action "toggle view ~" "editMula" ~)
-                      ==
-                    ::  chain data claim button  ::
-                        ?.  &(?=(%pruf -.mul) ?=(%depo note.mul))  ~
-                      :_  ~
-                      ;form  =method  "post"
-                          =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"
-                        ;+  (prod-butn:ui:fh %mula-mine %action "claim data ~" "editMula" ~)
+                        ;+  (prod-butn:ui:fh %mula-view %action "toggle status ~" "editMula" ~)
                       ==
                     ::  attested redo button  ::
                         ?.  ?&  pyr
@@ -712,6 +709,12 @@
                       :_  ~
                       ;form(method "post")
                         ;+  (prod-butn:ui:fh %mula-redo %action "query chain ~" "editMula" ~)
+                      ==
+                    ::  mula blot button  ::
+                        ?.  &(pyr !?=(%pruf -.mul))  ~
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-blot %action "toggle shown ~" "editMula" ~)
                       ==
                     ==
               ==

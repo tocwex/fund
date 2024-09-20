@@ -16,6 +16,7 @@ import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
 import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
 import TomSelect from 'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/+esm';
+import UrbitOb from 'https://cdn.jsdelivr.net/npm/urbit-ob@5.0.1/+esm';
 import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
@@ -214,8 +215,8 @@ if (window.Alpine === undefined) {
       ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
-      ['fund-aset-circ', 'h-6 bg-white rounded-full'],
-      ['fund-aset-boxx', 'h-6 bg-white rounded'],
+      ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
+      ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
       ['fund-odit-ther', 'w-full rounded-md flex h-4 sm:h-8 text-primary-700'], // FIXME: text-primary-600
       ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
     ],
@@ -294,6 +295,35 @@ if (window.Alpine === undefined) {
     }
   });
 
+  Alpine.store("wallet", {
+    address: null,
+    chain: null,
+    status: "…loading…",
+    update(address, chain) {
+      this.address = address;
+      this.chain = chain;
+      this.status =
+        (address === undefined) ? "connect 💰"
+        : (address === null) ? "…loading…"
+        : `${address.slice(0, 5)}…${address.slice(-4)}`;
+      window.dispatchEvent(new CustomEvent("fund-wallet", {detail: address}));
+    },
+  });
+  Alpine.store("project", {
+    swap: undefined,
+    symbol: undefined,
+    nfts: {},
+    update(swap, symbol) {
+      this.swap = swap;
+      this.symbol = symbol;
+      this.nfts = {};
+      window.dispatchEvent(new CustomEvent("fund-project", {detail: symbol}));
+    },
+    loadNFTs(addr, nfts) {
+      this.nfts[addr] = nfts;
+    },
+  });
+
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     cmd,
     copyText,
@@ -306,7 +336,8 @@ if (window.Alpine === undefined) {
     initTippy,
     initTomSelect,
     updateTokenSelect,
-    updateNftsSelect,
+    tsCreateOracle,
+    tsLoadNFTs,
     CONTRACT,
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
@@ -359,15 +390,16 @@ if (window.Alpine === undefined) {
   // FIXME: It's better to use this instead of `window.open` for local URLs
   // because the `<a>` click emulation prompts a partial turbojs reload where
   // `window.open` prompts a full page reload
-  function openHREF(href) {
+  function openHREF(href, tab=false) {
     const link = document.createElement("a");
     link.setAttribute("class", "hidden");
     link.setAttribute("href", href);
+    if (tab) { link.setAttribute("target", "_blank"); }
     document.body.appendChild(link);
     link.click();
   }
 
-  function sendForm(event, checks = [], action = Promise.resolve(undefined)) {
+  function sendForm(event, checks=[], action=Promise.resolve(undefined)) {
     event.preventDefault();
     if ((event.target.form !== undefined) && !event.target.form.reportValidity()) {
       return Promise.resolve(undefined);
@@ -391,7 +423,7 @@ if (window.Alpine === undefined) {
   }
 
   // NOTE: 'formData' is not a 'FormData' object; it's a {str => str} map
-  function sendFormData(formData, event = undefined) {
+  function sendFormData(formData, event=undefined) {
     const form = document.createElement("form");
     form.method = "post";
     // FIXME: This is necessary in order to send the raw message
@@ -435,6 +467,16 @@ if (window.Alpine === undefined) {
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
 
+  // FIXME: This doesn't work well for calculating line clamps on the
+  // 'zero-md' elements because they generate content dynamically
+  //
+  // function needsClamp(elem, clamp) {
+  //   const divHeight = elem.offsetHeight
+  //   const lineHeight = parseInt(elem.style.lineHeight);
+  //   const lines = divHeight / lineHeight;
+  //   return lines > clamp;
+  // }
+
   function initENS(elem, address) {
     getEnsName(window.Wagmi, {address}).then(ensName => {
       elem.innerHTML = ensName
@@ -458,7 +500,14 @@ if (window.Alpine === undefined) {
     });
   }
 
-  function initTomSelect(elem, empty, upOnly = false, maxItems = undefined) {
+  // function initTomSelect(elem, empty, upOnly=false, maxItems=undefined, create=false) {
+  function initTomSelect(elem, {
+    empty=false, // Bool
+    forceUp=false, // Bool
+    maxItems=undefined, // Number?
+    create=undefined, // ((value, data) => void)?
+    load=undefined, // ((query, callback) => void)?
+  } = {}) {
     function renderSelector(data, escape) {
       return `
         <div class='flex flex-row items-center gap-x-2'>
@@ -474,12 +523,20 @@ if (window.Alpine === undefined) {
       const tselElem = new TomSelect(elem, {
         allowEmptyOption: empty,
         render: {
-          option(data, escape) { return renderSelector(data, escape); },
-          item(data, escape) { return renderSelector(data, escape); },
+          loading: (data, escape) => "<div class='fund-loader'>⏳</div>",
+          option: (data, escape) => renderSelector(data, escape),
+          item: (data, escape) => renderSelector(data, escape),
+          ...(!create ? {} : {
+            no_results: (data, escape) => null,
+            option_create: (data, escape) => `
+              <div class="create">
+                Use custom option <strong>${escape(data.input)}</strong>
+              </div>`,
+          }),
         },
         onDropdownOpen: (dropdown) => {
           if (
-              upOnly ||
+              forceUp ||
               (dropdown.getBoundingClientRect().bottom >
               (window.innerHeight || document.documentElement.clientHeight))
           ) {
@@ -490,8 +547,14 @@ if (window.Alpine === undefined) {
           dropdown.classList.remove('dropup');
         },
         ...(empty ? {} : {controlInput: null}),
-        ...((maxItems === undefined || maxItems === 0) ? {} : {maxItems})
+        ...((maxItems === undefined || maxItems === 0) ? {} : {maxItems}),
+        ...(!load ? {} : {load}),
+        ...(!create ? {} : {
+          create: !!create,
+          onOptionAdd: create,
+        }),
       });
+      tselElem?.load && tselElem.load();
       elem.matches(":disabled") && tselElem.disable();
     }
   }
@@ -505,6 +568,7 @@ if (window.Alpine === undefined) {
       text: elem.innerText,
       image: elem.dataset.image,
       chain: elem.dataset.chain,
+      href: elem.dataset.href,
     })).filter(({value, chain}) => (
       chain === tokenChain || value === ""
     ));
@@ -517,26 +581,57 @@ if (window.Alpine === undefined) {
     );
   }
 
-  function updateNftsSelect(elem) {
-    const walletNfts = document.querySelector("#fund-nfts-wallet");
-    const tokenSelect = document.querySelector('#proj-token').tomselect;
-    const tokenNftOpts = Array.from(walletNfts.children).map(elem => ({
-      value: elem.value,
-      text: elem.innerText,
-      image: elem.dataset.image,
-    }));
-    if (tokenNftOpts.length === 0) {
-      tokenNftOpts.push({
-        value: "-1",
-        text: "(no nfts in wallet)",
-        image: "https://placehold.co/24x24/black/black?text=\\n",
-      });
-    }
+  function tsCreateOracle(elem) {
+    return (value, data) => {
+      const okClans = new Set(["galaxy", "star"]);
+      if (!UrbitOb.isValidPatp(value) || !okClans.has(UrbitOb.clan(value))) {
+        elem.tomselect.removeOption(value);
+      } else if (data?.image === undefined) {
+        elem.tomselect.updateOption(value, {
+          value: data.value,
+          text: data.text,
+          image: `https://azimuth.network/erc721/${UrbitOb.patp2dec(value)}.svg`,
+        });
+      }
+    };
+  }
 
-    tokenSelect.clear(true);
-    tokenSelect.clearOptions();
-    tokenSelect.addOptions(tokenNftOpts);
-    tokenSelect.addItem(tokenNftOpts[0].value);
+  function tsLoadNFTs(elem) {
+    return (query, callback) => {
+      const self = elem.tomselect;
+      if (self.loading > 1) return callback();
+
+      const address = Alpine.store("wallet").address;
+      const chain = Alpine.store("wallet").chain;
+      const loadedNFTs = Alpine.store("project").nfts?.[address];
+      const loadNFTOptions = loadedNFTs
+        ? Promise.resolve(loadedNFTs)
+        : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
+            // TODO: Generalize this logic by querying metadata filters from the BE
+            nfts.filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
+              (attr?.trait_type === "size" && attr?.value === "star")
+            )))).map(({name, image, tokenId}) => ({
+              value: tokenId,
+              text: name,
+              image: image.cachedUrl,
+            }))
+          )).catch(() => []);
+
+      self.clear(true);
+      self.clearOptions();
+      loadNFTOptions.then(options => {
+        const nftOptions = (options.length > 0) ? options : [{
+          value: "-1",
+          text: "(no nfts in wallet)",
+          image: "https://placehold.co/24x24/black/black?text=\\n",
+        }];
+        Alpine.store("project").loadNFTs(address, nftOptions);
+        callback(nftOptions);
+        // NOTE: Auto-select if only one available; iffy on the ui/ux
+        // if (nftOptions.length === 0) { self.addItem(-1); }
+        delete self.loadedSearches[query];
+      }).catch(() => callback());
+    };
   }
 
   window.Wagmi = createConfig({
@@ -614,48 +709,18 @@ if (window.Alpine === undefined) {
   });
 
   const setPageWallet = ({connections, current, status}) => {
-    const walletButton = document.querySelector("#fund-butn-wallet");
-    const walletNfts = document.querySelector("#fund-nfts-wallet");
-
     if (status === "disconnected") {
       const connection = connections.get(current);
       if (!connection) {
-        walletButton.innerHTML = "connect 💰";
+        Alpine.store("wallet").update(undefined, undefined);
       } else {
         reconnect(window.Wagmi, {connector: connection.connector});
       }
     } else if (status === "reconnecting") {
-      walletButton.innerHTML = "…loading…";
+      Alpine.store("wallet").update(null, null);
     } else if (status === "connected") {
       const { address, chainId } = getAccount(window.Wagmi);
-
-      walletButton.innerHTML = `${address.slice(0, 5)}…${address.slice(-4)}`;
-
-      const walletSwapType = document.querySelector("#fund-swap-type");
-      if (walletSwapType && walletSwapType.value === "enft") {
-        const walletSwapSymbol = document.querySelector("#fund-swap-symb");
-        SAFE.nftsGetAll(address, chainId, walletSwapSymbol.value).then(nfts => {
-          const options = nfts
-            .filter(nft => ((nft?.raw?.metadata?.attributes ?? []).some(attr => (
-              (attr?.trait_type === "size" && attr?.value === "star")
-            )))).map(({name, image, tokenId}) => ({
-              value: tokenId,
-              text: name,
-              image: image.cachedUrl,
-            }));
-          console.log(`loading ${options.length} nfts`);
-          while (walletNfts.firstChild) {
-            walletNfts.removeChild(walletNfts.lastChild);
-          }
-          options.forEach(({value, text, image}) => {
-            const elem = document.createElement("option");
-            elem.setAttribute("value", value);
-            elem.setAttribute("data-image", image);
-            elem.innerText = text;
-            walletNfts.appendChild(elem);
-          });
-        });
-      }
+      Alpine.store("wallet").update(address, chainId);
     }
   };
 

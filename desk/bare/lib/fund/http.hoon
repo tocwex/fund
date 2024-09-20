@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
-/-  fd=fund-data, fm=fund-meta
-/+  *fund-proj, fk=fund-core, ff=fund-form, fc=fund-chain, fx=fund-xtra
+/-  fd=fund-data
+/+  *fund-proj, fk=fund-core, ff=fund-form, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -10,7 +10,7 @@
 ++  auth
   |=  bol=bowl:gall  ~+
   ^-  bean
-  =+  peers=.^((map ship *) /ax/(scot %p our.bol)//(scot %da now.bol)/peers)
+  =+  peers=.^((map ship *) %ax (en-beam [our.bol %$ da+now.bol] /peers))
   ?|  !=(%pawn (clan:title src.bol))
       (~(has by peers) src.bol)
   ==
@@ -20,9 +20,9 @@
 ++  burl
   |=  bol=bowl:gall  ~+
   ^-  tape
-  =+  erl=.^((unit @t) %ex /(scot %p our.bol)//(scot %da now.bol)/eauth/url)
+  =+  erl=.^((unit @t) %ex (en-beam [our.bol %$ da+now.bol] /eauth/url))
   ?^  erl  (scaj:fx (lent "/~/eauth") (trip u.erl))
-  (head:en-purl:html .^(hart:eyre %e /(scot %p our.bol)/host/(scot %da now.bol)))
+  (head:en-purl:html .^(hart:eyre %e (en-beam [our.bol %host da+now.bol] /)))
 ::
 ::  +alix: al(pine-)i(fy) (man)x (search/replace non-@tas alpine tags)
 ::
@@ -311,7 +311,7 @@
                 ;button  =id  "fund-agis"
                     =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-md hover:bg-primary-550"
                     =x-init  "initTippy($el)"
-                  ;+  (ship-logo src.bol)
+                  ;+  (ship-logo src.bol bol)
                   ;span(class "hidden sm:block font-bold"): {<src.bol>}
                   ;img@"{(aset:enrl:ff %ellipsis)}"(class "hidden sm:block h-full");
                   ;div#fund-agis-opts(class "hidden")
@@ -323,8 +323,7 @@
                   ==
                 ==
               ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
-          ;button#fund-butn-wallet.fund-butn-co-m: …loading…
-          ;select#fund-nfts-wallet.hidden;
+          ;button#fund-butn-wallet.fund-butn-co-m(x-text "$store.wallet.status");
         ==
       ==
     ++  foot
@@ -355,12 +354,41 @@
       ==
     --
   ++  ship-card                                  ::  summary card for user ship
-    ::  TODO: Consider changing the signature to take a (unit addr) for
-    ::  cases when the address isn't yet available (e.g. project in
-    ::  draft form)
-    |=  [sip=@p tyt=tape hep=tape hel=tape adr=addr cid=@ud buz=marl]
+    |=  [sip=@p bol=bowl:gall rol=role cid=@ud adr=addr]
     ^-  manx
-    =/  tid=tape  "fund-help-ship-{(trip (asci:fx (crip tyt)))}"
+    =/  [tyt=tape lin=tape nun=tape hep=tape]
+      ?+    rol  [~ ~ ~ ~]
+          %work
+        :*  tyt="Project Worker"
+            lin="user-guides/project-workers"
+            nun="no payment address set"
+              ^=  hep
+            ^-  tape  ^~
+            %+  rip  3
+            '''
+            The project worker is the identity which does the work defined in
+            the project overview and milestones. When a milestone is completed
+            and approved by the trusted oracle, the project worker receives the
+            listed payout for that milestone.
+            '''
+        ==
+      ::
+          %orac
+        :*  tyt="Trusted Oracle"
+            lin="user-guides/trusted-oracles"
+            nun="no approval keys set"
+              ^=  hep
+            ^-  tape  ^~
+            %+  rip  3
+            '''
+            The role of the trusted oracle is to assess completion of the scope
+            of work. When a milestone review is requested, the oracle can chose
+            to mark it as complete by providing a cryptographically signed
+            message, allowing the worker to withdraw funds.
+            '''
+        ==
+      ==
+    =/  tid=tape  "fund-help-ship-{(trip rol)}-{(bloq:enjs:ff `@`sip)}"
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}
@@ -371,27 +399,31 @@
           ;p: {hep}
           ;p
             ; To learn more,
-            ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/{hel}"(target "_blank")
+            ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/{lin}"(target "_blank")
               ; read the docs.
             ==
           ==
         ==
       ==
       ;div(class "inline-flex self-stretch justify-start items-center gap-2")
-        ;+  (~(ship-logo ..$ "h-20") sip)
+        ;+  (~(ship-logo ..$ "h-20") sip bol)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;div(class "inline-flex items-center gap-1")
-            ;h5.text-lg.font-bold.tracking-tight: {<sip>}
+            ;h5.text-lg.font-bold.tracking-tight
+              ;+  (ship-tytl sip bol)
+            ==
             ;+  (copy-butn (ship:enjs:ff sip))
           ==
           ;div(class "inline-flex items-center gap-1")
-            ;a/"{(esat:enrl:ff adr cid)}"
-                =target  "_blank"
-                =class  "fund-addr fund-addr-ens hover:text-link"
-                =x-init  "initENS($el, '{(addr:enjs:ff adr)}')"
-              …loading…
-            ==
-            ;+  (copy-butn (addr:enjs:ff adr))
+            ;*  ?:  =(0x0 adr)  :_  ~  ;p: {nun}
+                :~  ;a/"{(esat:enrl:ff adr cid)}"
+                        =target  "_blank"
+                        =class  "fund-addr fund-addr-ens hover:text-link"
+                        =x-init  "initENS($el, '{(addr:enjs:ff adr)}')"
+                      …loading…
+                    ==
+                    (copy-butn (addr:enjs:ff adr))
+                ==
           ==
           ;div(class "self-stretch justify-between items-center inline-flex")
             ;div(class "inline-flex items-center gap-1")
@@ -403,7 +435,9 @@
               ;+  (copy-butn (bloq:enjs:ff `@`sip))
             ==
             ;div(class "inline-flex gap-1")
-              ;*  buz
+               ;*  ?:  |(!=(our src):bol =(sip src.bol))  ~
+               :_  ~
+               ;a.fund-butn-ac-s/"{(chat:enrl:ff sip)}"(target "_blank"): 💬
             ==
           ==
         ==
@@ -415,7 +449,7 @@
     ::  FIXME: This is hacky and wasteful, but attempting to use Alpine.js to
     ::  just edit in/out the 'line-clamp-5' class doesn't work due to
     ::  collisions with Twind.js.
-    ;div(class "w-full", x-data "\{expanded: {(trip ?:(?=(%verb typ) 'true' 'false'))}}")
+    ;div(class "w-full", x-data "\{expanded: {(bool:enjs:ff ?=(%verb typ))}}")
       ::  FIXME: Attempting to apply a "to transparent" graident, but
       ::  it's not working...
       ::  after:bg-gradient-to-b after:from-inherit
@@ -432,6 +466,9 @@
           ;div(class "flex justify-center pt-2")
             ;*  %+  turn  ~[["!expanded" "true" "show more +"] ["expanded" "false" "show less -"]]
                 |=  [sow=tape qiq=tape txt=tape]
+                ::  FIXME: Attempt at eliminating the button when the
+                ::  clamp doesn't even truncate extra lines
+                ::  =x-show  "{sow} && needsClamp($el.parentElement.previousElementSibling, 5)"
                 ;button.fund-butn-ac-s(type "button", x-show sow, x-on-click "expanded = {qiq}"): {txt}
           ==
     ==
@@ -510,22 +547,24 @@
     |=  [emt=bean swa=(unit swap) mod=tape xoc=tape]
     ^-  manx
     =/  ini=tape  ?~(swa "undefined" "'{(trip symbol.u.swa)}'")
+    =/  its=tape  "initTomSelect($el, \{empty: {(bool:enjs:ff emt)}})"
+    =/  uts=tape  "updateTokenSelect({ini})"
     ;div(class cas, x-data ~)
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
       ::  in the filter UI
       ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
         ;select#proj-chain.fund-tsel  =name  "can"
             =required  ~
-            =x-init  "initTomSelect($el, {(bool:enjs:ff emt)})"
+            =x-init  its
             =x-on-change  "updateTokenSelect"
           ;*  =+  can=?~(swa id:(~(got by xmap:fc) %ethereum) chain.u.swa)
               %+  welp
                 ?.  emt  ~
-                :_  ~  ;option(value ""): Any Chain
+                :_  ~  ;option(value ~): Any Chain
               %+  turn  xlis:fc
               |=  xet=xeta
               ^-  manx
-              :_  ; {(caps:fx (trip tag.xet))}
+              :_  ; {(xeta:enjs:ff xet)}
               :-  %option
               ;:  welp
                   [%value (bloq:enjs:ff id.xet)]~
@@ -542,26 +581,44 @@
         ;select#proj-token-options.hidden(required ~)
           ;*  %+  welp
                 ?.  emt  ~
-                :_  ~  ;option(value ""): Any Token
+                :_  ~  ;option(value ~): Any Token
               %+  turn  slis:fc
               |=  swa=swap
               ^-  manx
-              :_  ; {(trip name.swa)}
+              :_  ; {(swad:enjs:ff swa)}
               :-  %option
-              ;:  welp
-                  [%value (trip symbol.swa)]~
-                  [%data-type (trip -.swa)]~
-                  [%data-chain (bloq:enjs:ff chain.swa)]~
-                  [%data-image (aset:enrl:ff symbol.swa)]~
+              :~  [%value (trip symbol.swa)]
+                  [%data-type (trip -.swa)]
+                  [%data-chain (bloq:enjs:ff chain.swa)]
+                  [%data-image (aset:enrl:ff symbol.swa)]
+                  ::  FIXME: Should handle %chip case more elegantly
+                  [%data-href (esat:enrl:ff addr.swa chain.swa)]
               ==
         ==
         ;select#proj-token.fund-tsel  =name  "tok"
             =required  ~
-            =x-init  "initTomSelect($el, {(bool:enjs:ff emt)}); updateTokenSelect({ini})"
+            =x-init  :(welp its "; " uts)
             =x-model  mod
+            =x-ref  "token"
             =x-on-change  xoc;
         ;*  ?:  emt  ~
-            :_  ~  ;label(for "tok"): Token
+            :_  ~
+            ;div(class "inline-flex gap-1 items-center")
+              ::  FIXME: Better if this were automatically populated by CSS
+              ::  rules like all of the other <input>s
+              ;label(for "tok")
+                ; Token
+                ;span(class "-ml-1 text-highlight1-500"): *
+              ==
+              ::  FIXME: It would be better if this were an <a> element,
+              ::  but that doesn't properly auto-update via 'x-bind-href'
+              ;button  =type  "button"
+                  =x-on-click  "openHREF($refs.token.tomselect.options[$refs.token.tomselect.activeOption.dataset.value].href, true)"
+                ::  TODO: Remove static width & replace with outer
+                ::  sizing control
+                ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %etherscan)}";
+              ==
+            ==
       ==
     ==
   ++  mile-ther                                  ::  milestone funding thermometer
@@ -650,9 +707,13 @@
       ==
     ==
   ++  ship-logo                                  ::  icon for a user ship
-    |=  sip=@p
+    |=  [sip=@p bol=bowl:gall]
     ^-  manx
-    (icon-logo & (surt:enrl:ff sip))
+    (icon-logo %rect (~(ship-logo fa bol) sip))
+  ++  ship-tytl                                  ::  title for a user ship
+    |=  [sip=@p bol=bowl:gall]
+    ^-  manx
+    ;span(class "line-clamp-1 {cas}"): {(~(ship-tytl fa bol) sip)}
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx
@@ -680,18 +741,18 @@
       %dead  "highlight1-400"
     ==
   ++  icon-stax                                  ::  stack of icons (leftmost on top)
-    |=  [box=bean liz=(list tape)]
+    |=  [typ=?(%circ %rect) liz=(list tape)]
     ^-  manx
     ;div(class "flex flex-row-reverse h-6 {cas}")
       ;*  %+  turn  (enum:fx (flop liz))
           |=  [lid=@ lin=tape]
           =+  lim=?:(=(0 lid) "" "-mr-3")
-          (~(icon-logo ..$ "relative h-full {lim}") box lin)
+          (~(icon-logo ..$ "relative h-full {lim}") typ lin)
     ==
-  ++  icon-logo                                  ::  single icon circle
-    |=  [box=bean lin=tape]
+  ++  icon-logo                                  ::  single icon image
+    |=  [typ=?(%circ %rect) lin=tape]
     ^-  manx
-    ;img@"{lin}"(class "fund-aset-{(trip ?:(box %boxx %circ))} {cas}");
+    ;img@"{lin}"(class "fund-aset-{(trip typ)} {cas}");
   ++  cheq-swix                                  ::  checkbox switch <o->
     |=  nam=tape
     ^-  manx

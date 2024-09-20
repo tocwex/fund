@@ -1,4 +1,4 @@
-/-  pold=sss-proj-4
+/-  pold=sss-proj-5
 /+  *fund-proj, fc=fund-core, config, sss
 |%
 +|  %misc
@@ -29,38 +29,9 @@
   --
 
 +|  %core
-+$  vers  _%5
++$  vers  _%6
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
-  =/  up
-    |_  pro=proj:pold
-    ++  proj
-      ^-  ^proj
-      :*  title=title.pro
-          summary=summary.pro
-          image=image.pro
-          assessment=assessment.pro
-      ::
-            ^=  payment
-          ?.  ?=(%enft -.payment.pro)  payment.pro
-          :*  %enft
-              chain=chain.payment.pro
-              addr=addr.payment.pro
-              name=name.payment.pro
-              symbol=symbol.payment.pro
-              ::  NOTE: Hardcoded so as not to create a dependency on the
-              ::  /lib/fund/chain/hoon file
-              uri=|=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
-              limits=(malt ~[[%size |=(=@t =(%star t))]])
-          ==
-      ::
-          milestones=milestones.pro
-          contract=contract.pro
-          pledges=pledges.pro
-          contribs=contribs.pro
-          proofs=proofs.pro
-      ==
-    --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
@@ -72,7 +43,7 @@
     ^-  rock
     ?+  -.voc     $(voc (urck:lake:pold voc))
       vers        voc
-      vers:pold   $(voc [*vers ~(proj up +.voc)])
+      vers:pold   $(voc [*vers +.voc])
     ==
   ++  uwve
     |=  vav=vave
@@ -83,7 +54,7 @@
         vers:pold
       =-  $(vav [*vers -])
       ?+    +.vav      +.vav
-        [* * %init *]  [bol.vav p.pok.vav %init ~(proj up pro.q.pok.vav)]
+        [* * %redo *]  [bol.vav p.pok.vav %redo ~ ~]
       ==
     ==
   ++  wash
@@ -199,6 +170,7 @@
             `mile`mil(status sat.pod, withdrawal `[~ sig fill.mod ~])
           ::
               pledges
+            ?.  =((lent miz) +(min))  pledges.pro
             %-  ~(run by pledges.pro)
             |=([p=plej d=peta] [p d(view `%stif)])
           ==
@@ -277,6 +249,28 @@
         ==
       ==
     ::
+        %blot
+      =/  sow=?  ?=(%show dif.pod)
+      %_    pro
+          contribs
+        %-  ~(run by contribs.pro)
+        |=  [teb=treb det=deta]
+        [teb ?.(=(id.det mid.pod) det det(show sow))]
+      ::
+          pledges
+        %-  ~(run by pledges.pro)
+        |=  [pej=plej pet=peta]
+        [pej ?.(=(id.pet mid.pod) pet pet(show sow))]
+      ==
+    ::
+        %view
+      %_    pro
+          pledges
+        %-  ~(run by pledges.pro)
+        |=  [pej=plej pet=peta]
+        [pej ?.(=(id.pet mid.pod) pet pet(view `dif.pod))]
+      ==
+    ::
         %draw
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
       ?>  ?=(?(%dead %done) status.mil)
@@ -309,14 +303,42 @@
       (edit-mile min mil(withdrawal `[~ u.sig.pod fil ~]))
     ::
         %redo
+      =/  sob=bloq  (fall sob.pod ?~(contract.pro 0 p.xact.u.contract.pro))
+      =/  tob=bloq  (fall tob.pod 1.000.000.000.000.000)  ::  NOTE: Basically 'Number.MAX'
+      =+  gud=|=(p=pruf &((gte sob p.xact.when.p) (lte tob p.xact.when.p)))
       %_    pro
-        proofs    proofs:*proj
-        contribs  (~(run by contribs.pro) |=([t=treb d=deta] [t(pruf ~) d]))
+          proofs
+        %-  ~(rep by proofs.pro)
+        |=  [[key=addr val=pruf] acc=(map addr pruf)]
+        ^-  (map addr pruf)
+        ?.((gud val) acc (~(put by acc) key val))
+      ::
+          contribs
+        %-  ~(run by contribs.pro)
+        |=  [teb=treb det=deta]
+        :_  det
+        %_    teb
+            pruf
+          ?~  pruf.teb  ~
+          ?.  (gud u.pruf.teb)  ~
+          pruf.teb
+        ==
       ::
           milestones
         ;;  (lest mile)
         %+  turn  milestones.pro
-        |=(m=mile m(withdrawal (bind withdrawal.m |=(w=with w(pruf ~)))))
+        |=  mil=mile
+        %_    mil
+            withdrawal
+          %+  bind  withdrawal.mil
+          |=  wit=with
+          %_    wit
+              pruf
+            ?~  pruf.wit  ~
+            ?.  (gud u.pruf.wit)  ~
+            pruf.wit
+          ==
+        ==
       ==
     ==
   --

@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-list/hoon: render project listing page for %fund
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
+/+  fj=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  rudder, config
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
@@ -152,9 +152,7 @@
       ^-  manx
       ::  TODO: Replace the latter with a ship-generated sigil pair
       ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape
-        ?^  image.pre  (trip u.image.pre)
-        (surt:enrl:ff:fh p.lag)
+      =/  bak=tape  ?^(image.pre (trip u.image.pre) (~(ship-logo fa bol) p.lag))
       ;a/"{(flat:enrl:ff:fh lag)}"(class "flex flex-col gap-2 font-serif {cas}")
         ;div(class "aspect-video bg-cover bg-center rounded-md bg-[url('{bak}')]")
           ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
@@ -162,7 +160,7 @@
               ; {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5")
-              ;+  %+  ~(icon-stax ui:fh "h-8")  |
+              ;+  %+  ~(icon-stax ui:fh "h-8")  %circ
                   :~  (aset:enrl:ff:fh symbol.payment.pre)
                       (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pre))
                   ==
@@ -172,8 +170,8 @@
         ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
           ;div(class "flex-1 min-w-0 text-lg"): {(trip title.pre)}
           ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
-            ;+  %+  ~(icon-stax ui:fh "h-8")  &
-                (turn ~[p.lag p.assessment.pre] surt:enrl:ff:fh)
+            ;+  %+  ~(icon-stax ui:fh "h-8")  %rect
+                (turn ~[p.lag p.assessment.pre] ~(ship-logo fa bol))
           ==
         ==
       ==
@@ -182,9 +180,7 @@
       ^-  manx
       ::  TODO: Replace the latter with a ship-generated sigil pair
       ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape
-        ?^  image.met  (trip u.image.met)
-        (surt:enrl:ff:fh worker.met)
+      =/  bak=tape  ?^(image.met (trip u.image.met) (~(ship-logo fa bol) worker.met))
       ::  TODO: Add data attributes to allow for FE sorting/filtering
       ;div  =x-on-click  "joinProject('{(flag:enjs:ff:fh lag)}')"
           =class  "flex flex-col gap-2 font-serif hover:cursor-pointer {cas}"
@@ -194,7 +190,7 @@
               ; {(swam:enjs:ff:fh cost.met payment.met)}
             ==
             ;div(class "bg-gray-100 rounded-md p-0.5 line-clamp-2")
-              ;+  (icon-stax:ui:fh & (turn ~[worker.met oracle.met] surt:enrl:ff:fh))
+              ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] ~(ship-logo fa bol)))
             ==
           ==
         ==
@@ -218,7 +214,7 @@
   ::  leave it for now
   ;div(class "min-h-[100vh] flex flex-col justify-between", x-data "proj_list")
     ;div(class "flex flex-col p-2 gap-2")
-      ;+  =/  cas=tape  "w-full grid gap-4 justify-center"
+      ;*  =/  cas=tape  "w-full grid gap-4 justify-center"
           =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
           =/  mas=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
           =/  wax=manx
@@ -232,44 +228,44 @@
             ==
           ?+    dyp  !!
               %following
-            ;div
-              ;h1: Following
-              ;+  ?~  paz=(turn pyz proj-card:ui)  wax
-                  ;div(class pas)
-                    ;*  paz
-                  ==
+            :~  ;h1: Following
+                  ?~  paz=(turn pyz proj-card:ui)  wax
+                ;div(class pas)
+                  ;*  paz
+                ==
             ==
           ::
               %discover
-            ;div
-              ;div(class "flex flex-row gap-2 justify-start items-center")
-                ;h1: Discover
-                ;button#fund-help-disc.fund-tipi(type "button")
-                  ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
+            =/  hel=tape  (trip !<(@t (slot:config %meta-help)))
+            :~  ;div(class "flex flex-row gap-2 justify-start items-center")
+                  ;h1: Discover
+                  ;button#fund-help-disc.fund-tipi(type "button", x-init "initTippy($el)")
+                    ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
+                  ==
+                  ;div#fund-help-disc-opts(class "hidden")
+                    ;p
+                      ; Discovery of new projects depends on the %pals
+                      ; network. Projects are publicized to your %pals, and
+                      ; they can optionally republicize them to their %pals.
+                      ; Tell your friends and see who can discover the
+                      ; largest project collection!
+                    ==
+                    ;a.text-link/"{hel}/project-discovery"(target "_blank")
+                      ; Read the docs to learn more.
+                    ==
+                  ==
                 ==
-                ;div#fund-help-disc-opts(class "hidden")
-                  ;p
-                    ; Discovery of new projects depends on the %pals
-                    ; network. Projects are publicized to your %pals, and
-                    ; they can optionally republicize them to their %pals.
-                    ; Tell your friends and see who can discover the
-                    ; largest project collection!
-                  ==
-                  ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/project-discovery"(target "_blank")
-                    ; Read the docs to learn more.
-                  ==
+                  ?~  maz=(turn myz meta-card:ui)  wax
+                ;div(class mas)
+                  ;*  maz
                 ==
-              ==
-              ;+  ?~  maz=(turn myz meta-card:ui)  wax
-                  ;div(class mas)
-                    ;*  maz
-                  ==
             ==
           ::
               %action
             =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col overflow-x-auto"
             =/  sus=tape  "w-[50vw] sm:w-[250px]"
             ?^  text.arg
+              :_  ~
               %^  mota-well:ui  mas  "No projects found."
               |=  [lag=flag:f pre=prej:proj:f]
               ?|  ?&  ?=(?(%prop %sess) ~(stat pj:fj -.pre))
@@ -282,55 +278,54 @@
                       (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
                   ==
               ==
-            ;div
-              ;div(class "flex flex-row justify-between")
-                ;h1: My Actions
-                ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
-                  ; new project +
+            :~  ;div(class "flex flex-row justify-between")
+                  ;h1: My Actions
+                  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
+                    ; new project +
+                  ==
                 ==
-              ==
-              ;div(class "flex flex-col gap-4")
-                ;div                               ::  my $prez
-                  ;h2: My Open Projects
-                  ;+  %^  ~(mota-well ui sus)  sas  "No live projects."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
-                          =(our.bol p.lag)
-                      ==
+                ;div(class "flex flex-col gap-4")
+                  ;div                               ::  my $prez
+                    ;h2: My Open Projects
+                    ;+  %^  ~(mota-well ui sus)  sas  "No live projects."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
+                            =(our.bol p.lag)
+                        ==
+                  ==
+                  ;div                               ::  $prez with %prop status
+                    ;h2: Service Requests
+                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?=(%prop ~(stat pj:fj -.pre))
+                            =(p.assessment.pre our.bol)
+                        ==
+                  ==
+                  ;div                               ::  $prez with %sess status
+                    ;h2: Review Requests
+                    ;+  %^  ~(mota-well ui sus)  sas  "No projects pending review."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?=(%sess ~(stat pj:fj -.pre))
+                            =(p.assessment.pre our.bol)
+                        ==
+                  ==
+                  ;div                               ::  $prez with unfulfilled $plej
+                    ;h2: Outstanding Pledges
+                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding pledges."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
+                            (~(has by pledges.pre) our.bol)
+                        ==
+                  ==
+                  ;div                               ::  worker|oracle done|dead $prez
+                    ;h2: Work Archive
+                    ;+  %^  mota-well:ui  mas  "No archived projects."
+                        |=  [lag=flag:f pre=prej:proj:f]
+                        ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
+                            (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
+                        ==
+                  ==
                 ==
-                ;div                               ::  $prez with %prop status
-                  ;h2: Service Requests
-                  ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?=(%prop ~(stat pj:fj -.pre))
-                          =(p.assessment.pre our.bol)
-                      ==
-                ==
-                ;div                               ::  $prez with %sess status
-                  ;h2: Review Requests
-                  ;+  %^  ~(mota-well ui sus)  sas  "No projects pending review."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?=(%sess ~(stat pj:fj -.pre))
-                          =(p.assessment.pre our.bol)
-                      ==
-                ==
-                ;div                               ::  $prez with unfulfilled $plej
-                  ;h2: Outstanding Pledges
-                  ;+  %^  ~(mota-well ui sus)  sas  "No outstanding pledges."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
-                          (~(has by pledges.pre) our.bol)
-                      ==
-                ==
-                ;div                               ::  worker|oracle done|dead $prez
-                  ;h2: Work Archive
-                  ;+  %^  mota-well:ui  mas  "No archived projects."
-                      |=  [lag=flag:f pre=prej:proj:f]
-                      ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
-                          (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
-                      ==
-                ==
-              ==
             ==
           ==
     ==
@@ -390,7 +385,7 @@
                   ==
                   ;div(x-show "filt_status.mode == 'work'")
                     ;select#filt-worker.fund-tsel
-                        =x-init  "initTomSelect($el, true, true)"
+                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
                         =x-model  "filt_status.params.work"
                       ;*  =/  woz=(set @p)
                             %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
@@ -404,14 +399,14 @@
                           :-  %option
                           ;:  welp
                               [%value "{<wok>}"]~
-                              [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`wok)}.svg"]~
+                              [%data-image (~(ship-logo fa bol) wok)]~
                               ?.(&(?=(^ work.arg) =(u.work.arg wok)) ~ [%selected ~]~)
                           ==
                     ==
                   ==
                   ;div(x-show "filt_status.mode == 'orac'")
                     ;select#filt-oracle.fund-tsel
-                        =x-init  "initTomSelect($el, true, true)"
+                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
                         =x-model  "filt_status.params.orac"
                       ;*  =/  orz=(set @p)
                             =-  (~(uni in (silt mel)) (silt pel))
@@ -426,14 +421,14 @@
                           :-  %option
                           ;:  welp
                               [%value "{<ora>}"]~
-                              [%data-image "https://azimuth.network/erc721/{(bloq:enjs:ff:fh `@`ora)}.svg"]~
+                              [%data-image (~(ship-logo fa bol) ora)]~
                               ?.(&(?=(^ orac.arg) =(u.orac.arg ora)) ~ [%selected ~]~)
                           ==
                     ==
                   ==
                   ;div(x-show "filt_status.mode == 'stat'")
                     ;select#filt-status.fund-tsel
-                        =x-init  "initTomSelect($el, true, true)"
+                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
                         =x-model  "filt_status.params.stat"
                       ;*  :-  ;option(value ""): Any Status
                           %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]
@@ -591,4 +586,4 @@
     ==
   ==
 --
-::  VERSION: [1 3 0]
+::  VERSION: [1 4 0]

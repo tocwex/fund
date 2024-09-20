@@ -1,3 +1,5 @@
+import { FUND_ALCH_AKEY, FUND_RPCE_ETHE, FUND_RPCE_SEPO } from './config.js';
+
 export const FUND_CUT = 0.01;
 
 export const ADDRESS = Object.freeze({
@@ -16,33 +18,12 @@ export const NETWORK = Object.freeze({
     11155111: "SEPOLIA",
   }),
   APIKEY: Object.freeze({
-    ETHEREUM:
-      ["3", "E", "1", "u", "G", "l", "C", "j", "i", "F", "W", "V", "n",
-       "L", "r", "1", "3", "b", "b", "n", "J", "B", "F", "F", "W", "c",
-       "-", "4", "W", "B", "2", "2"].join(""),
-    SEPOLIA:
-      ["2", "R", "E", "E", "E", "A", "S", "1", "y", "b", "f", "y", "f",
-       "H", "R", "3", "4", "w", "B", "D", "F", "C", "I", "H", "C", "S",
-       "X", "J", "t", "d", "f", "E"].join(""),
+    ETHEREUM: FUND_ALCH_AKEY,
+    SEPOLIA: FUND_ALCH_AKEY,
   }),
   RPC: Object.freeze({
-    // NOTE: Make it at least nontrivial to sniff out and steal these API keys
-    ETHEREUM:
-      ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
-       "-", "m", "a", "i", "n", "n", "e", "t", ".", "g", ".",
-       "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
-       "/", "v", "2", "/", "3", "E", "1", "u", "G", "l", "C",
-       "j", "i", "F", "W", "V", "n", "L", "r", "1", "3", "b",
-       "b", "n", "J", "B", "F", "F", "W", "c", "-", "4", "W",
-       "B", "2", "2"].join(""),
-    SEPOLIA:
-      ["h", "t", "t", "p", "s", ":", "/", "/", "e", "t", "h",
-       "-", "s", "e", "p", "o", "l", "i", "a", ".", "g", ".",
-       "a", "l", "c", "h", "e", "m", "y", ".", "c", "o", "m",
-       "/", "v", "2", "/", "2", "R", "E", "E", "E", "A", "S",
-       "1", "y", "b", "f", "y", "f", "H", "R", "3", "4", "w",
-       "B", "D", "F", "C", "I", "H", "C", "S", "X", "J", "t",
-       "d", "f", "E"].join(""),
+    ETHEREUM: FUND_RPCE_ETHE,
+    SEPOLIA: FUND_RPCE_SEPO,
   }),
 });
 

@@ -1,1 +1,0 @@
-../../../bare/lib/fund/meta-0.hoon

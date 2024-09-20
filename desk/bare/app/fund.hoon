@@ -1,6 +1,6 @@
 /-  f=fund, p=pals
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
-/+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof
+/+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fx=fund-xtra
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -340,7 +340,7 @@
       ?~  p.syn  cor
       ((slog u.p.syn) cor)
     ::  scan response  ::
-        [%scan typ=@ ~]
+        [%scan typ=@ sob=@ tob=@ ~]
       ?>  =(our.bol sip)
       ?>  ?=(xfer:f typ.pat.pat)
       ?+    -.syn  cor
@@ -364,11 +364,18 @@
         =/  loz=loglist:fc   ?+(-.dif loglist.dif %disavow ~)
         =*  por  (pj-abed:pj-core sip nam)
         =/  pro=proj:proj:f  pro:por
+        ::  NOTE: Worker is assumed to initiate all withdrawal transactions
+        =/  wad=addr:f  work:(need contract.pro)
+        ::  NOTE: Unused for now, but may be useful for notifications later
+        =/  [sob=(unit bloq:f) tob=(unit bloq:f)]
+          =+  par=|=(v=@ `(unit bloq:f)`?:(=(%$ v) ~ `(slav %ud v)))
+          [(par sob.pat.pat) (par tob.pat.pat)]
         ::  NOTE: We group by transaction for multisend cases (which
         ::  always occur for withdrawals)
+        ::  NOTE: We assume that all incoming transactions are single send
         =/  xap=(map xact:f (list [addr:f @]))
           %+  roll  loz
-          |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f cash:f]))]
+          |=  [nex=event-log:rpc:ethereum:fc acc=(map xact:f (list [addr:f @]))]
           =/  act=xact:f  [block-number transaction-hash]:(need mined.nex)
           =/  who=addr:f  (snag ?-(typ.pat.pat %depo 1, %with 2) `(list @ux)`topics.nex)
           ::  NOTE: If there are 4 topics, then this is an NFT transfer, for
@@ -387,12 +394,16 @@
           %-  ~(rep by xap)
           |=  [[act=xact:f fez=(list [addr:f @])] acc=(list card)]
           :_  acc
+          =/  fom=addr:f  ?-(typ.pat.pat %depo -:(head fez), %with wad)
           =/  nfz=(list [@ tape])  (turn fez |=([a=addr:f i=@] [i (uri.payment.pro i)]))
-          :*  %pass  `path`(welp pat /(scot %ud p.act)/(scot %ux q.act))
+          :*  %pass  `path`(welp pat /(scot %ud p.act)/(scot %ux q.act)/(scot %ux fom))
               %arvo  %k  %fard  q.byk.bol
               %nfz-okay  noun+!>([~ nfz limits.payment.pro ~])
           ==
-        %-  turn  :_  |=([x=xact:f c=cash:f a=(set addr:f)] (pj-mk-pruf:por x c typ.pat.pat))
+        %-  turn  :_
+          |=  [act=xact:f cas=cash:f adz=(set addr:f)]
+          =/  fom=addr:f  ?-(typ.pat.pat %depo (head ~(tap in adz)), %with wad)
+          (pj-mk-pruf:por act fom cas typ.pat.pat)
         ^-  (list [xact:f cash:f (set addr:f)])
         %-  ~(rep by xap)
         |=  [[act=xact:f fez=(list [addr:f cash:f])] acc=(list [xact:f cash:f (set addr:f)])]
@@ -417,24 +428,28 @@
       renew-surl:action
     ==
   ::
-      [%fund %proj sip=@ nam=@ %scan typ=@ boq=@ adr=@ ~]
+      [%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ boq=@ hax=@ fom=@ ~]
     ?+    syn  cor
         [%khan %arow *]
       ?:  ?=(%.n -.p.syn)  ((slog leaf+<p.p.syn> ~) cor)
       =/  lag=flag:f  [(slav %p sip.pat) (slav %tas nam.pat)]
       =/  typ=xfer:f  ;;(xfer:f typ.pat)
-      =/  act=xact:f  [(slav %ud boq.pat) (slav %ux adr.pat)]
+      =/  act=xact:f  [(slav %ud boq.pat) (slav %ux hax.pat)]
+      =/  fom=addr:f  (slav %ux fom.pat)
       =+  !<(gud=(set @) q.p.p.syn)
-      (emit (pj-mk-pruf:(pj-abed:pj-core lag) act ~(wyt in gud) typ))
+      (emit (pj-mk-pruf:(pj-abed:pj-core lag) act fom ~(wyt in gud) typ))
     ==
   ==
 ::
 ++  open
   ^+  cor
-  =/  old=?  !(~(has by pf-myn) our.bol)
+  =/  kiq=?
+    ?|  !(~(has by pf-myn) our.bol)        ::  pre-v1.1 need any watch paths
+        =>(scan-vold:watch:audit ?=(^ .))  ::  pre-%6 %proj need new-style watch paths
+    ==
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  =.  cor  (renew-projs:action old)
+  =.  cor  (renew-projs:action kiq)
   cor
 ++  action
   |%
@@ -471,7 +486,7 @@
         ?=(^ (find /gall/use/fund pat))
     ==
   ++  renew-projs                                ::  invoke project level triggers
-    |=  kiq=?
+    |=  kiq=bean
     ^+  cor
     =/  lis=(list flag:f)  ~(tap in ~(key by pj-our))
     |-
@@ -481,7 +496,7 @@
     ::
         cor
       ?.  &(kiq =(p.i.lis our.bol))  pj-abet:(pj-abed:pj-core i.lis)
-      pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~])
+      pj-abet:(pj-push:(pj-abed:pj-core i.lis) [%redo ~ ~])
     ==
   ++  toggle-profs                               ::  toggle profile follow status
     |=  [ahn=? siz=(set @p)]
@@ -492,6 +507,47 @@
     =/  pod=prod:prof:f  ?:(ahn [%join ~] [%exit ~])
     $(cor pf-abet:(pf-push:(pf-abed:pf-core i.lis) pod), lis t.lis)
   --
+::
+++  audit
+  |%
+  ++  watch
+    |%
+    ++  boat                                     ::  filtered outgoing watch paths
+      |=  fil=$-([wire @p @tas] ?)  ~+
+      ^-  (set path)
+      %-  ~(rep in ~(key by wex.bol))
+      |=  [[wyr=(pole knot) sip=@p dap=@tas] acc=(set path)]
+      ?.((fil wyr sip dap) acc (~(put in acc) wyr))
+    ++  scan-vold                                ::  %fund-watcher old-style watch paths
+      ~+
+      ^-  (set path)
+      %-  boat
+      |=  [wyr=(pole knot) sip=@p dap=@tas]
+      ?&  =(sip our.bol)
+          =(dap %fund-watcher)
+          ?=([%fund %proj sip=@ nam=@ %scan typ=@ ~] wyr)
+          ?=(^ (slaw %p sip.wyr))
+          ?=(xfer:f typ.wyr)
+      ==
+    ++  scan-vnow                                ::  %fund-watcher new-style watch paths
+      ~+
+      ^-  (set path)
+      %-  boat
+      |=  [wyr=(pole knot) sip=@p dap=@tas]
+      ^-  bean
+      ?&  =(sip our.bol)
+          =(dap %fund-watcher)
+          ?=([%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ ~] wyr)
+          ?=(^ (slaw %p sip.wyr))
+          ?=(xfer:f typ.wyr)
+          ?=(%$ tob.wyr)  ::  NOTE: empty end indicates ongoing watch path
+      ==
+    ++  scan-vany                                ::  %fund-watcher any-style watch paths
+      ~+
+      ^-  (set path)
+      (~(uni in scan-vold) scan-vnow)
+  --
+--
 ::
 ++  pj-core
   |_  [lag=flag:f pro=proj:proj:f gon=_|]
@@ -534,9 +590,13 @@
   ++  pj-pj-bloq
     ^-  @
     =/  pre=path  (en-beam [our.bol %fund-watcher da+now.bol] /)
-    =/  pat=path  (welp pj-pa-pub /scan/depo)
+    =-  ?~(pat 0 .^(@ %gx :(welp pre /block u.pat /atom)))
+    ^-  pat=(unit path)
     =+  .^(pap=(map path *) %gx (welp pre /dogs/configs/noun))
-    ?.((~(has by pap) pat) 0 .^(@ %gx :(welp pre /block pat /atom)))
+    %+  find:fx  ~(tap in ~(key by pap))
+    =/  pre=path  (welp pj-pa-pub /scan/depo)
+    =/  pen=@ud   (lent pre)
+    |=(n=path &(=(pre (scag pen n)) =(%$ (rear n))))
   ++  pj-pj-push
     |=  pod=prod:proj:f
     ^+  pj-core
@@ -557,26 +617,31 @@
         %poke   fund-poke+!>([%proj lag pod])
     ==
   ++  pj-mk-pruf
-    |=  [act=xact:f amo=cash:f dir=xfer:f]
+    |=  [act=xact:f fom=addr:f amo=cash:f dir=xfer:f]
     ^-  card
-    =*  con  (need contract:pro)
-    ::  FIXME: Assumes that all withdrawals are prompted by the worker
-    =/  adr=addr:f  ?-(dir %depo safe:con, %with work:con)
-    (pj-mk-card p.lag [%mula %pruf ship=~ cash=amo when=[act adr] note=dir])
+    (pj-mk-card p.lag [%mula %pruf ship=~ cash=amo when=[act fom] note=dir])
   ++  pj-mk-scan
-    |=  oat=(unit oath:f)
+    |=  [oat=(unit oath:f) sob=(unit bloq:f) tob=(unit bloq:f)]
     ^-  (list card)
     =+  oaf=(fall (clap oat contract.pro head) *oath:f)
-    %-  zing
-    %+  turn  (scan-cfgz:fc oaf payment.pro)
+    %-  zing  %+  turn  (scan-cfgz:fc oaf sob tob payment.pro)
     |=  [suf=path cfg=config:fc]
     ^-  (list card)
     =/  pat=path  (welp pj-pa-pub suf)
-    =+  car=[%pass pat %agent [our.bol %fund-watcher] act=~]
-    ;:  welp
-        ?.((~(has by wex.bol) pat our.bol %fund-watcher) ~ [car(act [%leave ~])]~)
-        [car(act [%poke %fund-watcher-poke !>([%watch pat cfg])])]~
-    ==
+    =/  pen=@ud   (sub (lent pat) 2)  ::  path w/o start/end delimiters
+    =+  car=[%pass pat=~ %agent [our.bol %fund-watcher] act=~]
+    %-  snoc  :_  `card`car(pat pat, act [%poke %fund-watcher-poke !>([%watch pat cfg])])
+    ^-  (list card)
+    ?^  tob  ~
+    %-  zing  %+  turn
+      (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
+    |=  old=path
+    :-  car(pat old, act [%leave ~])                    ::  clear out:
+    ?.  ?|  (~(has in scan-vold:watch:audit) old)       ::  - all old watch paths
+            &(!=(old pat) =(~ tob) =(%$ (rear old)))    ::  - all new indefinite paths
+        ==
+      ~
+    [car(pat old, act [%poke %fund-watcher-poke !>([%clear old])])]~
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f
@@ -638,7 +703,7 @@
         (pj-pj-push pod(p.dif pj-pj-bloq))
       ::
           %redo
-        =?  cor  !?=(?(%born %prop) ~(stat pj:fj pro))  (emil (pj-mk-scan ~))
+        =?  cor  !?=(?(%born %prop) ~(stat pj:fj pro))  (emil (pj-mk-scan ~ +.pod))
         (pj-pj-push pod)
       ::
           %mula
@@ -673,7 +738,7 @@
         ::
             %lock
           =-  pj-core(cor (emil -))
-          (pj-mk-scan oat.pod)
+          (pj-mk-scan oat.pod ~ ~)
         ==
       ==
     ::  meta prods  ::
@@ -692,7 +757,7 @@
       ?<  ~|(bad-pj-push+mes (~(has by pj-our) pag))
       ?:  pj-is-myn  pj-core
       =.  cor  (proj-push ~ (copy:pj-puz proj-subs pj-pa-sub wat))
-      =.  cor  (emit [%pass wat %agent [our dap]:bol %poke fund-poke+!>([%proj pag %redo ~])])
+      =.  cor  (emit [%pass wat %agent [our dap]:bol %poke fund-poke+!>([%proj pag %redo ~ ~])])
       pj-core
     ::
         ?(%join %exit)

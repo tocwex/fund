@@ -6,8 +6,8 @@
 ++  xlis                                         ::  chain metadata list
   ~+
   ^-  (list xeta)
-  :~  [1 %ethereum 'https://eth.drpc.org']
-      [11.155.111 %sepolia 'https://sepolia.drpc.org']
+  :~  [1 %ethereum !<(@t (slot:fund-config %rpce-ethe))]
+      [11.155.111 %sepolia !<(@t (slot:fund-config %rpce-sepo))]
       ::  [10 %optimism ?]
       ::  [8.453 %base ?]
       ::  [42.161 %arbitrum ?]
@@ -84,7 +84,7 @@
       [`@`tag:(~(got by xmap) chain.swa) `@`symbol.swa]
   ==
 ++  scan-cfgz
-  |=  [oat=oath swa=swap]
+  |=  [oat=oath sob=(unit bloq) tob=(unit bloq) swa=swap]
   ^-  (list [path config])
   ?:  |(=(0x0 safe.oat) ?=(%chip -.swa))  ~
   ?~  con=(~(get by smap) [chain addr]:swa)  ~
@@ -92,13 +92,13 @@
   %+  turn  `(list @tas)`~[%depo %with]
   |=  act=term
   =/  [src=@ux dst=@ux]  ?:(?=(%depo act) [0x0 safe.oat] [safe.oat 0x0])
-  :-  /scan/[act]
+  :-  /scan/[act]/[?~(sob %$ (scot %ud u.sob))]/[?~(tob %$ (scot %ud u.tob))]
   :*  url=rpc.u.can
       eager=|
       refresh-rate=!<(@dr (slot:fund-config %scan-herz))
       timeout-time=!<(@dr (slot:fund-config %scan-tout))
-      from=p.xact.oat
-      to=~
+      from=(fall sob p.xact.oat)
+      to=tob
       contracts=[addr.u.con]~
       confirms=`!<(@ud (slot:fund-config %scan-bloq))
       topics=?-(-.swa %coin ~[0x0 src dst], %enft ~[0x0 src dst 0x0])

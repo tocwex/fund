@@ -23,12 +23,19 @@
   =-  "export const FUND_{var} = {dat};"
   ^-  [var=tape dat=tape]
   :-  (cuss (turn (trip key) |=(t=@tD ?.(=('-' t) t '_'))))
-  ?+  -.val  !!
-    [%atom %f *]  ?:(!<(bean val) "true" "false")
-    [%atom %ux *]  "'{['0' 'x' ((x-co:co 40) !<(@ux val))]}'"
-    [%atom %ud *]  "'{(a-co:co !<(@ val))}'"
-    [%atom %p *]  "'{(scow %p !<(@ val))}'"
-    [%atom %dr *]  "'{(a-co:co !<(@ val))}'"  ::  FIXME: Doesn't really work
+  ?+  -.val          "undefined"
+    [%atom %f *]     ?:(!<(bean val) "true" "false")
+    [%atom %ux *]    "'{['0' 'x' ((x-co:co 40) !<(@ux val))]}'"
+    [%atom %ud *]    "'{(a-co:co !<(@ val))}'"
+    [%atom %p *]     "'{(scow %p !<(@ val))}'"
+    [%atom %dr *]    "'{(a-co:co !<(@ val))}'"  ::  FIXME: Doesn't really work
     [%atom dim=@ ~]  "'{(scow %tas !<(@ val))}'"
+  ::  ::
+  ::      [%hold *]
+  ::    =/  typ=type  ~(repo ut -.val)
+  ::    ?+  typ  "undefined"
+  ::      ::  [%hint *]
+  ::      [%fork [%atom [%| %~ %0]] [%cell *]]  ""
+  ::    ==
   ==
 --

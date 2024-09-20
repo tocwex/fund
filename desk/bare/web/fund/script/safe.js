@@ -73,7 +73,7 @@ export const nftsGetAll = async (wallet, chainId, token) => {
       queryUrl.searchParams.append("pageKey", pageKey);
     }
     return isLastCall
-      ? new Promise(resolve => resolve(results))
+      ? Promise.resolve(results)
       : fetch(queryUrl)
           .then(response => response.json())
           .then(json => getNFTs(
@@ -103,7 +103,7 @@ export const safeGetBalance = async ({fundToken, safeAddress}) => {
   }
 };
 
-export const safeGetTransfers = async ({fundToken, safeAddress, safeInitBlock}) => {
+export const safeGetTransfers = async ({fundToken, safeAddress, safeInitBlock, dirFilter}) => {
   const TOKEN = safeTransactionToken({tok: fundToken});
   // FIXME: If there are ever projects that exceed ~2k contributions, this will
   // need to be changed to paginate RPC queries.
@@ -115,7 +115,12 @@ export const safeGetTransfers = async ({fundToken, safeAddress, safeInitBlock}) 
     fromBlock: BigInt(safeInitBlock),
     // toBlock: "safe",
   });
-  return transferLogs;
+  const filteredTransferLogs = transferLogs.filter(({args: {from, to, tokenId}}) => (
+    (dirFilter === "with") ? (from === safeAddress)
+    : (dirFilter === "depo") ? (to === safeAddress)
+    : true
+  ));
+  return filteredTransferLogs;
 };
 
 export const safeSignDeploy = async ({projectChain, projectContent}) => {
@@ -152,9 +157,7 @@ export const safeExecDeploy = async ({projectChain, oracleAddress}) => {
       safeNextSaltNonce(),
     ],
   });
-  const deployReceipt = await waitForTransactionReceipt(window.Wagmi, {
-    hash: deployTransaction,
-  });
+  const deployReceipt = await safeAwaitTransaction({hash: deployTransaction});
   const safeAddress = deployReceipt.logs.find(
     ({topics}) => topics.length > 1
   ).address;
@@ -183,9 +186,7 @@ export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, fund
   );
 
   const sendTransaction = await writeContract(window.Wagmi, wrappedTransaction);
-  const sendReceipt = await waitForTransactionReceipt(window.Wagmi, {
-    hash: sendTransaction,
-  });
+  const sendReceipt = await safeAwaitTransaction({hash: sendTransaction});
   return [
     funderAddress,
     sendReceipt.blockNumber.toString(),
@@ -259,6 +260,27 @@ const safeAddressSort = (getAddress = (v) => v) => (a, b) => {
     [a, b].map(v => fromHex(getAddress(v), "bigint")));
 };
 
+// NOTE: Needed due to aggressive load balancing on RPC endpoints; see here:
+// https://github.com/wevm/wagmi/issues/3152
+const safeAwaitTransaction = async ({hash}) => {
+  let attempts = 0;
+  const maxAttempts = 3;
+
+  let receipt = undefined;
+  while (receipt === undefined && attempts++ < maxAttempts) {
+    try {
+      receipt = await waitForTransactionReceipt(window.Wagmi, {hash, confirmations: 3});
+    } catch (error) {
+      if (!(error instanceof TransactionNotFoundError)) throw error;
+    }
+  }
+  if (receipt === undefined) {
+    throw new SafeError(`unable to detect confirmation for transaction '${hash}'`);
+  }
+
+  return receipt;
+};
+
 const safeWrapTransaction = ({tok, val, from, to}) => {
   const TOKEN = safeTransactionToken({tok, val, from, to});
   return {
@@ -292,6 +314,7 @@ const safeGetClaimTransactions = async ({projectChain, fundAmount, fundToken, sa
   } else if (TOKEN.ABI === ABI.ERC721) {
     const transfers = await safeGetTransfers({fundToken, safeAddress, safeInitBlock});
     const remainingTokens = await nftsGetAll(safeAddress, projectChain, fundToken);
+    // TODO: Needs to be generalized for any NFT
     const validTokenSet = new Set(remainingTokens.filter(nft => (
       (nft?.raw?.metadata?.attributes ?? []).some(attr => (
         (attr?.trait_type === "size" && attr?.value === "star")
@@ -338,6 +361,7 @@ const safeGetRefundTransactions = async ({projectChain, fundToken, safeAddress, 
     });
   } else if (TOKEN.ABI === ABI.ERC721) {
     const remainingTokens = await nftsGetAll(safeAddress, projectChain, fundToken);
+    // TODO: Needs to be generalized for any NFT
     const validTokenSet = new Set(remainingTokens.filter(nft => (
       (nft?.raw?.metadata?.attributes ?? []).some(attr => (
         (attr?.trait_type === "size" && attr?.value === "star")
@@ -483,8 +507,6 @@ const safeExecWithdrawal = async ({transactions, oracleSignature, oracleAddress,
         ).reduce((a, n) => concat([a, n]), "")
     ]),
   });
-  const withdrawReceipt = await waitForTransactionReceipt(window.Wagmi, {
-    hash: withdrawTransaction,
-  });
+  const withdrawReceipt = await safeAwaitTransaction({hash: withdrawTransaction});
   return [withdrawReceipt.blockNumber.toString(), withdrawReceipt.transactionHash];
 };

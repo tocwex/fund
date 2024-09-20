@@ -66,3 +66,6 @@ cp mut/lib/manx-utils.hoon full/lib/
 git clone --depth 1 https://github.com/Fang-/suite.git pal
 cp pal/mar/pals/effect.hoon full/mar/pals/
 cp pal/sur/pals.hoon full/sur/
+
+git clone --depth 1 https://github.com/tloncorp/landscape.git lan
+cp lan/desk/sur/settings.hoon full/sur/

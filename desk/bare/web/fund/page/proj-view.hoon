@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
+/+  f=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  page:fd
@@ -137,6 +137,48 @@
           ==
         ==
       ==
+    ::
+        ?(%mula-blot %mula-view %mula-mine %mula-redo)
+      ?+  arz=(parz:fh bod (sy ~[%mut %mui]))  p.arz  [%| *]
+        =/  mut=@t  (~(got by p.arz) %mut)
+        =/  mui=@t  (~(got by p.arz) %mui)
+        =/  med=@   ?+(mut (addr:dejs:ff:fh mui) %plej (ship:dejs:ff:fh mui))
+        =/  mid=@
+          ?+    mut  0
+            %plej  ?~(pej=(~(get by pledges.pro) `@p`med) 0 id.u.pej)
+            %trib  ?~(teb=(~(get by contribs.pro) `addr:f`med) 0 id.u.teb)
+          ==
+        ?-    dif
+            %mula-blot
+          =-  [%blot mid ?:(sow %hide %show)]
+          ^-  sow=?
+          ?+    mut  !!
+            %plej  show:(~(got by pledges.pro) `@p`med)
+            %trib  show:(~(got by contribs.pro) `addr:f`med)
+          ==
+        ::
+            %mula-view
+          =-  [%view mid ?:(sly %stif %slyd)]
+          ^-  sly=?
+          ?.  ?=(%plej mut)  !!
+          =+  pej=(~(got by pledges.pro) `@p`med)
+          ?~(vyw=view.pej !! =(%slyd u.vyw))
+        ::
+            %mula-mine
+          ?.  ?=(%pruf mut)  !!
+          =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
+          =/  puf=pruf:f  (~(got by proofs.pro) `addr:f`med)
+          [%mula %trib who cash.puf when.puf %$]
+        ::
+            %mula-redo
+          =/  win=@ud  :(mul 4 60 2)  ::  4 blocks/sec * 60 sec/min * 2 mins
+          =-  [%redo `(sub boq win) `(add boq win)]
+          ^-  boq=bloq:f
+          ?.  ?=(%trib mut)  !!
+          =+  tib=(~(got by contribs.pro) `addr:f`med)
+          p.xact.when.tib
+        ==
+      ==
     ==
   ==
 ++  final  ::  POST render
@@ -175,7 +217,7 @@
   ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
         ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
-    ;img.w-full@"{(trip ?^(image.pro u.image.pro (surc:enrl:ff:fh p.lag)))}";
+    ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))}";
     ;*  =-  ?~  buz  ~
             :_  ~
             ::  NOTE: For "w-full on stick," add `-top-[1px]`, `x-init "initSticky($el)"`
@@ -334,9 +376,8 @@
                   ;label(for "sum"): amount
                 ==
                 ;div(class "fund-form-group")
-                  ;+  :_  :_  ~
-                          ?:  nft
-                            ;option(value "-1", data-image (colt:enrl:ff:fh %black)): …loading…
+                  ;+  :_  ?:  nft  ~
+                          :_  ~
                           ;option
                               =value  (trip symbol.payment.pro)
                               =data-image  (aset:enrl:ff:fh symbol.payment.pro)
@@ -347,21 +388,27 @@
                           [%id "proj-token"]~
                           [%name "tok"]~
                           [%class "fund-tsel"]~
-                          ::  ?.(nft ~ [%multiple ~]~)
+                          ?.(nft ~ [%multiple ~]~)
                           ?~(pej ~ ?:(nft [%required ~]~ [%disabled ~]~))
+                          ['@fund-wallet.window' "$el?.tomselect?.load && $el.tomselect.load()"]~
                           :_  ~  :-  %x-init
                           %-  zing  %+  join  "\0a"
                           ^-  (list tape)
-                          :~  :(weld "const nft = " (bool:enjs:ff:fh nft) ";")
-                              :(weld "const pej = " (bloq:enjs:ff:fh ?~(pej 0 cash.u.pej)) ";")
+                          :~  :(weld "const isNFT = " (bool:enjs:ff:fh nft) ";")
+                              :(weld "const maxItems = " (bloq:enjs:ff:fh ?~(pej 0 cash.u.pej)) ";")
                               ^-  tape  ^~
                               %+  rip  3
                               '''
                               if (typeof initTomSelect !== 'undefined') {
-                                initTomSelect($el, false, false);
-                                // FIXME: Restore this once multi-send NFTs are supported
-                                // initTomSelect($el, nft, false, !nft ? undefined : pej);
-                                nft && updateNftsSelect($el);
+                                if (!!$el?.tomselect) {
+                                  $el?.tomselect?.load && $el.tomselect.load();
+                                } else {
+                                  initTomSelect($el, {
+                                    empty: isNFT,
+                                    maxItems: !isNFT ? undefined : 1, // maxItems,
+                                    load: !isNFT ? undefined : tsLoadNFTs($el),
+                                  });
+                                }
                               }
                               '''
                           ==
@@ -420,7 +467,7 @@
         ;h1: Funding Tracker
         ;div(class "flex flex-wrap gap-1 items-center")
           ;h6(class "leading-none tracking-widest"): Funded via
-          ;+  %+  icon-stax:ui:fh  |
+          ;+  %+  icon-stax:ui:fh  %circ
               :~  (aset:enrl:ff:fh symbol.payment.pro)
                   (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pro))
               ==
@@ -518,49 +565,19 @@
         ;div(class "flex flex-col gap-2")
           ;h1(class "sm:hidden"): Participants
           ;+  %:  ship-card:ui:fh
-                  p.lag
-                  "Project Worker"
-                  ^-  tape  ^~
-                  %+  rip  3
-                  '''
-                  The project worker is the identity which does the work
-                  defined in the project overview and milestones. When a
-                  milestone is completed and approved by the trusted
-                  oracle, the project worker receives the listed payout
-                  for that milestone.
-                  '''
-                  "user-guides/project-workers"
-                  ?~(contract.pro 0x0 work.u.contract.pro)
-                  chain.payment.pro
-                  ;*  ?.  &(=(our src):bol !wok)  ~
-                      :_  ~
-                      ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): 💬
+                  p.lag  bol  %work
+                  chain.payment.pro  ?~(contract.pro 0x0 work.u.contract.pro)
               ==
           ;+  %:  ship-card:ui:fh
-                  p.assessment.pro
-                  "Trusted Oracle"
-                  ^-  tape  ^~
-                  %+  rip  3
-                  '''
-                  The role of the trusted oracle is to assess completion
-                  of the scope of work. When a milestone review is
-                  requested, the oracle can chose to mark it as complete
-                  by providing a cryptographically signed message,
-                  allowing the worker to withdraw funds.
-                  '''
-                  "user-guides/trusted-oracles"
-                  ?~(contract.pro 0x0 from.sigm.u.contract.pro)
-                  chain.payment.pro
-                  ;*  ?.  &(=(our src):bol !ora)  ~
-                      :_  ~
-                      ;a.fund-butn-ac-s/"{(chat:enrl:ff:fh p.assessment.pro)}"(target "_blank"): 💬
+                  p.assessment.pro  bol  %orac
+                  chain.payment.pro  ?~(contract.pro 0x0 from.sigm.u.contract.pro)
               ==
         ==
         ;div(class "flex flex-col gap-2")
           ;div(class "flex flex-row justify-between items-center")
             ;h1: Transactions
             ;div(class "flex flex-wrap items-center gap-1")
-              ;*  =-  :~  (icon-stax:ui:fh & (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
+              ;*  =-  :~  (icon-stax:ui:fh %rect (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
                           ;h6: {<~(wyt in siz)>} total
                       ==
                   ^-  siz=(set @p)
@@ -574,21 +591,39 @@
               %+  turn  muz
               |=  mul=mula:f
               ^-  manx
-              ;div(class "p-2.5 flex flex-col gap-y-2 fund-card")
+              =/  [myp=tape muf=tape mid=tape mow=bean]
+                :-  myp=(trip -.mul)
+                ?-    -.mul
+                    %plej
+                  =+  pej=(~(got by pledges.pro) ship.mul)
+                  [muf=~ mid=(ship:enjs:ff:fh ship.mul) mow=show.pej]
+                ::
+                    %trib
+                  =+  teb=(~(got by contribs.pro) q.xact.when.mul)
+                  [muf=(addr:enjs:ff:fh from.when.mul) mid=(addr:enjs:ff:fh q.xact.when.mul) mow=show.teb]
+                ::
+                    %pruf
+                  [muf=(addr:enjs:ff:fh from.when.mul) mid=(addr:enjs:ff:fh q.xact.when.mul) mow=&]
+                ==
+              ;div
+                  =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
+                  =class   "p-2.5 flex flex-col gap-y-2 fund-card"
                 ;div(class "flex flex-wrap items-center justify-between")
                   ;div(class "flex items-center gap-x-2")
-                    ;*  =-  ~[(icon-logo:ui:fh & url) [[%h5 ~] [[%$ [%$ txt] ~]]~ ~]]
+                    ;*  =-  :~  (icon-logo:ui:fh %rect url)
+                                ;h5(x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")): {txt}
+                            ==
                         ^-  [url=tape txt=tape]
                         ?-  -.mul
-                          %plej  [(surt:enrl:ff:fh ship.mul) "{<ship.mul>}"]
+                          %plej  [(surt:enrl:ff:fh ship.mul) (ship:enjs:ff:fh ship.mul)]
                         ::
                             %trib
                           ?~  ship.mul  [(colt:enrl:ff:fh %black) "anonymous"]
-                          [(surt:enrl:ff:fh u.ship.mul) "{<u.ship.mul>}"]
+                          [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
                         ::
                             %pruf
-                          ?~  ship.mul  [(aset:enrl:ff:fh %link) "chain data"]
-                          [(surt:enrl:ff:fh u.ship.mul) "{<u.ship.mul>}"]
+                          ?~  ship.mul  [(aset:enrl:ff:fh %link) (sadr:enjs:ff:fh from.when.mul)]
+                          [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
                         ==
                   ==
                   ;div(class "flex items-center gap-x-2")
@@ -623,10 +658,65 @@
                         ==
                   ==
                 ==
-                ;+  ?:  |(=('' note.mul) ?=(%pruf -.mul))
-                      ;p(class "fund-warn"): No message included.
-                    ::  TODO: Consider including the pledge message here too
-                    ;p(class "leading-normal tracking-wide"): {(trip note.mul)}
+                ;div(class "flex flex-col gap-2")
+                  ;+  =/  msg=@t
+                        ?-  -.mul
+                          %pruf  %$
+                          %plej  note.mul
+                        ::
+                            %trib
+                          =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
+                          ?.(=(%$ note.teb) note.teb ?~(plej.teb %$ note.u.plej.teb))
+                        ==
+                      ?.  mow
+                        ;p(class "fund-warn"): Message hidden by administrator.
+                      ?:  =(%$ msg)
+                        ;p(class "fund-warn"): No message included.
+                      ;p(class "leading-normal tracking-wide"): {(trip msg)}
+                ==
+                ;*  =-  ?~  buz  ~
+                        :_  ~
+                        ;div(class "flex flex-row justify-end gap-2 items-center")
+                          ;*  buz
+                        ==
+                    ^-  buz=marl
+                    ;:    welp
+                    ::  chain data claim button  ::
+                        ?.  &((auth:fh bol) ?=(%pruf -.mul) ?=(%depo note.mul))  ~
+                      :_  ~
+                      ;form  =method  "post"
+                          =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"
+                        ;+  (prod-butn:ui:fh %mula-mine %action "claim transaction ~" "editMula" ~)
+                      ==
+                    ::  pledge edit view button  ::
+                        ?.  ?&  pyr
+                                ?=(%plej -.mul)
+                                  =+  pej=(~(got by pledges.pro) ship.mul)
+                                ?=(^ view.pej)
+                            ==
+                        ~
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-view %action "toggle status ~" "editMula" ~)
+                      ==
+                    ::  attested redo button  ::
+                        ?.  ?&  pyr
+                                ?=(%trib -.mul)
+                                  =+  teb=(~(got by contribs.pro) q.xact.when.mul)
+                                ?=(~ pruf.teb)
+                            ==
+                          ~
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-redo %action "query chain ~" "editMula" ~)
+                      ==
+                    ::  mula blot button  ::
+                        ?.  &(pyr !?=(%pruf -.mul))  ~
+                      :_  ~
+                      ;form(method "post")
+                        ;+  (prod-butn:ui:fh %mula-blot %action "toggle shown ~" "editMula" ~)
+                      ==
+                    ==
               ==
         ==
       ==
@@ -643,10 +733,6 @@
       ;data#fund-meta-flag(value (flag:enjs:ff:fh lag));
       ;*  ?~  image.pro  ~
           :_  ~  ;data#fund-meta-logo(value (trip u.image.pro));
-      ::  FIXME: These fields are included to supply cross-element
-      ::  information
-      ;data#fund-swap-type(value (trip -.payment.pro));
-      ;data#fund-swap-symb(value (cuss (trip symbol.payment.pro)));
     ==
     ;script
       ;+  ;/
@@ -659,6 +745,7 @@
           :(weld "safe_bloq: " (bloq:enjs:ff:fh ?~(contract.pro 0 p.xact.u.contract.pro)) ",")
           :(weld "work_addr: '" (addr:enjs:ff:fh ?~(contract.pro 0x0 work.u.contract.pro)) "',")
           :(weld "orac_addr: '" (addr:enjs:ff:fh ?~(contract.pro 0x0 from.sigm.u.contract.pro)) "',")
+          :(weld "swap_type: '" (trip -.payment.pro) "',")
           :(weld "swap_chain: " (bloq:enjs:ff:fh chain.payment.pro) ",")
           :(weld "swap_symbol: '" (trip symbol.payment.pro) "',")
           :(weld "orac_cut: " (cash:enjs:ff:fh q.assessment.pro 6) ",")
@@ -669,6 +756,9 @@
           ^-  tape  ^~
           %+  rip  3
           '''
+          init() {
+            Alpine.store("project").update(this.swap_type, this.swap_symbol);
+          },
           initSticky(elem) {
             const observer = new IntersectionObserver(
               ([e]) => e.target.firstChild.classList.toggle("pinned", e.intersectionRatio < 1),
@@ -867,10 +957,15 @@
               }
             );
           },
+          editMula(event) {
+            this.sendForm(event, [], () => (
+              Promise.resolve({mut: this.mula_type, mui: this.mula_idex})
+            ));
+          },
           })));
           '''
       ==
     ==
   ==
 --
-::  VERSION: [1 3 0]
+::  VERSION: [1 4 0]

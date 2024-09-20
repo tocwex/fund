@@ -1,1 +1,0 @@
-../../../bare/sur/sss/proj-0.hoon

@@ -26,6 +26,7 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "config"
+  :+  fut=&  hed=|
   %^    hero-plaq:ui:fh
       ?.(init.dat "Thanks for installing %fund!" "Update your preferences?")
     "Will you help us by sending usage information? You can change your decision at any time."

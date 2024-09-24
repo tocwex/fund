@@ -208,12 +208,175 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "{(trip dyp)} dashboard"
-  ::  NOTE: Using another trick to always push footer to the bottom
-  ::  https://stackoverflow.com/a/59865099
-  ::  FIXME: Could fiddle with 'min-h-[X%]' here for better results, but we
-  ::  leave it for now
-  ;div(class "min-h-[100vh] flex flex-col justify-between", x-data "proj_list")
-    ;div(class "flex flex-col p-2 gap-2")
+  :+  fut=&  hed=|
+  ;div(x-data "proj_list")
+    ;+  %^  head:ui:fh  bol  ord
+        :_  ~
+        =/  bag=tape  "p-2 bg-gray-300 rounded-lg drop-shadow-xl"
+        ;div(class "font-serif w-full flex flex-col gap-2 {bag}")
+          ;div(class "w-full flex flex-row gap-2")
+            ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
+                |=  mod=@tas
+                ^-  manx
+                =+  [cas="px-3 py-2 rounded-md" cis="w-6"]
+                =+  kas=?.(=(dyp mod) ~ "bg-gray-400")
+                ?.  ?=(%controls mod)
+                  ;a/"{(dest:enrl:ff:fh /dashboard/[mod])}"(class "{cas} {kas}")
+                    ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
+                  ==
+                ;button  =type  "button"
+                    =x-on-click  "toggleTray(undefined)"
+                    =class  "{cas} border-l border-gray-250"
+                  ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
+                ==
+          ==
+          ;div(class "w-full flex flex-col gap-3 rounded-t-md", x-show "tray_status.open")
+            ;div(class "w-full flex-1 flex flex-row gap-4")
+              ;div(class "w-full flex-1 flex flex-row gap-1")
+                ;+  :_  ~  :-  %input
+                    :~  [%type "text"]
+                        [%placeholder "Search projects"]
+                        [%class "p-1 flex-1 min-w-0"]
+                        [%x-model "filt_status.params.text"]
+                        [%'x-on:keyup.enter' "tray_status.open && submitQuery()"]
+                    ==
+                ;button.fund-butn-de-m(type "button", x-on-click "submitQuery")
+                  ;img@"{(aset:enrl:ff:fh %search)}";
+                ==
+              ==
+              ;*  ?:  =(%action dyp)  ~
+                  %+  turn  `(list @tas)`~[%sort %filter]
+                  |=  mod=@tas
+                  ;button(type "button", x-on-click "toggleTray('{(trip mod)}')")
+                    ;*  %+  turn  `(list @tas)`~[%$ %off]
+                        |=  sat=@tas
+                        =/  ast=tape  ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
+                        ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                          =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}')";
+                  ==
+            ==
+            ;*  ?:  =(%action dyp)  ~
+                :~  ;div(class "w-full flex flex-col gap-3", x-show "tray_status.mode == 'filter'")
+                      ;div(class "flex flex-row justify-between items-center")
+                        ;*  %+  turn
+                              ^-  (list @tas)
+                              %+  welp  ~[%swap %work %orac]
+                              ?:(=(%discover dyp) ~[%undo] ~[%stat %undo])
+                            |=  mod=@tas
+                            ?:  ?=(%undo mod)
+                              ;button(type "button", x-on-click "toggleFilter(undefined); wipeFilter()"): RESET
+                            ;button(type "button", x-on-click "toggleFilter('{(trip mod)}')")
+                              ;*  %+  turn  `(list @tas)`~[%$ %off]
+                                  |=  sat=@tas
+                                  =/  ast=tape
+                                    %+  welp  "filter-"
+                                    ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
+                                  ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                                    =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
+                            ==
+                      ==
+                      ;div(x-show "filt_status.mode == 'swap'")
+                        ;+  %:  ~(swap-selz ui:fh "flex flex-row gap-2")
+                                &
+                                swap.arg
+                                "filt_status.params.swap"
+                                "updateFilter"
+                            ==
+                      ==
+                      ;div(x-show "filt_status.mode == 'work'")
+                        ;select#filt-worker.fund-tsel
+                            =x-init  "initTomSelect($el, \{empty: true, forceUp: false})"
+                            =x-model  "filt_status.params.work"
+                          ;*  =/  woz=(set @p)
+                                %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
+                                |=  [nex=(set flag:f) acc=(set @p)]
+                                (~(uni in acc) `(set @p)`(~(run in nex) head))
+                              :-  ;option(value ""): Any Worker
+                              %+  turn  ~(tap in woz)
+                              |=  wok=@p
+                              ^-  manx
+                              :_  ; {<wok>}
+                              :-  %option
+                              ;:  welp
+                                  [%value "{<wok>}"]~
+                                  [%data-image (~(ship-logo fa bol) wok)]~
+                                  ?.(&(?=(^ work.arg) =(u.work.arg wok)) ~ [%selected ~]~)
+                              ==
+                        ==
+                      ==
+                      ;div(x-show "filt_status.mode == 'orac'")
+                        ;select#filt-oracle.fund-tsel
+                            =x-init  "initTomSelect($el, \{empty: true, forceUp: false})"
+                            =x-model  "filt_status.params.orac"
+                          ;*  =/  orz=(set @p)
+                                =-  (~(uni in (silt mel)) (silt pel))
+                                ^-  [mel=(list @p) pel=(list @p)]
+                                :-  (turn ~(val by mez) |=(m=mete:meta:f oracle.m))
+                                (turn ~(val by pez) |=(p=prej:proj:f p.assessment.p))
+                              :-  ;option(value ""): Any Oracle
+                              %+  turn  ~(tap in orz)
+                              |=  ora=@p
+                              ^-  manx
+                              :_  ; {<ora>}
+                              :-  %option
+                              ;:  welp
+                                  [%value "{<ora>}"]~
+                                  [%data-image (~(ship-logo fa bol) ora)]~
+                                  ?.(&(?=(^ orac.arg) =(u.orac.arg ora)) ~ [%selected ~]~)
+                              ==
+                        ==
+                      ==
+                      ;div(x-show "filt_status.mode == 'stat'")
+                        ;select#filt-status.fund-tsel
+                            =x-init  "initTomSelect($el, \{empty: true, forceUp: false})"
+                            =x-model  "filt_status.params.stat"
+                          ;*  :-  ;option(value ""): Any Status
+                              %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]
+                              |=  sat=stat:f
+                              ^-  manx
+                              ::  FIXME: This is so ugly, but there isn't any easy
+                              ::  way to grab the color through a Tailwind class
+                              =/  clr=tape
+                                ?-  sat
+                                  %born  "a2a2a2"
+                                  %prop  "404040"
+                                  %lock  "5fb4bf"
+                                  %work  "3e72cc"
+                                  %sess  "1e3c71"
+                                  %done  "71a481"
+                                  %dead  "ff4d70"
+                                ==
+                              :_  ; {(stat:enjs:ff:fh sat)}
+                              :-  %option
+                              ;:  welp
+                                  [%value "{(trip sat)}"]~
+                                  [%data-image "https://placehold.co/24x24/{clr}/{clr}?text=\\n"]~
+                                  ?.(&(?=(^ stat.arg) =(u.stat.arg sat)) ~ [%selected ~]~)
+                              ==
+                        ==
+                      ==
+                    ==
+                    ;div  =class  "w-full flex-1 flex flex-row justify-between items-center"
+                        =x-show  "tray_status.mode == 'sort'"
+                      ;*  %+  turn  `(list @tas)`~[%time %pals %cost %alph %undo]
+                          |=  mod=@tas
+                          ?:  ?=(%undo mod)
+                            ;button(type "button", x-on-click "updateSort(undefined)"): RESET
+                          ;button(type "button", x-on-click "updateSort('{(trip mod)}')")
+                            ;*  %+  turn  `(list @tas)`~[%asc %des %off]
+                                |=  ord=@tas
+                                =/  ast=tape  "sort-{(trip mod)}-{(trip ord)}"
+                                ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                                  =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
+                          ==
+                ==  ==
+          ==
+        ==
+    ::  NOTE: Using another trick to always push footer to the bottom
+    ::  https://stackoverflow.com/a/59865099
+    ::  FIXME: Could fiddle with 'min-h-[X%]' here for better results, but we
+    ::  leave it for now
+    ;div(class "flex flex-col p-2 gap-2 min-h-[100vh]")
       ;*  =/  cas=tape  "w-full grid gap-4 justify-center"
           =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
           =/  mas=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
@@ -328,165 +491,6 @@
                 ==
             ==
           ==
-    ==
-    ;footer(class "fund-foot font-serif flex flex-col")
-      ;div(class "w-full flex flex-col p-3 gap-3 bg-gray-100 rounded-t-md", x-show "tray_status.open")
-        ;div(class "w-full flex-1 flex flex-row gap-4")
-          ;div(class "w-full flex-1 flex flex-row gap-1")
-            ;+  :_  ~  :-  %input
-                :~  [%type "text"]
-                    [%placeholder "Search projects"]
-                    [%class "p-1 flex-1 min-w-0"]
-                    [%x-model "filt_status.params.text"]
-                    [%'x-on:keyup.enter' "tray_status.open && submitQuery()"]
-                ==
-            ;button.fund-butn-de-m(type "button", x-on-click "submitQuery")
-              ;img@"{(aset:enrl:ff:fh %search)}";
-            ==
-          ==
-          ;*  ?:  =(%action dyp)  ~
-              %+  turn  `(list @tas)`~[%sort %filter]
-              |=  mod=@tas
-              ;button(type "button", x-on-click "toggleTray('{(trip mod)}')")
-                ;*  %+  turn  `(list @tas)`~[%$ %off]
-                    |=  sat=@tas
-                    =/  ast=tape  ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
-                    ;img.w-8@"{(aset:enrl:ff:fh (crip ast))}"
-                      =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}')";
-              ==
-        ==
-        ;*  ?:  =(%action dyp)  ~
-            :~  ;div(class "w-full flex flex-col gap-3", x-show "tray_status.mode == 'filter'")
-                  ;div(class "flex flex-row justify-between items-center")
-                    ;*  %+  turn
-                          ^-  (list @tas)
-                          %+  welp  ~[%swap %work %orac]
-                          ?:(=(%discover dyp) ~[%undo] ~[%stat %undo])
-                        |=  mod=@tas
-                        ?:  ?=(%undo mod)
-                          ;button(type "button", x-on-click "toggleFilter(undefined); wipeFilter()"): RESET
-                        ;button(type "button", x-on-click "toggleFilter('{(trip mod)}')")
-                          ;*  %+  turn  `(list @tas)`~[%$ %off]
-                              |=  sat=@tas
-                              =/  ast=tape
-                                %+  welp  "filter-"
-                                ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
-                              ;img.w-8@"{(aset:enrl:ff:fh (crip ast))}"
-                                =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
-                        ==
-                  ==
-                  ;div(x-show "filt_status.mode == 'swap'")
-                    ;+  %:  ~(swap-selz ui:fh "flex flex-row gap-2")
-                            &
-                            swap.arg
-                            "filt_status.params.swap"
-                            "updateFilter"
-                        ==
-                  ==
-                  ;div(x-show "filt_status.mode == 'work'")
-                    ;select#filt-worker.fund-tsel
-                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
-                        =x-model  "filt_status.params.work"
-                      ;*  =/  woz=(set @p)
-                            %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
-                            |=  [nex=(set flag:f) acc=(set @p)]
-                            (~(uni in acc) `(set @p)`(~(run in nex) head))
-                          :-  ;option(value ""): Any Worker
-                          %+  turn  ~(tap in woz)
-                          |=  wok=@p
-                          ^-  manx
-                          :_  ; {<wok>}
-                          :-  %option
-                          ;:  welp
-                              [%value "{<wok>}"]~
-                              [%data-image (~(ship-logo fa bol) wok)]~
-                              ?.(&(?=(^ work.arg) =(u.work.arg wok)) ~ [%selected ~]~)
-                          ==
-                    ==
-                  ==
-                  ;div(x-show "filt_status.mode == 'orac'")
-                    ;select#filt-oracle.fund-tsel
-                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
-                        =x-model  "filt_status.params.orac"
-                      ;*  =/  orz=(set @p)
-                            =-  (~(uni in (silt mel)) (silt pel))
-                            ^-  [mel=(list @p) pel=(list @p)]
-                            :-  (turn ~(val by mez) |=(m=mete:meta:f oracle.m))
-                            (turn ~(val by pez) |=(p=prej:proj:f p.assessment.p))
-                          :-  ;option(value ""): Any Oracle
-                          %+  turn  ~(tap in orz)
-                          |=  ora=@p
-                          ^-  manx
-                          :_  ; {<ora>}
-                          :-  %option
-                          ;:  welp
-                              [%value "{<ora>}"]~
-                              [%data-image (~(ship-logo fa bol) ora)]~
-                              ?.(&(?=(^ orac.arg) =(u.orac.arg ora)) ~ [%selected ~]~)
-                          ==
-                    ==
-                  ==
-                  ;div(x-show "filt_status.mode == 'stat'")
-                    ;select#filt-status.fund-tsel
-                        =x-init  "initTomSelect($el, \{empty: true, forceUp: true})"
-                        =x-model  "filt_status.params.stat"
-                      ;*  :-  ;option(value ""): Any Status
-                          %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]
-                          |=  sat=stat:f
-                          ^-  manx
-                          ::  FIXME: This is so ugly, but there isn't any easy
-                          ::  way to grab the color through a Tailwind class
-                          =/  clr=tape
-                            ?-  sat
-                              %born  "a2a2a2"
-                              %prop  "404040"
-                              %lock  "5fb4bf"
-                              %work  "3e72cc"
-                              %sess  "1e3c71"
-                              %done  "71a481"
-                              %dead  "ff4d70"
-                            ==
-                          :_  ; {(stat:enjs:ff:fh sat)}
-                          :-  %option
-                          ;:  welp
-                              [%value "{(trip sat)}"]~
-                              [%data-image "https://placehold.co/24x24/{clr}/{clr}?text=\\n"]~
-                              ?.(&(?=(^ stat.arg) =(u.stat.arg sat)) ~ [%selected ~]~)
-                          ==
-                    ==
-                  ==
-                ==
-                ;div  =class  "w-full flex-1 flex flex-row justify-between items-center"
-                    =x-show  "tray_status.mode == 'sort'"
-                  ;*  %+  turn  `(list @tas)`~[%time %pals %cost %alph %undo]
-                      |=  mod=@tas
-                      ?:  ?=(%undo mod)
-                        ;button(type "button", x-on-click "updateSort(undefined)"): RESET
-                      ;button(type "button", x-on-click "updateSort('{(trip mod)}')")
-                        ;*  %+  turn  `(list @tas)`~[%asc %des %off]
-                            |=  ord=@tas
-                            =/  ast=tape  "sort-{(trip mod)}-{(trip ord)}"
-                            ;img.w-8@"{(aset:enrl:ff:fh (crip ast))}"
-                              =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
-                      ==
-            ==  ==
-      ==
-      ;div(class "w-full flex flex-row justify-center gap-2 py-3 bg-primary-300")  ::  bg-primary-400
-        ;*  %+  turn  `(list @tas)`~[%discover %following %action %controls]
-            |=  mod=@tas
-            ^-  manx
-            =+  [cas="px-4 py-3 rounded-md" cis="w-8"]
-            =+  kas=?.(=(dyp mod) ~ "bg-gray-100")
-            ?:  ?=(%controls mod)
-              ;button  =type  "button"
-                  =x-on-click  "toggleTray(undefined)"
-                  =class  "{cas} border-l border-gray-250"
-                ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
-              ==
-            ;a/"{(dest:enrl:ff:fh /dashboard/[mod])}"(class "{cas} {kas}")
-              ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
-            ==
-      ==
     ==
     ;script
       ;+  ;/

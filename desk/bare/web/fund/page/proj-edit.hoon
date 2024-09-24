@@ -92,6 +92,7 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "project edit"
+  :+  fut=&  hed=&
   ;form.p-2(method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
     :~  ;div

@@ -214,6 +214,7 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  (trip title.pro)
+  :+  fut=&  hed=&
   ;div(class "flex flex-col gap-1 p-2", x-data "proj_view")
     ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
         ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}

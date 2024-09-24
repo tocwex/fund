@@ -181,10 +181,6 @@
     |=  rel=@rs
     ^-  tape
     (flot:fx (rlys rel) `[0 2])
-  ++  bool                                     ::  %.y => "true"
-    |=  bul=?
-    ^-  tape
-    ?:(bul "true" "false")
   ++  srel                                     ::  .1.2345e1 => "12"
     |=  rel=@rs
     ^-  tape
@@ -193,6 +189,10 @@
     |=  boq=^bloq
     ^-  tape
     (a-co:co boq)
+  ++  bool                                     ::  %.y => "true"
+    |=  bul=?
+    ^-  tape
+    ?:(bul "true" "false")
   ++  addr                                     ::  0xabcd.ef… => "0xabcdef…"
     |=  adr=^addr
     ^-  tape
@@ -210,6 +210,14 @@
     |=  sip=^ship
     ^-  tape
     "{<sip>}"
+  ++  ssip                                     ::  ~mister-sampel-samplel-palnet => "~sampel^palnet"
+    |=  sip=^ship
+    ^-  tape
+    ?-  (clan:title sip)
+      %pawn  =+((ship sip) :(welp (scag 7 -) "_" (slaj:fx 6 -)))
+      %earl  (snap (ship (end 5 sip)) 7 '^')
+      *      (ship sip)
+    ==
   ++  flag                                     ::  [~zod %nam] => "~zod/nam"
     |=  lag=^flag
     ^-  tape

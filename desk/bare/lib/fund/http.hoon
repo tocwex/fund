@@ -212,11 +212,11 @@
 ++  ui
   |_  cas=tape
   ++  page                                     ::  render page w/ head/foot/styles/etc.
-    |=  [bol=bowl:gall ord=order:rudder tyt=tape bod=manx]
+    |=  [bol=bowl:gall ord=order:rudder tyt=tape fut=bean hed=bean bod=manx]
     ^-  manx
     =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
     =+  ape=(trip !<(@t (slot:config %meta-aset)))
-    =-  (alix -)
+    %-  alix
     |^  ;html(class "!block", style "display: none;")  ::  NOTE: https://twind.style/installation
           ;head
             ;meta(charset "UTF-8");
@@ -242,14 +242,9 @@
             ;script(type "module", src "{(dest:enrl:ff /asset/[~.boot.js])}");
           ==
           ;body(class "fund-body {cas}", x-data "fund")
-            ;*  ?.  !<(bean (slot:config %debug))  ~
-                :_  ~
-                ;div(class "fund-head w-full text-center bg-primary-600 font-semibold p-1")
-                  ; ⚠ DEBUG ENABLED ⚠
-                ==
-            ;+  head
+            ;*  ?.(hed ~ [(head bol ord ~)]~)
             ;+  bod
-            ;+  foot
+            ;*  ?.(fut ~ [(foot bol ord ~)]~)
           ==
         ==
     ++  meta
@@ -290,69 +285,120 @@
           ;meta(name "twitter:image", content pic);
           ;meta(property "twitter:domain", content dom);
       ==
-    ++  head
-      ^-  manx
-      =/  url=@t  url.request.ord
-      =/  pat=(pole knot)  (slag:derl:ff url)
-      ;nav(class "flex justify-between items-center p-2 border-black border-b-2")
-        ;+  ?:  ?=(?([%create %proj ~] [%project @ @ %edit ~]) pat)
-              ;a.fund-butn-de-m/"{(dest:enrl:ff (snip `(list knot)`pat))}": ← back
-            ;a.h-8/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
-                =x-data  "\{ hover: false }"
-                =x-on-mouseenter  "hover = true"
-                =x-on-mouseleave  "hover = false"
-              ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
-              ;img.h-full@"{(aset:enrl:ff %fund-off)}"(x-show "hover");
+    --
+  ++  head
+    |=  [bol=bowl:gall ord=order:rudder hed=marl]
+    ^-  manx
+    =/  url=@t  url.request.ord
+    =/  pat=(pole knot)  (slag:derl:ff url)
+    =/  bag=tape  "bg-gray-300 rounded-lg drop-shadow-xl sm:p-2 p-1"
+    =/  bas=tape  "fund-butn-de-m w-full text-center"
+    ;nav(class "fund-head w-full flex p-2 gap-4")
+      ;+  ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
+            ;a/"{(dest:enrl:ff (snip `(list knot)`pat))}"
+                =class  "shrink-0 flex items-center hover:text-[#2c666e] {bag}"
+              ;h2: ← back
             ==
-        ;div(class "flex inline-flex gap-x-2")
-          ::  FIXME: Opening login page in a new tab because opening it
-          ::  in the current tab causes issues with turbojs in-place loading
-          ;+  ?:  (auth bol)
-                ;button  =id  "fund-agis"
-                    =class  "fund-tipi inline-flex items-center p-1.5 gap-x-2 rounded-md hover:bg-primary-550"
-                    =x-init  "initTippy($el)"
+          ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
+              =class  "shrink-0 sm:(h-14 px-3) h-11 {bag}"
+              =x-data  "\{ hover: false }"
+              =x-on-mouseenter  "hover = true"
+              =x-on-mouseleave  "hover = false"
+            ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
+            ;img.h-full@"{(aset:enrl:ff %fund-off)}"(x-show "hover");
+          ==
+      ::  FIXME: This shouldn't shrink along the y-axis when minimizing
+      ::  the page
+      ;+  ;div(class "shrink w-full min-w-0")
+            ;div(class "w-full")
+              ;*  hed
+            ==
+          ==
+      ;div(class "shrink-0", x-data "\{open: false}")
+        ;div(class "shrink-0 flex flex-col gap-2 {bag}", x-on-click "open = ! open")
+          ;button(type "button", class "shrink-0 flex inline-flex gap-2 items-center")
+            ;+  ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
                   ;+  (ship-logo src.bol bol)
-                  ;span(class "hidden sm:block font-bold"): {<src.bol>}
-                  ;img@"{(aset:enrl:ff %ellipsis)}"(class "hidden sm:block h-full");
-                  ;div#fund-agis-opts(class "hidden")
-                    ;div(class "flex flex-col gap-2")
-                      ;*  ?.  =(our src):bol  ~
-                          :_  ~  ;a.fund-butn-de-m/"{(dest:enrl:ff /config)}": config ⚙️
-                      ;a.fund-butn-de-m/"/~/logout?redirect={(trip url)}": logout ↩️
-                    ==
+                  ;span(class "hidden sm:block font-bold")
+                    ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
                   ==
                 ==
-              ;a.fund-butn-de-m/"/~/login?eauth&redirect={(trip url)}"(target "_blank"): login ~
-          ;button#fund-butn-wallet.fund-butn-co-m(x-text "$store.wallet.status");
+            ;div(class "shrink-0 fund-butn-co-m", x-text "$store.wallet.status");
+          ==
+          ;div(class "flex flex-col gap-2", x-show "open")
+            ;div
+              ;div(class "flex flex-col gap-2", x-show "!$store.wallet.connected")
+                ;button(type "button", x-on-click "toggleWallet", class bas): connect
+              ==
+              ;div(class "flex flex-col gap-2", x-show "$store.wallet.connected")
+                ;div(class "rounded-md bg-gray-100 py-1 px-2")
+                  ;div(class "flex flex-row justify-between")
+                    ;span.text-gray-300: Wallet
+                    ;span: MetaMask
+                  ==
+                  ;div(class "flex flex-row justify-between")
+                    ;span.text-gray-300: Balance
+                    ;span(x-text "$store.wallet.balance");
+                  ==
+                ==
+                ::  ;button(type "button", x-on-click "switchChain", class bas): switch chain
+                ::  ;button(type "button", x-on-click "switchWallet", class bas): switch wallet
+                ;button(type "button", x-on-click "toggleWallet", class bas): disconnect
+              ==
+            ==
+            ;*  ?.  =(our src):bol  ~
+                :~  ;hr;
+                    ;a/"{(dest:enrl:ff /config)}"(class bas): config ⚙️
+                ==
+            ;hr;
+            ;+  =-  ;a/"/~/{pre}redirect={(trip url)}"(class bas, target tgt): {txt}
+                ^-  [pre=tape tgt=tape txt=tape]
+                ?.((auth bol) ["login?eauth&" "_blank" "login ~"] ["logout?" "_self" "logout ↩️"])
+          ==
         ==
       ==
-    ++  foot
-      ^-  manx
-      ::  NOTE: CSS trick for pushing footer to page bottom
-      ::  https://stackoverflow.com/a/71444859
-      ::  To hide on smaller devices: hidden lg:block
-      ;footer(class "top-[100vh] justify-center border-t-2 p-2 border-black lg:flex lg:p-4 lg:items-center lg:justify-between")
-        ;div(class "text-center text-xs pt-1 lg:pt-0 lg:text-base")
-          ;div(class "flex justify-center items-center lg:justify-start hover:underline")
-            ;a/"https://tocwexsyndicate.com"(target "_blank"): crafted by ~tocwex.syndicate
-          ==
-        ==
-        ;div(class "flex justify-center grow gap-20 lg:gap-4 lg:grow-0 lg:justify-end")
-          ;a/"https://github.com/tocwex"(target "_blank")
-            ;img@"{(aset:enrl:ff %github)}";
-          ==
-          ;a/"{(trip !<(@t (slot:config %meta-tlon)))}"(target "_blank")
-            ;img@"{(aset:enrl:ff %urbit)}";
-          ==
-          ;a/"https://x.com/tocwex"(target "_blank")
-            ;img@"{(aset:enrl:ff %x)}";
-          ==
-          ;a/"https://tocwexsyndicate.com"(target "_blank")
-            ;img@"{(aset:enrl:ff %globe)}";
-          ==
+    ==
+  ++  foot
+    |=  [bol=bowl:gall ord=order:rudder fut=marl]
+    ^-  manx
+    ::  NOTE: CSS trick for pushing footer to page bottom
+    ::  https://stackoverflow.com/a/71444859
+    ::  To hide on smaller devices: hidden lg:block
+    ;footer(class "top-[100vh] justify-center p-2 lg:flex lg:items-center lg:justify-between")
+      ;div(class "text-center text-xs pt-1 lg:pt-0 lg:text-base")
+        ;div(class "flex justify-center items-center lg:justify-start hover:underline")
+          ;a/"https://tocwexsyndicate.com"(target "_blank"): crafted by ~tocwex.syndicate
         ==
       ==
-    --
+      ;+  ;div(class "flex grow")
+            ;*  fut
+          ==
+      ;div(class "flex justify-center grow gap-10 lg:gap-1 lg:grow-0 lg:justify-end")
+        ;*  ?.  !<(bean (slot:config %debug))  ~
+            :_  ~
+            ;div(class "flex items-center")
+              ;button#fund-dbug.fund-tipi(type "button", x-init "initTippy($el)")
+                ;img.fund-butn-icon@"{(aset:enrl:ff %help)}";
+              ==
+              ;div#fund-dbug-opts(class "hidden")
+                ;h4.text-center: ⚠ DEBUG ENABLED ⚠
+                ;p.text-2xs.whitespace-pre-wrap: {enjs:config}
+              ==
+            ==
+        ;a/"https://x.com/tocwex"(target "_blank")
+          ;img.fund-butn-icon@"{(aset:enrl:ff %x)}";
+        ==
+        ;a/"https://github.com/tocwex"(target "_blank")
+          ;img.fund-butn-icon@"{(aset:enrl:ff %github)}";
+        ==
+        ;a/"https://tocwexsyndicate.com"(target "_blank")
+          ;img.fund-butn-icon@"{(aset:enrl:ff %globe)}";
+        ==
+        ;a/"{(trip !<(@t (slot:config %meta-tlon)))}"(target "_blank")
+          ;img.fund-butn-icon@"{(aset:enrl:ff %urbit)}";
+        ==
+      ==
+    ==
   ++  ship-card                                  ::  summary card for user ship
     |=  [sip=@p bol=bowl:gall rol=role cid=@ud adr=addr]
     ^-  manx
@@ -449,11 +495,11 @@
     ::  FIXME: This is hacky and wasteful, but attempting to use Alpine.js to
     ::  just edit in/out the 'line-clamp-5' class doesn't work due to
     ::  collisions with Twind.js.
-    ;div(class "w-full", x-data "\{expanded: {(bool:enjs:ff ?=(%verb typ))}}")
+    ;div(class "w-full", x-data "\{open: {(bool:enjs:ff ?=(%verb typ))}}")
       ::  FIXME: Attempting to apply a "to transparent" graident, but
       ::  it's not working...
       ::  after:bg-gradient-to-b after:from-inherit
-      ;*  %+  turn  ~[["!expanded" "line-clamp-5"] ["expanded" ""]]
+      ;*  %+  turn  ~[["!open" "line-clamp-5"] ["open" ""]]
           |=  [sow=tape kas=tape]
           ;zero-md(class "w-full {kas} {cas}", x-show sow, xlass "cmd()", no-shadow ~)
             ;template
@@ -464,12 +510,12 @@
       ;*  ?.  ?=(%togl typ)  ~
           :_  ~
           ;div(class "flex justify-center pt-2")
-            ;*  %+  turn  ~[["!expanded" "true" "show more +"] ["expanded" "false" "show less -"]]
+            ;*  %+  turn  ~[["!open" "true" "show more +"] ["open" "false" "show less -"]]
                 |=  [sow=tape qiq=tape txt=tape]
                 ::  FIXME: Attempt at eliminating the button when the
                 ::  clamp doesn't even truncate extra lines
                 ::  =x-show  "{sow} && needsClamp($el.parentElement.previousElementSibling, 5)"
-                ;button.fund-butn-ac-s(type "button", x-show sow, x-on-click "expanded = {qiq}"): {txt}
+                ;button.fund-butn-ac-s(type "button", x-show sow, x-on-click "open = {qiq}"): {txt}
           ==
     ==
   ++  udon-well                                  ::  udon (hoon-markdown) well

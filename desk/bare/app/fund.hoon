@@ -13,7 +13,7 @@
 =|  state-now
 =*  state  -
 =<  =-  ?.  !<(? (slot:config %debug))  -
-        (verb & (agent:dbug (agent:tonic -)))
+        (verb | (agent:dbug (agent:tonic -)))
     %-  (agent:vita-client | !<(@p (slot:config %point)))
     |_  bol=bowl:gall
     +*  tis  .

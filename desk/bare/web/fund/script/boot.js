@@ -8,7 +8,8 @@ import presetAutoPrefix from 'https://cdn.jsdelivr.net/npm/@twind/preset-autopre
 import {
   http, createConfig, injected,
   connect, disconnect, reconnect,
-  getAccount, getEnsName, signMessage,
+  getAccount, getBalance, getEnsName, signMessage,
+  getConnections, switchAccount,
 } from 'https://esm.sh/@wagmi/core@2.10.0';
 import { fromHex } from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
@@ -285,27 +286,27 @@ if (window.Alpine === undefined) {
     if (loader) outer.removeChild(loader);
   });
 
-  // FIXME: For some reason, twind's style refresher doesn't fire when a
-  // submission fails, so we replicate its "reveal content" behavior manually
-  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
-  document.addEventListener('turbo:submit-end', (event) => {
-    if (!event.detail.success) {
-      document.documentElement.setAttribute("class", "");
-      document.documentElement.setAttribute("style", "");
-    }
-  });
-
   Alpine.store("wallet", {
     address: null,
     chain: null,
+    connected: false,
+    balance: "…loading…",
     status: "…loading…",
     update(address, chain) {
       this.address = address;
       this.chain = chain;
+      this.connected = !!address;
       this.status =
         (address === undefined) ? "connect 💰"
         : (address === null) ? "…loading…"
         : `${address.slice(0, 5)}…${address.slice(-4)}`;
+      if (!address) {
+        this.balance = 0;
+      } else {
+        getBalance(window.Wagmi, {address}).then(({formatted}) => {
+          this.balance = `${Number(formatted).toFixed(2)} ETH`;
+        });
+      }
       window.dispatchEvent(new CustomEvent("fund-wallet", {detail: address}));
     },
   });
@@ -332,6 +333,8 @@ if (window.Alpine === undefined) {
     sendFormData,
     sendForm,
     checkWallet,
+    toggleWallet,
+    // switchWallet,
     initENS,
     initTippy,
     initTomSelect,
@@ -467,6 +470,89 @@ if (window.Alpine === undefined) {
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
 
+  function setWallet({connections, current, status}) {
+    if (status === "disconnected") {
+      const connection = connections.get(current);
+      if (!connection) {
+        Alpine.store("wallet").update(undefined, undefined);
+      } else {
+        reconnect(window.Wagmi, {connector: connection.connector});
+      }
+    } else if (status === "reconnecting") {
+      Alpine.store("wallet").update(null, null);
+    } else if (status === "connected") {
+      const { address, chainId } = getAccount(window.Wagmi);
+      Alpine.store("wallet").update(address, chainId);
+    }
+  }
+
+  function toggleWallet(event) {
+    const { status, current, connections } = window.Wagmi.state;
+    const connection = connections.get(current);
+
+    if (status === "connected") {
+      // FIXME: Actually calling disconnects tells MetaMask to stop giving
+      // this site permission to the associated wallets. Is there any way to
+      // soft disconnect the wallet, i.e. set its status to disconnected without
+      // removing it?
+      disconnect(window.Wagmi, {connector: connection.connector});
+    } else if (status === "disconnected") {
+      if (connection) {
+        reconnect(window.Wagmi, {connector: connection.connector});
+      } else {
+        const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
+        const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
+        connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => (
+          fetch(`${appUrl}/ship`, {method: "GET"})
+        )).then((responseStream) => (
+          responseStream.text()
+        )).then((responseText) => {
+          const responseDOM = new DOMParser().parseFromString(responseText, "text/html");
+          const ship = responseDOM.querySelector("#ship").value;
+          const clan = responseDOM.querySelector("#clan").value;
+          const wallets = responseDOM.querySelector("#wallets").value.split(" ");
+          return [ship, clan, wallets];
+        }).then(([ship, clan, wallets]) => {
+          const address = getAddress();
+          if (wallets.includes(address) || clan === "pawn") {
+            return Promise.resolve(undefined);
+          } else {
+            return signMessage(window.Wagmi, {
+              account: getAccount(window.Wagmi),
+              message: `I, ${ship}, am broadcasting to the Urbit network that I own wallet ${address}`,
+            });
+          }
+        }).then((signature) => {
+          if (signature === undefined) {
+            return Promise.resolve(undefined);
+          } else {
+            // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
+            const signData = new URLSearchParams({
+              dif: "prof-sign",
+              pos: signature,
+              poa: getAddress(),
+            });
+            return fetch(`${appUrl}/ship`, {
+              method: "POST",
+              headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+              body: signData,
+            });
+          }
+        });
+      }
+    }
+  }
+
+  // FIXME: This doesn't work... may need to upgrade `wagmi.sh` to
+  // latest version to fix
+  //
+  // async function switchWallet() {
+  //   const connections = getConnections(window.Wagmi);
+  //   const result = await switchAccount(window.Wagmi, {
+  //     connector: connections[0]?.connector,
+  //   });
+  // }
+
   // FIXME: This doesn't work well for calculating line clamps on the
   // 'zero-md' elements because they generate content dynamically
   //
@@ -485,7 +571,7 @@ if (window.Alpine === undefined) {
     });
   }
 
-  function initTippy(elem) {
+  function initTippy(elem, {dir=undefined} = {}) {
     const elemId = `#${elem.id}`;
     const optElem = document.querySelector(`${elemId}-opts`);
     optElem.style.display = 'block';
@@ -497,6 +583,7 @@ if (window.Alpine === undefined) {
       trigger: "click",
       theme: "fund",
       offset: [0, 5],
+      ...(dir ? {} : {placement: dir}),
     });
   }
 
@@ -634,6 +721,20 @@ if (window.Alpine === undefined) {
     };
   }
 
+  // https://css-tricks.com/working-with-javascript-media-queries/
+  function watchViewport() {
+    const mediaQuery = window.matchMedia('(min-width: 640px)');
+    const handleViewportChange = (event) => {
+      if (event.matches) {
+        console.log("big");
+      } else {
+        console.log("smol");
+      }
+    }
+    mediaQuery.addListener(handleViewportChange);
+    handleViewportChange(mediaQuery);
+  }
+
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
     connectors: [injected()],
@@ -644,85 +745,26 @@ if (window.Alpine === undefined) {
   });
   window.Wagmi.subscribe(
     (state) => state,
-    (state) => setPageWallet(state),
+    (state) => setWallet(state),
   );
+
+
+  // FIXME: For some reason, twind's style refresher doesn't fire when a
+  // submission fails, so we replicate its "reveal content" behavior manually
+  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
+  document.addEventListener('turbo:submit-end', (event) => {
+    if (!event.detail.success) {
+      document.documentElement.setAttribute("class", "");
+      document.documentElement.setAttribute("style", "");
+    }
+  });
   // https://turbo.hotwired.dev/reference/events#turbo%3Aload
   document.addEventListener("turbo:load", (event) => {
-    setPageWallet(window.Wagmi.state);
-
-    document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {
-      const { status, current, connections } = window.Wagmi.state;
-      const connection = connections.get(current);
-
-      if (status === "disconnected") {
-        if (connection) {
-          reconnect(window.Wagmi, {connector: connection.connector});
-        } else {
-          const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
-          const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
-          connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => (
-            fetch(`${appUrl}/ship`, {method: "GET"})
-          )).then((responseStream) => (
-            responseStream.text()
-          )).then((responseText) => {
-            const responseDOM = new DOMParser().parseFromString(responseText, "text/html");
-            const ship = responseDOM.querySelector("#ship").value;
-            const clan = responseDOM.querySelector("#clan").value;
-            const wallets = responseDOM.querySelector("#wallets").value.split(" ");
-            return [ship, clan, wallets];
-          }).then(([ship, clan, wallets]) => {
-            const address = getAddress();
-            if (wallets.includes(address) || clan === "pawn") {
-              return Promise.resolve(undefined);
-            } else {
-              return signMessage(window.Wagmi, {
-                account: getAccount(window.Wagmi),
-                message: `I, ${ship}, am broadcasting to the Urbit network that I own wallet ${address}`,
-              });
-            }
-          }).then((signature) => {
-            if (signature === undefined) {
-              return Promise.resolve(undefined);
-            } else {
-              // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
-              const signData = new URLSearchParams({
-                dif: "prof-sign",
-                pos: signature,
-                poa: getAddress(),
-              });
-              return fetch(`${appUrl}/ship`, {
-                method: "POST",
-                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                body: signData,
-              });
-            }
-          });
-        }
-      } else if (status === "connected") {
-        // FIXME: Actually calling disconnects tells MetaMask to stop giving
-        // this site permission to the associated wallets. Is there any way to
-        // soft disconnect the wallet, i.e. set its status to disconnected without
-        // removing it?
-        disconnect(window.Wagmi, {connector: connection.connector});
-      }
-    });
+    setWallet(window.Wagmi.state);
   });
 
-  const setPageWallet = ({connections, current, status}) => {
-    if (status === "disconnected") {
-      const connection = connections.get(current);
-      if (!connection) {
-        Alpine.store("wallet").update(undefined, undefined);
-      } else {
-        reconnect(window.Wagmi, {connector: connection.connector});
-      }
-    } else if (status === "reconnecting") {
-      Alpine.store("wallet").update(null, null);
-    } else if (status === "connected") {
-      const { address, chainId } = getAccount(window.Wagmi);
-      Alpine.store("wallet").update(address, chainId);
-    }
-  };
+  // TODO: Including in 'turbo:load' causes this to fire too late
+  watchViewport();
 
   Alpine.start();
 }

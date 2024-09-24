@@ -33,6 +33,7 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))
+  :+  fut=&  hed=&
   ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
     =/  syt
       :*  hep=(trip !<(@t (slot:config %meta-help)))

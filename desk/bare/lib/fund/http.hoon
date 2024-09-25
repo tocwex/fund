@@ -377,7 +377,7 @@
         ;*  ?.  !<(bean (slot:config %debug))  ~
             :_  ~
             ;div(class "flex items-center")
-              ;button#fund-dbug.fund-tipi(type "button", x-init "initTippy($el)")
+              ;button#fund-dbug(type "button", x-init "initTippy($el)")
                 ;img.fund-butn-icon@"{(aset:enrl:ff %help)}";
               ==
               ;div#fund-dbug-opts(class "hidden")
@@ -438,7 +438,7 @@
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}
-        ;button.fund-tipi(id tid, type "button", x-init "initTippy($el)")
+        ;button(id tid, type "button", x-init "initTippy($el)")
           ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
         ==
         ;div(id "{tid}-opts", class "hidden")
@@ -590,19 +590,19 @@
           ;span(class "hidden sm:block"): {(swam:enjs:ff cost.pod payment.pro)}
     ==
   ++  swap-selz                                  ::  swap select input fields
-    |=  [emt=bean swa=(unit swap) mod=tape xoc=tape]
+    |=  [sid=@ud emt=bean swa=(unit swap) mod=tape xoc=tape]
     ^-  manx
     =/  ini=tape  ?~(swa "undefined" "'{(trip symbol.u.swa)}'")
+    =/  cid=tape  "chain-{<sid>}"
+    =/  tid=tape  "token-{<sid>}"
     =/  its=tape  "initTomSelect($el, \{empty: {(bool:enjs:ff emt)}})"
-    =/  uts=tape  "updateTokenSelect({ini})"
+    =/  uts=tape  "tsUpdateToken($refs['{cid}'], $refs['{tid}'])"
+    =/  iut=tape  :(welp its "; " uts "({ini})")
     ;div(class cas, x-data ~)
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
       ::  in the filter UI
       ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
-        ;select#proj-chain.fund-tsel  =name  "can"
-            =required  ~
-            =x-init  its
-            =x-on-change  "updateTokenSelect"
+        ;select(name "can", required ~, x-init its, x-ref cid, x-on-change uts)
           ;*  =+  can=?~(swa id:(~(got by xmap:fc) %ethereum) chain.u.swa)
               %+  welp
                 ?.  emt  ~
@@ -618,7 +618,7 @@
                   ?.(=(can id.xet) ~ [%selected ~]~)
               ==
         ==
-        ;*  ?~  swa  ~
+        ;*  ?:  emt  ~
             :_  ~  ;label(for "can"): Blockchain
       ==
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
@@ -641,12 +641,7 @@
                   [%data-href (esat:enrl:ff addr.swa chain.swa)]
               ==
         ==
-        ;select#proj-token.fund-tsel  =name  "tok"
-            =required  ~
-            =x-init  :(welp its "; " uts)
-            =x-model  mod
-            =x-ref  "token"
-            =x-on-change  xoc;
+        ;select(name "tok", required ~, x-init iut, x-model mod, x-ref tid, x-on-change xoc);
         ;*  ?:  emt  ~
             :_  ~
             ;div(class "inline-flex gap-1 items-center")
@@ -659,7 +654,7 @@
               ::  FIXME: It would be better if this were an <a> element,
               ::  but that doesn't properly auto-update via 'x-bind-href'
               ;button  =type  "button"
-                  =x-on-click  "openHREF($refs.token.tomselect.options[$refs.token.tomselect.activeOption.dataset.value].href, true)"
+                  =x-on-click  "openHREF($refs['{tid}'].tomselect.options[$refs['{tid}'].tomselect.activeOption.dataset.value].href, true)"
                 ::  TODO: Remove static width & replace with outer
                 ::  sizing control
                 ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %etherscan)}";

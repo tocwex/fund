@@ -230,7 +230,7 @@
         ^-  buz=marl
         ;:    welp
         ::  explain button  ::
-          :~  ;button#fund-help-page.fund-tipi(type "button", x-init "initTippy($el)")
+          :~  ;button#fund-help-page(type "button", x-init "initTippy($el)")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
               ==
               ;div#fund-help-page-opts(class "hidden")
@@ -305,7 +305,7 @@
                     (~(has in favorites.u.pou) lag)
                 ==
             ~
-          :~  ;button#fund-fave.fund-tipi(type "button", x-init "initTippy($el)")
+          :~  ;button#fund-fave(type "button", x-init "initTippy($el)")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %publicize)}";
               ==
               ;div#fund-fave-opts(class "hidden")
@@ -339,7 +339,7 @@
         ::  sign off/contribute button  ::
             ?:  ?=(?(%born %done %dead) sat)  ~
           =-  ?~  fom  ~
-              :~  ;button#fund-mula.fund-tipi.fund-butn-de-m(x-init "initTippy($el)"): {txt}
+              :~  ;button#fund-mula.fund-butn-de-m(x-init "initTippy($el)"): {txt}
                   ;div#fund-mula-opts(class "hidden")
                     ;form  =method  "post"
                         =autocomplete  "off"
@@ -388,7 +388,6 @@
                       ;:  welp
                           [%id "proj-token"]~
                           [%name "tok"]~
-                          [%class "fund-tsel"]~
                           ?.(nft ~ [%multiple ~]~)
                           ?~(pej ~ ?:(nft [%required ~]~ [%disabled ~]~))
                           ['@fund-wallet.window' "$el?.tomselect?.load && $el.tomselect.load()"]~

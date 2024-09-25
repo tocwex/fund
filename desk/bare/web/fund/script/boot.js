@@ -286,6 +286,9 @@ if (window.Alpine === undefined) {
     if (loader) outer.removeChild(loader);
   });
 
+  Alpine.store("page", {
+    size: undefined,
+  });
   Alpine.store("wallet", {
     address: null,
     chain: null,
@@ -338,7 +341,7 @@ if (window.Alpine === undefined) {
     initENS,
     initTippy,
     initTomSelect,
-    updateTokenSelect,
+    tsUpdateToken,
     tsCreateOracle,
     tsLoadNFTs,
     CONTRACT,
@@ -642,30 +645,33 @@ if (window.Alpine === undefined) {
         }),
       });
       tselElem?.load && tselElem.load();
+      elem.classList.add("fund-tsel");
       elem.matches(":disabled") && tselElem.disable();
     }
   }
 
-  function updateTokenSelect(initialOpt) {
-    const tokenChain = document.querySelector('#proj-chain').value;
-    const tokenSelect = document.querySelector('#proj-token').tomselect;
-    const tokenOpts = document.querySelectorAll('#proj-token-options > option');
-    const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
-      value: elem.value,
-      text: elem.innerText,
-      image: elem.dataset.image,
-      chain: elem.dataset.chain,
-      href: elem.dataset.href,
-    })).filter(({value, chain}) => (
-      chain === tokenChain || value === ""
-    ));
+  function tsUpdateToken(chainElem, tokenElem) {
+    return (option) => {
+      const tokenChain = chainElem.value;
+      const tokenSelect = tokenElem.tomselect;
+      const tokenOpts = document.querySelectorAll('#proj-token-options > option');
+      const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
+        value: elem.value,
+        text: elem.innerText,
+        image: elem.dataset.image,
+        chain: elem.dataset.chain,
+        href: elem.dataset.href,
+      })).filter(({value, chain}) => (
+        chain === tokenChain || value === ""
+      ));
 
-    tokenSelect.clear(true);
-    tokenSelect.clearOptions();
-    tokenSelect.addOptions(tokenChainOpts);
-    tokenSelect.addItem(
-      (tokenChainOpts.find(({value}) => value === initialOpt) ?? tokenChainOpts[0]).value
-    );
+      tokenSelect.clear(true);
+      tokenSelect.clearOptions();
+      tokenSelect.addOptions(tokenChainOpts);
+      tokenSelect.addItem(
+        (tokenChainOpts.find(({value}) => value === option) ?? tokenChainOpts[0]).value
+      );
+    };
   }
 
   function tsCreateOracle(elem) {
@@ -690,7 +696,7 @@ if (window.Alpine === undefined) {
 
       const address = Alpine.store("wallet").address;
       const chain = Alpine.store("wallet").chain;
-      const loadedNFTs = Alpine.store("project").nfts?.[address];
+     ; const loadedNFTs = Alpine.store("project").nfts?.[address];
       const loadNFTOptions = loadedNFTs
         ? Promise.resolve(loadedNFTs)
         : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
@@ -723,13 +729,11 @@ if (window.Alpine === undefined) {
 
   // https://css-tricks.com/working-with-javascript-media-queries/
   function watchViewport() {
+    //  TODO: May want a 1024 "tablet" size as well (esp. for
+    //  'proj-desh' search bar)
     const mediaQuery = window.matchMedia('(min-width: 640px)');
     const handleViewportChange = (event) => {
-      if (event.matches) {
-        console.log("big");
-      } else {
-        console.log("smol");
-      }
+      Alpine.store("page").size = event.matches ? "desktop" : "mobile";
     }
     mediaQuery.addListener(handleViewportChange);
     handleViewportChange(mediaQuery);

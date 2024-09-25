@@ -82,7 +82,7 @@
     [%config ~]                                  `[%page | %config]
     [%dashboard suf=*]    ?+  suf.pat            ~
       ~                                          `[%away (snip syt)]
-      [?(%following %discover %action) ~]        `[%page | %proj-list]
+      [?(%following %discover %action) ~]        `[%page | %proj-dash]
     ==
     [%create suf=*]       ?+  suf.pat            ~
       ~                                          `[%away (snip syt)]

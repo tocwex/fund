@@ -1,4 +1,4 @@
-::  /web/fund/page/proj-list/hoon: render project listing page for %fund
+::  /web/fund/page/proj-dash/hoon: render project listing page for %fund
 ::
 /-  fd=fund-data, f=fund
 /+  fj=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra

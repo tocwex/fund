@@ -205,11 +205,11 @@
         ;*  maz
       ==
     ++  dash-navi
-      |=  big=bean
+      |=  top=bean
       ^-  manx
       =/  kas=tape
-        ?.  big  "flex-col-reverse bg-gray-100 fund-foot p-3"
-        "flex-col bg-gray-300 rounded-lg drop-shadow-xl sm:p-2 p-1"
+        ?.  top  "flex-col-reverse bg-gray-100 fund-foot p-3"
+        "flex-col bg-gray-300 rounded-lg drop-shadow-xl p-2"
       =/  syk=manx
         ;div(class "w-full flex-1 flex flex-row gap-4")
           ;div(class "w-full flex-1 flex flex-row gap-1")
@@ -237,18 +237,18 @@
         ==
       ;div
           =class  "font-serif w-full flex gap-3 {kas} {cas}"
-          =x-show  "$store.page.size == '{(trip ?:(big 'desktop' 'mobile'))}'"
-        ;div(class "w-full flex flex-row gap-2 {(trip ?:(big '' 'justify-center'))}")
+          =x-show  "$store.page.size == '{(trip ?:(top 'desktop' 'mobile'))}'"
+        ;div(class "w-full flex flex-row gap-2 {(trip ?:(top '' 'justify-center'))}")
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
               |=  mod=@tas
               ^-  manx
-              =+  [cas="px-3 py-2 rounded-md" cis=?:(big "w-6" "w-8")]
+              =+  [cas="px-3 py-2 rounded-md" cis=?:(top "w-6" "w-8")]
               =+  kas=?.(=(dyp mod) ~ "bg-gray-400")
               ?.  ?=(%controls mod)
                 ;a/"{(dest:enrl:ff:fh /dashboard/[mod])}"(class "{cas} {kas}")
                   ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
                 ==
-              ?:  big  syk
+              ?:  top  syk
               ;button  =type  "button"
                   =x-on-click  "toggleTray(undefined)"
                   =class  "{cas} border-l border-gray-250"
@@ -256,10 +256,10 @@
               ==
         ==
         ;div  =class  "w-full flex flex-col gap-3"
-            =x-show  ?:(big "tray_status.mode != 'base'" "tray_status.open")
-          ;*  ?:(big ~ [syk]~)
+            =x-show  ?:(top "tray_status.mode != 'base'" "tray_status.open")
+          ;*  ?:(top ~ [syk]~)
           ;*  ?:  =(%action dyp)  ~
-              =/  sin=tape  "initTomSelect($el, \{empty: true, forceUp: {(trip ?.(big 'true' 'false'))}})"
+              =/  sin=tape  "initTomSelect($el, \{empty: true, forceUp: {(trip ?.(top 'true' 'false'))}})"
               =/  kas=tape  "w-full flex flex-row justify-between items-center"
               :~  ;div(class "w-full flex flex-col gap-3", x-show "tray_status.mode == 'filter'")
                     ;div(class kas)
@@ -284,7 +284,7 @@
                     ==
                     ;div(x-show "filt_status.mode == 'swap'")
                       ;+  %:  ~(swap-selz ui:fh "flex flex-row gap-2")
-                              ?:(big 0 1)
+                              ?:(top 0 1)
                               &
                               swap.arg
                               "filt_status.params.swap"
@@ -379,11 +379,9 @@
   :^  bol  ord  "{(trip dyp)} dashboard"
   :+  fut=&  hed=|
   ;div(x-data "proj_dash")
-    ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) big=&)]~)
+    ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
-    ::  FIXME: Could fiddle with 'min-h-[X%]' here for better results, but we
-    ::  leave it for now
     ;div(class "flex flex-col p-2 gap-2 min-h-[100vh]")
       ;*  =/  cas=tape  "w-full grid gap-4 justify-center"
           =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
@@ -410,10 +408,10 @@
             =/  hel=tape  (trip !<(@t (slot:config %meta-help)))
             :~  ;div(class "flex flex-row gap-2 justify-start items-center")
                   ;h1: Discover
-                  ;button#fund-help-disc(type "button", x-init "initTippy($el)")
+                  ;button(type "button", x-init "initTippy($el)")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
-                  ;div#fund-help-disc-opts(class "hidden")
+                  ;div(class "hidden")
                     ;p
                       ; Discovery of new projects depends on the %pals
                       ; network. Projects are publicized to your %pals, and
@@ -500,7 +498,7 @@
             ==
           ==
     ==
-    ;+  (~(dash-navi ui ~) big=|)
+    ;+  (~(dash-navi ui ~) top=|)
     ;script
       ;+  ;/
       %-  zing  %+  join  "\0a"
@@ -597,9 +595,3 @@
   ==
 --
 ::  VERSION: [1 4 0]
-::  RELOAD
-::  RELOAD
-::  RELOAD
-::  RELOAD
-::  RELOAD
-::  RELOAD

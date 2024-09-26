@@ -197,7 +197,7 @@ if (window.Alpine === undefined) {
       ['fund-butn-icon', 'p-1 max-w-none rounded-md text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
-      //  ['fund-butn-lorj', 'fund-butn-base text-sm px-3 py-1.5'], // h-8
+      ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
       //  FIXME: These classes should use 'hover:enabled' to stop
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
@@ -216,6 +216,11 @@ if (window.Alpine === undefined) {
       ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
+      ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
+      ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
+      ['fund-butn-tr-l', 'fund-butn-true fund-butn-lorj'], // true
+      ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
+      ['fund-butn-co-l', 'fund-butn-conn fund-butn-lorj'], // conn
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
       ['fund-odit-ther', 'w-full rounded-md flex h-4 sm:h-8 text-primary-700'], // FIXME: text-primary-600
@@ -575,10 +580,9 @@ if (window.Alpine === undefined) {
   }
 
   function initTippy(elem, {dir=undefined} = {}) {
-    const elemId = `#${elem.id}`;
-    const optElem = document.querySelector(`${elemId}-opts`);
+    const optElem = elem.nextSibling;
     optElem.style.display = 'block';
-    TippyJs(elemId, {
+    TippyJs(elem, {
       content: optElem,
       allowHTML: true,
       interactive: true,
@@ -729,9 +733,7 @@ if (window.Alpine === undefined) {
 
   // https://css-tricks.com/working-with-javascript-media-queries/
   function watchViewport() {
-    //  TODO: May want a 1024 "tablet" size as well (esp. for
-    //  'proj-desh' search bar)
-    const mediaQuery = window.matchMedia('(min-width: 640px)');
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
     const handleViewportChange = (event) => {
       Alpine.store("page").size = event.matches ? "desktop" : "mobile";
     }

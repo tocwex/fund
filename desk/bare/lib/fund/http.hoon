@@ -293,15 +293,18 @@
     =/  pat=(pole knot)  (slag:derl:ff url)
     =/  bag=tape  "bg-gray-300 rounded-lg drop-shadow-xl sm:p-2 p-1"
     =/  bas=tape  "fund-butn-de-m w-full text-center"
-    ;nav(class "fund-head w-full flex p-2 gap-4")
+    =/  xow=tape  "!($store.page.size == 'mobile' && open)"  ::  x-show for non-wallet
+    ;nav(class "fund-head w-full flex p-2 gap-4", x-data "\{open: false}")
       ;+  ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
             ;a/"{(dest:enrl:ff (snip `(list knot)`pat))}"
                 =class  "shrink-0 flex items-center hover:text-[#2c666e] {bag}"
+                =x-show  xow
               ;h2: ← back
             ==
           ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
               =class  "shrink-0 sm:(h-14 px-3) h-11 {bag}"
               =x-data  "\{ hover: false }"
+              =x-show  xow
               =x-on-mouseenter  "hover = true"
               =x-on-mouseleave  "hover = false"
             ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
@@ -309,12 +312,12 @@
           ==
       ::  FIXME: This shouldn't shrink along the y-axis when minimizing
       ::  the page
-      ;+  ;div(class "shrink w-full min-w-0")
+      ;+  ;div(class "shrink w-full min-w-0", x-show xow)
             ;div(class "w-full")
               ;*  hed
             ==
           ==
-      ;div(class "shrink-0", x-data "\{open: false}")
+      ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
         ;div(class "shrink-0 flex flex-col gap-2 {bag}", x-on-click "open = ! open")
           ;button(type "button", class "shrink-0 flex inline-flex gap-2 items-center")
             ;+  ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
@@ -377,10 +380,10 @@
         ;*  ?.  !<(bean (slot:config %debug))  ~
             :_  ~
             ;div(class "flex items-center")
-              ;button#fund-dbug(type "button", x-init "initTippy($el)")
+              ;button(type "button", x-init "initTippy($el)")
                 ;img.fund-butn-icon@"{(aset:enrl:ff %help)}";
               ==
-              ;div#fund-dbug-opts(class "hidden")
+              ;div(class "hidden")
                 ;h4.text-center: ⚠ DEBUG ENABLED ⚠
                 ;p.text-2xs.whitespace-pre-wrap: {enjs:config}
               ==
@@ -434,14 +437,13 @@
             '''
         ==
       ==
-    =/  tid=tape  "fund-help-ship-{(trip rol)}-{(bloq:enjs:ff `@`sip)}"
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}
-        ;button(id tid, type "button", x-init "initTippy($el)")
+        ;button(type "button", x-init "initTippy($el)")
           ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
         ==
-        ;div(id "{tid}-opts", class "hidden")
+        ;div(class "hidden")
           ;p: {hep}
           ;p
             ; To learn more,

@@ -237,7 +237,7 @@
         ==
       ;div
           =class  "font-serif w-full flex gap-3 {kas} {cas}"
-          =x-show  "$store.page.size == '{(trip ?:(top 'desktop' 'mobile'))}'"
+          =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
         ;div(class "w-full flex flex-row gap-2 {(trip ?:(top '' 'justify-center'))}")
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
               |=  mod=@tas

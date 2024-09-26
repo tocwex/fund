@@ -239,7 +239,7 @@
         "flex-row justify-between bg-gray-300 rounded-lg drop-shadow-xl p-2"
       ;div
           =class  "w-full flex {kas} {cas}"
-          =x-show  "$store.page.size == '{(trip ?:(top 'desktop' 'mobile'))}'"
+          =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
         ;*  =-  :~  ;div(class "flex flex-row items-center {(trip ?:(top 'gap-2' 'justify-between'))}")
                       ;*  mix
                     ==

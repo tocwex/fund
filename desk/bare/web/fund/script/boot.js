@@ -700,7 +700,7 @@ if (window.Alpine === undefined) {
 
       const address = Alpine.store("wallet").address;
       const chain = Alpine.store("wallet").chain;
-     ; const loadedNFTs = Alpine.store("project").nfts?.[address];
+      const loadedNFTs = Alpine.store("project").nfts?.[address];
       const loadNFTOptions = loadedNFTs
         ? Promise.resolve(loadedNFTs)
         : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
@@ -733,12 +733,17 @@ if (window.Alpine === undefined) {
 
   // https://css-tricks.com/working-with-javascript-media-queries/
   function watchViewport() {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)');
-    const handleViewportChange = (event) => {
-      Alpine.store("page").size = event.matches ? "desktop" : "mobile";
-    }
-    mediaQuery.addListener(handleViewportChange);
-    handleViewportChange(mediaQuery);
+    const viewportConfigs = [
+      ["mobile", "(max-width: 640px)"],
+      ["tablet", "(min-width: 640px) and (max-width: 1023px)"],
+      ["desktop", "(min-width: 1024px)"],
+    ];
+    viewportConfigs.forEach(([size, query]) => {
+      const sizeQuery = window.matchMedia(query);
+      const handleSizeChange = e => {if (e.matches) Alpine.store("page").size = size;};
+      sizeQuery.addListener(handleSizeChange);
+      handleSizeChange(sizeQuery);
+    });
   }
 
   window.Wagmi = createConfig({

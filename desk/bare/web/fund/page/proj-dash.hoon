@@ -167,6 +167,7 @@
             ==
           ==
         ==
+        ;+  (proj-ther:ui:fh -.pre big=|)
         ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
           ;div(class "flex-1 min-w-0 text-lg"): {(trip title.pre)}
           ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
@@ -181,25 +182,45 @@
       ::  TODO: Replace the latter with a ship-generated sigil pair
       ::  (project worker and oracle with slightly different colors).
       =/  bak=tape  ?^(image.met (trip u.image.met) (~(ship-logo fa bol) worker.met))
-      ::  TODO: Add data attributes to allow for FE sorting/filtering
       ;div  =x-on-click  "joinProject('{(flag:enjs:ff:fh lag)}')"
           =class  "flex flex-col gap-2 font-serif hover:cursor-pointer {cas}"
         ;div(class "aspect-square bg-cover bg-center rounded-md bg-[url('{bak}')]")
-          ;div(class "flex flex-row flex-wrap justify-between items-center p-2")
+          ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
             ;div(class "bg-gray-100 rounded-md text-xs p-1.5")
               ; {(swam:enjs:ff:fh cost.met payment.met)}
             ==
-            ;div(class "bg-gray-100 rounded-md p-0.5 line-clamp-2")
-              ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] ~(ship-logo fa bol)))
+            ;div(class "bg-gray-100 rounded-md p-0.5")
+              ;+  %+  icon-stax:ui:fh  %circ
+                  :~  (aset:enrl:ff:fh symbol.payment.met)
+                      (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.met))
+                  ==
             ==
           ==
         ==
-        ;div(class "text-sm"): {(trip title.met)}
+        ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
+          ;div(class "flex-1 min-w-0 text-sm"): {(trip title.met)}
+          ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
+            ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] ~(ship-logo fa bol)))
+          ==
+        ==
+      ==
+    ++  make-card                              ::  "create project" card
+      ^-  manx
+      =/  bak=tape  "https://placehold.co/24x24/lightgray/gray?text=%2b"
+      ;a/"{(dest:enrl:ff:fh /create/project)}"(class "flex flex-col gap-2 font-serif {cas}")
+        ;div(class "aspect-square bg-cover bg-center rounded-md bg-[url('{bak}')]");
+        ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
+          ;div(class "flex-1 min-w-0 text-sm"): Create New Project
+        ==
       ==
     ++  mota-well                              ::  project (metadata) well (%action)
       |=  [kas=tape msg=tape ski=$-([flag:f prej:proj:f] ?)]
       ^-  manx
-      ?~  maz=(turn (skim pyz ski) |=([l=flag:f p=prej:proj:f] (meta-card l (proj-meta:ex l p))))
+      =/  maz=marl
+        %+  turn  (skim pyz ski)
+        |=([l=flag:f p=prej:proj:f] (meta-card l (proj-meta:ex l p)))
+      =?  maz  ?=(~ msg)  [make-card maz]
+      ?~  maz
         ;p.fund-warn: {msg}
       ;div(class kas)
         ;*  maz
@@ -447,16 +468,11 @@
                       (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
                   ==
               ==
-            :~  ;div(class "flex flex-row justify-between")
-                  ;h1: My Actions
-                  ;a.self-center.fund-butn-ac-m/"{(dest:enrl:ff:fh /create/project)}"
-                    ; new project +
-                  ==
-                ==
+            :~  ;h1: My Actions
                 ;div(class "flex flex-col gap-4")
                   ;div                               ::  my $prez
                     ;h2: My Open Projects
-                    ;+  %^  ~(mota-well ui sus)  sas  "No live projects."
+                    ;+  %^  ~(mota-well ui sus)  sas  ~
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             =(our.bol p.lag)

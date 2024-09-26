@@ -477,10 +477,16 @@
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col p-2 gap-1 min-h-[100vh]")
       ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
-      ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
-          ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
-      ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))}";
-      ::  ;*  ?:  ?=(?(%born %done %dead) sat)  ~
+      ::  ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
+      ::      ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
+      ;h1(class "text-4xl"): {(trip title.pro)}
+      ;+  =/  irl=tape  (trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))
+          ;div(class "w-full aspect-square bg-cover bg-center rounded-md bg-[url('{irl}')]")
+            ;div(class "flex flex-row flex-wrap justify-end p-4")
+              ;+  %+  ~(work-bump ui:fh "p-2 rounded-md bg-gray-100")  sat
+                  ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
+            ==
+          ==
       ;div(class "flex flex-col gap-1")
         ;div(class "flex flex-row justify-between items-center")
           ;h1: Funding Tracker

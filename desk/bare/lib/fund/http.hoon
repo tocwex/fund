@@ -741,13 +741,8 @@
     |=  [tyt=tape sat=stat man=manx]
     ^-  manx
     ;div(class "flex flex-wrap items-center justify-between {cas}")
-      ::  FIXME: ;div(class "text-4xl sm:text-5xl"): {tyt}
       ;h1(class "text-4xl"): {tyt}
-      ;div(class "flex items-center gap-x-2")
-        ;+  (stat-pill sat)
-        ;+  %-  cash-bump  :_  man
-            ;span: Funding Goal
-      ==
+      ;+  (~(work-bump ..$ ~) sat man)
     ==
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]
@@ -757,6 +752,14 @@
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
     ;span(class "line-clamp-1 {cas}"): {(~(ship-tytl fa bol) sip)}
+  ++  work-bump                                  ::  bumper for work unit
+    |=  [sat=stat man=manx]
+    ;div(class "flex items-center gap-x-2 {cas}")
+      ;+  (stat-pill sat)
+      ;+  %-  ~(cash-bump ..$ ~)
+          :_  man
+          ;span: Funding Goal
+    ==
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx

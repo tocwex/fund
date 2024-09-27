@@ -147,71 +147,84 @@
     ==
   =/  ui
     |_  cas=tape
+    ++  base-card
+      |=  $:  tyt=@t  pic=(unit @t)  xoc=tape
+              pro=(unit [big=? wok=@p ora=@p cos=cash:f swa=swap:f hed=(unit manx)])
+          ==
+      ^-  manx
+      =/  big=bean  ?~(pro | big.u.pro)
+      =/  syz=@sd   ?:(big --0 -2)
+      =/  asp=tape  ?:(big "aspect-video" "aspect-square")
+      =/  url=tape
+        ?^  pic  (trip u.pic)
+        ?^  pro  (~(ship-logo fa bol) wok.u.pro)  ::  TODO: implement wok/ora double logo
+        "https://placehold.co/24x24/lightgray/gray?text=?"
+      ::  FIXME: This should really be 'button,' but that introduces problems with CSS
+      ;div  =type  "button"
+          =class  "flex flex-col gap-2 font-serif hover:cursor-pointer {cas}"
+          =x-on-click  xoc
+        ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
+          ;*  ?~  pro  ~
+              :_  ~
+              ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
+                ;div(class "bg-gray-100 rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
+                  ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
+                ==
+                ;div(class "bg-gray-100 rounded-md p-0.5")
+                  ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
+                      :~  (aset:enrl:ff:fh symbol.swa.u.pro)
+                          (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
+                      ==
+                ==
+              ==
+        ==
+        ;*  ?~  pro  ~
+            ?~  hed.u.pro  ~
+            :_  ~  u.hed.u.pro
+        ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
+          ;div(class "flex-1 min-w-0 text-{(size:enjs:ff:fh (sum:si --1 syz))}"): {(trip tyt)}
+          ;*  ?~  pro  ~
+              :_  ~
+              ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
+                ;+  %+  icon-stax:ui:fh  %rect
+                        (turn ~[wok.u.pro ora.u.pro] ~(ship-logo fa bol))
+              ==
+        ==
+      ==
     ++  proj-card                              ::  summary card for a project
       |=  [lag=flag:f pre=prej:proj:f]
       ^-  manx
-      ::  TODO: Replace the latter with a ship-generated sigil pair
-      ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape  ?^(image.pre (trip u.image.pre) (~(ship-logo fa bol) p.lag))
-      ;a/"{(flat:enrl:ff:fh lag)}"(class "flex flex-col gap-2 font-serif {cas}")
-        ;div(class "aspect-video bg-cover bg-center rounded-md bg-[url('{bak}')]")
-          ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
-            ;div(class "bg-gray-100 rounded-md text-md p-1.5")
-              ; {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}
-            ==
-            ;div(class "bg-gray-100 rounded-md p-0.5")
-              ;+  %+  ~(icon-stax ui:fh "h-8")  %circ
-                  :~  (aset:enrl:ff:fh symbol.payment.pre)
-                      (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pre))
-                  ==
-            ==
+      %:  base-card
+          tyt=title.pre
+          pic=image.pre
+          xoc="openHREF('{(flat:enrl:ff:fh lag)}')"
+      ::
+            ^=  pro
+          :*  ~
+              big=&
+              wok=p.lag
+              ora=p.assessment.pre
+              cos=~(cost pj:fj -.pre)
+              swa=payment.pre
+              hed=`(proj-ther:ui:fh -.pre big=|)
           ==
-        ==
-        ;+  (proj-ther:ui:fh -.pre big=|)
-        ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
-          ;div(class "flex-1 min-w-0 text-lg"): {(trip title.pre)}
-          ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
-            ;+  %+  ~(icon-stax ui:fh "h-8")  %rect
-                (turn ~[p.lag p.assessment.pre] ~(ship-logo fa bol))
-          ==
-        ==
       ==
     ++  meta-card                              ::  summary card for project metadata
       |=  [lag=flag:f met=mete:meta:f]
       ^-  manx
-      ::  TODO: Replace the latter with a ship-generated sigil pair
-      ::  (project worker and oracle with slightly different colors).
-      =/  bak=tape  ?^(image.met (trip u.image.met) (~(ship-logo fa bol) worker.met))
-      ;div  =x-on-click  "joinProject('{(flag:enjs:ff:fh lag)}')"
-          =class  "flex flex-col gap-2 font-serif hover:cursor-pointer {cas}"
-        ;div(class "aspect-square bg-cover bg-center rounded-md bg-[url('{bak}')]")
-          ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
-            ;div(class "bg-gray-100 rounded-md text-xs p-1.5")
-              ; {(swam:enjs:ff:fh cost.met payment.met)}
-            ==
-            ;div(class "bg-gray-100 rounded-md p-0.5")
-              ;+  %+  icon-stax:ui:fh  %circ
-                  :~  (aset:enrl:ff:fh symbol.payment.met)
-                      (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.met))
-                  ==
-            ==
-          ==
-        ==
-        ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
-          ;div(class "flex-1 min-w-0 text-sm"): {(trip title.met)}
-          ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
-            ;+  (icon-stax:ui:fh %rect (turn ~[worker.met oracle.met] ~(ship-logo fa bol)))
-          ==
-        ==
+      %:  base-card
+          tyt=title.met
+          pic=image.met
+          xoc="joinProject('{(flag:enjs:ff:fh lag)}')"
+          pro=`[| worker.met oracle.met cost.met payment.met ~]
       ==
     ++  make-card                              ::  "create project" card
       ^-  manx
-      =/  bak=tape  "https://placehold.co/24x24/lightgray/gray?text=%2b"
-      ;a/"{(dest:enrl:ff:fh /create/project)}"(class "flex flex-col gap-2 font-serif {cas}")
-        ;div(class "aspect-square bg-cover bg-center rounded-md bg-[url('{bak}')]");
-        ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
-          ;div(class "flex-1 min-w-0 text-sm"): Create New Project
-        ==
+      %:  base-card
+          tyt='Create New Project'
+          pic=`'https://placehold.co/24x24/lightgray/gray?text=%2b'
+          xoc="openHREF('{(dest:enrl:ff:fh /create/project)}')"
+          pro=~
       ==
     ++  mota-well                              ::  project (metadata) well (%action)
       |=  [kas=tape msg=tape ski=$-([flag:f prej:proj:f] ?)]

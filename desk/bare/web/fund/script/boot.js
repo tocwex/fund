@@ -572,6 +572,7 @@ if (window.Alpine === undefined) {
   // }
 
   function initENS(elem, address) {
+    elem.innerHTML = "…loading…";
     getEnsName(window.Wagmi, {address}).then(ensName => {
       elem.innerHTML = ensName
         ? ensName

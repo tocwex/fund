@@ -299,5 +299,19 @@
       %done  "completed"
       %dead  "canceled"
     ==
+  ++  size                                     ::  --1 => "lg"
+    |=  syz=@sd
+    ^-  tape
+    ?+  syz   "md"
+      %-4     "3xs"
+      %-3     "2xs"
+      %-2     "xs"
+      %-1     "sm"
+      %--0    "md"
+      %--1    "lg"
+      %--2    "xl"
+      %--3    "2xl"
+      %--4    "3xl"
+    ==
   --
 --

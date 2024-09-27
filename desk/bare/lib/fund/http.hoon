@@ -318,8 +318,10 @@
             ==
           ==
       ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
-        ;div(class "shrink-0 flex flex-col gap-2 {bag}", x-on-click "open = ! open")
-          ;button(type "button", class "shrink-0 flex inline-flex gap-2 items-center")
+        ;div(class "shrink-0 flex flex-col gap-2 {bag}")
+          ;button  =type  "button"
+              =class  "shrink-0 flex inline-flex gap-2 items-center"
+              =x-on-click  "open = ! open"
             ;+  ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
                   ;+  (ship-logo src.bol bol)
                   ;span(class "hidden sm:block font-bold")
@@ -329,7 +331,7 @@
             ;div(class "shrink-0 fund-butn-co-m", x-text "$store.wallet.status");
           ==
           ;div(class "flex flex-col gap-2", x-show "open")
-            ;div
+            ;div  ::  current wallet section
               ;div(class "flex flex-col gap-2", x-show "!$store.wallet.connected")
                 ;button(type "button", x-on-click "toggleWallet", class bas): connect
               ==
@@ -349,11 +351,28 @@
                 ;button(type "button", x-on-click "toggleWallet", class bas): disconnect
               ==
             ==
+            ;hr;  ::  known wallets section
+            ;div
+              ;div(class "flex flex-col gap-2")
+                ;h5.text-center.underline: Verified Wallets
+                ;+  =+  .^  adz=(list addr)  %gx
+                            %+  en-beam  [our.bol dap.bol da+now.bol]
+                            /prof/(scot %p src.bol)/adrz/noun
+                        ==
+                    ?~  adz  ;p: (None available)
+                    ;ul
+                      ;*  %+  turn  adz
+                          |=  adr=addr
+                          ^-  manx
+                          ;li(class "fund-addr", x-init "initENS($el, '{(addr:enjs:ff adr)}')");
+                    ==
+              ==
+            ==
             ;*  ?.  =(our src):bol  ~
                 :~  ;hr;
                     ;a/"{(dest:enrl:ff /config)}"(class bas): config ⚙️
                 ==
-            ;hr;
+            ;hr;  ::  login/logout section
             ;+  =-  ;a/"/~/{pre}redirect={(trip url)}"(class bas, target tgt): {txt}
                 ^-  [pre=tape tgt=tape txt=tape]
                 ?.((auth bol) ["login?eauth&" "_blank" "login ~"] ["logout?" "_self" "logout ↩️"])
@@ -466,10 +485,8 @@
             ;*  ?:  =(0x0 adr)  :_  ~  ;p: {nun}
                 :~  ;a/"{(esat:enrl:ff adr cid)}"
                         =target  "_blank"
-                        =class  "fund-addr fund-addr-ens hover:text-link"
-                        =x-init  "initENS($el, '{(addr:enjs:ff adr)}')"
-                      …loading…
-                    ==
+                        =class  "fund-addr hover:text-link"
+                        =x-init  "initENS($el, '{(addr:enjs:ff adr)}')";
                     (copy-butn (addr:enjs:ff adr))
                 ==
           ==

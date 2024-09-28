@@ -190,7 +190,7 @@ if (window.Alpine === undefined) {
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
       ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
       ['fund-warn', 'italics mx-4 text-gray-600'],
-      ['fund-addr', 'font-normal leading-normal tracking-wide'],
+      ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
       ['fund-input', 'fund-select read-only:(bg-gray-400)'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
@@ -319,17 +319,17 @@ if (window.Alpine === undefined) {
     },
   });
   Alpine.store("project", {
-    swap: undefined,
+    type: undefined,
     symbol: undefined,
-    nfts: {},
-    update(swap, symbol) {
-      this.swap = swap;
+    assets: {},
+    update(type, symbol) {
+      this.type = type;
       this.symbol = symbol;
-      this.nfts = {};
+      this.assets = {};
       window.dispatchEvent(new CustomEvent("fund-project", {detail: symbol}));
     },
-    loadNFTs(addr, nfts) {
-      this.nfts[addr] = nfts;
+    loadAssets(addr, assets) {
+      this.assets[addr] = assets;
     },
   });
 
@@ -701,7 +701,7 @@ if (window.Alpine === undefined) {
 
       const address = Alpine.store("wallet").address;
       const chain = Alpine.store("wallet").chain;
-      const loadedNFTs = Alpine.store("project").nfts?.[address];
+      const loadedNFTs = Alpine.store("project").assets?.[address];
       const loadNFTOptions = loadedNFTs
         ? Promise.resolve(loadedNFTs)
         : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
@@ -723,7 +723,7 @@ if (window.Alpine === undefined) {
           text: "(no nfts in wallet)",
           image: "https://placehold.co/24x24/black/black?text=\\n",
         }];
-        Alpine.store("project").loadNFTs(address, nftOptions);
+        Alpine.store("project").loadAssets(address, nftOptions);
         callback(nftOptions);
         // NOTE: Auto-select if only one available; iffy on the ui/ux
         // if (nftOptions.length === 0) { self.addItem(-1); }

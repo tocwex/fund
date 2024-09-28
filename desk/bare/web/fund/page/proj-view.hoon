@@ -775,6 +775,7 @@
           :(weld "swap_type: '" (trip -.payment.pro) "',")
           :(weld "swap_chain: " (bloq:enjs:ff:fh chain.payment.pro) ",")
           :(weld "swap_symbol: '" (trip symbol.payment.pro) "',")
+          :(weld "swap_address: '" (trip addr.payment.pro) "',")
           :(weld "orac_cut: " (cash:enjs:ff:fh q.assessment.pro 6) ",")
           :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (comp:enjs:ff:fh fill.n payment.pro) ","))) "],")
           :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:ff:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")

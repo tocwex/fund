@@ -293,16 +293,19 @@
     =/  pat=(pole knot)  (slag:derl:ff url)
     =/  bag=tape  "bg-gray-300 rounded-lg drop-shadow-xl sm:p-2 p-1"
     =/  bas=tape  "fund-butn-de-m w-full text-center"
-    =/  xow=tape  "!($store.page.size == 'mobile' && open)"  ::  x-show for non-wallet
-    ;nav(class "fund-head w-full flex p-2 gap-4", x-data "\{open: false}")
-      ;+  ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
+    =/  xom=tape  "($store.page.size == 'mobile')"
+    =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
+    ;nav  =x-data  "\{open: false}"
+        =class  "fund-head w-full sm:h-16 h-[3.25rem] overflow-visible flex p-2 gap-4"
+      ;+  =/  las=tape  "shrink-0 sm:(h-14 px-3) h-11"
+          ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
             ;a/"{(dest:enrl:ff (snip `(list knot)`pat))}"
-                =class  "shrink-0 flex items-center hover:text-[#2c666e] {bag}"
+                =class  "{las} flex items-center hover:text-[#2c666e] {bag}"
                 =x-show  xow
               ;h2: ← back
             ==
           ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
-              =class  "shrink-0 sm:(h-14 px-3) h-11 {bag}"
+              =class  "{las} {bag}"
               =x-data  "\{ hover: false }"
               =x-show  xow
               =x-on-mouseenter  "hover = true"
@@ -320,11 +323,11 @@
       ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
         ;div(class "shrink-0 flex flex-col gap-2 {bag}")
           ;button  =type  "button"
-              =class  "shrink-0 flex inline-flex gap-2 items-center"
+              =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
               =x-on-click  "open = ! open"
             ;+  ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
                   ;+  (ship-logo src.bol bol)
-                  ;span(class "hidden sm:block font-bold")
+                  ;span(class "hidden font-bold", xtyle "(!{xom} || !{xow}) && \{display: 'block'}")
                     ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
                   ==
                 ==
@@ -337,14 +340,21 @@
               ==
               ;div(class "flex flex-col gap-2", x-show "$store.wallet.connected")
                 ;div(class "rounded-md bg-gray-100 py-1 px-2")
-                  ;div(class "flex flex-row justify-between")
+                  ;div(class "flex justify-between")
                     ;span.text-gray-300: Wallet
                     ;span: MetaMask
                   ==
-                  ;div(class "flex flex-row justify-between")
+                  ;div(class "flex justify-between")
                     ;span.text-gray-300: Balance
                     ;span(x-text "$store.wallet.balance");
                   ==
+                  ::  TODO: Add per-project currency balance here (need
+                  ::  separate ERC20/721 accounting logic)
+                  ::  ;div  =class  "flex justify-between"
+                  ::      =x-on-show  "!!$store.project.assets?.[$store.wallet.address]"
+                  ::    ;span.text-gray-300: Project
+                  ::    ;span(x-text "$store.project.balance");
+                  ::  ==
                 ==
                 ::  ;button(type "button", x-on-click "switchChain", class bas): switch chain
                 ::  ;button(type "button", x-on-click "switchWallet", class bas): switch wallet
@@ -355,17 +365,17 @@
             ;div
               ;div(class "flex flex-col gap-2")
                 ;h5.text-center.underline: Verified Wallets
-                ;+  =+  .^  adz=(list addr)  %gx
-                            %+  en-beam  [our.bol dap.bol da+now.bol]
-                            /prof/(scot %p src.bol)/adrz/noun
-                        ==
-                    ?~  adz  ;p: (None available)
-                    ;ul
-                      ;*  %+  turn  adz
-                          |=  adr=addr
-                          ^-  manx
-                          ;li(class "fund-addr", x-init "initENS($el, '{(addr:enjs:ff adr)}')");
-                    ==
+                ;div(class "flex flex-col items-end rounded-md bg-gray-100 py-1 px-2")
+                  ;*  =+  .^  adz=(list addr)  %gx
+                              %+  en-beam  [our.bol dap.bol da+now.bol]
+                              /prof/(scot %p src.bol)/adrz/noun
+                          ==
+                      ?~  adz  :_  ~  ;span.text-gray-300: (none available)
+                      %+  turn  adz
+                      |=  adr=addr
+                      ^-  manx
+                      ;span(class "fund-addr", x-init "initENS($el, '{(addr:enjs:ff adr)}')");
+                ==
               ==
             ==
             ;*  ?.  =(our src):bol  ~

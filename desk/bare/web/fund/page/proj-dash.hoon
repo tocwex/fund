@@ -185,7 +185,7 @@
           ;div(class "flex-1 min-w-0 text-{(size:enjs:ff:fh (sum:si --1 syz))}"): {(trip tyt)}
           ;*  ?~  pro  ~
               :_  ~
-              ;div(class "bg-gray-100 rounded-lg p-0.5 line-clamp-2")
+              ;div(class "bg-gray-100 rounded-lg p-0.5")
                 ;+  %+  icon-stax:ui:fh  %rect
                         (turn ~[wok.u.pro ora.u.pro] ~(ship-logo fa bol))
               ==

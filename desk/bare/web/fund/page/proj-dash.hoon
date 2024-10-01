@@ -442,7 +442,7 @@
             =/  hel=tape  (trip !<(@t (slot:config %meta-help)))
             :~  ;div(class "flex flex-row gap-2 justify-start items-center")
                   ;h1: Discover
-                  ;button(type "button", x-init "initTippy($el)")
+                  ;button(type "button", x-init "initTippy($el, \{hover: true})")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
                   ;div(class "hidden")

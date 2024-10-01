@@ -67,19 +67,17 @@
   ++  surc                                       ::  s(hip) ur(l) c(ord) (url path)
     |=  sip=@p  ~+
     ^-  cord
-    (crip (surt sip))
+    (crip (surt +<))
   ++  esat                                       ::  e(ther)s(c)a(n) t(ape) (url path)
-    |=  [adr=addr cid=@ud]  ~+
+    |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  tape
-    =-  "https://{(trip -)}etherscan.io/address/{(addr:enjs adr)}"
-    ?+  cid        ''
-      %1           ''
-      %11.155.111  'sepolia.'
-    ==
+    =/  tyt=@t  ?-(typ %xact %tx, %addr %address)
+    =/  cit=@t  ?+(cid %$ %1 %$, %11.155.111 'sepolia.')
+    "https://{(trip cit)}etherscan.io/{(trip tyt)}/{(z-co:co hex)}"
   ++  esac                                       ::  e(ther)s(c)a(n) c(ord) (url path)
-    |=  [adr=addr cid=@ud]  ~+
+    |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  cord
-    (crip (esat adr cid))
+    (crip (esat +<))
   ++  colt                                       ::  col(or) t(ape) (url path)
     |=  clr=@t
     ^-  tape
@@ -87,7 +85,7 @@
   ++  colc                                       ::  col(or) c(ord) (url path)
     |=  clr=@t
     ^-  cord
-    (crip (colt clr))
+    (crip (colt +<))
 
 +|  %js
 ++  dejs                                       ::  js-tape => noun

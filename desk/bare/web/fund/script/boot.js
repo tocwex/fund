@@ -155,6 +155,25 @@ if (window.Alpine === undefined) {
             850: '#101010',
             900: '#000000',
           },
+          placeholder: { // TODO: Replace w/ Taylor's palette
+            100: '#ffffff',
+            150: '#f0f0f0',
+            200: '#e0e0e0',
+            250: '#d0d0d0',
+            300: '#c0c0c0',
+            350: '#b0b0b0',
+            400: '#a0a0a0',
+            450: '#909090',
+            500: '#808080',
+            550: '#707070',
+            600: '#606060',
+            650: '#505050',
+            700: '#404040',
+            750: '#303030',
+            800: '#202020',
+            850: '#101010',
+            900: '#000000',
+          },
         },
       },
     },
@@ -223,8 +242,8 @@ if (window.Alpine === undefined) {
       ['fund-butn-co-l', 'fund-butn-conn fund-butn-lorj'], // conn
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
-      ['fund-odit-ther', 'w-full rounded-md flex h-4 sm:h-8 text-primary-700'], // FIXME: text-primary-600
-      ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
+      ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-primary-700'],
+      ['fund-odit-sect', 'h-full flex rounded-lg'],
     ],
   });
 
@@ -338,6 +357,7 @@ if (window.Alpine === undefined) {
     copyText,
     swapHTML,
     openHREF,
+    scrollTo,
     sendFormData,
     sendForm,
     checkWallet,
@@ -408,6 +428,22 @@ if (window.Alpine === undefined) {
     if (tab) { link.setAttribute("target", "_blank"); }
     document.body.appendChild(link);
     link.click();
+  }
+
+  function scrollTo(anchor) {
+    const anchorElem = document.querySelector(`#${anchor}`);
+    if (anchorElem) {
+      const headHeight = document.querySelector("#fund-head")?.offsetHeight ?? 0;
+      const anchorTop = anchorElem.offsetTop;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      const anchorFloorDist = documentHeight - anchorTop - headHeight;
+      const screenHeight = window.screen.height;
+
+      // FIXME: Needs work when `headTop` is near `screenHeight`
+      location.hash = `#${anchor}`;
+      window.scrollBy(0, (screenHeight >= anchorFloorDist) ? 0 : -headHeight);
+    }
   }
 
   function sendForm(event, checks=[], action=Promise.resolve(undefined)) {
@@ -580,7 +616,10 @@ if (window.Alpine === undefined) {
     });
   }
 
-  function initTippy(elem, {dir=undefined} = {}) {
+  function initTippy(elem, {
+    dir=undefined, // String?
+    hover=false, // Bool
+  } = {}) {
     const optElem = elem.nextSibling;
     optElem.style.display = 'block';
     TippyJs(elem, {
@@ -588,10 +627,10 @@ if (window.Alpine === undefined) {
       allowHTML: true,
       interactive: true,
       arrow: false,
-      trigger: "click",
+      trigger: ["click", ...(!hover ? [] : ["mouseenter"])].join(" "),
       theme: "fund",
       offset: [0, 5],
-      ...(dir ? {} : {placement: dir}),
+      ...(!dir ? {} : {placement: dir}),
     });
   }
 

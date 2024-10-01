@@ -291,12 +291,14 @@
     ^-  manx
     =/  url=@t  url.request.ord
     =/  pat=(pole knot)  (slag:derl:ff url)
-    =/  bag=tape  "bg-gray-300 rounded-lg drop-shadow-xl sm:p-2 p-1"
+    =/  bag=tape  "bg-gray-300 rounded-lg drop-shadow-md sm:p-2 p-1"
     =/  bas=tape  "fund-butn-de-m w-full text-center"
     =/  xom=tape  "($store.page.size == 'mobile')"
     =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
-    ;nav  =x-data  "\{open: false}"
-        =class  "fund-head w-full sm:h-16 h-[3.25rem] overflow-visible flex p-2 gap-4"
+    ::  FIXME: Spacing on heights here for 'overflow-visible' are not perfect
+    ;nav#fund-head
+        =x-data  "\{open: false}"
+        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex p-2 gap-4"
       ;+  =/  las=tape  "shrink-0 sm:(h-14 px-3) h-11"
           ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
             ;a/"{(dest:enrl:ff (snip `(list knot)`pat))}"
@@ -396,7 +398,8 @@
     ::  NOTE: CSS trick for pushing footer to page bottom
     ::  https://stackoverflow.com/a/71444859
     ::  To hide on smaller devices: hidden lg:block
-    ;footer(class "top-[100vh] justify-center p-2 lg:flex lg:items-center lg:justify-between")
+    ;footer#fund-foot
+        =class  "top-[100vh] justify-center p-2 lg:flex lg:items-center lg:justify-between"
       ;div(class "text-center text-xs pt-1 lg:pt-0 lg:text-base")
         ;div(class "flex justify-center items-center lg:justify-start hover:underline")
           ;a/"https://tocwexsyndicate.com"(target "_blank"): crafted by ~tocwex.syndicate
@@ -409,7 +412,7 @@
         ;*  ?.  !<(bean (slot:config %debug))  ~
             :_  ~
             ;div(class "flex items-center")
-              ;button(type "button", x-init "initTippy($el)")
+              ;button(type "button", x-init "initTippy($el, \{hover: true})")
                 ;img.fund-butn-icon@"{(aset:enrl:ff %help)}";
               ==
               ;div(class "hidden")
@@ -469,7 +472,7 @@
     ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none tracking-widest"): {tyt}
-        ;button(type "button", x-init "initTippy($el)")
+        ;button(type "button", x-init "initTippy($el, \{hover: true})")
           ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
         ==
         ;div(class "hidden")
@@ -493,7 +496,7 @@
           ==
           ;div(class "inline-flex items-center gap-1")
             ;*  ?:  =(0x0 adr)  :_  ~  ;p: {nun}
-                :~  ;a/"{(esat:enrl:ff adr cid)}"
+                :~  ;a/"{(esat:enrl:ff %addr adr cid)}"
                         =target  "_blank"
                         =class  "fund-addr hover:text-link"
                         =x-init  "initENS($el, '{(addr:enjs:ff adr)}')";
@@ -510,9 +513,11 @@
               ;+  (copy-butn (bloq:enjs:ff `@`sip))
             ==
             ;div(class "inline-flex gap-1")
-               ;*  ?:  |(!=(our src):bol =(sip src.bol))  ~
-               :_  ~
-               ;a.fund-butn-ac-s/"{(chat:enrl:ff sip)}"(target "_blank"): 💬
+              ;*  ?:  |(!=(our src):bol =(sip src.bol))  ~
+                  :_  ~
+                  ;a/"{(chat:enrl:ff sip)}"(target "_blank")
+                    ;img.fund-butn-icon@"{(aset:enrl:ff %chat)}";
+                  ==
             ==
           ==
         ==
@@ -595,8 +600,10 @@
         ;div(class "w-full min-w-0 flex-1 flex flex-row gap-1")
           ;*  %+  turn  (enum:fx ~(odim pj pro))
               |=  [min=@ mod=odit]
-              %-  ~(mile-ther ..$ ?:(big ~ "sm:h-4"))
-              [mod ?.(big ~ "Milestone {<+(min)>}")]
+              ;div  =class  "w-full min-w-0 flex-1 hover:cursor-pointer"
+                  =x-on-click  "scrollTo('fund-mile-{<min>}')"
+                ;+  (mile-ther mod ?.(big ~ "Milestone {<+(min)>}") big)
+              ==
         ==
         ;*  ?.  big  ~
             :_  ~
@@ -610,7 +617,8 @@
               ==
             ==
       ==
-      ;+  ?.  big  ;h6: {cen}% funded
+      ;*  ?.  big  ~
+          :_  ~
           %+  cash-bump
             ;span(class "inline-flex gap-1")
               ; {cen}% raised
@@ -667,7 +675,7 @@
                   [%data-chain (bloq:enjs:ff chain.swa)]
                   [%data-image (aset:enrl:ff symbol.swa)]
                   ::  FIXME: Should handle %chip case more elegantly
-                  [%data-href (esat:enrl:ff addr.swa chain.swa)]
+                  [%data-href (esat:enrl:ff %addr addr.swa chain.swa)]
               ==
         ==
         ;select(name "tok", required ~, x-init iut, x-model mod, x-ref tid, x-on-change xoc);
@@ -692,7 +700,7 @@
       ==
     ==
   ++  mile-ther                                  ::  milestone funding thermometer
-    |=  [odi=odit tyt=tape]
+    |=  [odi=odit tyt=tape big=bean]
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
     |^  =+  [udr ovr]=(need void:(filo:fk odi))
@@ -706,20 +714,28 @@
           =+  pej=?:((lte pre pos) pre pos)
           ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
-        =+  kaz=`(list tape)`~["bg-tertiary-500" "bg-tertiary-300" ?:(udr "bg-primary-250" "bg-tertiary-700")]
+        =/  kaz=(list tape)
+          =+  qaz=[con="tertiary-500" pej="tertiary-300" ovr=?:(udr "primary-250" "tertiary-700")]
+          :~  "bg-{con.qaz} border-{con.qaz}"
+              "bg-{pej.qaz} border-{ovr.qaz}"
+              "bg-{ovr.qaz} border-{ovr.qaz}"
+          ==
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
         =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (curr perc:fx tot)))
-        =+  dez=(iron (turn cez cend))
-        ;div(class "fund-odit-ther relative {cas}")
+        =/  dez=(list @ud)
+          =<  -  %^  spin  (iron (turn cez cend))  0
+          |=([nex=@ud acc=@ud] =-([- -] (add nex acc)))
+        ;div(class "fund-odit-ther relative {(trip ?:(big ~ 'sm:h-4'))} {cas}")
           ;div(class "h-full w-full flex relative")
-            ;*  %+  murn  :(izip:fx caz naz kaz cez dez)
+            ;*  %+  murn  (flop :(izip:fx caz naz kaz cez dez))
                 |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
                 ^-  (unit manx)
+                =/  qas=tape  ?.(big "border-2" "border-0 sm:rounded-md")
                 ?:  =(0 den)  ~
                 :-  ~
                 ;div  =title  "{(real:enjs:ff cen)}% {nam}"
-                  =class  "fund-odit-sect w-[{<den>}%] {kas}";
+                  =class  "fund-odit-sect absolute left-0 w-[{<den>}%] {qas} {kas}";
           ==
           ;*  ?~  tyt  ~
               :_  ~

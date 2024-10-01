@@ -236,7 +236,7 @@
       =/  bas=tape  ?.(top "w-full" "fund-butn-lorj")
       =/  kas=tape
         ?.  top  "flex-col gap-3 fund-foot bg-gray-100 p-3"
-        "flex-row justify-between bg-gray-300 rounded-lg drop-shadow-xl p-2"
+        "flex-row justify-between bg-gray-300 rounded-lg drop-shadow-md p-2"
       ;div
           =class  "w-full flex {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
@@ -370,7 +370,7 @@
                 ~
             ;:    welp
             ::  explain button  ::
-              :~  ;button(type "button", x-init "initTippy($el)")
+              :~  ;button(type "button", x-init "initTippy($el, \{hover: true})")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
                   ;div(class "hidden")
@@ -462,7 +462,7 @@
             ::  contract link button  ::
                 ?:  ?=(?(%born %prop) sat)  ~
               :_  ~
-              ;a/"{(esat:enrl:ff:fh safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
+              ;a/"{(esat:enrl:ff:fh %addr safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
               ==
             ==
@@ -498,7 +498,7 @@
                 ==
           ==
         ==
-        ;+  (proj-ther:ui:fh pro &)
+        ;+  (proj-ther:ui:fh pro big=&)
       ==
       ;div(class "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8")
         ;div(class "sm:col-span-1 lg:col-span-2 flex flex-col gap-1")
@@ -512,12 +512,25 @@
                 |=  [min=@ mil=mile:f]
                 ^-  manx
                 =/  oil=odit:f  (snag min moz)
-                ;form  =method  "post"
+                ;form  =id  "fund-mile-{<min>}"  =method  "post"
                     =x-data  "\{ mile_idex: {<min>} }"
-                    =class  "fund-card flex flex-col gap-2 px-2 py-4 lg:px-4 lg:py-6"
+                    =class  "fund-card flex flex-col gap-2 px-2 py-4 lg:(px-4 py-6)"
                   ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
-                  ;+  %^  work-tytl:ui:fh  (trip title.mil)  status.mil
-                      ;span: {(swam:enjs:ff:fh cost.mil payment.pro)}
+                  ;div(class "flex items-start justify-between flex-wrap lg:flex-nowrap")
+                    ;h1(class "text-4xl shrink"): {(trip title.mil)}
+                    ;div  =class  "flex flex-col p-1 rounded-md hover:(bg-primary-550 cursor-pointer)"
+                        =x-init  "initTippy($el, \{hover: true, dir: 'bottom'})"
+                      ;+  %+  work-bump:ui:fh  status.mil
+                          ;span: {(swam:enjs:ff:fh cost.mil payment.pro)}
+                      ;+  (mile-ther:ui:fh oil ~ big=|)
+                    ==
+                    ;div(class "hidden")
+                      ;span.font-bold: {(swam:enjs:ff:fh fill.oil payment.pro)}
+                      ;span:  contributed /
+                      ;span.font-bold:  {(swam:enjs:ff:fh plej.oil payment.pro)}
+                      ;span:  pledged
+                    ==
+                  ==
                   ;+  (mark-well:ui:fh (trip summary.mil) %togl)
                   ;*  =-  ?~  buz  ~
                           :_  ~
@@ -600,7 +613,7 @@
           ==
           ;div(class "flex flex-col gap-2")
             ;div(class "flex flex-row justify-between items-center")
-              ;h1: Transactions
+              ;h1: Funders
               ;div(class "flex flex-wrap items-center gap-1")
                 ;*  =-  :~  (icon-stax:ui:fh %rect (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
                             ;h6: {<~(wyt in siz)>} total
@@ -636,7 +649,13 @@
                   ;div(class "flex flex-wrap items-center justify-between")
                     ;div(class "flex items-center gap-x-2")
                       ;*  =-  :~  (icon-logo:ui:fh %rect url)
-                                  ;h5(x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")): {txt}
+                                  ::  TODO: Needs major cleanup
+                                  ;a  =href  ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej (chat:enrl:ff:fh p.lag))
+                                      =target  "_blank"
+                                      =class  "fund-addr hover:text-link"
+                                      =x-init  ?+(-.mul ~ %pruf "initENS($el, '{muf}')")
+                                    {txt}
+                                  ==
                               ==
                           ^-  [url=tape txt=tape]
                           ?-  -.mul
@@ -653,9 +672,9 @@
                     ==
                     ;div(class "flex items-center gap-x-2")
                       ;p(class "font-serif leading-tight"): {(swam:enjs:ff:fh cash.mul payment.pro)}
-                      ;+  =-  ;div(class "fund-pill text-{klr} border-{klr}"): {nam}
-                          ^-  [nam=tape klr=tape]
-                          ?-  -.mul
+                      ;+  =-  ;div(class "fund-pill text-{klr} border-{klr}"): {tyt}
+                          ^-  [tyt=tape klr=tape]
+                          ?-    -.mul
                               %plej
                             =+  pej=(~(got by pledges.pro) ship.mul)
                             ?-  view.pej
@@ -677,7 +696,7 @@
                           ::
                               %pruf
                             ?-  note.mul
-                              %depo  ["confirmed" "blue-500"]
+                              %depo  ["deposited" "blue-500"]
                               %with  ["withdrawn" "red-500"]
                             ==
                           ==

@@ -790,7 +790,7 @@ if (window.Alpine === undefined) {
     chains: [mainnet, sepolia],
     connectors: [injected()],
     transports: {
-      [mainnet.id]: http(NETWORK.RPC.MAINNET),
+      [mainnet.id]: http(NETWORK.RPC.ETHEREUM),
       [sepolia.id]: http(NETWORK.RPC.SEPOLIA),
     },
   });

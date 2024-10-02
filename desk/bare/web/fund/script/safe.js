@@ -114,9 +114,9 @@ export const safeGetTransfers = async ({fundToken, safeAddress, safeInitBlock, d
     eventName: "Transfer",
     args: {to: safeAddress},
     fromBlock: BigInt(safeInitBlock),
-    // toBlock: "safe",
+    toBlock: "latest",
   });
-  const filteredTransferLogs = transferLogs.filter(({args: {from, to, tokenId}}) => (
+  const filteredTransferLogs = transferLogs.filter(({args: {from, to}}) => (
     (dirFilter === "with") ? (from === safeAddress)
     : (dirFilter === "depo") ? (to === safeAddress)
     : true

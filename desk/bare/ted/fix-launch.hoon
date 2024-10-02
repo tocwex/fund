@@ -57,8 +57,7 @@
     %+  poke:io  [our.bol %fund-watcher]
     :-  %fund-watcher-poke  !>
     :+  %watch  pat
-    ::  rpc.xet
-    :*  url='https://eth-sepolia.g.alchemy.com/v2/2REEEAS1ybfyfHR34wBDFCIHCSXJtdfE'
+    :*  url=rpc.xet
         eager=|  refresh-rate=~m1  timeout-time=~s10
         from=boq  to=~
         contracts=[con]~  confirms=~  topics=~

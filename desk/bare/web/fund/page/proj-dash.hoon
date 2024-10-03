@@ -161,16 +161,16 @@
         "https://placehold.co/24x24/lightgray/gray?text=?"
       ::  FIXME: This should really be 'button,' but that introduces problems with CSS
       ;div  =type  "button"
-          =class  "flex flex-col gap-2 font-serif hover:cursor-pointer {cas}"
+          =class  "flex flex-col gap-2 hover:cursor-pointer {cas}"
           =x-on-click  xoc
-        ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
+        ;div(class "font-serif bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
           ;*  ?~  pro  ~
               :_  ~
               ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
-                ;div(class "bg-gray-100 rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
+                ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
                   ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
                 ==
-                ;div(class "bg-gray-100 rounded-md p-0.5")
+                ;div(class "bg-palette-background rounded-md p-0.5")
                   ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
                       :~  (aset:enrl:ff:fh symbol.swa.u.pro)
                           (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
@@ -182,10 +182,12 @@
             ?~  hed.u.pro  ~
             :_  ~  u.hed.u.pro
         ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
-          ;div(class "flex-1 min-w-0 text-{(size:enjs:ff:fh (sum:si --1 syz))}"): {(trip tyt)}
+          ;div(class "font-semibold flex-1 min-w-0 line-clamp-2 text-{(size:enjs:ff:fh (sum:si --1 syz))}")
+            ; {(trip tyt)}
+          ==
           ;*  ?~  pro  ~
               :_  ~
-              ;div(class "bg-gray-100 rounded-lg p-0.5")
+              ;div(class "bg-white rounded-lg p-0.5")
                 ;+  %+  icon-stax:ui:fh  %rect
                         (turn ~[wok.u.pro ora.u.pro] ~(ship-logo fa bol))
               ==
@@ -242,19 +244,19 @@
       |=  top=bean
       ^-  manx
       =/  kas=tape
-        ?.  top  "flex-col-reverse bg-gray-100 fund-foot p-3"
-        "flex-col bg-gray-300 rounded-lg drop-shadow-xl p-2"
+        ?.  top  "flex-col-reverse bg-white fund-foot p-3"
+        "flex-col bg-palette-contrast rounded-lg drop-shadow-lg p-2"
       =/  syk=manx
         ;div(class "w-full flex-1 flex flex-row gap-4")
           ;div(class "w-full flex-1 flex flex-row gap-1")
             ;+  :_  ~  :-  %input
                 :~  [%type "text"]
-                    [%placeholder "Search projects"]
+                    [%placeholder "Search projects…"]
                     [%class "p-1 flex-1 min-w-0"]
                     [%x-model "filt_status.params.text"]
                     [%'x-on:keyup.enter' "tray_status.open && submitQuery()"]
                 ==
-            ;button.fund-butn-de-m(type "button", x-on-click "submitQuery")
+            ;button.fund-butn-ac-m(type "button", x-on-click "submitQuery")
               ;img@"{(aset:enrl:ff:fh %search)}";
             ==
           ==
@@ -270,14 +272,14 @@
               ==
         ==
       ;div
-          =class  "font-serif w-full flex gap-3 {kas} {cas}"
+          =class  "w-full flex gap-3 {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
         ;div(class "w-full flex flex-row gap-2 {(trip ?:(top '' 'justify-center'))}")
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
               |=  mod=@tas
               ^-  manx
               =+  [cas="px-3 py-2 rounded-md" cis=?:(top "w-6" "w-8")]
-              =+  kas=?.(=(dyp mod) ~ "bg-gray-400")
+              =+  kas=?.(=(dyp mod) ~ "bg-palette-background")
               ?.  ?=(%controls mod)
                 ;a/"{(dest:enrl:ff:fh /dashboard/[mod])}"(class "{cas} {kas}")
                   ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
@@ -431,7 +433,7 @@
             ==
           ?+    dyp  !!
               %following
-            :~  ;h1: Following
+            :~  ;h1-alt: Following
                   ?~  paz=(turn pyz proj-card:ui)  wax
                 ;div(class pas)
                   ;*  paz
@@ -441,7 +443,7 @@
               %discover
             =/  hel=tape  (trip !<(@t (slot:config %meta-help)))
             :~  ;div(class "flex flex-row gap-2 justify-start items-center")
-                  ;h1: Discover
+                  ;h1-alt: Discover
                   ;button(type "button", x-init "initTippy($el, \{hover: true})")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
@@ -481,7 +483,7 @@
                       (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
                   ==
               ==
-            :~  ;h1: My Actions
+            :~  ;h1-alt: My Actions
                 ;div(class "flex flex-col gap-4")
                   ;div                               ::  my $prez
                     ;h2: My Open Projects

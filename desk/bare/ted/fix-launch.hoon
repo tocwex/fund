@@ -3,9 +3,8 @@
 ::
 ::    -fund!fix-launch %proj-name %ethereum '0xabcd…1234'
 ::
-::  this thread takes a while to run (~25 seconds) and can be a bit
-::  fickle; try running it a couple of times if it comes back with
-::  "unable to read/find" errors
+::  this thread takes a while to run (~60 seconds) and can be a bit
+::  fickle; try running it 3 times if it comes back with errors
 ::
 /-  spider, fund-watcher, f=fund
 /+  ethereum, io=strandio, fc=fund-chain
@@ -58,11 +57,11 @@
     :-  %fund-watcher-poke  !>
     :+  %watch  pat
     :*  url=rpc.xet
-        eager=|  refresh-rate=~m1  timeout-time=~s10
+        eager=|  refresh-rate=~m1  timeout-time=~s30
         from=boq  to=~
         contracts=[con]~  confirms=~  topics=~
     ==
-  ;<  ~  bind:m  (sleep:io ~s10)
+  ;<  ~  bind:m  (sleep:io ~s30)
   ;<  ~  bind:m  (watch-our:io sat %fund-watcher [%logs pat])
   ;<  caj=cage  bind:m  (take-fact:io sat)
   =+  !<(dif=diff:fund-watcher q.caj)

@@ -235,8 +235,8 @@
       ^-  manx
       =/  bas=tape  ?.(top "w-full" "fund-butn-lorj")
       =/  kas=tape
-        ?.  top  "flex-col gap-3 fund-foot bg-gray-100 p-3"
-        "flex-row justify-between bg-gray-300 rounded-lg drop-shadow-md p-2"
+        ?.  top  "flex-col gap-3 fund-foot bg-white p-3"
+        "flex-row justify-between bg-palette-contrast rounded-lg drop-shadow-lg p-2"
       ;div
           =class  "w-full flex {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
@@ -475,23 +475,25 @@
   ;div(x-data "proj_view")
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col p-2 gap-1 min-h-[100vh]")
+    ::
+    ;div(class "flex flex-col p-2 gap-3 min-h-[100vh]")
       ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
-      ::  ;+  %^  work-tytl:ui:fh  (trip title.pro)  sat
-      ::      ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
-      ;h1(class "text-4xl"): {(trip title.pro)}
+      ;h1(class "fund-title"): {(trip title.pro)}
       ;+  =/  irl=tape  (trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))
           ;div(class "w-full aspect-square bg-cover bg-center rounded-md bg-[url('{irl}')]")
             ;div(class "flex flex-row flex-wrap justify-end p-4")
-              ;+  %+  ~(work-bump ui:fh "p-2 rounded-md bg-gray-100")  sat
+              ;+  %+  ~(work-bump ui:fh "p-2 fund-card")  sat
                   ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
             ==
           ==
-      ;div(class "flex flex-col gap-1")
+      ;div(class "flex flex-col gap-2")
         ;div(class "flex flex-row justify-between items-center")
-          ;h1: Funding Tracker
+          ;h1-alt: Funding Tracker
           ;div(class "flex flex-wrap gap-1 items-center")
-            ;h6(class "leading-none tracking-widest"): Funded via
+            ;h6(class "inline-flex gap-1 leading-none tracking-widest")
+              ;span(class "hidden sm:block"): Funded
+              ;span: via
+            ==
             ;+  %+  icon-stax:ui:fh  %circ
                 :~  (aset:enrl:ff:fh symbol.payment.pro)
                     (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pro))
@@ -500,27 +502,27 @@
         ==
         ;+  (proj-ther:ui:fh pro big=&)
       ==
-      ;div(class "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8")
-        ;div(class "sm:col-span-1 lg:col-span-2 flex flex-col gap-1")
-          ;div(class "flex flex-col gap-1")
-            ;h1: Project Overview
+      ;div(class "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3")
+        ;div(class "sm:col-span-1 lg:col-span-2 flex flex-col gap-3")
+          ;div(class "flex flex-col gap-2")
+            ;h1-alt: Project Overview
             ;+  (mark-well:ui:fh (trip summary.pro) %togl)
           ==
           ;div(class "flex flex-col gap-2")
-            ;h1: Milestone Details
+            ;h1-alt: Milestone Details
             ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
                 |=  [min=@ mil=mile:f]
                 ^-  manx
                 =/  oil=odit:f  (snag min moz)
                 ;form  =id  "fund-mile-{<min>}"  =method  "post"
                     =x-data  "\{ mile_idex: {<min>} }"
-                    =class  "fund-card flex flex-col gap-2 px-2 py-4 lg:(px-4 py-6)"
-                  ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
+                    =class  "fund-card flex flex-col gap-2 lg:(px-4 py-4)"
+                  ;h6: Milestone {<+(min)>}
                   ;div(class "flex items-start justify-between flex-wrap lg:flex-nowrap")
-                    ;h1(class "text-4xl shrink"): {(trip title.mil)}
-                    ;div  =class  "flex flex-col p-1 rounded-md hover:(bg-primary-550 cursor-pointer)"
-                        =x-init  "initTippy($el, \{hover: true, dir: 'bottom'})"
-                      ;+  %+  work-bump:ui:fh  status.mil
+                    ;h1(class "fund-title shrink"): {(trip title.mil)}
+                    ;div  =x-init  "initTippy($el, \{hover: true, dir: 'bottom'})"
+                        =class  "w-full lg:w-min flex flex-col gap-2 p-1 rounded-md hover:cursor-pointer"
+                      ;+  %+  ~(work-bump ui:fh "w-full justify-between lg:w-min")  status.mil
                           ;span: {(swam:enjs:ff:fh cost.mil payment.pro)}
                       ;+  (mile-ther:ui:fh oil ~ big=|)
                     ==
@@ -599,9 +601,9 @@
                 ==
           ==
         ==
-        ;div(class "col-span-1 flex flex-col gap-1")
+        ;div(class "col-span-1 flex flex-col gap-3")
           ;div(class "flex flex-col gap-2")
-            ;h1(class "sm:hidden"): Participants
+            ;h1-alt(class "sm:hidden"): Participants
             ;+  %:  ship-card:ui:fh
                     p.lag  bol  %work
                     chain.payment.pro  ?~(contract.pro 0x0 work.u.contract.pro)
@@ -613,7 +615,7 @@
           ==
           ;div(class "flex flex-col gap-2")
             ;div(class "flex flex-row justify-between items-center")
-              ;h1: Funders
+              ;h1-alt: Funders
               ;div(class "flex flex-wrap items-center gap-1")
                 ;*  =-  :~  (icon-stax:ui:fh %rect (scag 3 (turn ~(tap in siz) surt:enrl:ff:fh)))
                             ;h6: {<~(wyt in siz)>} total
@@ -652,7 +654,7 @@
                                   ::  TODO: Needs major cleanup
                                   ;a  =href  ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej (chat:enrl:ff:fh p.lag))
                                       =target  "_blank"
-                                      =class  "fund-addr hover:text-link"
+                                      =class  "fund-addr hover:text-link text-black"
                                       =x-init  ?+(-.mul ~ %pruf "initENS($el, '{muf}')")
                                     {txt}
                                   ==
@@ -671,22 +673,23 @@
                           ==
                     ==
                     ;div(class "flex items-center gap-x-2")
-                      ;p(class "font-serif leading-tight"): {(swam:enjs:ff:fh cash.mul payment.pro)}
-                      ;+  =-  ;div(class "fund-pill text-{klr} border-{klr}"): {tyt}
-                          ^-  [tyt=tape klr=tape]
+                      ;p(class "font-serif text-black"): {(swam:enjs:ff:fh cash.mul payment.pro)}
+                      ;+  =-  ;div(class "fund-pill text-{txt.klr} bg-{bak.klr} border-{bor.klr}"): {tyt}
+                          ^-  [tyt=tape klr=[txt=tape bak=tape bor=tape]]
                           ?-    -.mul
                               %plej
                             =+  pej=(~(got by pledges.pro) ship.mul)
+                            ::  FIXME: Add contrast for the "welched" and "forgiven" pill types
                             ?-  view.pej
-                              ~          ["pledged" "yellow-500"]
-                              [~ %stif]  ["welched" "yellow-600"]
-                              [~ %slyd]  ["forgiven" "yellow-400"]
+                              ~          ["pledged" "black" "palette-secondary" "palette-background"]
+                              [~ %stif]  ["welched" "black" "palette-secondary" "palette-background"]
+                              [~ %slyd]  ["forgiven" "black" "palette-secondary" "palette-background"]
                             ==
                           ::
                               %trib
                             =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
-                            ?~  pruf.teb  ["attested" "green-400"]
-                            =-  ["{-}verified" "green-600"]
+                            ?~  pruf.teb  ["confirmed" "black" "white" "palette-primary"]
+                            =-  ["{-}verified" "palette-secondary" "palette-primary" "palette-primary"]
                             ?~  ship.teb  ~
                             =-  ?~(- ~ "✔️ ")
                             .^  pro=(unit sigm:f)
@@ -696,8 +699,8 @@
                           ::
                               %pruf
                             ?-  note.mul
-                              %depo  ["deposited" "blue-500"]
-                              %with  ["withdrawn" "red-500"]
+                              %depo  ["deposited" "black" "palette-background" "palette-primary"]
+                              %with  ["withdrawn" "black" "palette-background" "palette-secondary"]
                             ==
                           ==
                     ==
@@ -726,7 +729,12 @@
                       ^-  buz=marl
                       ;:    welp
                       ::  chain data claim button  ::
-                          ?.  &((auth:fh bol) ?=(%pruf -.mul) ?=(%depo note.mul))  ~
+                          ?.  ?&  (auth:fh bol)
+                                  ?=(%pruf -.mul)
+                                  ?=(%depo note.mul)
+                                  !?=(?(%done %dead) sat)
+                              ==
+                          ~
                         :_  ~
                         ;form  =method  "post"
                             =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"

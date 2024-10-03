@@ -23,6 +23,13 @@ import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
 
 if (window.Alpine === undefined) {
+  const PALETTE = {
+    primary: '#545557',
+    secondary: '#dedfe0',
+    label: '#4a4b4c',
+    background: '#f0f0f1',
+    contrast: '#dedfe0',
+  };
   twind.install({
     presets: [
       presetTwind(),
@@ -41,6 +48,9 @@ if (window.Alpine === undefined) {
           '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
         },
         colors: {
+          // new style
+          palette: PALETTE,
+          // old style
           primary: {
             100: '#fdfdfd',
             150: '#fafafa',
@@ -136,44 +146,6 @@ if (window.Alpine === undefined) {
             850: '#111b14',
             900: '#090d0a',
           },
-          gray: {
-            100: '#ffffff',
-            150: '#f0f0f0',
-            200: '#e0e0e0',
-            250: '#d0d0d0',
-            300: '#c0c0c0',
-            350: '#b0b0b0',
-            400: '#a0a0a0',
-            450: '#909090',
-            500: '#808080',
-            550: '#707070',
-            600: '#606060',
-            650: '#505050',
-            700: '#404040',
-            750: '#303030',
-            800: '#202020',
-            850: '#101010',
-            900: '#000000',
-          },
-          placeholder: { // TODO: Replace w/ Taylor's palette
-            100: '#ffffff',
-            150: '#f0f0f0',
-            200: '#e0e0e0',
-            250: '#d0d0d0',
-            300: '#c0c0c0',
-            350: '#b0b0b0',
-            400: '#a0a0a0',
-            450: '#909090',
-            500: '#808080',
-            550: '#707070',
-            600: '#606060',
-            650: '#505050',
-            700: '#404040',
-            750: '#303030',
-            800: '#202020',
-            850: '#101010',
-            900: '#000000',
-          },
         },
       },
     },
@@ -183,12 +155,14 @@ if (window.Alpine === undefined) {
       form { margin: unset; }
       h1, h2, h3, h4 { @apply font-serif; }
       h5, h6 { @apply font-sans; }
-      h1 { @apply text-3xl; }
-      h2 { @apply text-2xl; }
-      h3 { @apply text-xl; }
-      h4 { @apply text-lg; }
-      h5 { @apply font-medium text-md; }
-      h6 { @apply font-medium text-xs uppercase; }
+      h1 { @apply text-xl sm:text-3xl; }
+      h2 { @apply text-lg sm:text-2xl; }
+      h3 { @apply text-base sm:text-xl; }
+      h4 { @apply text-base sm:text-lg; }
+      h5 { @apply font-light text-sm sm:(font-medium text-base); }
+      h6 { @apply font-light uppercase text-sm sm:font-medium; }
+      h1-alt { @apply font-serif text-palette-contrast text-xl sm:text-3xl; }
+      hr { @apply border-0 h-px bg-black; }
       select { padding: unset; @apply fund-select; }
       textarea,input { padding: unset; @apply fund-input; }
       label { @apply font-light; }
@@ -200,46 +174,55 @@ if (window.Alpine === undefined) {
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
+      // FIXME: It would be great if this could be specified purely in
+      // tailwind syntax
+      ['primary-gradient', {'background': `
+        repeating-linear-gradient(-45deg,
+          ${PALETTE.label}, ${PALETTE.label} 10px,
+          ${PALETTE.primary} 10px, ${PALETTE.primary} 20px)
+      `}],
+      ['secondary-gradient', {'background': `
+        repeating-linear-gradient(-45deg,
+          ${PALETTE.label}, ${PALETTE.label} 10px,
+          ${PALETTE.secondary} 10px, ${PALETTE.secondary} 20px)
+      `}],
       ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
-      ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
+      ['fund-pill', 'text-nowrap font-medium px-3 py-1 border-[3px] rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
-      ['fund-head', 'sticky z-50 top-0'],
+      ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-black/50 disabled:bg-gray-500'],
+      ['fund-head', 'sticky z-40 top-0'],
       ['fund-foot', 'sticky z-40 bottom-0'],
-      ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
-      ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
-      ['fund-warn', 'italics mx-4 text-gray-600'],
+      ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
+      ['fund-card', 'bg-palette-contrast rounded-md px-3 py-2 border-[3px] border-palette-contrast'],
+      ['fund-warn', 'italic mx-4'],
       ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
-      ['fund-input', 'fund-select read-only:(bg-gray-400)'],
+      ['fund-input', 'fund-select read-only:bg-gray-500'],
+      ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
-      ['fund-butn-icon', 'p-1 max-w-none rounded-md text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
+      ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary hover:bg-palette-background'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
       //  FIXME: These classes should use 'hover:enabled' to stop
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
-      ['fund-butn-default', 'bg-primary-100 border-secondary-500 text-secondary-500 hover:(bg-primary-250 border-secondary-500 text-secondary-500 shadow) active:(bg-primary-200 border-secondary-400 text-secondary-450 shadow) disabled:(bg-primary-550 border-primary-800 text-primary-750)'],
-      ['fund-butn-action', 'bg-secondary-500 border-secondary-550 text-primary-100 hover:(bg-secondary-450 border-secondary-400 text-primary-100 shadow) active:(bg-secondary-450 border-secondary-350 text-primary-100 shadow) disabled:(bg-gray-500 border-gray-350 text-gray-200)'],
-      ['fund-butn-true', 'bg-highlight2-500 border-highlight2-550 text-primary-100 hover:(bg-highlight2-550 border-highlight2-500 text-primary-100 shadow) active:(bg-highlight2-550 border-highlight2-450 text-primary-100 shadow) disabled:(bg-highlight2-650 border-highlight2-550 text-highlight2-450)'],
-      ['fund-butn-false', 'bg-highlight1-500 border-highlight1-550 text-primary-100 hover:(bg-highlight1-550 border-highlight1-500 text-primary-100 shadow) active:(bg-highlight1-550 border-highlight1-450 text-primary-100 shadow) disabled:(bg-highlight1-650 border-highlight1-550 text-highlight1-450)'],
-      ['fund-butn-conn', 'bg-tertiary-500 border-tertiary-550 text-primary-100 hover:(bg-tertiary-550 border-tertiary-500 text-primary-100 shadow) active:(bg-tertiary-550 border-tertiary-450 text-primary-100 shadow) disabled:(bg-tertiary-650 border-tertiary-550 text-tertiary-450)'],
+      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(primary-gradient border-black text-black shadow-none)'],
+      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(secondary-gradient border-black text-black shadow-none)'],
+      // ['fund-butn-true', 'fund-butn-default'],
+      // ['fund-butn-false', 'fund-butn-action'],
       ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
       ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
-      ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
-      ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
-      ['fund-butn-co-s', 'fund-butn-conn fund-butn-smol'], // conn
+      ['fund-butn-tr-s', 'fund-butn-default fund-butn-smol'], // true
+      ['fund-butn-fa-s', 'fund-butn-action fund-butn-smol'], // false
       ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
       ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
-      ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
-      ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
-      ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
+      ['fund-butn-tr-m', 'fund-butn-default fund-butn-medi'], // true
+      ['fund-butn-fa-m', 'fund-butn-action fund-butn-medi'], // false
       ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
       ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
-      ['fund-butn-tr-l', 'fund-butn-true fund-butn-lorj'], // true
-      ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
-      ['fund-butn-co-l', 'fund-butn-conn fund-butn-lorj'], // conn
+      ['fund-butn-tr-l', 'fund-butn-default fund-butn-lorj'], // true
+      ['fund-butn-fa-l', 'fund-butn-action fund-butn-lorj'], // false
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
       ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-primary-700'],

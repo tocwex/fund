@@ -291,14 +291,14 @@
     ^-  manx
     =/  url=@t  url.request.ord
     =/  pat=(pole knot)  (slag:derl:ff url)
-    =/  bag=tape  "bg-gray-300 rounded-lg drop-shadow-md sm:p-2 p-1"
+    =/  bag=tape  "bg-palette-contrast rounded-lg drop-shadow-lg sm:p-2 p-1"
     =/  bas=tape  "fund-butn-de-m w-full text-center"
     =/  xom=tape  "($store.page.size == 'mobile')"
     =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
     ::  FIXME: Spacing on heights here for 'overflow-visible' are not perfect
     ;nav#fund-head
         =x-data  "\{open: false}"
-        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex p-2 gap-4"
+        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex px-0 py-2 gap-1 sm:(px-2 gap-4)"
       ;+  =/  las=tape  "shrink-0 sm:(h-14 px-3) h-11"
           ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
             ;a/"{(dest:enrl:ff (snip `(list knot)`pat))}"
@@ -333,7 +333,7 @@
                     ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
                   ==
                 ==
-            ;div(class "shrink-0 fund-butn-co-m", x-text "$store.wallet.status");
+            ;div(class "shrink-0 fund-butn-de-l", x-text "$store.wallet.status");
           ==
           ;div(class "flex flex-col gap-2", x-show "open")
             ;div  ::  current wallet section
@@ -360,7 +360,7 @@
                 ==
                 ::  ;button(type "button", x-on-click "switchChain", class bas): switch chain
                 ::  ;button(type "button", x-on-click "switchWallet", class bas): switch wallet
-                ;button(type "button", x-on-click "toggleWallet", class bas): disconnect
+                ;button(type "button", x-on-click "toggleWallet", class bas): disconnect ✗
               ==
             ==
             ;hr;  ::  known wallets section
@@ -469,9 +469,9 @@
             '''
         ==
       ==
-    ;div(class "flex flex-col p-3 rounded-md border-2 border-secondary-450 gap-1")
+    ;div(class "fund-card flex flex-col gap-1 text-black")
       ;div(class "inline-flex gap-1 items-center")
-        ;h6(class "leading-none tracking-widest"): {tyt}
+        ;h6(class "leading-none"): {tyt}
         ;button(type "button", x-init "initTippy($el, \{hover: true})")
           ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
         ==
@@ -608,11 +608,11 @@
         ;*  ?.  big  ~
             :_  ~
             ;div(class "hidden sm:(flex flex-row gap-2)")
-              ;h3(class "text-tertiary-500 tracking-tight font-bold")
+              ;h3.text-palette-primary.font-medium
                 ; {(swam:enjs:ff fill.pod payment.pro)}
               ==
-              ;h3(class "text-tertiary-400 tracking-tight"): /
-              ;h3(class "text-tertiary-400 tracking-tight")
+              ;h3.text-palette-secondary: /
+              ;h3.text-palette-secondary
                 ; {(swam:enjs:ff plej.pod payment.pro)}
               ==
             ==
@@ -638,7 +638,7 @@
     ;div(class cas, x-data ~)
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
       ::  in the filter UI
-      ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
+      ;div(class "fund-form-group col-span-1 {?.(emt ~ (trip %p-0))}")
         ;select(name "can", required ~, x-init its, x-ref cid, x-on-change uts)
           ;*  =+  can=?~(swa id:(~(got by xmap:fc) %ethereum) chain.u.swa)
               %+  welp
@@ -660,7 +660,7 @@
       ==
       ::  FIXME: This is a hack to make the 'selz' use uniform padding
       ::  in the filter UI
-      ;div(class "fund-form-group {?.(emt ~ (trip %p-0))}")
+      ;div(class "fund-form-group col-span-1 {?.(emt ~ (trip %p-0))}")
         ;select#proj-token-options.hidden(required ~)
           ;*  %+  welp
                 ?.  emt  ~
@@ -715,7 +715,7 @@
           ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =/  kaz=(list tape)
-          =+  qaz=[con="tertiary-500" pej="tertiary-300" ovr=?:(udr "primary-250" "tertiary-700")]
+          =+  qaz=[con="palette-primary" pej="palette-secondary" ovr=?:(udr "white" "black")]
           :~  "bg-{con.qaz} border-{con.qaz}"
               "bg-{pej.qaz} border-{ovr.qaz}"
               "bg-{ovr.qaz} border-{ovr.qaz}"
@@ -784,7 +784,7 @@
     |=  [tyt=tape sat=stat man=manx]
     ^-  manx
     ;div(class "flex flex-wrap items-center justify-between {cas}")
-      ;h1(class "text-4xl"): {tyt}
+      ;h1(class "fund-title"): {tyt}
       ;+  (~(work-bump ..$ ~) sat man)
     ==
   ++  ship-logo                                  ::  icon for a user ship
@@ -798,19 +798,19 @@
   ++  work-bump                                  ::  bumper for work unit
     |=  [sat=stat man=manx]
     ;div(class "flex items-center gap-x-2 {cas}")
-      ;+  (stat-pill sat)
+      ;+  (~(stat-pill ..$ ~) sat)
       ;+  %-  ~(cash-bump ..$ ~)
           :_  man
-          ;span: Funding Goal
+          ;span.text-nowrap: Funding Goal
     ==
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx
-    ;div(class "flex flex-col justify-start items-end {cas}")
-      ;h6(class "leading-none tracking-widest")
+    ;div(class "flex flex-col justify-start items-end text-black {cas}")
+      ;h6.text-nowrap.leading-none.tracking-tight
         ;+  tan
       ==
-      ;h2(class "leading-loose")
+      ;h2.text-nowrap
         ;+  ban
       ==
     ==

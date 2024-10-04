@@ -143,7 +143,7 @@
                     %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
                     |=  [min=@ mil=mile:f]
                     ^-  manx
-                    ;div(id "mile-{<min>}", class "fund-card rounded-xl px-4 py-4")
+                    ;div(id "mile-{<min>}", class "fund-card-fore rounded-xl px-4 py-4")
                       ;div(class "flex flex-wrap items-center justify-between")
                         ;h6: Milestone {<+(min)>}
                         ;+  ?:  ?=(%born status.mil)

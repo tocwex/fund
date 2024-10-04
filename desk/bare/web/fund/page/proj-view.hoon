@@ -475,14 +475,13 @@
   ;div(x-data "proj_view")
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
-    ::
     ;div(class "flex flex-col p-2 gap-3 min-h-[100vh]")
       ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
       ;h1(class "fund-title"): {(trip title.pro)}
       ;+  =/  irl=tape  (trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))
           ;div(class "w-full aspect-square bg-cover bg-center rounded-md bg-[url('{irl}')]")
             ;div(class "flex flex-row flex-wrap justify-end p-4")
-              ;+  %+  ~(work-bump ui:fh "p-2 fund-card")  sat
+              ;+  %+  ~(work-bump ui:fh "p-2 fund-card-fore")  sat
                   ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
             ==
           ==
@@ -514,9 +513,10 @@
                 |=  [min=@ mil=mile:f]
                 ^-  manx
                 =/  oil=odit:f  (snag min moz)
+                =/  oas=tape  ?:(?=(?(%done %dead) status.mil) "fund-card-back" "fund-card-fore")
                 ;form  =id  "fund-mile-{<min>}"  =method  "post"
                     =x-data  "\{ mile_idex: {<min>} }"
-                    =class  "fund-card flex flex-col gap-2 lg:(px-4 py-4)"
+                    =class  "{oas} flex flex-col gap-2 lg:(px-4 py-4)"
                   ;h6: Milestone {<+(min)>}
                   ;div(class "flex items-start justify-between flex-wrap lg:flex-nowrap")
                     ;h1(class "fund-title shrink"): {(trip title.mil)}
@@ -631,23 +631,19 @@
                 %+  turn  muz
                 |=  mul=mula:f
                 ^-  manx
-                =/  [myp=tape muf=tape mid=tape mow=bean]
-                  :-  myp=(trip -.mul)
-                  ?-    -.mul
-                      %plej
-                    =+  pej=(~(got by pledges.pro) ship.mul)
-                    [muf=~ mid=(ship:enjs:ff:fh ship.mul) mow=show.pej]
-                  ::
-                      %trib
-                    =+  teb=(~(got by contribs.pro) q.xact.when.mul)
-                    [muf=(addr:enjs:ff:fh from.when.mul) mid=(addr:enjs:ff:fh q.xact.when.mul) mow=show.teb]
-                  ::
-                      %pruf
-                    [muf=(addr:enjs:ff:fh from.when.mul) mid=(addr:enjs:ff:fh q.xact.when.mul) mow=&]
+                =/  myp=tape  (trip -.mul)
+                =/  mas=tape  ?:(&(?=(%pruf -.mul) ?=(%with note.mul)) "fund-card-back" "fund-card-fore")
+                =/  muf=tape  ?+(-.mul (addr:enjs:ff:fh from.when.mul) %plej ~)
+                =/  mid=tape  ?+(-.mul (addr:enjs:ff:fh q.xact.when.mul) %plej (ship:enjs:ff:fh ship.mul))
+                =/  mow=bean
+                  ?-  -.mul
+                    %plej  =<(show (~(got by pledges.pro) ship.mul))
+                    %trib  =<(show (~(got by contribs.pro) q.xact.when.mul))
+                    %pruf  &
                   ==
                 ;div
                     =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
-                    =class   "p-2.5 flex flex-col gap-y-2 fund-card"
+                    =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex flex-wrap items-center justify-between")
                     ;div(class "flex items-center gap-x-2")
                       ;*  =-  :~  (icon-logo:ui:fh %rect url)
@@ -674,22 +670,21 @@
                     ==
                     ;div(class "flex items-center gap-x-2")
                       ;p(class "font-serif text-black"): {(swam:enjs:ff:fh cash.mul payment.pro)}
-                      ;+  =-  ;div(class "fund-pill text-{txt.klr} bg-{bak.klr} border-{bor.klr}"): {tyt}
-                          ^-  [tyt=tape klr=[txt=tape bak=tape bor=tape]]
+                      ;+  =-  ;div(class "fund-pill {kas}"): {tyt}
+                          ^-  [tyt=tape kas=tape]
                           ?-    -.mul
                               %plej
                             =+  pej=(~(got by pledges.pro) ship.mul)
-                            ::  FIXME: Add contrast for the "welched" and "forgiven" pill types
                             ?-  view.pej
-                              ~          ["pledged" "black" "palette-secondary" "palette-background"]
-                              [~ %stif]  ["welched" "black" "palette-secondary" "palette-background"]
-                              [~ %slyd]  ["forgiven" "black" "palette-secondary" "palette-background"]
+                              ~          ["pledged" "fund-pill-born"]
+                              [~ %stif]  ["welched" "fund-pill-work"]
+                              [~ %slyd]  ["forgiven" "fund-pill-work"]
                             ==
                           ::
                               %trib
                             =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
-                            ?~  pruf.teb  ["confirmed" "black" "white" "palette-primary"]
-                            =-  ["{-}verified" "palette-secondary" "palette-primary" "palette-primary"]
+                            ?~  pruf.teb  ["confirmed" "fund-pill-lock"]
+                            =-  ["{-}verified" "fund-pill-done"]
                             ?~  ship.teb  ~
                             =-  ?~(- ~ "✔️ ")
                             .^  pro=(unit sigm:f)
@@ -699,8 +694,8 @@
                           ::
                               %pruf
                             ?-  note.mul
-                              %depo  ["deposited" "black" "palette-background" "palette-primary"]
-                              %with  ["withdrawn" "black" "palette-background" "palette-secondary"]
+                              %depo  ["deposited" "fund-pill-lock"]
+                              %with  ["withdrawn" "fund-pill-dead"]
                             ==
                           ==
                     ==

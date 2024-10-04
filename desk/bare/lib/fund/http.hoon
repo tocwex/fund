@@ -341,13 +341,13 @@
                 ;button(type "button", x-on-click "toggleWallet", class bas): connect
               ==
               ;div(class "flex flex-col gap-2", x-show "$store.wallet.connected")
-                ;div(class "rounded-md bg-gray-100 py-1 px-2")
+                ;div(class "rounded-md bg-palette-background py-1 px-2")
                   ;div(class "flex justify-between")
-                    ;span.text-gray-300: Wallet
+                    ;span.text-palette-secondary: Wallet
                     ;span: MetaMask
                   ==
                   ;div(class "flex justify-between")
-                    ;span.text-gray-300: Balance
+                    ;span.text-palette-secondary: Balance
                     ;span(x-text "$store.wallet.balance");
                   ==
                   ::  TODO: Add per-project currency balance here (need
@@ -367,7 +367,7 @@
             ;div
               ;div(class "flex flex-col gap-2")
                 ;h5.text-center.underline: Verified Wallets
-                ;div(class "flex flex-col items-end rounded-md bg-gray-100 py-1 px-2")
+                ;div(class "flex flex-col items-end rounded-md bg-palette-background py-1 px-2")
                   ;*  =+  .^  adz=(list addr)  %gx
                               %+  en-beam  [our.bol dap.bol da+now.bol]
                               /prof/(scot %p src.bol)/adrz/noun
@@ -469,7 +469,7 @@
             '''
         ==
       ==
-    ;div(class "fund-card flex flex-col gap-1 text-black")
+    ;div(class "fund-card-fore flex flex-col gap-1 text-black")
       ;div(class "inline-flex gap-1 items-center")
         ;h6(class "leading-none"): {tyt}
         ;button(type "button", x-init "initTippy($el, \{hover: true})")
@@ -817,17 +817,17 @@
   ++  stat-pill                                  ::  status pill element
     |=  sat=stat
     ^-  manx
-    =-  ;div(class "fund-pill {kas} {cas}"): {nam}
+    =-  ;div(class "{kas} {cas}"): {nam}
     ^-  [nam=tape kas=tape]
-    =-  [(stat:enjs:ff sat) "text-{-} border-{-}"]
+    :-  (stat:enjs:ff sat)
     ?-  sat
-      %born  "primary-600"
-      %prop  "gray-700"
-      %lock  "tertiary-350"
-      %work  "secondary-300"
-      %sess  "secondary-400"
-      %done  "highlight2-450"
-      %dead  "highlight1-400"
+      %born  "fund-pill-born"  ::  "primary-600"
+      %prop  "fund-pill-born"  ::  "gray-700"
+      %lock  "fund-pill-lock"  ::  "tertiary-350"
+      %work  "fund-pill-work"  ::  "secondary-300"
+      %sess  "fund-pill-work"  ::  "secondary-400"
+      %done  "fund-pill-done"  ::  "highlight2-450"
+      %dead  "fund-pill-dead"  ::  "highlight1-400"
     ==
   ++  icon-stax                                  ::  stack of icons (leftmost on top)
     |=  [typ=?(%circ %rect) liz=(list tape)]

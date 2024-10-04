@@ -242,10 +242,11 @@
   |=  pat=(pole knot)
   ^-  (unit (unit cage))
   ?+    pat  [~ ~]
+  ::  %dbug library peeks  ::
       [%x %dbug %state ~]
     ``noun+!>(state)
-  ::
-      [%x %dbug %short ~]
+  ::  %dbug-esque peeks  ::
+      [%x %dbvg %brief ~]
     =+  flat=(cork flag:enjs:ff:fh crip)
     :^  ~  ~  %noun  !>
     :*  host=(~(run in ~(key by pj-myn)) flat)
@@ -254,6 +255,35 @@
         prof=(~(run in ~(key by pf-our)) (cury scot %p))
     ==
   ::
+      [%x %dbvg %subs ~]
+    :^  ~  ~  %noun  !>
+    |^  :*  proj=(subs-form proj-subs)
+            prof=(subs-form prof-subs)
+            meta=(subs-form meta-subs)
+        ==
+    +$  subs  [flag=tape stale=? fail=?]
+    ++  subs-form
+      |=  sub=(list subs)
+      ^-  (set @t)
+      %-  sy  %+  turn  sub
+      |=(s=subs `@t`(crip "{flag.s}:(s={<stale.s>}|f={<fail.s>})"))
+    ++  proj-subs
+      ^-  (list subs)
+      %-  ~(rep by read:pj-suz)
+      |=  [[[@ @ pat=path:proj:fd] [sal=? fal=? ^]] acc=(list subs)]
+      [[(flag:enjs:ff:fh (flag:proj:fd pat)) sal fal] acc]
+    ++  prof-subs
+      ^-  (list subs)
+      %-  ~(rep by read:pf-suz)
+      |=  [[[@ @ pat=path:prof:fd] [sal=? fal=? ^]] acc=(list subs)]
+      [[(ship:enjs:ff:fh (flag:prof:fd pat)) sal fal] acc]
+    ++  meta-subs
+      ^-  (list subs)
+      %-  ~(rep by read:me-suz)
+      |=  [[[@ @ pat=path:meta:fd] [sal=? fal=? ^]] acc=(list subs)]
+      [[(flag:enjs:ff:fh (flag:meta:fd pat)) sal fal] acc]
+    --
+  ::  proj peeks  ::
       [%u %proj sip=@ nam=@ ~]
     =/  sip=@p    (slav %p sip.pat)
     =/  nam=@tas  (slav %tas nam.pat)
@@ -268,12 +298,12 @@
     =/  sip=@p    (slav %p sip.pat)
     =/  nam=@tas  (slav %tas nam.pat)
     ``loob+!>((~(has by me-our) sip nam))
-  ::
+  ::  meta peeks  ::
       [%x %meta sip=@ nam=@ ~]
     =/  sip=@p    (slav %p sip.pat)
     =/  nam=@tas  (slav %tas nam.pat)
     ``noun+!>((bind (~(get by me-our) sip nam) head))
-  ::
+  ::  prof peeks  ::
       [%u %prof sip=@ ~]
     =/  sip=@p    (slav %p sip.pat)
     ``loob+!>((~(has by pf-our) sip))
@@ -289,7 +319,7 @@
   ::
       [%x %prof sip=@ %addr adr=@ ~]
     =/  sip=@p    (slav %p sip.pat)
-    =/  adr=@ux   (slav %ux adr.pat)  ::  (addr:dejs:ff:fh adr.pat)
+    =/  adr=@ux   (slav %ux adr.pat)
     =+  waz=pf-pf-walz:(pf-abed:pf-core sip)
     ``noun+!>((~(get by waz) adr))
   ==

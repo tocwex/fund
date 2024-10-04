@@ -1,12 +1,13 @@
 import {
   getAccount, getClient, getChainId, getPublicClient, getBalance, getBlockNumber,
-  signMessage, readContract, writeContract, waitForTransactionReceipt,
-} from 'https://esm.sh/@wagmi/core@2.10.0';
+  signMessage, readContract, writeContract,
+  getTransactionReceipt, waitForTransactionReceipt,
+} from 'https://esm.sh/@wagmi/core@2.13.8';
 import {
   encodeFunctionData, encodePacked, keccak256,
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
-} from 'https://esm.sh/viem@2.16.0';
+} from 'https://esm.sh/viem@2.21.16';
 import BigNumber from 'https://cdn.jsdelivr.net/npm/bignumber.js@9.1.2/+esm'
 import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, NETWORK, ABI, CONTRACT } from './const.js';
@@ -113,9 +114,9 @@ export const safeGetTransfers = async ({fundToken, safeAddress, safeInitBlock, d
     eventName: "Transfer",
     args: {to: safeAddress},
     fromBlock: BigInt(safeInitBlock),
-    // toBlock: "safe",
+    toBlock: "latest",
   });
-  const filteredTransferLogs = transferLogs.filter(({args: {from, to, tokenId}}) => (
+  const filteredTransferLogs = transferLogs.filter(({args: {from, to}}) => (
     (dirFilter === "with") ? (from === safeAddress)
     : (dirFilter === "depo") ? (to === safeAddress)
     : true
@@ -264,14 +265,18 @@ const safeAddressSort = (getAddress = (v) => v) => (a, b) => {
 // https://github.com/wevm/wagmi/issues/3152
 const safeAwaitTransaction = async ({hash}) => {
   let attempts = 0;
-  const maxAttempts = 3;
+  const maxAttempts = 5;
 
   let receipt = undefined;
   while (receipt === undefined && attempts++ < maxAttempts) {
     try {
-      receipt = await waitForTransactionReceipt(window.Wagmi, {hash, confirmations: 3});
+      receipt = await waitForTransactionReceipt(window.Wagmi, {hash, timeout: 20000});
     } catch (error) {
-      if (!(error instanceof TransactionNotFoundError)) throw error;
+      try {
+        receipt = await getTransactionReceipt(window.Wagmi, {hash});
+      } catch (error) {
+        // NOTE: no-op; just try again
+      }
     }
   }
   if (receipt === undefined) {

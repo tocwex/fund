@@ -67,19 +67,17 @@
   ++  surc                                       ::  s(hip) ur(l) c(ord) (url path)
     |=  sip=@p  ~+
     ^-  cord
-    (crip (surt sip))
+    (crip (surt +<))
   ++  esat                                       ::  e(ther)s(c)a(n) t(ape) (url path)
-    |=  [adr=addr cid=@ud]  ~+
+    |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  tape
-    =-  "https://{(trip -)}etherscan.io/address/{(addr:enjs adr)}"
-    ?+  cid        ''
-      %1           ''
-      %11.155.111  'sepolia.'
-    ==
+    =/  tyt=@t  ?-(typ %xact %tx, %addr %address)
+    =/  cit=@t  ?+(cid %$ %1 %$, %11.155.111 'sepolia.')
+    "https://{(trip cit)}etherscan.io/{(trip tyt)}/{(z-co:co hex)}"
   ++  esac                                       ::  e(ther)s(c)a(n) c(ord) (url path)
-    |=  [adr=addr cid=@ud]  ~+
+    |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  cord
-    (crip (esat adr cid))
+    (crip (esat +<))
   ++  colt                                       ::  col(or) t(ape) (url path)
     |=  clr=@t
     ^-  tape
@@ -87,7 +85,7 @@
   ++  colc                                       ::  col(or) c(ord) (url path)
     |=  clr=@t
     ^-  cord
-    (crip (colt clr))
+    (crip (colt +<))
 
 +|  %js
 ++  dejs                                       ::  js-tape => noun
@@ -181,10 +179,6 @@
     |=  rel=@rs
     ^-  tape
     (flot:fx (rlys rel) `[0 2])
-  ++  bool                                     ::  %.y => "true"
-    |=  bul=?
-    ^-  tape
-    ?:(bul "true" "false")
   ++  srel                                     ::  .1.2345e1 => "12"
     |=  rel=@rs
     ^-  tape
@@ -193,6 +187,10 @@
     |=  boq=^bloq
     ^-  tape
     (a-co:co boq)
+  ++  bool                                     ::  %.y => "true"
+    |=  bul=?
+    ^-  tape
+    ?:(bul "true" "false")
   ++  addr                                     ::  0xabcd.ef… => "0xabcdef…"
     |=  adr=^addr
     ^-  tape
@@ -210,6 +208,14 @@
     |=  sip=^ship
     ^-  tape
     "{<sip>}"
+  ++  ssip                                     ::  ~mister-sampel-samplel-palnet => "~sampel^palnet"
+    |=  sip=^ship
+    ^-  tape
+    ?-  (clan:title sip)
+      %pawn  =+((ship sip) :(welp (scag 7 -) "_" (slaj:fx 6 -)))
+      %earl  (snap (ship (end 5 sip)) 7 '^')
+      *      (ship sip)
+    ==
   ++  flag                                     ::  [~zod %nam] => "~zod/nam"
     |=  lag=^flag
     ^-  tape
@@ -290,6 +296,20 @@
       %sess  "in-review"
       %done  "completed"
       %dead  "canceled"
+    ==
+  ++  size                                     ::  --1 => "lg"
+    |=  syz=@sd
+    ^-  tape
+    ?+  syz   "md"
+      %-4     "3xs"
+      %-3     "2xs"
+      %-2     "xs"
+      %-1     "sm"
+      %--0    "md"
+      %--1    "lg"
+      %--2    "xl"
+      %--3    "2xl"
+      %--4    "3xl"
     ==
   --
 --

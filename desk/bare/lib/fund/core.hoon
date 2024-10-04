@@ -11,7 +11,7 @@
       void
     ?^  void.odi  void.odi
     =+  fil=(add fill.odi plej.odi)
-    `[(gth cost.odi fil) (sub (max cost.odi fil) (min cost.odi fil))]
+    `[(gte cost.odi fil) (sub (max cost.odi fil) (min cost.odi fil))]
   ==
 ::
 ::  +tula: t(ime) associated with a $(m)ula (measured by block height)

@@ -92,139 +92,142 @@
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "project edit"
-  ;form.p-2(method "post", autocomplete "off", x-data "proj_edit")
-    ;+  :-  [%fieldset ?:(=(%born sat) ~ [%disabled ~]~)]
-    :~  ;div
-          ;+  %^  work-tytl:ui:fh  "Project Overview"  sat
-              ;span(x-text "proj_cost");
-          ;div
-            ;div(class "flex")
-              ;div(class "fund-form-group")
-                ;input.p-1  =name  "nam"  =type  "text"  =required  ~
-                  =placeholder  "My Awesome Project"
-                  =value  (trip ?~(pru '' title.u.pru));
-                ;label(for "nam"): Project Name
-              ==
-              ;div(class "fund-form-group")
-                ;input.p-1  =name  "pic"  =type  "url"
-                  =placeholder  "https://example.com/example.png"
-                  =value  (trip (fall ?~(pru ~ image.u.pru) ''));
-                ;label(for "pic")
-                  ; Header Image URL
-                  ;span.text-xs: (Default: Urbit Sigil)
+  :+  fut=&  hed=&
+  ;form(class "flex flex-col gap-2 p-2", method "post", autocomplete "off", x-data "proj_edit")
+    ;+  :-  [%fieldset [%class "flex flex-col gap-2"] ?:(=(%born sat) ~ [%disabled ~]~)]
+        :~  ;div(class "flex flex-col gap-2")
+              ;+  %^  work-tytl:ui:fh  "Project Overview"  sat
+                  ;span(x-text "proj_cost");
+              ;div
+                ;div(class "grid grid-cols-1 sm:grid-cols-2")
+                  ;div(class "fund-form-group col-span-1")
+                    ;input.p-1  =name  "nam"  =type  "text"  =required  ~
+                      =placeholder  "My Awesome Project"
+                      =value  (trip ?~(pru '' title.u.pru));
+                    ;label(for "nam"): Project Name
+                  ==
+                  ;div(class "fund-form-group col-span-1")
+                    ;input.p-1  =name  "pic"  =type  "url"
+                      =placeholder  "https://example.com/example.png"
+                      =value  (trip (fall ?~(pru ~ image.u.pru) ''));
+                    ;label(for "pic")
+                      ; Header Image URL
+                      ;span.text-xs: (Default: Urbit Sigil)
+                    ==
+                  ==
+                ==
+                ;+  %:  ~(swap-selz ui:fh "grid grid-cols-1 sm:grid-cols-2")
+                        0
+                        |
+                        `?~(pru *swap:f payment.u.pru)
+                        "proj_stok"
+                        "updateProj"
+                    ==
+                ;div(class "fund-form-group")
+                  ;div(class "grow-wrap")
+                    ;textarea.p-1  =name  "sum"  =rows  "3"
+                      =placeholder  "Describe your project in detail. Plaintext and markdown inputs both supported."
+                      =value  (trip ?~(pru '' summary.u.pru))
+                      =x-on-input  "updateTextarea"
+                      ; {(trip ?~(pru '' summary.u.pru))}
+                    ==
+                  ==
+                  ;label(for "sum"): Project Description
                 ==
               ==
             ==
-            ;+  %:  ~(swap-selz ui:fh "flex")
-                    |
-                    `?~(pru *swap:f payment.u.pru)
-                    "proj_stok"
-                    "updateProj"
-                ==
-            ;div(class "fund-form-group")
-              ;div(class "grow-wrap")
-                ;textarea.p-1  =name  "sum"  =rows  "3"
-                  =placeholder  "Describe your project in detail. Plaintext and markdown inputs both supported."
-                  =value  (trip ?~(pru '' summary.u.pru))
-                  =x-on-input  "updateTextarea"
-                  ; {(trip ?~(pru '' summary.u.pru))}
-                ==
-              ==
-              ;label(for "sum"): Project Description
-            ==
-          ==
-        ==
-        ;div
-          ;h1.pt-2: Milestones
-          ;div#milz-well.mx-2
-            ;*  =+  pay=?~(pru (~(got by smap:fc) %ethereum 'USDC') payment.u.pru)
-                %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
-                |=  [min=@ mil=mile:f]
-                ^-  manx
-                ;div(id "mile-{<min>}", class "my-2 p-4 border-2 border-secondary-500 rounded-xl")
-                  ;div(class "flex flex-wrap items-center justify-between")
-                    ;h6(class "text-tertiary-500 underline"): Milestone {<+(min)>}
-                    ;+  ?:  ?=(%born status.mil)
-                          ::  FIXME: Using the X SVG causes a weird pop-in effect
-                          ::  for new milestones, so we just use raw text for now
-                          ;button(class "font-light", type "button", x-on-click "deleteMile"): ❌
-                        (stat-pill:ui:fh status.mil)
-                  ==
-                  ;div(class "flex")
-                    ;div(class "fund-form-group")
-                      ;input.p-1  =name  "m{<min>}n"  =type  "text"
-                        =placeholder  "Give your milestone a title"
-                        =value  (trip title.mil);
-                      ;label(for "m{<min>}n"): Title
-                    ==
-                    ;div(class "fund-form-group")
-                      ;input.p-1  =name  "m{<min>}c"  =type  "number"
-                        =min  "0"  =max  "100000000"
-                        =placeholder  "0"
-                        =value  ?:(=(0 cost.mil) "" (comp:enjs:ff:fh cost.mil pay))
-                        =x-bind-step  "proj_stok.includes('AZP') ? 1 : 0.01"
-                        =x-on-change  "updateMile";
-                      ;label(for "m{<min>}c")
-                        ; Amount
-                        ;span(x-text "'(' + (proj_stok.includes('AZP') ? '@' : '$') + proj_stok + ')'");
-                      ==
-                    ==
-                  ==
-                  ;div(class "fund-form-group")
-                    ;div(class "grow-wrap")
-                      ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
-                        =placeholder  "Describe your milestone in detail. Plaintext and markdown inputs both supported."
-                        =value  (trip summary.mil)
-                        =x-on-input  "updateTextarea"
-                        ; {(trip summary.mil)}
-                      ==
-                    ==
-                    ;label(for "m{<min>}s"): Milestone Description
-                  ==
-                ==
-          ==
-          ;div.flex.justify-center.mx-auto
-            ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): add milestone +
-          ==
-        ==
-        ;div
-          ;h1.pt-2: Trusted Oracle
-          ;p.pt-2
-            ; Choose a service provider who will assess work completion
-            ; and settle disputes. The fee percentage is paid to the
-            ; oracle as a cut of the completed milestone upon withdrawal
-            ; of funds.
-          ==
-          ;div(class "flex")
-            ;div(class "fund-form-group")
-              ;select#proj-oracle.fund-tsel(name "sea", x-init "initTomSelect($el, \{empty: true, create: tsCreateOracle($el)})")
-                ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
-                    =+  dad=(sein:title our.bol now.bol our.bol)
-                    %+  turn  [ses !<(@p (slot:config %point)) dad !<((list @p) (slot:config %feat-oraz))]
-                    |=  ora=@p
+            ;div(class "flex flex-col gap-2")
+              ;h1: Milestones
+              ;div#milz-well(class "flex flex-col gap-4")
+                ;*  =+  pay=?~(pru (~(got by smap:fc) %ethereum 'USDC') payment.u.pru)
+                    %+  turn  (enum:fx `(list mile:f)`?~(pru *(lest mile:f) milestones.u.pru))
+                    |=  [min=@ mil=mile:f]
                     ^-  manx
-                    :_  ; {<ora>}
-                    :-  %option
-                    ;:  welp
-                        [%value "{<ora>}"]~
-                        [%data-image (surt:enrl:ff:fh ora)]~
-                        ?.(=(ses ora) ~ [%selected ~]~)
+                    ;div(id "mile-{<min>}", class "fund-card-fore rounded-xl px-4 py-4")
+                      ;div(class "flex flex-wrap items-center justify-between")
+                        ;h6: Milestone {<+(min)>}
+                        ;+  ?:  ?=(%born status.mil)
+                              ::  FIXME: Using the X SVG causes a weird pop-in effect
+                              ::  for new milestones, so we just use raw text for now
+                              ;button(class "font-light", type "button", x-on-click "deleteMile"): ❌
+                            (stat-pill:ui:fh status.mil)
+                      ==
+                      ;div(class "grid grid-cols-1 sm:grid-cols-2")
+                        ;div(class "fund-form-group col-span-1")
+                          ;input.p-1  =name  "m{<min>}n"  =type  "text"
+                            =placeholder  "Give your milestone a title"
+                            =value  (trip title.mil);
+                          ;label(for "m{<min>}n"): Title
+                        ==
+                        ;div(class "fund-form-group col-span-1")
+                          ;input.p-1  =name  "m{<min>}c"  =type  "number"
+                            =min  "0"  =max  "100000000"
+                            =placeholder  "0"
+                            =value  ?:(=(0 cost.mil) "" (comp:enjs:ff:fh cost.mil pay))
+                            =x-bind-step  "proj_stok.includes('AZP') ? 1 : 0.01"
+                            =x-on-change  "updateMile";
+                          ;label(for "m{<min>}c")
+                            ; Amount
+                            ;span(x-text "'(' + (proj_stok.includes('AZP') ? '@' : '$') + proj_stok + ')'");
+                          ==
+                        ==
+                      ==
+                      ;div(class "fund-form-group")
+                        ;div(class "grow-wrap")
+                          ;textarea.p-1  =name  "m{<min>}s"  =rows  "3"
+                            =placeholder  "Describe your milestone in detail. Plaintext and markdown inputs both supported."
+                            =value  (trip summary.mil)
+                            =x-on-input  "updateTextarea"
+                            ; {(trip summary.mil)}
+                          ==
+                        ==
+                        ;label(for "m{<min>}s"): Milestone Description
+                      ==
                     ==
               ==
-              ;label(for "sea"): Trusted Oracle
+              ;div.flex.justify-center.mx-auto
+                ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): add milestone +
+              ==
             ==
-            ;div(class "fund-form-group")
-              ;input.p-1  =name  "seo"  =type  "number"
-                =min  "0"  =max  "100"  =step  "0.01"
-                =x-bind-placeholder  "proj_stok.includes('AZP') ? '0%' : '1%'"
-                =x-bind-readonly  "proj_stok.includes('AZP')"
-                =value  ?~(pru "" (cash:enjs:ff:fh q.assessment.u.pru 6));
-              ;label(for "seo"): Fee Offer (%)
+            ;div(class "flex flex-col gap-2")
+              ;h1: Trusted Oracle
+              ;p
+                ; Choose a service provider who will assess work completion
+                ; and settle disputes. The fee percentage is paid to the
+                ; oracle as a cut of the completed milestone upon withdrawal
+                ; of funds.
+              ==
+              ;div(class "grid grid-cols-1 sm:grid-cols-2")
+                ;div(class "fund-form-group col-span-1")
+                  ;select#proj-oracle  =name  "sea"
+                      =x-init  "initTomSelect($el, \{empty: true, create: tsCreateOracle($el)})"
+                    ;*  =+  ses=?~(pru !<(@p (slot:config %point)) p.assessment.u.pru)
+                        =+  dad=(sein:title our.bol now.bol our.bol)
+                        %+  turn  [ses !<(@p (slot:config %point)) dad !<((list @p) (slot:config %feat-oraz))]
+                        |=  ora=@p
+                        ^-  manx
+                        :_  ; {<ora>}
+                        :-  %option
+                        ;:  welp
+                            [%value "{<ora>}"]~
+                            [%data-image (surt:enrl:ff:fh ora)]~
+                            ?.(=(ses ora) ~ [%selected ~]~)
+                        ==
+                  ==
+                  ;label(for "sea"): Trusted Oracle
+                ==
+                ;div(class "fund-form-group col-span-1")
+                  ;input.p-1  =name  "seo"  =type  "number"
+                    =min  "0"  =max  "100"  =step  "0.01"
+                    =x-bind-placeholder  "proj_stok.includes('AZP') ? '0%' : '1%'"
+                    =x-bind-readonly  "proj_stok.includes('AZP')"
+                    =value  ?~(pru "" (cash:enjs:ff:fh q.assessment.u.pru 6));
+                  ;label(for "seo"): Fee Offer (%)
+                ==
+              ==
             ==
-          ==
         ==
-    ==
-    ;div(class "flex flex-col gap-y-2 m-1")
+    ;div(class "flex flex-col gap-2")
       ;h1: Confirm & Launch
       ;p
         ; Please review your proposal in detail and ensure
@@ -339,4 +342,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 0]
+::  VERSION: [1 4 1]

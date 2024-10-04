@@ -63,13 +63,6 @@
   grid-area: 1 / 1 / 2 / 2;
 }
 
-
-/* Styling for 'stuck' elements (css-tricks.com/how-to-detect-when-a-sticky-element-gets-pinned) */
-.pinned {
-  width: 100%;
-}
-
-
 /* Auto-add indicators for required fields (https://stackoverflow.com/q/49685336) */
 input[required] + label:after,
 select[required] + label:after,
@@ -168,24 +161,24 @@ div.ts-wrapper + label:after {
 
 /* custom tippy styling */
 .tippy-box[data-theme~='fund'] {
-  background-color: #e8e8e8; /* bg-primary-500 */
-  color: #04080f; /* text-secondary-500 */
-  border-color: #04080f; /* border-secondary-500 */
-  border-width: 1px; /* border */
+  background-color: #dedfe0; /* bg-palette-contrast */
+  color: #4a4b4c; /* text-palette-label */
+  border-color: #000000; /* border-black */
+  border-width: 2px; /* border-2 */
   border-radius: 0.375rem; /* rounded-md */
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
 }
 .tippy-box[data-theme~='fund'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: #04080f; /* border-secondary-500 */
+  border-top-color: #000000; /* border-black */
 }
 .tippy-box[data-theme~='fund'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-bottom-color: #04080f; /* border-secondary-500 */
+  border-bottom-color: #000000; /* border-black */
 }
 .tippy-box[data-theme~='fund'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: #04080f; /* border-secondary-500 */
+  border-left-color: #000000; /* border-black */
 }
 .tippy-box[data-theme~='fund'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: #04080f; /* border-secondary-500 */
+  border-right-color: #000000; /* border-black */
 }
 
 /* Styling for tom-select.js (https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css) */
@@ -204,6 +197,7 @@ div.ts-wrapper + label:after {
  *
  */
 .ts-control {
+  background-color: #ffffff; /* bg-white */
   padding: 0.25rem 0.25rem;
   width: 100%;
   overflow: hidden;
@@ -219,11 +213,11 @@ div.ts-wrapper + label:after {
   padding: calc(8px - 2px - 0) 8px calc(8px - 2px - 3px - 0);
 }
 .full .ts-control {
-  background-color: #f6f6f6; /* bg-primary-250 */
+  background-color: #ffffff; /* bg-white */
 }
 .disabled .ts-control, .disabled .ts-control * {
   cursor: default !important;
-  background-color: #a0a0a0; /* bg-gray-400 */
+  background-color: #6B7280; /* bg-gray-500 */
 }
 .focus .ts-control {
   box-shadow: none;
@@ -236,11 +230,11 @@ div.ts-wrapper + label:after {
   cursor: pointer;
   margin: 0 3px 3px 0;
   padding: 2px 6px;
-  background: #f2f2f2;
+  background: #ffffff; /* bg-white */
   border: 0 solid #d0d0d0;
 }
 .ts-wrapper.multi .ts-control > div.active {
-  background: #e8e8e8;
+  background: #ffffff; /* bg-white */
   border: 0 solid #cacaca;
 }
 .ts-wrapper.multi.disabled .ts-control > div, .ts-wrapper.multi.disabled .ts-control > div.active {
@@ -286,7 +280,7 @@ div.ts-wrapper + label:after {
   margin: 0 4px 0 -2px !important;
 }
 .disabled .ts-control {
-  background-color: #a0a0a0; /* bg-gray-400 */
+  background-color: #6B7280; /* bg-gray-500 */
 }
 .input-hidden .ts-control > input {
   opacity: 0;
@@ -300,7 +294,7 @@ div.ts-wrapper + label:after {
   left: 0;
   width: 100%;
   z-index: 10;
-  background: #f6f6f6; /* bg-primary-250 */
+  background: #ffffff; /* bg-white */
   margin: 0.25rem 0 0;
   border-top: 0 none;
   box-sizing: border-box;
@@ -312,7 +306,7 @@ div.ts-wrapper + label:after {
   overflow: hidden;
 }
 .ts-dropdown [data-selectable] .highlight {
-  background: #a2a2a2; /* bg-primary-600 */
+  background: #D1D5DB; /* bg-gray-300 */
   border-radius: 0.375rem; /* rounded-md */
 }
 .ts-dropdown .option,
@@ -337,7 +331,7 @@ div.ts-wrapper + label:after {
   cursor: default;
 }
 .ts-dropdown .active {
-  background-color: #bababa; /* bg-primary-550 */
+  background: #E5E7EB; /* bg-gray-200 */
 }
 /*.ts-dropdown .active.create {
   color: #495c68;
@@ -468,7 +462,7 @@ div.ts-wrapper + label:after {
 
 .ts-control,
 .ts-wrapper.single.input-active .ts-control {
-  background: #f6f6f6; /* bg-primary-250 */
+  /* background: #E5E7EB;  bg-gray-200 */
   cursor: text;
 }
 

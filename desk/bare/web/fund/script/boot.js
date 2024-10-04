@@ -8,7 +8,8 @@ import presetAutoPrefix from 'https://cdn.jsdelivr.net/npm/@twind/preset-autopre
 import {
   http, createConfig, injected,
   connect, disconnect, reconnect,
-  getAccount, getEnsName, signMessage,
+  getAccount, getBalance, getEnsName, signMessage,
+  getConnections, switchAccount,
 } from 'https://esm.sh/@wagmi/core@2.10.0';
 import { fromHex } from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
@@ -22,6 +23,13 @@ import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
 
 if (window.Alpine === undefined) {
+  const PALETTE = {
+    primary: '#545557',
+    secondary: '#dedfe0',
+    label: '#4a4b4c',
+    background: '#f0f0f1',
+    contrast: '#dedfe0',
+  };
   twind.install({
     presets: [
       presetTwind(),
@@ -40,6 +48,9 @@ if (window.Alpine === undefined) {
           '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
         },
         colors: {
+          // new style
+          palette: PALETTE,
+          // old style
           primary: {
             100: '#fdfdfd',
             150: '#fafafa',
@@ -135,25 +146,6 @@ if (window.Alpine === undefined) {
             850: '#111b14',
             900: '#090d0a',
           },
-          gray: {
-            100: '#ffffff',
-            150: '#f0f0f0',
-            200: '#e0e0e0',
-            250: '#d0d0d0',
-            300: '#c0c0c0',
-            350: '#b0b0b0',
-            400: '#a0a0a0',
-            450: '#909090',
-            500: '#808080',
-            550: '#707070',
-            600: '#606060',
-            650: '#505050',
-            700: '#404040',
-            750: '#303030',
-            800: '#202020',
-            850: '#101010',
-            900: '#000000',
-          },
         },
       },
     },
@@ -163,12 +155,14 @@ if (window.Alpine === undefined) {
       form { margin: unset; }
       h1, h2, h3, h4 { @apply font-serif; }
       h5, h6 { @apply font-sans; }
-      h1 { @apply text-3xl; }
-      h2 { @apply text-2xl; }
-      h3 { @apply text-xl; }
-      h4 { @apply text-lg; }
-      h5 { @apply font-medium text-md; }
-      h6 { @apply font-medium text-xs uppercase; }
+      h1 { @apply text-xl sm:text-3xl; }
+      h2 { @apply text-lg sm:text-2xl; }
+      h3 { @apply text-base sm:text-xl; }
+      h4 { @apply text-base sm:text-lg; }
+      h5 { @apply font-light text-sm sm:(font-medium text-base); }
+      h6 { @apply font-light uppercase text-sm sm:font-medium; }
+      h1-alt { @apply font-serif text-palette-contrast text-xl sm:text-3xl; }
+      hr { @apply border-0 h-px bg-black; }
       select { padding: unset; @apply fund-select; }
       textarea,input { padding: unset; @apply fund-input; }
       label { @apply font-light; }
@@ -180,45 +174,66 @@ if (window.Alpine === undefined) {
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
+      // FIXME: It would be great if this could be specified purely in
+      // tailwind syntax
+      ['primary-gradient', {'background': `
+        repeating-linear-gradient(-45deg,
+          ${PALETTE.label}, ${PALETTE.label} 10px,
+          ${PALETTE.primary} 10px, ${PALETTE.primary} 20px)
+      `}],
+      ['secondary-gradient', {'background': `
+        repeating-linear-gradient(-45deg,
+          ${PALETTE.label}, ${PALETTE.label} 10px,
+          ${PALETTE.secondary} 10px, ${PALETTE.secondary} 20px)
+      `}],
       ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
-      ['fund-pill', 'text-nowrap font-medium px-2 py-1 border-2 rounded-full'],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-2 rounded-md bg-primary-250 placeholder-primary-550 disabled:(bg-gray-400)'],
-      ['fund-head', 'sticky z-50 top-0'],
+      ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-black/50 disabled:bg-gray-500'],
+      ['fund-head', 'sticky z-40 top-0'],
       ['fund-foot', 'sticky z-40 bottom-0'],
-      ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-primary-500 text-secondary-500 lg:px-4'],
-      ['fund-card', 'bg-primary-500 border-2 border-secondary-500 rounded-md'],
-      ['fund-warn', 'italics mx-4 text-gray-600'],
-      ['fund-addr', 'font-normal leading-normal tracking-wide'],
-      ['fund-input', 'fund-select read-only:(bg-gray-400)'],
+      ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
+      ['fund-card-base', 'rounded-md px-3 py-2 border-[3px] border-palette-contrast'],
+      ['fund-card-back', 'fund-card-base bg-palette-background'],
+      ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
+      ['fund-warn', 'italic mx-4'],
+      ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
+      ['fund-input', 'fund-select read-only:bg-gray-500'],
+      ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
+      ['fund-pill', 'text-nowrap font-medium px-3 py-1 border-[3px] rounded-full'],
+      ['fund-pill-born', 'fund-pill text-black bg-palette-secondary border-palette-background'],
+      ['fund-pill-lock', 'fund-pill text-black bg-white border-palette-primary'],
+      ['fund-pill-work', 'fund-pill text-palette-secondary bg-palette-primary border-palette-primary'],
+      ['fund-pill-done', 'fund-pill text-palette-secondary bg-palette-primary border-palette-label'],
+      ['fund-pill-dead', 'fund-pill text-black bg-palette-background border-palette-secondary'],
       ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
-      ['fund-butn-icon', 'p-1 max-w-none rounded-md text-secondary-500 hover:bg-primary-550 active:bg-primary-450'],
+      ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary hover:bg-palette-background'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
-      //  ['fund-butn-lorj', 'fund-butn-base text-sm px-3 py-1.5'], // h-8
+      ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
       //  FIXME: These classes should use 'hover:enabled' to stop
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
-      ['fund-butn-default', 'bg-primary-100 border-secondary-500 text-secondary-500 hover:(bg-primary-250 border-secondary-500 text-secondary-500 shadow) active:(bg-primary-200 border-secondary-400 text-secondary-450 shadow) disabled:(bg-primary-550 border-primary-800 text-primary-750)'],
-      ['fund-butn-action', 'bg-secondary-500 border-secondary-550 text-primary-100 hover:(bg-secondary-450 border-secondary-400 text-primary-100 shadow) active:(bg-secondary-450 border-secondary-350 text-primary-100 shadow) disabled:(bg-gray-500 border-gray-350 text-gray-200)'],
-      ['fund-butn-true', 'bg-highlight2-500 border-highlight2-550 text-primary-100 hover:(bg-highlight2-550 border-highlight2-500 text-primary-100 shadow) active:(bg-highlight2-550 border-highlight2-450 text-primary-100 shadow) disabled:(bg-highlight2-650 border-highlight2-550 text-highlight2-450)'],
-      ['fund-butn-false', 'bg-highlight1-500 border-highlight1-550 text-primary-100 hover:(bg-highlight1-550 border-highlight1-500 text-primary-100 shadow) active:(bg-highlight1-550 border-highlight1-450 text-primary-100 shadow) disabled:(bg-highlight1-650 border-highlight1-550 text-highlight1-450)'],
-      ['fund-butn-conn', 'bg-tertiary-500 border-tertiary-550 text-primary-100 hover:(bg-tertiary-550 border-tertiary-500 text-primary-100 shadow) active:(bg-tertiary-550 border-tertiary-450 text-primary-100 shadow) disabled:(bg-tertiary-650 border-tertiary-550 text-tertiary-450)'],
+      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(primary-gradient border-black text-black shadow-none)'],
+      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(secondary-gradient border-black text-black shadow-none)'],
+      // ['fund-butn-true', 'fund-butn-default'],
+      // ['fund-butn-false', 'fund-butn-action'],
       ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
       ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
-      ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
-      ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
-      ['fund-butn-co-s', 'fund-butn-conn fund-butn-smol'], // conn
+      ['fund-butn-tr-s', 'fund-butn-default fund-butn-smol'], // true
+      ['fund-butn-fa-s', 'fund-butn-action fund-butn-smol'], // false
       ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
       ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
-      ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
-      ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
-      ['fund-butn-co-m', 'fund-butn-conn fund-butn-medi'], // conn
+      ['fund-butn-tr-m', 'fund-butn-default fund-butn-medi'], // true
+      ['fund-butn-fa-m', 'fund-butn-action fund-butn-medi'], // false
+      ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
+      ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
+      ['fund-butn-tr-l', 'fund-butn-default fund-butn-lorj'], // true
+      ['fund-butn-fa-l', 'fund-butn-action fund-butn-lorj'], // false
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
-      ['fund-odit-ther', 'w-full rounded-md flex h-4 sm:h-8 text-primary-700'], // FIXME: text-primary-600
-      ['fund-odit-sect', 'h-full flex justify-center items-center text-center first:rounded-l-md last:rounded-r-md'],
+      ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-primary-700'],
+      ['fund-odit-sect', 'h-full flex rounded-lg'],
     ],
   });
 
@@ -285,42 +300,45 @@ if (window.Alpine === undefined) {
     if (loader) outer.removeChild(loader);
   });
 
-  // FIXME: For some reason, twind's style refresher doesn't fire when a
-  // submission fails, so we replicate its "reveal content" behavior manually
-  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
-  document.addEventListener('turbo:submit-end', (event) => {
-    if (!event.detail.success) {
-      document.documentElement.setAttribute("class", "");
-      document.documentElement.setAttribute("style", "");
-    }
+  Alpine.store("page", {
+    size: undefined,
   });
-
   Alpine.store("wallet", {
     address: null,
     chain: null,
+    connected: false,
+    balance: "…loading…",
     status: "…loading…",
     update(address, chain) {
       this.address = address;
       this.chain = chain;
+      this.connected = !!address;
       this.status =
         (address === undefined) ? "connect 💰"
         : (address === null) ? "…loading…"
         : `${address.slice(0, 5)}…${address.slice(-4)}`;
+      if (!address) {
+        this.balance = 0;
+      } else {
+        getBalance(window.Wagmi, {address}).then(({formatted}) => {
+          this.balance = `${Number(formatted).toFixed(2)} ETH`;
+        });
+      }
       window.dispatchEvent(new CustomEvent("fund-wallet", {detail: address}));
     },
   });
   Alpine.store("project", {
-    swap: undefined,
+    type: undefined,
     symbol: undefined,
-    nfts: {},
-    update(swap, symbol) {
-      this.swap = swap;
+    assets: {},
+    update(type, symbol) {
+      this.type = type;
       this.symbol = symbol;
-      this.nfts = {};
+      this.assets = {};
       window.dispatchEvent(new CustomEvent("fund-project", {detail: symbol}));
     },
-    loadNFTs(addr, nfts) {
-      this.nfts[addr] = nfts;
+    loadAssets(addr, assets) {
+      this.assets[addr] = assets;
     },
   });
 
@@ -329,13 +347,16 @@ if (window.Alpine === undefined) {
     copyText,
     swapHTML,
     openHREF,
+    scrollTo,
     sendFormData,
     sendForm,
     checkWallet,
+    toggleWallet,
+    // switchWallet,
     initENS,
     initTippy,
     initTomSelect,
-    updateTokenSelect,
+    tsUpdateToken,
     tsCreateOracle,
     tsLoadNFTs,
     CONTRACT,
@@ -397,6 +418,22 @@ if (window.Alpine === undefined) {
     if (tab) { link.setAttribute("target", "_blank"); }
     document.body.appendChild(link);
     link.click();
+  }
+
+  function scrollTo(anchor) {
+    const anchorElem = document.querySelector(`#${anchor}`);
+    if (anchorElem) {
+      const headHeight = document.querySelector("#fund-head")?.offsetHeight ?? 0;
+      const anchorTop = anchorElem.offsetTop;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      const anchorFloorDist = documentHeight - anchorTop - headHeight;
+      const screenHeight = window.screen.height;
+
+      // FIXME: Needs work when `headTop` is near `screenHeight`
+      location.hash = `#${anchor}`;
+      window.scrollBy(0, (screenHeight >= anchorFloorDist) ? 0 : -headHeight);
+    }
   }
 
   function sendForm(event, checks=[], action=Promise.resolve(undefined)) {
@@ -467,6 +504,89 @@ if (window.Alpine === undefined) {
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
 
+  function setWallet({connections, current, status}) {
+    if (status === "disconnected") {
+      const connection = connections.get(current);
+      if (!connection) {
+        Alpine.store("wallet").update(undefined, undefined);
+      } else {
+        reconnect(window.Wagmi, {connector: connection.connector});
+      }
+    } else if (status === "reconnecting") {
+      Alpine.store("wallet").update(null, null);
+    } else if (status === "connected") {
+      const { address, chainId } = getAccount(window.Wagmi);
+      Alpine.store("wallet").update(address, chainId);
+    }
+  }
+
+  function toggleWallet(event) {
+    const { status, current, connections } = window.Wagmi.state;
+    const connection = connections.get(current);
+
+    if (status === "connected") {
+      // FIXME: Actually calling disconnects tells MetaMask to stop giving
+      // this site permission to the associated wallets. Is there any way to
+      // soft disconnect the wallet, i.e. set its status to disconnected without
+      // removing it?
+      disconnect(window.Wagmi, {connector: connection.connector});
+    } else if (status === "disconnected") {
+      if (connection) {
+        reconnect(window.Wagmi, {connector: connection.connector});
+      } else {
+        const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
+        const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
+        connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => (
+          fetch(`${appUrl}/ship`, {method: "GET"})
+        )).then((responseStream) => (
+          responseStream.text()
+        )).then((responseText) => {
+          const responseDOM = new DOMParser().parseFromString(responseText, "text/html");
+          const ship = responseDOM.querySelector("#ship").value;
+          const clan = responseDOM.querySelector("#clan").value;
+          const wallets = responseDOM.querySelector("#wallets").value.split(" ");
+          return [ship, clan, wallets];
+        }).then(([ship, clan, wallets]) => {
+          const address = getAddress();
+          if (wallets.includes(address) || clan === "pawn") {
+            return Promise.resolve(undefined);
+          } else {
+            return signMessage(window.Wagmi, {
+              account: getAccount(window.Wagmi),
+              message: `I, ${ship}, am broadcasting to the Urbit network that I own wallet ${address}`,
+            });
+          }
+        }).then((signature) => {
+          if (signature === undefined) {
+            return Promise.resolve(undefined);
+          } else {
+            // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
+            const signData = new URLSearchParams({
+              dif: "prof-sign",
+              pos: signature,
+              poa: getAddress(),
+            });
+            return fetch(`${appUrl}/ship`, {
+              method: "POST",
+              headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+              body: signData,
+            });
+          }
+        });
+      }
+    }
+  }
+
+  // FIXME: This doesn't work... may need to upgrade `wagmi.sh` to
+  // latest version to fix
+  //
+  // async function switchWallet() {
+  //   const connections = getConnections(window.Wagmi);
+  //   const result = await switchAccount(window.Wagmi, {
+  //     connector: connections[0]?.connector,
+  //   });
+  // }
+
   // FIXME: This doesn't work well for calculating line clamps on the
   // 'zero-md' elements because they generate content dynamically
   //
@@ -478,6 +598,7 @@ if (window.Alpine === undefined) {
   // }
 
   function initENS(elem, address) {
+    elem.innerHTML = "…loading…";
     getEnsName(window.Wagmi, {address}).then(ensName => {
       elem.innerHTML = ensName
         ? ensName
@@ -485,18 +606,21 @@ if (window.Alpine === undefined) {
     });
   }
 
-  function initTippy(elem) {
-    const elemId = `#${elem.id}`;
-    const optElem = document.querySelector(`${elemId}-opts`);
+  function initTippy(elem, {
+    dir=undefined, // String?
+    hover=false, // Bool
+  } = {}) {
+    const optElem = elem.nextSibling;
     optElem.style.display = 'block';
-    TippyJs(elemId, {
+    TippyJs(elem, {
       content: optElem,
       allowHTML: true,
       interactive: true,
       arrow: false,
-      trigger: "click",
+      trigger: ["click", ...(!hover ? [] : ["mouseenter"])].join(" "),
       theme: "fund",
       offset: [0, 5],
+      ...(!dir ? {} : {placement: dir}),
     });
   }
 
@@ -555,30 +679,33 @@ if (window.Alpine === undefined) {
         }),
       });
       tselElem?.load && tselElem.load();
+      elem.classList.add("fund-tsel");
       elem.matches(":disabled") && tselElem.disable();
     }
   }
 
-  function updateTokenSelect(initialOpt) {
-    const tokenChain = document.querySelector('#proj-chain').value;
-    const tokenSelect = document.querySelector('#proj-token').tomselect;
-    const tokenOpts = document.querySelectorAll('#proj-token-options > option');
-    const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
-      value: elem.value,
-      text: elem.innerText,
-      image: elem.dataset.image,
-      chain: elem.dataset.chain,
-      href: elem.dataset.href,
-    })).filter(({value, chain}) => (
-      chain === tokenChain || value === ""
-    ));
+  function tsUpdateToken(chainElem, tokenElem) {
+    return (option) => {
+      const tokenChain = chainElem.value;
+      const tokenSelect = tokenElem.tomselect;
+      const tokenOpts = document.querySelectorAll('#proj-token-options > option');
+      const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
+        value: elem.value,
+        text: elem.innerText,
+        image: elem.dataset.image,
+        chain: elem.dataset.chain,
+        href: elem.dataset.href,
+      })).filter(({value, chain}) => (
+        chain === tokenChain || value === ""
+      ));
 
-    tokenSelect.clear(true);
-    tokenSelect.clearOptions();
-    tokenSelect.addOptions(tokenChainOpts);
-    tokenSelect.addItem(
-      (tokenChainOpts.find(({value}) => value === initialOpt) ?? tokenChainOpts[0]).value
-    );
+      tokenSelect.clear(true);
+      tokenSelect.clearOptions();
+      tokenSelect.addOptions(tokenChainOpts);
+      tokenSelect.addItem(
+        (tokenChainOpts.find(({value}) => value === option) ?? tokenChainOpts[0]).value
+      );
+    };
   }
 
   function tsCreateOracle(elem) {
@@ -603,7 +730,7 @@ if (window.Alpine === undefined) {
 
       const address = Alpine.store("wallet").address;
       const chain = Alpine.store("wallet").chain;
-      const loadedNFTs = Alpine.store("project").nfts?.[address];
+      const loadedNFTs = Alpine.store("project").assets?.[address];
       const loadNFTOptions = loadedNFTs
         ? Promise.resolve(loadedNFTs)
         : SAFE.nftsGetAll(address, chain, Alpine.store("project").symbol).then(nfts => (
@@ -625,7 +752,7 @@ if (window.Alpine === undefined) {
           text: "(no nfts in wallet)",
           image: "https://placehold.co/24x24/black/black?text=\\n",
         }];
-        Alpine.store("project").loadNFTs(address, nftOptions);
+        Alpine.store("project").loadAssets(address, nftOptions);
         callback(nftOptions);
         // NOTE: Auto-select if only one available; iffy on the ui/ux
         // if (nftOptions.length === 0) { self.addItem(-1); }
@@ -634,95 +761,51 @@ if (window.Alpine === undefined) {
     };
   }
 
+  // https://css-tricks.com/working-with-javascript-media-queries/
+  function watchViewport() {
+    const viewportConfigs = [
+      ["mobile", "(max-width: 640px)"],
+      ["tablet", "(min-width: 640px) and (max-width: 1023px)"],
+      ["desktop", "(min-width: 1024px)"],
+    ];
+    viewportConfigs.forEach(([size, query]) => {
+      const sizeQuery = window.matchMedia(query);
+      const handleSizeChange = e => {if (e.matches) Alpine.store("page").size = size;};
+      sizeQuery.addListener(handleSizeChange);
+      handleSizeChange(sizeQuery);
+    });
+  }
+
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],
     connectors: [injected()],
     transports: {
-      [mainnet.id]: http(NETWORK.RPC.MAINNET),
+      [mainnet.id]: http(NETWORK.RPC.ETHEREUM),
       [sepolia.id]: http(NETWORK.RPC.SEPOLIA),
     },
   });
   window.Wagmi.subscribe(
     (state) => state,
-    (state) => setPageWallet(state),
+    (state) => setWallet(state),
   );
+
+
+  // FIXME: For some reason, twind's style refresher doesn't fire when a
+  // submission fails, so we replicate its "reveal content" behavior manually
+  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
+  document.addEventListener('turbo:submit-end', (event) => {
+    if (!event.detail.success) {
+      document.documentElement.setAttribute("class", "");
+      document.documentElement.setAttribute("style", "");
+    }
+  });
   // https://turbo.hotwired.dev/reference/events#turbo%3Aload
   document.addEventListener("turbo:load", (event) => {
-    setPageWallet(window.Wagmi.state);
-
-    document.querySelector("#fund-butn-wallet").addEventListener("click", (event) => {
-      const { status, current, connections } = window.Wagmi.state;
-      const connection = connections.get(current);
-
-      if (status === "disconnected") {
-        if (connection) {
-          reconnect(window.Wagmi, {connector: connection.connector});
-        } else {
-          const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
-          const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
-          connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => (
-            fetch(`${appUrl}/ship`, {method: "GET"})
-          )).then((responseStream) => (
-            responseStream.text()
-          )).then((responseText) => {
-            const responseDOM = new DOMParser().parseFromString(responseText, "text/html");
-            const ship = responseDOM.querySelector("#ship").value;
-            const clan = responseDOM.querySelector("#clan").value;
-            const wallets = responseDOM.querySelector("#wallets").value.split(" ");
-            return [ship, clan, wallets];
-          }).then(([ship, clan, wallets]) => {
-            const address = getAddress();
-            if (wallets.includes(address) || clan === "pawn") {
-              return Promise.resolve(undefined);
-            } else {
-              return signMessage(window.Wagmi, {
-                account: getAccount(window.Wagmi),
-                message: `I, ${ship}, am broadcasting to the Urbit network that I own wallet ${address}`,
-              });
-            }
-          }).then((signature) => {
-            if (signature === undefined) {
-              return Promise.resolve(undefined);
-            } else {
-              // NOTE: Solution from: https://stackoverflow.com/a/46642899/837221
-              const signData = new URLSearchParams({
-                dif: "prof-sign",
-                pos: signature,
-                poa: getAddress(),
-              });
-              return fetch(`${appUrl}/ship`, {
-                method: "POST",
-                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                body: signData,
-              });
-            }
-          });
-        }
-      } else if (status === "connected") {
-        // FIXME: Actually calling disconnects tells MetaMask to stop giving
-        // this site permission to the associated wallets. Is there any way to
-        // soft disconnect the wallet, i.e. set its status to disconnected without
-        // removing it?
-        disconnect(window.Wagmi, {connector: connection.connector});
-      }
-    });
+    setWallet(window.Wagmi.state);
   });
 
-  const setPageWallet = ({connections, current, status}) => {
-    if (status === "disconnected") {
-      const connection = connections.get(current);
-      if (!connection) {
-        Alpine.store("wallet").update(undefined, undefined);
-      } else {
-        reconnect(window.Wagmi, {connector: connection.connector});
-      }
-    } else if (status === "reconnecting") {
-      Alpine.store("wallet").update(null, null);
-    } else if (status === "connected") {
-      const { address, chainId } = getAccount(window.Wagmi);
-      Alpine.store("wallet").update(address, chainId);
-    }
-  };
+  // TODO: Including in 'turbo:load' causes this to fire too late
+  watchViewport();
 
   Alpine.start();
 }

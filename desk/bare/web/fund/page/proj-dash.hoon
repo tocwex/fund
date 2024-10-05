@@ -266,8 +266,8 @@
               ;button(type "button", x-on-click "toggleTray('{(trip mod)}')")
                 ;*  %+  turn  `(list @tas)`~[%$ %off]
                     |=  sat=@tas
-                    =/  ast=tape  ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
-                    ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                    =/  ext=tape  ?:(=(%$ sat) ~ "?stroke=white")
+                    ;img.w-6@"{(aset:enrl:ff:fh mod)}{ext}"
                       =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}')";
               ==
         ==
@@ -311,10 +311,9 @@
                           ;button(type "button", x-on-click "toggleFilter('{(trip mod)}')")
                             ;*  %+  turn  `(list @tas)`~[%$ %off]
                                 |=  sat=@tas
-                                =/  ast=tape
-                                  %+  welp  "filter-"
-                                  ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
-                                ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                                =/  ast=tape  "filter-{(trip mod)}"
+                                =/  ext=tape  ?:(=(%$ sat) ~ "?stroke=white")
+                                ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                   =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
                           ==
                     ==
@@ -402,8 +401,9 @@
                         ;button(type "button", x-on-click "updateSort('{(trip mod)}')")
                           ;*  %+  turn  `(list @tas)`~[%asc %des %off]
                               |=  ord=@tas
-                              =/  ast=tape  "sort-{(trip mod)}-{(trip ord)}"
-                              ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                              =/  ast=tape  =?(ord =(%off ord) %des "sort-{(trip mod)}-{(trip ord)}")
+                              =/  ext=tape  ?.(=(%off ord) ~ "?stroke=white")
+                              ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                 =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
                         ==
               ==  ==

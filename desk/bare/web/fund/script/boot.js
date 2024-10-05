@@ -216,20 +216,20 @@ if (window.Alpine === undefined) {
       //  styling for links not to work.
       ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(primary-gradient border-black text-black shadow-none)'],
       ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(secondary-gradient border-black text-black shadow-none)'],
-      // ['fund-butn-true', 'fund-butn-default'],
-      // ['fund-butn-false', 'fund-butn-action'],
+      ['fund-butn-true', '~(fund-butn-default)'],
+      ['fund-butn-false', '~(fund-butn-action)'],
       ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
       ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
-      ['fund-butn-tr-s', 'fund-butn-default fund-butn-smol'], // true
-      ['fund-butn-fa-s', 'fund-butn-action fund-butn-smol'], // false
+      ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
+      ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
       ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
       ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
-      ['fund-butn-tr-m', 'fund-butn-default fund-butn-medi'], // true
-      ['fund-butn-fa-m', 'fund-butn-action fund-butn-medi'], // false
+      ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
+      ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
       ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
       ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
-      ['fund-butn-tr-l', 'fund-butn-default fund-butn-lorj'], // true
-      ['fund-butn-fa-l', 'fund-butn-action fund-butn-lorj'], // false
+      ['fund-butn-tr-l', 'fund-butn-true fund-butn-lorj'], // true
+      ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
       ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-primary-700'],

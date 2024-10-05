@@ -108,6 +108,10 @@
     ?>  ?=(%d -.caf)
     %-  abs:si  %-  need  %-  toi:fl  %-  grd:fl
     caf(e (sum:si e.caf (sun:si dex)))
+  ++  vers                                     ::  "1.2.3" => [1 2 3]
+    |=  ver=@t
+    ^-  [@ @ @]
+    (rash ver ;~((glue dot) dem dem dem))
   ++  real                                     ::  "12.345" => .1.2345e1
     |=  rel=@t
     ^-  @rs
@@ -175,6 +179,10 @@
     ?>  ?=(%d -.cax)
     =.  e.cax  (dif:si e.cax (sun:si dex))
     (flot:fx cax `[2 2])
+  ++  vers                                     ::  [1 2 3] => "1.2.3"
+    |=  ver=[@ @ @]
+    ^-  tape
+    "{<+2.ver>}.{<+6.ver>}.{<+7.ver>}"
   ++  real                                     ::  .1.2345e1 => "12.34"
     |=  rel=@rs
     ^-  tape

@@ -235,10 +235,10 @@
       ^-  manx
       =/  bas=tape  ?.(top "w-full" "fund-butn-lorj")
       =/  kas=tape
-        ?.  top  "flex-col gap-3 fund-foot bg-white p-3"
-        "flex-row justify-between bg-palette-contrast rounded-lg drop-shadow-lg p-2"
+        ?.  top  "flex-col gap-3 fund-foot p-3"
+        "flex-row justify-between rounded-lg drop-shadow-lg p-2"
       ;div
-          =class  "w-full flex {kas} {cas}"
+          =class  "w-full flex bg-palette-contrast {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
         ;*  =-  :~  ;div(class "flex flex-row items-center {(trip ?:(top 'gap-2' 'justify-between'))}")
                       ;*  mix
@@ -646,30 +646,41 @@
                     =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex flex-wrap items-center justify-between")
                     ;div(class "flex items-center gap-x-2")
-                      ;*  =-  :~  (icon-logo:ui:fh %rect url)
-                                  ::  TODO: Needs major cleanup
-                                  ;a  =href  ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej (chat:enrl:ff:fh p.lag))
-                                      =target  "_blank"
-                                      =class  "fund-addr hover:text-link text-black"
-                                      =x-init  ?+(-.mul ~ %pruf "initENS($el, '{muf}')")
-                                    {txt}
+                      ;*  =-  =/  kas=tape  ?~(mur ~ "hover:text-link")
+                              :~  (icon-logo:ui:fh %rect lur)
+                                  %:  ~(link-butn ui:fh "fund-addr text-black {kas}")
+                                      wer=mur  tab=&  txt=txt  dis=~
+                                      arz=[%xinit ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
                                   ==
                               ==
-                          ^-  [url=tape txt=tape]
-                          ?-  -.mul
-                            %plej  [(surt:enrl:ff:fh ship.mul) (ship:enjs:ff:fh ship.mul)]
+                          ^-  [mur=tape lur=tape txt=tape]
+                          ?-    -.mul
+                              %plej
+                            :*  mur=(chat:enrl:ff:fh ship.mul)
+                                lur=(surt:enrl:ff:fh ship.mul)
+                                txt=(ship:enjs:ff:fh ship.mul)
+                            ==
                           ::
-                              %trib
-                            ?~  ship.mul  [(colt:enrl:ff:fh %black) "anonymous"]
-                            [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
-                          ::
-                              %pruf
-                            ?~  ship.mul  [(aset:enrl:ff:fh %link) (sadr:enjs:ff:fh from.when.mul)]
-                            [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
+                              ?(%trib %pruf)
+                            ?^  ship.mul
+                              :*  mur=(chat:enrl:ff:fh u.ship.mul)
+                                  lur=(surt:enrl:ff:fh u.ship.mul)
+                                  txt=(ship:enjs:ff:fh u.ship.mul)
+                              ==
+                            ?-  -.mul
+                              %trib  [~ lur=(colt:enrl:ff:fh %black) txt="anonymous"]
+                              %pruf  [~ lur=(aset:enrl:ff:fh %link) txt=(sadr:enjs:ff:fh from.when.mul)]
+                            ==
                           ==
                     ==
                     ;div(class "flex items-center gap-x-2")
-                      ;p(class "font-serif text-black"): {(swam:enjs:ff:fh cash.mul payment.pro)}
+                      ;+  =/  tur=tape
+                            ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej ~)
+                          =/  kas=tape  ?~(tur ~ "hover:text-link")
+                          =/  txt=tape  (swam:enjs:ff:fh cash.mul payment.pro)
+                          %:  ~(link-butn ui:fh "font-serif text-black {kas}")
+                              wer=tur  tab=&  txt=txt  dis=~  arz=~
+                          ==
                       ;+  =-  ;div(class "fund-pill {kas}"): {tyt}
                           ^-  [tyt=tape kas=tape]
                           ?-    -.mul

@@ -244,18 +244,16 @@
       |=  top=bean
       ^-  manx
       =/  kas=tape
-        ?.  top  "flex-col-reverse bg-white fund-foot p-3"
-        "flex-col bg-palette-contrast rounded-lg drop-shadow-lg p-2"
+        ?.  top  "flex-col-reverse fund-foot p-3"
+        "flex-col rounded-lg drop-shadow-lg p-2"
       =/  syk=manx
         ;div(class "w-full flex-1 flex flex-row gap-4")
           ;div(class "w-full flex-1 flex flex-row gap-1")
-            ;+  :_  ~  :-  %input
-                :~  [%type "text"]
-                    [%placeholder "Search projects…"]
-                    [%class "p-1 flex-1 min-w-0"]
-                    [%x-model "filt_status.params.text"]
-                    [%'x-on:keyup.enter' "tray_status.open && submitQuery()"]
-                ==
+            ;input  =type  "text"
+              =class  "p-1 flex-1 min-w-0"
+              =placeholder  "Search projects…"
+              =x-model  "filt_status.params.text"
+              =x-on-keyup-enter  "tray_status.open && submitQuery()";
             ;button.fund-butn-ac-m(type "button", x-on-click "submitQuery")
               ;img@"{(aset:enrl:ff:fh %search)}";
             ==
@@ -272,7 +270,7 @@
               ==
         ==
       ;div
-          =class  "w-full flex gap-3 {kas} {cas}"
+          =class  "w-full flex gap-3 bg-palette-contrast {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
         ;div(class "w-full flex flex-row gap-2 {(trip ?:(top '' 'justify-center'))}")
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
@@ -300,21 +298,27 @@
               :~  ;div(class "w-full flex flex-col gap-3", x-show "tray_status.mode == 'filter'")
                     ;div(class kas)
                       ;*  %+  turn
-                            ^-  (list @tas)
-                            %+  welp  ~[%swap %work %orac]
-                            ?:(=(%discover dyp) ~[%undo] ~[%stat %undo])
-                          |=  mod=@tas
-                          ?:  ?=(%undo mod)
-                            ;button(type "button", x-on-click "toggleFilter(undefined); wipeFilter()")
-                              ; RESET
+                            ^-  (list [@tas tape])
+                            ;:  welp
+                              [%swap "funding"]~
+                              [%work "worker"]~
+                              [%orac "oracle"]~
+                              ?:(=(%discover dyp) ~ [%stat "status"]~)
+                              [%undo "RESET"]~
                             ==
-                          ;button(type "button", x-on-click "toggleFilter('{(trip mod)}')")
+                          |=  [mod=@tas txt=tape]
+                          ?:  ?=(%undo mod)
+                            ;button(type "button", x-on-click "toggleFilter(undefined);wipeFilter()"): {txt}
+                          ;button  =type  "button"
+                              =class  "flex flex-row gap-2"
+                              =x-on-click  "toggleFilter('{(trip mod)}')"
                             ;*  %+  turn  `(list @tas)`~[%$ %off]
                                 |=  sat=@tas
                                 =/  ast=tape  "filter-{(trip mod)}"
                                 =/  ext=tape  ?:(=(%$ sat) ~ "?stroke=white")
                                 ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                   =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
+                            ;div(class "hidden lg:block"): {txt}
                           ==
                     ==
                     ;div(x-show "filt_status.mode == 'swap'")
@@ -394,17 +398,27 @@
                     ==
                   ==
                   ;div(class "flex-1 {kas}", x-show "tray_status.mode == 'sort'")
-                    ;*  %+  turn  `(list @tas)`~[%time %pals %cost %alph %undo]
-                        |=  mod=@tas
+                    ;*  %+  turn
+                          ^-  (list [@tas tape])
+                          :~  [%time "update time"]
+                              [%pals "pal count"]
+                              [%cost "total cost"]
+                              [%alph "alphabetical"]
+                              [%undo "RESET"]
+                          ==
+                        |=  [mod=@tas txt=tape]
                         ?:  ?=(%undo mod)
-                          ;button(type "button", x-on-click "updateSort(undefined)"): RESET
-                        ;button(type "button", x-on-click "updateSort('{(trip mod)}')")
+                          ;button(type "button", x-on-click "updateSort(undefined)"): {txt}
+                        ;button  =type  "button"
+                            =class  "flex flex-row gap-2"
+                            =x-on-click  "updateSort('{(trip mod)}')"
                           ;*  %+  turn  `(list @tas)`~[%asc %des %off]
                               |=  ord=@tas
                               =/  ast=tape  =?(ord =(%off ord) %des "sort-{(trip mod)}-{(trip ord)}")
                               =/  ext=tape  ?.(=(%off ord) ~ "?stroke=white")
                               ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                 =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
+                          ;div(class "hidden lg:block"): {txt}
                         ==
               ==  ==
         ==

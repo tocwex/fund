@@ -42,11 +42,11 @@
           pro=(dest:enrl:ff:fh pat(- %project, +>+ ~))
       ==
     =/  btn
-      :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~)
-          pro=(link-butn:ui:fh pro.syt %| "back to project" ~)
-          tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~)
-          joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~)
-          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to following" ~)
+      :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~ ~)
+          pro=(link-butn:ui:fh pro.syt %| "back to project" ~ ~)
+          tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~ ~)
+          joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~ ~)
+          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to following" ~ ~)
       ==
     ?+    typ.pat  !!
         %bump
@@ -75,7 +75,7 @@
         '''
       :~  (prod-butn:ui:fh %bump-prop %true "request oracle ✓" ~ ~)
           =+  (dest:enrl:ff:fh pat(- %project))
-            (link-butn:ui:fh - %| "continue editing" ~)
+            (link-butn:ui:fh - %| "continue editing" ~ ~)
           pro.btn
       ==
     ::
@@ -106,7 +106,7 @@
       :*    ^=  but
           ?-    aut
             %clear  joi.btn
-            %eauth  (~(link-butn ui:fh "fund-butn-ac-m") "{hep.syt}/#installing-fund" %& "get %fund ~" ~)
+            %eauth  (~(link-butn ui:fh "fund-butn-ac-m") "{hep.syt}/#installing-fund" %& "get %fund ~" ~ ~)
             %admin  tlo.btn
           ==
       ::

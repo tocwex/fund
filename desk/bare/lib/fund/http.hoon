@@ -33,19 +33,39 @@
   |=  [man=mane tap=tape]
   :_  tap
   ?^  man  man
-  =-  =<  +  %^  spin  rez  man
-      |=  [[pre=@tas nex=@t] acc=@tas]
-      ^-  [[@tas @t] @tas]
-      :-  [pre nex]
-      ?.  =(pre (dis pre man))  acc
-      =+  pro=[3 (met 3 pre)]
-      (con nex (lsh pro (rsh pro acc)))
-  ^-  rez=(list [@tas @t])
-  :~  [%xlass ':class']
-      [%xtyle ':style']
-      [%x-on- 'x-on:']
-      [%x-bind- 'x-bind:']
-  ==
+  |^  (srep (prep man))
+  ++  prep                                       ::  prefix replce
+    |=  cor=@t
+    =-  =<  +  %^  spin  rez  cor
+        |=  [[pre=@tas rep=@t] acc=@tas]
+        ^-  [[@tas @t] @tas]
+        :-  [pre rep]
+        ?.  =(pre (dis pre cor))  acc
+        =/  lep=[b=@ l=@]  [3 (met 3 pre)]
+        (con rep (lsh lep (rsh lep acc)))
+    ^-  rez=(list [@tas @t])
+    :~  [%xlass ':class']
+        [%xtyle ':style']
+        [%x-on- 'x-on:']
+        [%x-bind- 'x-bind:']
+    ==
+  ++  srep                                       ::  suffix replace
+    |=  cor=@t
+    =-  =<  +  %^  spin  rez  cor
+        |=  [[suf=@tas rep=@t] acc=@tas]
+        ^-  [[@tas @t] @tas]
+        :-  [suf rep]
+        =/  les=[b=@ l=@]  [3 (met 3 suf)]
+        =/  lec=[b=@ l=@]  [3 (met 3 cor)]
+        ?:  (lth l.lec l.les)  acc
+        =/  lep=[b=@ l=@]  [3 (sub l.lec l.les)]
+        ?.  =(suf (dis suf (rsh lep cor)))  acc
+        (cat 3 (cut 3 [0 l.lep] acc) rep)
+    ^-  rez=(list [@tas @t])
+    :~  [%'-enter' '.enter']
+        [%'-outside' '.outside']
+    ==
+  --
 ::
 ::  +parz: parse POST request parameters considering required arguments
 ::
@@ -313,7 +333,7 @@
               =x-on-mouseenter  "hover = true"
               =x-on-mouseleave  "hover = false"
             ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
-            ;img.h-full@"{(aset:enrl:ff %fund-off)}"(x-show "hover");
+            ;img.h-full@"{(aset:enrl:ff %fund)}?stroke=%23f0f0f1"(x-show "hover");
           ==
       ::  FIXME: This shouldn't shrink along the y-axis when minimizing
       ::  the page
@@ -327,12 +347,13 @@
           ;button  =type  "button"
               =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
               =x-on-click  "open = ! open"
-            ;+  ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
-                  ;+  (ship-logo src.bol bol)
-                  ;span(class "hidden font-bold", xtyle "(!{xom} || !{xow}) && \{display: 'block'}")
-                    ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
-                  ==
-                ==
+              =x-on-click-outside  "open = false"
+            ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
+              ;+  (ship-logo src.bol bol)
+              ;span(class "hidden font-bold", xtyle "(!{xom} || !{xow}) && \{display: 'block'}")
+                ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
+              ==
+            ==
             ;div(class "shrink-0 fund-butn-de-l", x-text "$store.wallet.status");
           ==
           ;div(class "flex flex-col gap-2", x-show "open")
@@ -883,16 +904,16 @@
       ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %copy)}";
     ==
   ++  link-butn                                  ::  hyperlink/redirect button
-    |=  [wer=tape tab=bean txt=tape dis=tape]
+    |=  [wer=tape tab=bean txt=tape dis=tape arz=mart]
     ^-  manx
     :_  ; {txt}
     :-  %a
     ;:  welp
         ?~(dis ~ ~[[%disabled ~] [%title dis]])
-        ?.(tab ~ ~[[%target "_blank"]])
-        [%href wer]~
-        ::  FIXME: Hack b/c post-hoc replacement doesn't work
+        ?.(tab ~ [%target "_blank"]~)
+        ?~(wer ~ [%href wer]~)
         [%class ?~(cas "fund-butn-de-m" cas)]~
+        arz
     ==
   ++  prod-butn                                  ::  prod/poke/action button
     |=  [pod=@tas typ=?(%action %true %false) txt=tape xon=tape diz=tape]

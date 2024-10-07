@@ -646,9 +646,8 @@
                     =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex flex-wrap items-center justify-between")
                     ;div(class "flex items-center gap-x-2")
-                      ;*  =-  =/  kas=tape  ?~(mur ~ "hover:text-link")
-                              :~  (icon-logo:ui:fh %rect lur)
-                                  %:  ~(link-butn ui:fh "fund-addr text-black {kas}")
+                      ;*  =-  :~  (icon-logo:ui:fh %rect lur)
+                                  %:  ~(link-butn ui:fh "fund-addr text-black hover:text-link")
                                       wer=mur  tab=&  txt=txt  dis=~
                                       arz=[%xinit ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
                                   ==
@@ -667,9 +666,10 @@
                                   lur=(surt:enrl:ff:fh u.ship.mul)
                                   txt=(ship:enjs:ff:fh u.ship.mul)
                               ==
+                            :-  mur=(esat:enrl:ff:fh %addr from.when.mul chain.payment.pro)
                             ?-  -.mul
-                              %trib  [~ lur=(colt:enrl:ff:fh %black) txt="anonymous"]
-                              %pruf  [~ lur=(aset:enrl:ff:fh %link) txt=(sadr:enjs:ff:fh from.when.mul)]
+                              %trib  [lur=(colt:enrl:ff:fh %black) txt="anonymous"]
+                              %pruf  [lur=(aset:enrl:ff:fh %link) txt=(sadr:enjs:ff:fh from.when.mul)]
                             ==
                           ==
                     ==

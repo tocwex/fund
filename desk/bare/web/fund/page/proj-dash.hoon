@@ -244,18 +244,23 @@
       |=  top=bean
       ^-  manx
       =/  kas=tape
-        ?.  top  "flex-col-reverse fund-foot p-3"
+        ?.  top  "flex-col-reverse drip-shadow-lg fund-foot p-3"
         "flex-col rounded-lg drop-shadow-lg p-2"
       =/  syk=manx
         ;div(class "w-full flex-1 flex flex-row gap-4")
-          ;div(class "w-full flex-1 flex flex-row gap-1")
+          ;div(class "relative w-full flex-1 flex flex-row gap-1")
             ;input  =type  "text"
-              =class  "p-1 flex-1 min-w-0"
+              =class  "py-1 pl-4 pr-10 flex-1 min-w-0"
               =placeholder  "Search projects…"
+              :: =x-ref  "fund_search"
               =x-model  "filt_status.params.text"
-              =x-on-keyup-enter  "tray_status.open && submitQuery()";
-            ;button.fund-butn-ac-m(type "button", x-on-click "submitQuery")
+              =x-on-keyup-enter  "submitQuery";
+            ::  NOTE: CSS trick from https://stackoverflow.com/a/28456704
+            ;button  =type  "button"
+                =class  "absolute right-3 top-[50%] translate-y-[-50%]"
+                =x-on-click  "submitQuery"
               ;img@"{(aset:enrl:ff:fh %search)}";
+              :: ;img@"{(aset:enrl:ff:fh %close)}"(x-show "$focus.focused() == $refs.fund_search");
             ==
           ==
           ;*  ?:  =(%action dyp)  ~
@@ -285,7 +290,7 @@
               ?:  top  syk
               ;button  =type  "button"
                   =x-on-click  "toggleTray(undefined)"
-                  =class  "{cas} border-l border-gray-250"
+                  =class  "{cas} border-l-2 border-palette-background"
                 ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
               ==
         ==
@@ -619,7 +624,11 @@
             });
           },
           submitQuery() {
-            const params = new URLSearchParams({
+            const oldParams = new URL(document.location.toString()).searchParams;
+            if (oldParams.size === 0) {
+              oldParams.set("desc", "true");
+            }
+            const newParams = new URLSearchParams({
               ...((this.filt_status.mode === "swap" || this.filt_status.mode === undefined)
                 ? {}
                 : {filt: this.filt_status.mode}
@@ -631,7 +640,13 @@
               ))),
               // TODO: Include chain number when symbols are not unique
             });
-            this.openHREF(`${window.location.pathname}?${params}`);
+
+            if (
+              [...oldParams.entries()].sort().toString() !==
+              [...newParams.entries()].sort().toString()
+            ) {
+              this.openHREF(`${window.location.pathname}?${newParams}`);
+            }
           },
           })));
           '''

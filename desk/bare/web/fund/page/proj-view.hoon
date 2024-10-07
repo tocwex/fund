@@ -223,7 +223,7 @@
       |=  [tyt=tape fom=marl]
       ^-  manx
       ;div
-        ;button(class "fund-butn-de-l {cas}", x-init "initTippy($el)"): {tyt}
+        ;button(class "fund-butn-de-l {cas}", x-init "initTippy($el, \{dir: 'bottom-end'})"): {tyt}
         ;div(class "hidden")
           ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 p-2")
             ;*  fom
@@ -235,7 +235,7 @@
       ^-  manx
       =/  bas=tape  ?.(top "w-full" "fund-butn-lorj")
       =/  kas=tape
-        ?.  top  "flex-col gap-3 fund-foot p-3"
+        ?.  top  "flex-col drip-shadow-lg gap-3 fund-foot p-3"
         "flex-row justify-between rounded-lg drop-shadow-lg p-2"
       ;div
           =class  "w-full flex bg-palette-contrast {kas} {cas}"

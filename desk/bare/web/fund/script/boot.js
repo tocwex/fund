@@ -1,6 +1,7 @@
 import alpineTurboDriveAdapter from 'https://cdn.skypack.dev/alpine-turbo-drive-adapter';
 import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1';
 import Alpine from 'https://cdn.skypack.dev/alpinejs@v3.13.9';
+// import AlpineFocus from 'https://cdn.skypack.dev/@alpinejs/focus@v3.13.9';
 import * as twind from 'https://cdn.jsdelivr.net/npm/@twind/core@1.1.3/+esm';
 import presetTwind from 'https://cdn.jsdelivr.net/npm/@twind/preset-tailwind@1.1.4/+esm';
 import presetLineClamp from 'https://cdn.jsdelivr.net/npm/@twind/preset-line-clamp@1.0.7/+esm';
@@ -174,6 +175,19 @@ if (window.Alpine === undefined) {
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
+      ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
+      // NOTE: Inverted "drop-shadow" classes (drop upward instead of downward)
+      ['drip-shadow-sm', {'filter': 'drop-shadow(0 -1px 1px rgb(0 0 0 / 0.05))'}],
+      ['drip-shadow', {
+        'filter': 'drop-shadow(0 -1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 -1px 1px rgb(0 0 0 / 0.06))'
+      }], ['drip-shadow-md', {
+        'filter': 'drop-shadow(0 -4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 -2px 2px rgb(0 0 0 / 0.06))'
+      }], ['drip-shadow-lg', {
+        'filter': 'drop-shadow(0 -10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 -4px 3px rgb(0 0 0 / 0.1))'
+      }], ['drip-shadow-xl', {
+        'filter': 'drop-shadow(0 -20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 -8px 5px rgb(0 0 0 / 0.08))'
+      }],
+      ['drip-shadow-2xl', {'filter': 'drop-shadow(0 -25px 25px rgb(0 0 0 / 0.15))'}],
       // FIXME: It would be great if this could be specified purely in
       // tailwind syntax
       ['primary-gradient', {'background': `
@@ -186,7 +200,6 @@ if (window.Alpine === undefined) {
           ${PALETTE.label}, ${PALETTE.label} 10px,
           ${PALETTE.secondary} 10px, ${PALETTE.secondary} 20px)
       `}],
-      ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-black/50 disabled:bg-gray-500'],
       ['fund-head', 'sticky z-40 top-0'],
@@ -238,67 +251,7 @@ if (window.Alpine === undefined) {
   });
 
   window.Alpine = Alpine;
-  function cmd() {
-    // https://twind.run/junior-crazy-mummy?file=script
-    return twind.css({
-      '.markdown-body > *': {'@apply': 'mt-3'},
-      '.markdown-body > *:first-child': {'@apply': 'mt-0'},
-      '& h1': {'@apply': 'text-2xl font-bold'},
-      '& h2': {'@apply': 'text-xl font-semibold'},
-      '& h3': {'@apply': 'text-lg font-semibold'},
-      '& h4': {'@apply': 'underline font-medium italic'},
-      '& h5': {'@apply': 'underline font-medium italic'},
-      '& h6': {'@apply': 'underline italic'},
-      '& a': {'color': '-webkit-link', 'text-decoration': 'underline'},
-    });
-  }
-
-  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
-  customElements.define(
-    'zero-md',
-    class extends ZeroMd {
-      async parse(obj) {
-        const parsed = await super.parse(obj);
-        return DOMPurify.sanitize(parsed);
-      }
-      async load() {
-        const elem = document.createElement("div");
-        elem.setAttribute("id", "fund-loader");
-        elem.setAttribute("class", "fund-loader");
-        elem.innerText = "⏳";
-        this.appendChild(elem);
-
-        await super.load();
-
-        this.marked.use({
-          gfm: true,
-          breaks: false,
-          renderer: {
-            image: (href, title, text) => {
-              // FIXME: This is a really gross way to test if the 'zero-md'
-              // container is in preview mode; ideally, we'd use CSS instead
-              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
-              const imagElem = document.createElement(isPreview ? "a" : "img");
-              if (isPreview) {
-                imagElem.setAttribute("href", href);
-                imagElem.innerText = text ?? title ?? href;
-              } else {
-                imagElem.setAttribute("src", href);
-                if (text) imagElem.setAttribute("alt", text);
-                if (title) imagElem.setAttribute("title", title);
-              }
-              return imagElem.outerHTML;
-            },
-          },
-        });
-      }
-    },
-  );
-  addEventListener('zero-md-rendered', (event) => {
-    const outer = event.target;
-    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
-    if (loader) outer.removeChild(loader);
-  });
+  // Alpine.plugin(AlpineFocus);
 
   Alpine.store("page", {
     size: undefined,
@@ -363,6 +316,21 @@ if (window.Alpine === undefined) {
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
+
+  function cmd() {
+    // https://twind.run/junior-crazy-mummy?file=script
+    return twind.css({
+      '.markdown-body > *': {'@apply': 'mt-3'},
+      '.markdown-body > *:first-child': {'@apply': 'mt-0'},
+      '& h1': {'@apply': 'text-2xl font-bold'},
+      '& h2': {'@apply': 'text-xl font-semibold'},
+      '& h3': {'@apply': 'text-lg font-semibold'},
+      '& h4': {'@apply': 'underline font-medium italic'},
+      '& h5': {'@apply': 'underline font-medium italic'},
+      '& h6': {'@apply': 'underline italic'},
+      '& a': {'color': '-webkit-link', 'text-decoration': 'underline'},
+    });
+  }
 
   function swapHTML(elem, html) {
     if (elem.getAttribute("data-html") === null) {
@@ -775,6 +743,55 @@ if (window.Alpine === undefined) {
       handleSizeChange(sizeQuery);
     });
   }
+
+
+  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
+  customElements.define(
+    'zero-md',
+    class extends ZeroMd {
+      async parse(obj) {
+        const parsed = await super.parse(obj);
+        return DOMPurify.sanitize(parsed);
+      }
+      async load() {
+        const elem = document.createElement("div");
+        elem.setAttribute("id", "fund-loader");
+        elem.setAttribute("class", "fund-loader");
+        elem.innerText = "⏳";
+        this.appendChild(elem);
+
+        await super.load();
+
+        this.marked.use({
+          gfm: true,
+          breaks: false,
+          renderer: {
+            image: (href, title, text) => {
+              // FIXME: This is a really gross way to test if the 'zero-md'
+              // container is in preview mode; ideally, we'd use CSS instead
+              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
+              const imagElem = document.createElement(isPreview ? "a" : "img");
+              if (isPreview) {
+                imagElem.setAttribute("href", href);
+                imagElem.innerText = text ?? title ?? href;
+              } else {
+                imagElem.setAttribute("src", href);
+                if (text) imagElem.setAttribute("alt", text);
+                if (title) imagElem.setAttribute("title", title);
+              }
+              return imagElem.outerHTML;
+            },
+          },
+        });
+      }
+    },
+  );
+  addEventListener('zero-md-rendered', (event) => {
+    const outer = event.target;
+    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
+    if (loader) outer.removeChild(loader);
+  });
+
 
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],

@@ -359,7 +359,7 @@
           ;div(class "flex flex-col gap-2", x-show "open")
             ;div  ::  current wallet section
               ;div(class "flex flex-col gap-2", x-show "!$store.wallet.connected")
-                ;button(type "button", x-on-click "toggleWallet", class bas): connect
+                ;button(type "button", x-on-click "toggleWallet", class bas): choose wallet 💲
               ==
               ;div(class "flex flex-col gap-2", x-show "$store.wallet.connected")
                 ;div(class "rounded-md bg-palette-background py-1 px-2")

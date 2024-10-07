@@ -644,10 +644,11 @@
                 ;div
                     =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
                     =class   "flex flex-col gap-y-2 {mas}"
-                  ;div(class "flex flex-wrap items-center justify-between")
-                    ;div(class "flex items-center gap-x-2")
+                  ;div(class "flex items-center justify-between")
+                    ;div(class "shrink flex inline-flex items-center gap-2")
                       ;*  =-  :~  (icon-logo:ui:fh %rect lur)
-                                  %:  ~(link-butn ui:fh "fund-addr text-black hover:text-link")
+                                  %:  %~  link-butn  ui:fh
+                                        "fund-addr text-black overflow-hidden hover:text-link"
                                       wer=mur  tab=&  txt=txt  dis=~
                                       arz=[%xinit ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
                                   ==
@@ -673,7 +674,7 @@
                             ==
                           ==
                     ==
-                    ;div(class "flex items-center gap-x-2")
+                    ;div(class "flex inline-flex items-center gap-2")
                       ;+  =/  tur=tape
                             ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej ~)
                           =/  kas=tape  ?~(tur ~ "hover:text-link")

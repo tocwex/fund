@@ -489,6 +489,14 @@
               %action
             =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
             =/  sus=tape  "w-[50vw] sm:w-[250px]"
+            =/  sax=manx
+              ;p.fund-warn
+                ; To serve as a %fund oracle service provider, please
+                ;a.text-link  =target  "_blank"
+                    =href  "{(trip !<(@t (slot:config %meta-help)))}/user-guides/trusted-oracles-wip#why-do-we-only-support-stars-as-escrow-providers"
+                  ;  acquire a Star-level Urbit ID.
+                ==
+              ==
             ?^  text.arg
               :_  ~
               %^  mota-well:ui  mas  'No projects found.'
@@ -516,14 +524,7 @@
                   ;div                               ::  $prez with %prop status
                     ;h2: Service Requests
                     ;+  %^  ~(mota-well ui sus)  sas
-                          ?:  (star:fx src.bol)  'No outstanding requests.'
-                          ;p.fund-warn
-                            ; To serve as a %fund oracle service provider, please
-                            ;a.text-link  =target  "_blank"
-                                =href  "{(trip !<(@t (slot:config %meta-help)))}/user-guides/trusted-oracles-wip#why-do-we-only-support-stars-as-escrow-providers"
-                              ;  acquire a Star-level Urbit ID.
-                            ==
-                          ==
+                          ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%prop ~(stat pj:fj -.pre))
                             =(p.assessment.pre our.bol)
@@ -531,7 +532,8 @@
                   ==
                   ;div                               ::  $prez with %sess status
                     ;h2: Review Requests
-                    ;+  %^  ~(mota-well ui sus)  sas  'No projects pending review.'
+                    ;+  %^  ~(mota-well ui sus)  sas
+                          ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%sess ~(stat pj:fj -.pre))
                             =(p.assessment.pre our.bol)

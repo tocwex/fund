@@ -487,7 +487,7 @@
             ==
           ::
               %action
-            =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col overflow-x-auto"
+            =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
             =/  sus=tape  "w-[50vw] sm:w-[250px]"
             ?^  text.arg
               :_  ~
@@ -519,7 +519,7 @@
                           ?:  (star:fx src.bol)  'No outstanding requests.'
                           ;p.fund-warn
                             ; To serve as a %fund oracle service provider, please
-                            ;a.text-link
+                            ;a.text-link  =target  "_blank"
                                 =href  "{(trip !<(@t (slot:config %meta-help)))}/user-guides/trusted-oracles-wip#why-do-we-only-support-stars-as-escrow-providers"
                               ;  acquire a Star-level Urbit ID.
                             ==

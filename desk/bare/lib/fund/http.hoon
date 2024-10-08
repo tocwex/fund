@@ -699,7 +699,7 @@
               ::  rules like all of the other <input>s
               ;label(for "tok")
                 ; Token
-                ;span(class "-ml-1 text-highlight1-500"): *
+                ;span(class "-ml-1 text-red-500"): *
               ==
               ::  FIXME: It would be better if this were an <a> element,
               ::  but that doesn't properly auto-update via 'x-bind-href'
@@ -834,13 +834,13 @@
     ^-  [nam=tape kas=tape]
     :-  (stat:enjs:ff sat)
     ?-  sat
-      %born  "fund-pill-born"  ::  "primary-600"
-      %prop  "fund-pill-born"  ::  "gray-700"
-      %lock  "fund-pill-lock"  ::  "tertiary-350"
-      %work  "fund-pill-work"  ::  "secondary-300"
-      %sess  "fund-pill-work"  ::  "secondary-400"
-      %done  "fund-pill-done"  ::  "highlight2-450"
-      %dead  "fund-pill-dead"  ::  "highlight1-400"
+      %born  "fund-pill-born"
+      %prop  "fund-pill-born"
+      %lock  "fund-pill-lock"
+      %work  "fund-pill-work"
+      %sess  "fund-pill-work"
+      %done  "fund-pill-done"
+      %dead  "fund-pill-dead"
     ==
   ++  icon-stax                                  ::  stack of icons (leftmost on top)
     |=  [typ=?(%circ %rect) liz=(list tape)]
@@ -864,9 +864,9 @@
         ==
     ^=  kas
     """
-    relative w-8 h-4 bg-primary-500 border-2 border-secondary-500 rounded-full
-    peer-checked:bg-secondary-450 peer-checked:after:translate-x-[175%] peer-checked:after:bg-primary-500
-    after:content-[''] after:absolute after:top-[1px] after:bg-secondary-450 after:rounded-full
+    relative w-8 h-4 bg-palette-primary border-2 border-palette-secondary rounded-full
+    peer-checked:bg-palette-secondary/80 peer-checked:after:translate-x-[175%] peer-checked:after:bg-palette-primary
+    after:content-[''] after:absolute after:top-[1px] after:bg-palette-secondary/80 after:rounded-full
     after:h-2.5 after:w-2.5 after:transition-transform
     """
   ++  edit-butn                                  ::  project edit link button

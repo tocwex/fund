@@ -68,13 +68,13 @@ input[required] + label:after,
 select[required] + label:after,
 div.ts-wrapper + label:after {
   content: '*';
-  color: #ff0033; /* text-highlight1-500 */
+  color: #EF4444; /* text-red-500 */
 }
 
 /* Drop-up for selectors near the bottom of the page (https://stackoverflow.com/a/78298291) */
 .ts-dropdown.dropup {
-    bottom: 100%;
-    top: auto;
+  bottom: 100%;
+  top: auto;
 }
 
 /* Remove 'w-full' from .ts-control inputs (prevents weird multi-line input breakups) */

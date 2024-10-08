@@ -46,7 +46,7 @@
           pro=(link-butn:ui:fh pro.syt %| "back to project" ~ ~)
           tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~ ~)
           joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~ ~)
-          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to following" ~ ~)
+          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to dashboard" ~ ~)
       ==
     ?+    typ.pat  !!
         %bump
@@ -114,7 +114,7 @@
           ;div(class "w-full flex flex-col gap-y-3")
             ;*  ?:  ?=(%trib typ.pat)  ~
                 :_  ~
-                ;p(class "bg-highlight1-150 text-highlight1-500 border-highlight1-500 border rounded-md p-3")
+                ;p(class "bg-red-150 text-red-500 border-red-500 border rounded-md p-3")
                   ; Your pledge is a public (and cryptographically provable) promise
                   ; to contribute funds that is backed by your word as {<src.bol>}.
                   ;span(class "font-bold")

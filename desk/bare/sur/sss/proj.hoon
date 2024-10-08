@@ -98,7 +98,6 @@
       ?>  aver-work
       ?>  =(%born sat)
       ?>  =(%born ~(stat pj pro.pod))
-      ::  NOTE: For now, stars and galaxies only
       ?>  (star:fx p.assessment.pro.pod)
       pro.pod
     ::

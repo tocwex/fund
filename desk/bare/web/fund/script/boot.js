@@ -24,13 +24,6 @@ import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
 
 if (window.Alpine === undefined) {
-  const PALETTE = {
-    primary: '#545557',
-    secondary: '#dedfe0',
-    label: '#4a4b4c',
-    background: '#f0f0f1',
-    contrast: '#dedfe0',
-  };
   twind.install({
     presets: [
       presetTwind(),
@@ -49,103 +42,12 @@ if (window.Alpine === undefined) {
           '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
         },
         colors: {
-          // new style
-          palette: PALETTE,
-          // old style
-          primary: {
-            100: '#fdfdfd',
-            150: '#fafafa',
-            200: '#f8f8f8',
-            250: '#f6f6f6',
-            300: '#f4f4f4',
-            350: '#f1f1f1',
-            400: '#efefef',
-            450: '#ededed',
-            500: '#e8e8e8',
-            550: '#bababa',
-            600: '#a2a2a2',
-            650: '#8b8b8b',
-            700: '#747474',
-            750: '#5d5d5d',
-            800: '#464646',
-            850: '#232323',
-            900: '#171717',
-          },
-          secondary: {
-            100: '#ffffff',
-            150: '#cfdcf2',
-            200: '#9eb8e5',
-            250: '#6e95d8',
-            300: '#3e72cc',
-            350: '#2b56a1',
-            400: '#1e3c71',
-            450: '#112240',
-            500: '#04080f',
-            550: '#04080e',
-            600: '#03060c',
-            650: '#03050a',
-            700: '#020408',
-            750: '#020306',
-            800: '#010204',
-            850: '#010102',
-            900: '#090909',
-          },
-          tertiary: {
-            100: '#ffffff',
-            150: '#dff0f2',
-            200: '#bfe1e6',
-            250: '#9fd2d9',
-            300: '#7fc3cc',
-            350: '#5fb4bf',
-            400: '#45a1ad',
-            450: '#38838d',
-            500: '#2c666e',
-            550: '#265960',
-            600: '#214c52',
-            650: '#214c52',
-            700: '#163337',
-            750: '#102629',
-            800: '#0b191b',
-            850: '#050d0e',
-            900: '#090909',
-          },
-          highlight1: {
-            100: '#ffe5eb',
-            150: '#ffccd6',
-            200: '#ffb3c2',
-            250: '#ff99ad',
-            300: '#ff8099',
-            350: '#ff6685',
-            400: '#ff4d70',
-            450: '#ff335c',
-            500: '#ff0033',
-            550: '#cc0029',
-            600: '#b30024',
-            650: '#99001f',
-            700: '#80001a',
-            750: '#660014',
-            800: '#4d000f',
-            850: '#33000a',
-            900: '#1a0005',
-          },
-          highlight2: {
-            100: '#edf4ef',
-            150: '#dce8e0',
-            200: '#caddd0',
-            250: '#b8d2c0',
-            300: '#a6c6b0',
-            350: '#95bba1',
-            400: '#83b091',
-            450: '#71a481',
-            500: '#568665',
-            550: '#446b51',
-            600: '#3c5e47',
-            650: '#33503c',
-            700: '#2b4332',
-            750: '#223628',
-            800: '#1a281e',
-            850: '#111b14',
-            900: '#090d0a',
+          palette: {
+            primary: '#545557',
+            secondary: '#dedfe0',
+            label: '#4a4b4c',
+            background: '#f0f0f1',
+            contrast: '#dedfe0',
           },
         },
       },
@@ -170,7 +72,7 @@ if (window.Alpine === undefined) {
       ol,ul { padding: unset; padding-inline-start: 1.5rem; list-style-position: outside; }
       ul { @apply: list-disc; }
       ol { @apply: list-decimal; }
-      code { @apply font-mono text-tertiary-150 bg-tertiary-850 rounded-md py-0.5 px-1.5; }
+      code { @apply font-mono text-white bg-black rounded-md py-0.5 px-1.5; }
       blockquote { @apply p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800; }
       *:focus { @apply outline-2 outline outline-palette-label/50; }
     `),
@@ -189,18 +91,13 @@ if (window.Alpine === undefined) {
         'filter': 'drop-shadow(0 -20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 -8px 5px rgb(0 0 0 / 0.08))'
       }],
       ['drip-shadow-2xl', {'filter': 'drop-shadow(0 -25px 25px rgb(0 0 0 / 0.15))'}],
-      // FIXME: It would be great if this could be specified purely in
-      // tailwind syntax
-      ['primary-gradient', {'background': `
-        repeating-linear-gradient(-45deg,
-          ${PALETTE.label}, ${PALETTE.label} 10px,
-          ${PALETTE.primary} 10px, ${PALETTE.primary} 20px)
-      `}],
-      ['secondary-gradient', {'background': `
-        repeating-linear-gradient(-45deg,
-          ${PALETTE.label}, ${PALETTE.label} 10px,
-          ${PALETTE.secondary} 10px, ${PALETTE.secondary} 20px)
-      `}],
+      ['bg-gradient-mix-(.+)_(.+)', ({1: c1, 2: c2}, {theme}) => {
+        const v1 = theme('colors', c1);
+        const v2 = theme('colors', c2);
+        return {'background': `
+          repeating-linear-gradient(-45deg, ${v1}, ${v1} 10px, ${v2} 10px, ${v2} 20px)
+        `};
+      }],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
       ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-black/50 disabled:bg-gray-500'],
       ['fund-head', 'sticky z-40 top-0'],
@@ -228,8 +125,8 @@ if (window.Alpine === undefined) {
       //  FIXME: These classes should use 'hover:enabled' to stop
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
-      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(primary-gradient border-black text-black shadow-none)'],
-      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(secondary-gradient border-black text-black shadow-none)'],
+      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(bg-gradient-mix-palette-label_palette-primary border-black text-black shadow-none)'],
+      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(bg-gradient-mix-palette-label_palette-secondary border-black text-black shadow-none)'],
       ['fund-butn-true', '~(fund-butn-default)'],
       ['fund-butn-false', '~(fund-butn-action)'],
       ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
@@ -246,7 +143,7 @@ if (window.Alpine === undefined) {
       ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
-      ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-primary-700'],
+      ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
       ['fund-odit-sect', 'h-full flex rounded-lg'],
     ],
   });
@@ -462,7 +359,7 @@ if (window.Alpine === undefined) {
       [...(new FormData(event.target.form).entries())].forEach(appendInput);
     }
     // NOTE: Safari doesn't recognize the form attributes of the
-    // `requestSubmit` button, so we redundantly include them as a field
+    // `requestSubmit` button, so we redundantly include them as fields
     appendInput([button.getAttribute("name"), button.getAttribute("value")]);
 
     document.body.appendChild(form);
@@ -600,7 +497,6 @@ if (window.Alpine === undefined) {
     });
   }
 
-  // function initTomSelect(elem, empty, upOnly=false, maxItems=undefined, create=false) {
   function initTomSelect(elem, {
     empty=false, // Bool
     forceUp=false, // Bool

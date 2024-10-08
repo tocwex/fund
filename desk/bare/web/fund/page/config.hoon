@@ -10,7 +10,8 @@
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
-    ?+    dif=(~(got by p.arz) %dif)  (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")
+    ?+    dif=(~(got by p.arz) %dif)
+        (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")
       %vita-enable   [%fund %vita &]
       %vita-disable  [%fund %vita |]
     ==
@@ -28,10 +29,10 @@
   :^  bol  ord  "config"
   :+  fut=&  hed=|
   %^    hero-plaq:ui:fh
-      ?.(init.dat "Thanks for installing %fund!" "Update your preferences?")
+      ?.(init.dat "Thanks for installing %fund!" "Would you like to send usage data?")
     "Will you help us by sending usage information? You can change your decision at any time."
-  ;=  ;+  (prod-butn:ui:fh %medi %true %vita-enable "yes ✓" ~ ~)
-      ;+  (prod-butn:ui:fh %medi %false %vita-disable "no ✗" ~ ~)
+  :~  (prod-butn:ui:fh %medi %true %vita-enable "yes ✓" ~ ~)
+      (prod-butn:ui:fh %medi %false %vita-disable "no ✗" ~ ~)
   ==
 --
 ::  VERSION: [1 4 1]

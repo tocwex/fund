@@ -172,6 +172,7 @@ if (window.Alpine === undefined) {
       ol { @apply: list-decimal; }
       code { @apply font-mono text-tertiary-150 bg-tertiary-850 rounded-md py-0.5 px-1.5; }
       blockquote { @apply p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800; }
+      *:focus { @apply outline-2 outline outline-palette-label/50; }
     `),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind

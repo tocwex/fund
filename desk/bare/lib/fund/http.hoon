@@ -311,39 +311,19 @@
     ^-  manx
     =/  url=@t  url.request.ord
     =/  pat=(pole knot)  (slag:derl:ff url)
-    =/  bag=tape  "bg-palette-contrast rounded-lg drop-shadow-lg sm:p-2 p-1"
+    =/  bag=tape  "rounded-lg sm:p-2 p-1"
+    =/  sag=tape  "bg-palette-contrast drop-shadow-lg"
     =/  bas=tape  "fund-butn-de-m w-full text-center"
     =/  xom=tape  "($store.page.size == 'mobile')"
     =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
     ::  FIXME: Spacing on heights here for 'overflow-visible' are not perfect
+    ::  NOTE: Using 'flex-row-reverse' because of z-axis tooltip weirdness
+    ::  (wallet div must appear *before* `hed`/action bar div)
     ;nav#fund-head
         =x-data  "\{open: false}"
-        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex px-0 py-2 gap-1 sm:(px-2 gap-4)"
-      ;+  =/  las=tape  "shrink-0 sm:(h-14 px-3) h-11"
-          ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
-            ;a/"{(dest:enrl:ff (snip `(list knot)`pat))}"
-                =class  "{las} flex items-center hover:text-[#2c666e] {bag}"
-                =x-show  xow
-              ;h2: ← back
-            ==
-          ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
-              =class  "{las} {bag}"
-              =x-data  "\{ hover: false }"
-              =x-show  xow
-              =x-on-mouseenter  "hover = true"
-              =x-on-mouseleave  "hover = false"
-            ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
-            ;img.h-full@"{(aset:enrl:ff %fund)}?stroke=%23f0f0f1"(x-show "hover");
-          ==
-      ::  FIXME: This shouldn't shrink along the y-axis when minimizing
-      ::  the page
-      ;+  ;div(class "shrink w-full min-w-0", x-show xow)
-            ;div(class "w-full")
-              ;*  hed
-            ==
-          ==
+        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex flex-row-reverse px-0 py-2 gap-1 sm:(px-2 gap-4)"
       ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
-        ;div(class "shrink-0 flex flex-col gap-2 {bag}")
+        ;div(class "shrink-0 flex flex-col gap-2 {sag} {bag}")
           ;button  =type  "button"
               =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
               =x-on-click  "open = ! open"
@@ -412,6 +392,18 @@
           ==
         ==
       ==
+      ;+  ;div(class "shrink w-full min-w-0", x-show xow)
+            ;div(class "w-full")
+              ;*  ?^  hed  hed
+                  :_  ~  ;div(class "hidden lg:(block h-14 rounded-lg {sag})");
+            ==
+          ==
+      ;+  =/  bor=tape  "border-4 border-transparent hover:(border-palette-contrast)"
+          ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
+              =class  "shrink-0 sm:(h-14 px-3) h-12 bg-palette-background {bor} {bag}"
+              =x-show  xow
+            ;img.h-full@"{(aset:enrl:ff %fund)}";
+          ==
     ==
   ++  foot
     |=  [bol=bowl:gall ord=order:rudder fut=marl]
@@ -796,7 +788,7 @@
         ;h1: {tyt}
         ;*  ?~  txt  ~
             :_  ~  ;div(class "text-xl"): {txt}
-        ;div(class "flex gap-2")
+        ;div(class "flex flex-row flex-wrap gap-x-3 gap-y-2 justify-evenly")
           ;*  buz
         ==
       ==

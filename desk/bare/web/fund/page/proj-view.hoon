@@ -223,7 +223,7 @@
       |=  [tyt=tape fom=marl]
       ^-  manx
       ;div
-        ;button(class "fund-butn-de-l {cas}", x-init "initTippy($el, \{dir: 'bottom-end'})"): {tyt}
+        ;button(class "fund-butn-de-l {cas}", x-init "initTippy($el)"): {tyt}
         ;div(class "hidden")
           ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 p-2")
             ;*  fom
@@ -240,11 +240,14 @@
       ;div
           =class  "w-full flex bg-palette-contrast {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
-        ;*  =-  :~  ;div(class "flex flex-row items-center {(trip ?:(top 'gap-2' 'justify-between'))}")
+        ;*  =-  ;:  welp
+                      :_  ~
+                    ;div(class "flex flex-row items-center {(trip ?:(top 'gap-2' 'justify-between'))}")
                       ;*  mix
                     ==
-                      ?~  act  ;div;
-                    u.act
+                ::
+                      ?~  act  ~
+                    :_  ~  u.act
                 ==
             ^-  [act=(unit manx) mix=marl]
             :-  ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
@@ -473,10 +476,10 @@
   :^  bol  ord  (trip title.pro)
   :+  fut=&  hed=|
   ;div(x-data "proj_view")
+    ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col p-2 gap-3 min-h-[100vh]")
-      ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
       ;h1(class "fund-title"): {(trip title.pro)}
       ;+  =/  irl=tape  (trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))
           ;div(class "w-full aspect-square bg-cover bg-center rounded-md bg-[url('{irl}')]")

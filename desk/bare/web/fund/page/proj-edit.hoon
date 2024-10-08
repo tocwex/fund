@@ -96,6 +96,8 @@
   ;form(class "flex flex-col gap-2 p-2", method "post", autocomplete "off", x-data "proj_edit")
     ;+  :-  [%fieldset [%class "flex flex-col gap-2"] ?:(=(%born sat) ~ [%disabled ~]~)]
         :~  ;div(class "flex flex-col gap-2")
+              ;*  ?~  lau  ~
+                  :_  ~  ;a/"{(flat:enrl:ff:fh u.lau)}"(class "w-fit hover:text-link"): ← back
               ;+  %^  work-tytl:ui:fh  "Project Overview"  sat
                   ;span(x-text "proj_cost");
               ;div

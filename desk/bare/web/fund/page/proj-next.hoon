@@ -84,7 +84,7 @@
             ;h1: Thank you!
             ;p: Your {?-(typ.pat %plej "pledge", %trib "contribution")} has been received!
             ;+  hed
-            ;div(class "flex flex-row gap-x-3")
+            ;div(class "flex flex-row flex-wrap gap-y-2 gap-x-3")
               ;+  pro.btn
               ;+  but
               ;*  ?~  pow=(~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) p.lag)  ~

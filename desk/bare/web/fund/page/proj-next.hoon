@@ -73,7 +73,7 @@
         send them a direct message via the Tlon application to let them
         know they have a pending service request!
         '''
-      :~  (prod-butn:ui:fh %bump-prop %true "request oracle ✓" ~ ~)
+      :~  (prod-butn:ui:fh %medi %true %bump-prop "request oracle ✓" ~ ~)
           =+  (dest:enrl:ff:fh pat(- %project))
             (link-butn:ui:fh - %| "continue editing" ~ ~)
           pro.btn

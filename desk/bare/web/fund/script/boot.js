@@ -267,15 +267,22 @@ if (window.Alpine === undefined) {
       this.address = address;
       this.chain = chain;
       this.connected = !!address;
-      this.status =
-        (address === undefined) ? "connect 💰"
-        : (address === null) ? "…loading…"
-        : `${address.slice(0, 5)}…${address.slice(-4)}`;
       if (!address) {
         this.balance = 0;
+        this.status =
+          (address === undefined) ? "connect 💰"
+          : (address === null) ? "…loading…"
+          : "error ✗";
       } else {
         getBalance(window.Wagmi, {address}).then(({formatted}) => {
           this.balance = `${Number(formatted).toFixed(2)} ETH`;
+        });
+        getEnsName(window.Wagmi, {address}).then((ensName) => {
+          this.status = ensName
+            ? ensName
+            : `${address.slice(0, 5)}…${address.slice(-4)}`;
+        }).catch((error) => {
+          this.status = `${address.slice(0, 5)}…${address.slice(-4)}`;
         });
       }
       window.dispatchEvent(new CustomEvent("fund-wallet", {detail: address}));

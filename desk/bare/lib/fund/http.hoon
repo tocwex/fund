@@ -908,8 +908,9 @@
         arz
     ==
   ++  prod-butn                                  ::  prod/poke/action button
-    |=  [pod=@tas typ=?(%action %true %false) txt=tape xon=tape diz=tape]
+    |=  [syz=?(%smol %medi %lorj) typ=?(%action %true %false) pod=@tas txt=tape xon=tape diz=tape]
     ^-  manx
+    =/  siz=@tas  (dis syz (dec (bex 8)))
     =/  tip=@tas  (dis typ (dec (bex 16)))
     ::  TODO: Use on-click tooltips in order to allow disabled buttons
     ::  to perform error reporting on mobile
@@ -922,7 +923,7 @@
         [%type "submit"]~
         [%name "dif"]~
         [%value (trip pod)]~
-        [%class "fund-butn-{(trip tip)}-m {cas}"]~
+        [%class "fund-butn-{(trip tip)}-{(trip siz)} {cas}"]~
     ==
   --
 --

@@ -248,14 +248,14 @@
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:ui:fh %init %action "save draft ~" ~ ~)
-            ++  croc-butn  (prod-butn:ui:fh %bump-born %action "retract proposal ~" ~ ~)
+            ++  init-butn  (prod-butn:ui:fh %medi %action %init "save draft ~" ~ ~)
+            ++  croc-butn  (prod-butn:ui:fh %medi %action %bump-born "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-              (prod-butn:ui:fh %drop %false "delete {obj} ✗" ~ ~)
+              (prod-butn:ui:fh %medi %false %drop "delete {obj} ✗" ~ ~)
             ::  ++  dead-butn
             ::    %:  prod-butn:ui:fh
-            ::        %dead  %false  "discontinue project ✗"  ~
+            ::        %medi  %false  %dead  "discontinue project ✗"  ~
             ::        ?.(?=(%dead sat) ~ "project has already been discontinued")
             ::    ==
             --

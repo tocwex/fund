@@ -229,14 +229,15 @@
           pro=~
       ==
     ++  mota-well                              ::  project (metadata) well (%action)
-      |=  [kas=tape msg=tape ski=$-([flag:f prej:proj:f] ?)]
+      |=  [kas=tape msg=$@(@t manx) ski=$-([flag:f prej:proj:f] ?)]
       ^-  manx
       =/  maz=marl
         %+  turn  (skim pyz ski)
         |=([l=flag:f p=prej:proj:f] (meta-card l (proj-meta:ex l p)))
-      =?  maz  ?=(~ msg)  [make-card maz]
+      =?  maz  ?=(%$ msg)  [make-card maz]
       ?~  maz
-        ;p.fund-warn: {msg}
+        ?^  msg  msg
+        ;p.fund-warn: {(trip msg)}
       ;div(class kas)
         ;*  maz
       ==
@@ -490,7 +491,7 @@
             =/  sus=tape  "w-[50vw] sm:w-[250px]"
             ?^  text.arg
               :_  ~
-              %^  mota-well:ui  mas  "No projects found."
+              %^  mota-well:ui  mas  'No projects found.'
               |=  [lag=flag:f pre=prej:proj:f]
               ?|  ?&  ?=(?(%prop %sess) ~(stat pj:fj -.pre))
                       =(p.assessment.pre our.bol)
@@ -506,7 +507,7 @@
                 ;div(class "flex flex-col gap-4")
                   ;div                               ::  my $prez
                     ;h2: My Open Projects
-                    ;+  %^  ~(mota-well ui sus)  sas  ~
+                    ;+  %^  ~(mota-well ui sus)  sas  %$
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             =(our.bol p.lag)
@@ -514,7 +515,15 @@
                   ==
                   ;div                               ::  $prez with %prop status
                     ;h2: Service Requests
-                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
+                    ;+  %^  ~(mota-well ui sus)  sas
+                          ?:  (star:fx src.bol)  'No outstanding requests.'
+                          ;p.fund-warn
+                            ; To serve as a %fund oracle service provider, please
+                            ;a.text-link
+                                =href  "{(trip !<(@t (slot:config %meta-help)))}/user-guides/trusted-oracles-wip#why-do-we-only-support-stars-as-escrow-providers"
+                              ;  acquire a Star-level Urbit ID.
+                            ==
+                          ==
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%prop ~(stat pj:fj -.pre))
                             =(p.assessment.pre our.bol)
@@ -522,7 +531,7 @@
                   ==
                   ;div                               ::  $prez with %sess status
                     ;h2: Review Requests
-                    ;+  %^  ~(mota-well ui sus)  sas  "No projects pending review."
+                    ;+  %^  ~(mota-well ui sus)  sas  'No projects pending review.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%sess ~(stat pj:fj -.pre))
                             =(p.assessment.pre our.bol)
@@ -530,7 +539,7 @@
                   ==
                   ;div                               ::  $prez with unfulfilled $plej
                     ;h2: Outstanding Pledges
-                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding pledges."
+                    ;+  %^  ~(mota-well ui sus)  sas  'No outstanding pledges.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
                             (~(has by pledges.pre) our.bol)
@@ -538,7 +547,7 @@
                   ==
                   ;div                               ::  worker|oracle done|dead $prez
                     ;h2: Work Archive
-                    ;+  %^  mota-well:ui  mas  "No archived projects."
+                    ;+  %^  mota-well:ui  mas  'No archived projects.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)

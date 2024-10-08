@@ -30,8 +30,8 @@
   %^    hero-plaq:ui:fh
       ?.(init.dat "Thanks for installing %fund!" "Update your preferences?")
     "Will you help us by sending usage information? You can change your decision at any time."
-  ;=  ;+  (prod-butn:ui:fh %vita-enable %true "yes ✓" ~ ~)
-      ;+  (prod-butn:ui:fh %vita-disable %false "no ✗" ~ ~)
+  ;=  ;+  (prod-butn:ui:fh %medi %true %vita-enable "yes ✓" ~ ~)
+      ;+  (prod-butn:ui:fh %medi %false %vita-disable "no ✗" ~ ~)
   ==
 --
 ::  VERSION: [1 4 1]

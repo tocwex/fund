@@ -692,13 +692,13 @@
                             =+  pej=(~(got by pledges.pro) ship.mul)
                             ?-  view.pej
                               ~          ["pledged" "fund-pill-born"]
-                              [~ %stif]  ["welched" "fund-pill-work"]
-                              [~ %slyd]  ["forgiven" "fund-pill-work"]
+                              [~ %stif]  ["welched" "fund-pill-dead"]
+                              [~ %slyd]  ["forgiven" "fund-pill-dead"]
                             ==
                           ::
                               %trib
                             =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
-                            ?~  pruf.teb  ["confirmed" "fund-pill-lock"]
+                            ?~  pruf.teb  ["attested" "fund-pill-lock"]
                             =-  ["{-}verified" "fund-pill-done"]
                             ?~  ship.teb  ~
                             =-  ?~(- ~ "✔️ ")

@@ -56,6 +56,8 @@
     ==
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
+  =/  sos=tape  "?stroke=%23adadad"  ::  palette-system
+  =/  soc=tape  "?stroke=%23dbdbdb"  ::  palette-contrast
   =/  [mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
     ?+  dyp  !!
       %following  [~ pes]
@@ -260,7 +262,7 @@
             ;button  =type  "button"
                 =class  "absolute right-3 top-[50%] translate-y-[-50%]"
                 =x-on-click  "submitQuery"
-              ;img@"{(aset:enrl:ff:fh %search)}";
+              ;img@"{(aset:enrl:ff:fh %search)}{soc}";
               :: ;img@"{(aset:enrl:ff:fh %close)}"(x-show "$focus.focused() == $refs.fund_search");
             ==
           ==
@@ -270,7 +272,7 @@
               ;button(type "button", x-on-click "toggleTray('{(trip mod)}')")
                 ;*  %+  turn  `(list @tas)`~[%$ %off]
                     |=  sat=@tas
-                    =/  ext=tape  ?:(=(%$ sat) ~ "?stroke=white")
+                    =/  ext=tape  ?:(=(%$ sat) ~ sos)
                     ;img.w-6@"{(aset:enrl:ff:fh mod)}{ext}"
                       =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}')";
               ==
@@ -321,7 +323,7 @@
                             ;*  %+  turn  `(list @tas)`~[%$ %off]
                                 |=  sat=@tas
                                 =/  ast=tape  "filter-{(trip mod)}"
-                                =/  ext=tape  ?:(=(%$ sat) ~ "?stroke=white")
+                                =/  ext=tape  ?:(=(%$ sat) ~ sos)
                                 ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                   =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
                             ;div(class "hidden lg:block"): {txt}
@@ -421,7 +423,7 @@
                           ;*  %+  turn  `(list @tas)`~[%asc %des %off]
                               |=  ord=@tas
                               =/  ast=tape  =?(ord =(%off ord) %des "sort-{(trip mod)}-{(trip ord)}")
-                              =/  ext=tape  ?.(=(%off ord) ~ "?stroke=white")
+                              =/  ext=tape  ?.(=(%off ord) ~ sos)
                               ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                 =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
                           ;div(class "hidden lg:block"): {txt}

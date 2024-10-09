@@ -1,0 +1,9 @@
+.markdown-body > * { --apply: mt-3; }
+.markdown-body > *:first-child: {--apply: mt-0; }
+& h1 { --apply: text-2xl font-bold; }
+& h2 { --apply: text-xl font-semibold; }
+& h3 { --apply: text-lg font-semibold; }
+& h4 { --apply: underline font-medium italic; }
+& h5 { --apply: underline font-medium italic; }
+& h6 { --apply: underline italic; }
+& a { color: -webkit-link; text-decoration: underline; }

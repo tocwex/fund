@@ -59,7 +59,7 @@
     =/  ars=(list [@tas tape])
       %-  welp  :_  (turn arz |=([k=@t v=@t] [(asci:fx k) (trip v)]))
       ^-  dez=(list [@tas tape])  ::  substitution defaults
-      :~  [%stroke "#545557"]  ::  palette-primary
+      :~  [%stroke "#2f2f2f"]  ::  palette-primary
       ==
     =/  vas=vase
       :_  `*`(flop (turn ars tail))

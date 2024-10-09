@@ -548,9 +548,9 @@
       ::  after:bg-gradient-to-b after:from-inherit
       ;*  %+  turn  ~[["!open" "line-clamp-5"] ["open" ""]]
           |=  [sow=tape kas=tape]
-          ;zero-md(class "w-full {kas} {cas}", x-show sow, xlass "cmd()", no-shadow ~)
+          ;zero-md(class "w-full {kas} {cas}", x-show sow, xlass "styleMD()", no-shadow ~)
             ;template
-              ;link/"{(dest:enrl:ff /asset/[~.mark.css])}"(rel "stylesheet");
+              ;link/"{(dest:enrl:ff /asset/[~.mdhl.css])}"(rel "stylesheet");
             ==
             ;script(type "text/markdown"): {txt}
           ==
@@ -837,8 +837,8 @@
       %born  "fund-pill-born"
       %prop  "fund-pill-born"
       %lock  "fund-pill-lock"
-      %work  "fund-pill-work"
-      %sess  "fund-pill-work"
+      %work  "fund-pill-lock"
+      %sess  "fund-pill-lock"
       %done  "fund-pill-done"
       %dead  "fund-pill-dead"
     ==

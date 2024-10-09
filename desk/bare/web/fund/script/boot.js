@@ -23,7 +23,26 @@ import * as SAFE from './safe.js';
 import { FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
 
+import FUND_PREFLIGHT_CSS from './twind.css' with {type: 'css'};
+import FUND_MARKDOWN_CSS from './md.css' with {type: 'css'};
+import FUND_TOMSELECT_CSS from './toms.css' with {type: 'css'};
+import FUND_TIPPY_CSS from './tippy.css' with {type: 'css'};
+
 if (window.Alpine === undefined) {
+  // NOTE: We store TailwindCSS style rules as normal CSS files with the
+  // `--apply` variable as a stand-in for Tailwind's `@apply directive
+  // so that this data can be read in through the JS `import` mechanism
+  function twindCSSToString(css) {
+    const cssLines = [...css.cssRules].map(rule => (
+      rule.cssText.replace(/--apply: /, '@apply ')
+    ));
+    return cssLines.join("\n");
+  }
+  const FUND_PREFLIGHT = twindCSSToString(FUND_PREFLIGHT_CSS);
+  const FUND_MARKDOWN = twindCSSToString(FUND_MARKDOWN_CSS);
+  const FUND_TOMSELECT = twindCSSToString(FUND_TOMSELECT_CSS);
+  const FUND_TIPPY = twindCSSToString(FUND_TIPPY_CSS);
+
   twind.install({
     presets: [
       presetTwind(),
@@ -43,39 +62,18 @@ if (window.Alpine === undefined) {
         },
         colors: {
           palette: {
-            primary: '#545557',
-            secondary: '#dedfe0',
-            label: '#4a4b4c',
-            background: '#f0f0f1',
-            contrast: '#dedfe0',
+            primary: '#2f2f2f',
+            secondary: '#dbdbdb',
+            label: '#1e1e1e',
+            background: '#efefef',
+            contrast: '#dbdbdb',
+            system: '#adadad',
           },
         },
       },
     },
-    // TODO: It would be great to put this all in a CSS file that
-    // was loaded by this file or the browser and then injected here
-    preflight: twind.css(`
-      form { margin: unset; }
-      h1, h2, h3, h4 { @apply font-serif; }
-      h5, h6 { @apply font-sans; }
-      h1 { @apply text-xl sm:text-3xl; }
-      h2 { @apply text-lg sm:text-2xl; }
-      h3 { @apply text-base sm:text-xl; }
-      h4 { @apply text-base sm:text-lg; }
-      h5 { @apply font-light text-sm sm:(font-medium text-base); }
-      h6 { @apply font-light uppercase text-sm sm:font-medium; }
-      h1-alt { @apply font-serif text-palette-contrast text-xl sm:text-3xl; }
-      hr { @apply border-0 h-px bg-black; }
-      select { padding: unset; @apply fund-select; }
-      textarea,input { padding: unset; @apply fund-input; }
-      label { @apply font-light; }
-      ol,ul { padding: unset; padding-inline-start: 1.5rem; list-style-position: outside; }
-      ul { @apply: list-disc; }
-      ol { @apply: list-decimal; }
-      code { @apply font-mono text-white bg-black rounded-md py-0.5 px-1.5; }
-      blockquote { @apply p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800; }
-      *:focus { @apply outline-2 outline outline-palette-label/50; }
-    `),
+    // TODO: Are there any issues including the library CSS rules in 'preflight'?
+    preflight: twind.css([FUND_PREFLIGHT, FUND_TOMSELECT, FUND_TIPPY].join("\n")),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
       ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
@@ -99,7 +97,7 @@ if (window.Alpine === undefined) {
         `};
       }],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-black/50 disabled:bg-gray-500'],
+      ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-palette-contrast disabled:bg-palette-system'],
       ['fund-head', 'sticky z-40 top-0'],
       ['fund-foot', 'sticky z-40 bottom-0'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
@@ -108,16 +106,15 @@ if (window.Alpine === undefined) {
       ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
       ['fund-warn', 'italic mx-4'],
       ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
-      ['fund-input', 'fund-select read-only:bg-gray-500'],
+      ['fund-input', 'fund-select read-only:bg-palette-system'],
       ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
       ['fund-pill', 'text-nowrap font-medium px-3 py-1 border-[3px] rounded-full'],
-      ['fund-pill-born', 'fund-pill text-black bg-palette-secondary border-palette-background'],
-      ['fund-pill-lock', 'fund-pill text-black bg-white border-palette-primary'],
-      ['fund-pill-work', 'fund-pill text-palette-secondary bg-palette-primary border-palette-primary'],
-      ['fund-pill-done', 'fund-pill text-palette-secondary bg-palette-primary border-palette-label'],
-      ['fund-pill-dead', 'fund-pill text-black bg-palette-background border-palette-secondary'],
-      ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
+      ['fund-pill-born', 'fund-pill text-palette-label bg-palette-background border-palette-background'],
+      ['fund-pill-lock', 'fund-pill text-palette-label bg-none border-palette-primary'],
+      ['fund-pill-done', 'fund-pill text-palette-background bg-palette-primary border-palette-primary'],
+      ['fund-pill-dead', 'fund-pill text-palette-label bg-palette-background border-palette-contrast border-dashed'],
+      ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary hover:bg-palette-background'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
@@ -125,8 +122,8 @@ if (window.Alpine === undefined) {
       //  FIXME: These classes should use 'hover:enabled' to stop
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
-      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(bg-gradient-mix-palette-label_palette-primary border-black text-black shadow-none)'],
-      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(bg-gradient-mix-palette-label_palette-secondary border-black text-black shadow-none)'],
+      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(bg-palette-system border-palette-system text-palette-contrast shadow-none)'],
+      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(bg-palette-system border-palette-system text-palette-contrast shadow-none)'],
       ['fund-butn-true', '~(fund-butn-default)'],
       ['fund-butn-false', '~(fund-butn-action)'],
       ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
@@ -201,7 +198,7 @@ if (window.Alpine === undefined) {
   });
 
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
-    cmd,
+    styleMD,
     copyText,
     swapHTML,
     openHREF,
@@ -222,19 +219,9 @@ if (window.Alpine === undefined) {
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 
-  function cmd() {
-    // https://twind.run/junior-crazy-mummy?file=script
-    return twind.css({
-      '.markdown-body > *': {'@apply': 'mt-3'},
-      '.markdown-body > *:first-child': {'@apply': 'mt-0'},
-      '& h1': {'@apply': 'text-2xl font-bold'},
-      '& h2': {'@apply': 'text-xl font-semibold'},
-      '& h3': {'@apply': 'text-lg font-semibold'},
-      '& h4': {'@apply': 'underline font-medium italic'},
-      '& h5': {'@apply': 'underline font-medium italic'},
-      '& h6': {'@apply': 'underline italic'},
-      '& a': {'color': '-webkit-link', 'text-decoration': 'underline'},
-    });
+  // https://twind.run/junior-crazy-mummy?file=script
+  function styleMD() {
+    return twind.css(FUND_MARKDOWN);
   }
 
   function swapHTML(elem, html) {

@@ -269,12 +269,17 @@
           ;*  ?:  =(%action dyp)  ~
               %+  turn  `(list @tas)`~[%sort %filter]
               |=  mod=@tas
-              ;button(type "button", x-on-click "toggleTray('{(trip mod)}')")
+              ;button  =type  "button"
+                  =x-data  "\{ hover: false }"
+                  =x-on-mouseenter  "hover = true"
+                  =x-on-mouseleave  "hover = false"
+                  =x-on-click  "toggleTray('{(trip mod)}')"
                 ;*  %+  turn  `(list @tas)`~[%$ %off]
                     |=  sat=@tas
                     =/  ext=tape  ?:(=(%$ sat) ~ sos)
+                    =/  sow=tape  ?.(=(%$ sat) "&& !hover" "|| hover")
                     ;img.w-6@"{(aset:enrl:ff:fh mod)}{ext}"
-                      =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}')";
+                      =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}'){sow}";
               ==
         ==
       ;div
@@ -284,11 +289,17 @@
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
               |=  mod=@tas
               ^-  manx
-              =+  [cas="px-3 py-2 rounded-md" cis=?:(top "w-6" "w-8")]
-              =+  kas=?.(=(dyp mod) ~ "bg-palette-background")
+              =/  cas=tape  "px-3 py-2 rounded-md"
+              =/  cis=tape  ?:(top "w-6" "w-8")
+              =/  deb=tape  (bool:enjs:ff:fh =(dyp mod))
               ?.  ?=(%controls mod)
-                ;a/"{(dest:enrl:ff:fh /dashboard/[mod])}"(class "{cas} {kas}")
-                  ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
+                ;a  =href  (dest:enrl:ff:fh /dashboard/[mod])
+                    =class  cas
+                    =x-data  "\{ hover: {deb} }"
+                    =x-on-mouseenter  "hover = true"
+                    =x-on-mouseleave  "hover = {deb}"
+                  ;img@"{(aset:enrl:ff:fh mod)}{sos}"(class cis, x-show "!hover");
+                  ;img@"{(aset:enrl:ff:fh mod)}"(class cis, x-show "hover");
                 ==
               ?:  top  syk
               ;button  =type  "button"

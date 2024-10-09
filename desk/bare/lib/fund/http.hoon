@@ -316,12 +316,25 @@
     =/  bas=tape  "fund-butn-de-m w-full text-center"
     =/  xom=tape  "($store.page.size == 'mobile')"
     =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
-    ::  FIXME: Spacing on heights here for 'overflow-visible' are not perfect
-    ::  NOTE: Using 'flex-row-reverse' because of z-axis tooltip weirdness
-    ::  (wallet div must appear *before* `hed`/action bar div)
+    ::  FIXME: Spacing on heights here for 'overflow-visible' are ugly and hacky
     ;nav#fund-head
         =x-data  "\{open: false}"
-        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex flex-row-reverse px-0 py-2 gap-1 sm:(px-2 gap-4)"
+        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex py-2 gap-1 sm:(px-2 gap-4)"
+      ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
+          =class  "shrink-0 sm:(h-14 px-3) h-12 bg-palette-background {sag} {bag}"
+          =x-show  xow
+          =x-data  "\{ hover: false }"
+          =x-on-mouseenter  "hover = true"
+          =x-on-mouseleave  "hover = false"
+        ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
+        ;img.h-full@"{(aset:enrl:ff %fund-off)}"(x-show "hover");
+      ==
+      ;div(class "shrink w-full min-w-0 z-50", x-show xow)
+        ;div(class "w-full")
+          ;*  ?^  hed  hed
+              :_  ~  ;div(class "hidden lg:(block h-14 rounded-lg {sag})");
+        ==
+      ==
       ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
         ;div(class "shrink-0 flex flex-col gap-2 {sag} {bag}")
           ;button  =type  "button"
@@ -392,18 +405,6 @@
           ==
         ==
       ==
-      ;+  ;div(class "shrink w-full min-w-0", x-show xow)
-            ;div(class "w-full")
-              ;*  ?^  hed  hed
-                  :_  ~  ;div(class "hidden lg:(block h-14 rounded-lg {sag})");
-            ==
-          ==
-      ;+  =/  bor=tape  "border-4 border-transparent hover:(border-palette-contrast)"
-          ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
-              =class  "shrink-0 sm:(h-14 px-3) h-12 bg-palette-background {bor} {bag}"
-              =x-show  xow
-            ;img.h-full@"{(aset:enrl:ff %fund)}";
-          ==
     ==
   ++  foot
     |=  [bol=bowl:gall ord=order:rudder fut=marl]

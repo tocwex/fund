@@ -71,3 +71,9 @@ div.ts-wrapper + label:after {
   content: '*';
   color: #EF4444; /* text-red-500 */
 }
+
+
+/* Allow for pseudo-'disabled' on <a> elements (https://stackoverflow.com/a/43492810) */
+a[disabled] {
+  pointer-events: none;
+}

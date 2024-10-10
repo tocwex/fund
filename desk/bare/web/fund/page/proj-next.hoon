@@ -59,7 +59,30 @@
       %^    hero-plaq:ui:fh
           "You are now joining project '{(flag:enjs:ff:fh lag)}'!"
         ~
-      [pro.btn ~]
+      :_  ~
+      :_  :~  %-  maug:fh  :_  [%x-show "!ready"]~
+              (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host." ~)
+              (maug:fh pro.btn [%x-show "ready"]~)
+          ==
+      :-  %div
+      :-  [%x-data "\{ ready: false }"]
+      :_  ~
+      :-  %x-init
+      %-  zing  %+  join  "\0a"
+      ^-  (list tape)
+      :~  :(weld "const url = '" pro.syt "';")
+          ^-  tape  ^~
+          %+  rip  3
+          '''
+          queryPage(url, {maxAttempts: 5}).then(page => {
+            if (page) {
+              ready = true;
+            } else {
+              $el.firstChild.firstChild.innerHTML = "error ✗";
+            }
+          });
+          '''
+      ==
     ::
         %edit
       %^      hero-plaq:ui:fh

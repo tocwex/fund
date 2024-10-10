@@ -284,15 +284,15 @@
                   :-  ~
                   %-  ~(bare-form ..$ ~)
                   %:  ~(prod-butn ui:fh bas)
-                      %lorj  %true  %bump-lock  "launch ✔️"  "finalizeContract"
-                      ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                      %medi  %true  %bump-lock  "launch ✔️"  "finalizeContract"
+                      ?:(?=(^ contract.pro) ~ "Awaiting response from trusted oracle.")
                   ==
                 ?.  ?=(?(%born %done %dead) sat)
                   =/  nft=?  ?=(%enft -.payment.pro)
                   =+  pej=(~(get by pledges.pro) src.bol)
                   :-  ~
                   %+  ~(tipi-form ..$ bas)  "contribute 💸"
-                  :~  ;h1: {?~(pej "Contribute" "Fulfill Pledge")}
+                  :~  ;h1.text-nowrap: {?~(pej "Contribute" "Fulfill Pledge")}
                       ;div(class "fund-form-group")
                         ;+  :_  ~  :-  %input
                             ;:  welp
@@ -363,9 +363,9 @@
                         ;+  %:  prod-butn:ui:fh
                                 %medi  %action  %mula-plej  "pledge only ~"  "plejFunds"
                                 ?.  &((auth:fh bol) (plan:fx src.bol))
-                                  "pledges only available to authenticated planets"
+                                  "Pledges only available to authenticated planets."
                                 ?:  (~(has by pledges.pro) src.bol)
-                                  "you must fulfill your outstanding pledge"
+                                  "You must fulfill your outstanding pledge."
                                 ~
                             ==
                         ;+  (prod-butn:ui:fh %medi %true %mula-trib "send funds ✓" "sendFunds" ~)
@@ -574,8 +574,8 @@
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
                                   ==
-                                "funds claimed but awaiting confirmation"
-                              "funds have already been fully claimed"
+                                "Funds claimed but awaiting confirmation."
+                              "Funds have already been fully claimed."
                             ::  NOTE: A `pruf` without an `xact` is an impossible case
                             ~
                         ==
@@ -595,8 +595,8 @@
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
                                   ==
-                                "funds refunded but awaiting confirmation"
-                              "funds have already been fully refunded"
+                                "Funds refunded but awaiting confirmation."
+                              "Funds have already been fully refunded."
                             ::  NOTE: A `pruf` without an `xact` is an impossible case
                             ~
                         ==
@@ -653,7 +653,7 @@
                                   %:  %~  link-butn  ui:fh
                                         "fund-addr text-black overflow-hidden hover:text-link"
                                       wer=mur  tab=&  txt=txt  dis=~
-                                      arz=[%xinit ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
+                                      arz=[%x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
                                   ==
                               ==
                           ^-  [mur=tape lur=tape txt=tape]

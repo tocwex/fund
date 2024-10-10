@@ -67,6 +67,13 @@
     ==
   --
 ::
+::  +maug: m(anx) aug(ment) (augment the attribute list of a manx object)
+::
+++  maug
+  |=  [man=manx mar=mart]
+  ^-  manx
+  %_(man a.g (welp mar a.g.man))
+::
 ::  +parz: parse POST request parameters considering required arguments
 ::
 ::    ?+  arz=(parz:http bod (sy ~[%req ...]))  p.arz  [%| *]
@@ -897,15 +904,16 @@
       ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %copy)}";
     ==
   ++  link-butn                                  ::  hyperlink/redirect button
-    |=  [wer=tape tab=bean txt=tape dis=tape arz=mart]
+    |=  [wer=tape tab=bean txt=tape diz=tape arz=mart]
     ^-  manx
+    =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
     :_  ; {txt}
     :-  %a
     ;:  welp
-        ?~(dis ~ ~[[%disabled ~] [%title dis]])
-        ?.(tab ~ [%target "_blank"]~)
+        [%class ?~(cas ?~(diz "fund-butn-de-m" "fund-butn-di-m") cas)]~
         ?~(wer ~ [%href wer]~)
-        [%class ?~(cas "fund-butn-de-m" cas)]~
+        ?~(diz ~ [%disabled ~]~)
+        ?.(tab ~ [%target "_blank"]~)
         arz
     ==
   ++  prod-butn                                  ::  prod/poke/action button
@@ -913,18 +921,38 @@
     ^-  manx
     =/  siz=@tas  (dis syz (dec (bex 8)))
     =/  tip=@tas  (dis typ (dec (bex 16)))
-    ::  TODO: Use on-click tooltips in order to allow disabled buttons
-    ::  to perform error reporting on mobile
+    =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
     :_  ; {txt}
     :-  %button
     ;:  welp
-        ?~(diz ~ ~[[%disabled ~] [%title diz]])
-        ?~(xon ~ ~[[%x-on-click xon]])
         [%id "prod-butn-{(trip pod)}"]~
         [%type "submit"]~
         [%name "dif"]~
         [%value (trip pod)]~
         [%class "fund-butn-{(trip tip)}-{(trip siz)} {cas}"]~
+        ?~(diz ~ [%disabled ~]~)
+        ?~(xon ~ [%x-on-click xon]~)
+    ==
+  ::  NOTE: This is needed particularly for disabled buttons; see:
+  ::  https://atomiks.github.io/tippyjs/v6/constructor/#disabled-elements
+  ++  help-wrap                                  ::  element w/ tooltip wrapper
+    |=  [hep=tape man=manx]
+    ^-  manx
+    :_  [man]~
+    :-  %span
+    :-  [%class cas]
+    :_  ~
+    :-  %x-init
+    %-  zing  %+  join  "\0a"
+    ^-  (list tape)
+    :~  :(weld "const text = '" hep "';")
+        ^-  tape  ^~
+        %+  rip  3
+        '''
+        if (typeof initTippy !== 'undefined') {
+          initTippy($el, {text: text, hover: true});
+        }
+        '''
     ==
   --
 --

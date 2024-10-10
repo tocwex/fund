@@ -122,22 +122,26 @@ if (window.Alpine === undefined) {
       //  FIXME: These classes should use 'hover:enabled' to stop
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
-      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(bg-palette-system border-palette-system text-palette-contrast shadow-none)'],
-      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(bg-palette-system border-palette-system text-palette-contrast shadow-none)'],
+      ['fund-butn-disabled', 'bg-palette-system border-palette-system text-palette-contrast shadow-none'],
+      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:fund-butn-disabled'],
+      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:fund-butn-disabled'],
       ['fund-butn-true', '~(fund-butn-default)'],
       ['fund-butn-false', '~(fund-butn-action)'],
       ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
       ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
       ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
       ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
+      ['fund-butn-di-s', 'fund-butn-disabled fund-butn-smol'], // disabled
       ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
       ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
       ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
       ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
+      ['fund-butn-di-m', 'fund-butn-disabled fund-butn-medi'], // disabled
       ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
       ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
       ['fund-butn-tr-l', 'fund-butn-true fund-butn-lorj'], // true
       ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
+      ['fund-butn-di-l', 'fund-butn-disabled fund-butn-lorj'], // false
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
       ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
@@ -202,6 +206,7 @@ if (window.Alpine === undefined) {
 
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     styleMD,
+    queryPage,
     copyText,
     swapHTML,
     openHREF,
@@ -225,6 +230,28 @@ if (window.Alpine === undefined) {
   // https://twind.run/junior-crazy-mummy?file=script
   function styleMD() {
     return twind.css(FUND_MARKDOWN);
+  }
+
+  function queryPage(url, {
+    maxAttempts=Number.MAX_VALUE, // Number
+    timeout=5000, // Number (ms)
+  } = {}) {
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    const getPage = async (attempts = 0) => (
+      attempts++ >= maxAttempts
+      ? undefined
+      : fetch(url, {
+          method: "GET",
+          signal: AbortSignal.timeout(timeout),
+        }).then(response => (
+          response.ok
+          ? response
+          : delay(timeout).then(() => getPage(attempts))
+        )).catch(error => (
+          delay(timeout).then(() => getPage(attempts))
+        ))
+    );
+    return getPage();
   }
 
   function swapHTML(elem, html) {
@@ -470,13 +497,19 @@ if (window.Alpine === undefined) {
   }
 
   function initTippy(elem, {
+    text=undefined, // String?
     dir=undefined, // String?
     hover=false, // Bool
   } = {}) {
-    const optElem = elem.nextSibling;
-    optElem.style.display = 'block';
+    var content = text;
+    if (!text) {
+      const optElem = elem.nextSibling;
+      optElem.style.display = 'block';
+      content = optElem;
+    }
+
     TippyJs(elem, {
-      content: optElem,
+      content: content,
       allowHTML: true,
       interactive: true,
       arrow: false,

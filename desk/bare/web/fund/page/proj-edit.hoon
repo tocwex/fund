@@ -259,7 +259,7 @@
             ::  ++  dead-butn
             ::    %:  prod-butn:ui:fh
             ::        %medi  %false  %dead  "discontinue project ✗"  ~
-            ::        ?.(?=(%dead sat) ~ "project has already been discontinued")
+            ::        ?.(?=(%dead sat) ~ "Project has already been discontinued.")
             ::    ==
             --
       ==

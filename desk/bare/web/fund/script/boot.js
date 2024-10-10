@@ -20,7 +20,7 @@ import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
 import TomSelect from 'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/+esm';
 import UrbitOb from 'https://cdn.jsdelivr.net/npm/urbit-ob@5.0.1/+esm';
 import * as SAFE from './safe.js';
-import { FUND_SIGN_ADDR } from './config.js';
+import { FUND_DEBUG, FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
 
 import FUND_PREFLIGHT_CSS from './twind.css' with {type: 'css'};
@@ -143,7 +143,10 @@ if (window.Alpine === undefined) {
       ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
       ['fund-odit-sect', 'h-full flex rounded-lg'],
     ],
-  });
+  //  NOTE: Setting `isProduction` here to `false` allows for `:class` to
+  //  work when using `twind` (because class names are recognized and
+  //  properly added/removed by `alpine.js`)
+  }, false); // !FUND_DEBUG);
 
   window.Alpine = Alpine;
   // Alpine.plugin(AlpineFocus);

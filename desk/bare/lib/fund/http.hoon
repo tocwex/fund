@@ -335,7 +335,7 @@
               :_  ~  ;div(class "hidden lg:(block h-12 rounded-lg {sag})");
         ==
       ==
-      ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
+      ;div(class "shrink-0", xlass "!{xow} && 'w-full'")
         ;div(class "shrink-0 flex flex-col gap-2 {sag} {bag}")
           ;button  =type  "button"
               =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
@@ -343,7 +343,7 @@
               =x-on-click-outside  "open = false"
             ;div(class "inline-flex items-center gap-2 rounded-md")
               ;+  (~(ship-logo ..$ "h-8") src.bol bol)
-              ;span(class "hidden font-bold", xtyle "(!{xom} || !{xow}) && \{display: 'block'}")
+              ;span(x-show "(!{xom} || !{xow})")
                 ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
               ==
             ==

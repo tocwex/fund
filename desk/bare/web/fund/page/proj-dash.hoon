@@ -332,6 +332,7 @@
                               [%undo "RESET"]~
                             ==
                           |=  [mod=@tas txt=tape]
+                          =/  hyd=tape  "showFilterButton('{(trip mod)}', 'off')"
                           ?:  ?=(%undo mod)
                             ;button(type "button", x-on-click "toggleFilter(undefined);wipeFilter()"): {txt}
                           ;button  =type  "button"
@@ -343,10 +344,8 @@
                                 =/  ext=tape  ?:(=(%$ sat) ~ sos)
                                 ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                   =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
-                            ::  FIXME: Very hideous use of `xtyle`, but `xlass` doesn't
-                            ::  work with twind.css
                             ;div  =class  "hidden lg:block"
-                                =xtyle  " \{color: showFilterButton('{(trip mod)}', 'off') ? '#adadad' : '#2f2f2f'}"
+                                =xlass  "`text-palette-$\{{hyd} ? 'system' : 'primary'}`"
                               ; {txt}
                             ==
                           ==
@@ -437,6 +436,7 @@
                               [%undo "RESET"]
                           ==
                         |=  [mod=@tas txt=tape]
+                        =/  hyd=tape  "showSortButton('{(trip mod)}', 'off')"
                         ?:  ?=(%undo mod)
                           ;button(type "button", x-on-click "updateSort(undefined)"): {txt}
                         ;button  =type  "button"
@@ -450,10 +450,8 @@
                               =/  ext=tape  ?.(=(%off ord) ~ sos)
                               ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                 =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
-                          ::  FIXME: Very hideous use of `xtyle`, but `xlass` doesn't
-                          ::  work with twind.css
                           ;div  =class  "hidden lg:block"
-                              =xtyle  " \{color: showSortButton('{(trip mod)}', 'off') ? '#adadad' : '#2f2f2f'}"
+                              =xlass  "`text-palette-$\{{hyd} ? 'system' : 'primary'}`"
                             ; {txt}
                           ==
                         ==

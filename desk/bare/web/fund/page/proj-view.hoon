@@ -223,7 +223,7 @@
       |=  [tyt=tape fom=marl]
       ^-  manx
       ;div
-        ;button(class "fund-butn-de-l {cas}", x-init "initTippy($el)"): {tyt}
+        ;button(class "fund-butn-de-m {cas}", x-init "initTippy($el)"): {tyt}
         ;div(class "hidden")
           ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 p-2")
             ;*  fom
@@ -417,7 +417,7 @@
                 ?.  &(tym ?=(?(%lock %work %sess) sat))  ~
               :_  ~
               %-  ~(bare-form ..$ ~)
-              (prod-butn:ui:fh ?:(top %lorj %medi) %false %bump-dead "cancel ❌" "cancelContract" ~)
+              (prod-butn:ui:fh %medi %false %bump-dead "cancel ❌" "cancelContract" ~)
             ::  edit button  ::
                 ?.  &(wok ?=(?(%born %prop) sat))  ~
               :_  ~  (edit-butn:ui:fh lag)
@@ -479,7 +479,7 @@
     ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col p-2 gap-3 min-h-[100vh]")
+    ;div(class "flex flex-col gap-3 px-2 py-2 sm:px-5 min-h-[100vh]")
       ;h1(class "fund-title"): {(trip title.pro)}
       ;div.relative.w-full
         ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))}";

@@ -61,7 +61,7 @@
   =/  [mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
     ?+  dyp  !!
       %following  [~ pes]
-      %discover  [mes ~]
+      %discover   [mes ~]
     ::
         %action
       =-  [(- mes) (- pes)]
@@ -247,8 +247,8 @@
       |=  top=bean
       ^-  manx
       =/  kas=tape
-        ?.  top  "flex-col-reverse drip-shadow-lg fund-foot p-3"
-        "flex-col rounded-lg drop-shadow-lg p-2"
+        ?.  top  "flex-col-reverse drip-shadow-lg fund-foot p-4"
+        "flex-col rounded-lg drop-shadow-lg px-4 py-2"
       =/  syk=manx
         ;div(class "w-full flex-1 flex flex-row gap-4")
           ;div(class "relative w-full flex-1 flex flex-row gap-1")
@@ -285,11 +285,11 @@
       ;div
           =class  "w-full flex gap-3 bg-palette-contrast {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
-        ;div(class "w-full flex flex-row gap-2 {(trip ?:(top '' 'justify-center'))}")
+        ;div(class "w-full flex items-center gap-6 lg:gap-4 {(trip ?:(top '' 'justify-center'))}")
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
               |=  mod=@tas
               ^-  manx
-              =/  cas=tape  "px-3 py-2 rounded-md"
+              =/  cas=tape  "rounded-md {(trip ?:(top %$ 'p-2'))}"
               =/  cis=tape  ?:(top "w-6" "w-8")
               =/  deb=tape  (bool:enjs:ff:fh =(dyp mod))
               ?.  ?=(%controls mod)
@@ -302,10 +302,16 @@
                   ;img@"{(aset:enrl:ff:fh mod)}"(class cis, x-show "hover");
                 ==
               ?:  top  syk
-              ;button  =type  "button"
-                  =x-on-click  "toggleTray(undefined)"
-                  =class  "{cas} border-l-2 border-palette-background"
-                ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
+              ;div(class "flex items-center border-l-2 pl-6 lg:pl-4")
+                ;button  =type  "button"
+                    =class  "{cas} border-palette-background"
+                    =x-on-click  "toggleTray(undefined)"
+                    =x-data  "\{ hover: false }"
+                    =x-on-mouseenter  "hover = true"
+                    =x-on-mouseleave  "hover = false"
+                  ;img@"{(aset:enrl:ff:fh mod)}{sos}"(class cis, x-show "!(tray_status.open || hover)");
+                  ;img@"{(aset:enrl:ff:fh mod)}"(class cis, x-show "tray_status.open || hover");
+                ==
               ==
         ==
         ;div  =class  "w-full flex flex-col gap-3"
@@ -337,7 +343,12 @@
                                 =/  ext=tape  ?:(=(%$ sat) ~ sos)
                                 ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                   =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
-                            ;div(class "hidden lg:block"): {txt}
+                            ::  FIXME: Very hideous use of `xtyle`, but `xlass` doesn't
+                            ::  work with twind.css
+                            ;div  =class  "hidden lg:block"
+                                =xtyle  " \{color: showFilterButton('{(trip mod)}', 'off') ? '#adadad' : '#2f2f2f'}"
+                              ; {txt}
+                            ==
                           ==
                     ==
                     ;div(x-show "filt_status.mode == 'swap'")
@@ -433,11 +444,18 @@
                             =x-on-click  "updateSort('{(trip mod)}')"
                           ;*  %+  turn  `(list @tas)`~[%asc %des %off]
                               |=  ord=@tas
-                              =/  ast=tape  =?(ord =(%off ord) %des "sort-{(trip mod)}-{(trip ord)}")
+                              =/  ast=tape
+                                =?  ord  =(%off ord)  ?.(=(%alph mod) %des %asc)
+                                "sort-{(trip mod)}-{(trip ord)}"
                               =/  ext=tape  ?.(=(%off ord) ~ sos)
                               ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                 =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
-                          ;div(class "hidden lg:block"): {txt}
+                          ::  FIXME: Very hideous use of `xtyle`, but `xlass` doesn't
+                          ::  work with twind.css
+                          ;div  =class  "hidden lg:block"
+                              =xtyle  " \{color: showSortButton('{(trip mod)}', 'off') ? '#adadad' : '#2f2f2f'}"
+                            ; {txt}
+                          ==
                         ==
               ==  ==
         ==
@@ -451,7 +469,7 @@
     ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col p-2 gap-2 min-h-[100vh]")
+    ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
       ;*  =/  cas=tape  "w-full grid gap-4 justify-center"
           =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
           =/  mas=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"

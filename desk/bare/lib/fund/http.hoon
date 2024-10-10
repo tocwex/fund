@@ -318,10 +318,10 @@
     =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
     ::  FIXME: Spacing on heights here for 'overflow-visible' are ugly and hacky
     ;nav#fund-head
-        =x-data  "\{open: false}"
-        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex py-2 gap-1 sm:(px-2 gap-4)"
+        =x-data  "\{ open: false }"
+        =class  "fund-head w-full flex overflow-visible gap-1 h-12 py-2 sm:(h-[4.25rem] px-2 gap-4)"
       ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
-          =class  "shrink-0 sm:(h-14 px-3) h-12 bg-palette-background {sag} {bag}"
+          =class  "shrink-0 sm:(h-12 px-3) h-10 bg-palette-background {sag} {bag}"
           =x-show  xow
           =x-data  "\{ hover: false }"
           =x-on-mouseenter  "hover = true"
@@ -332,7 +332,7 @@
       ;div(class "shrink w-full min-w-0 z-50", x-show xow)
         ;div(class "w-full")
           ;*  ?^  hed  hed
-              :_  ~  ;div(class "hidden lg:(block h-14 rounded-lg {sag})");
+              :_  ~  ;div(class "hidden lg:(block h-12 rounded-lg {sag})");
         ==
       ==
       ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
@@ -341,13 +341,13 @@
               =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
               =x-on-click  "open = ! open"
               =x-on-click-outside  "open = false"
-            ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
-              ;+  (ship-logo src.bol bol)
+            ;div(class "inline-flex items-center gap-2 rounded-md")
+              ;+  (~(ship-logo ..$ "h-8") src.bol bol)
               ;span(class "hidden font-bold", xtyle "(!{xom} || !{xow}) && \{display: 'block'}")
                 ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
               ==
             ==
-            ;div(class "shrink-0 fund-butn-de-l", x-text "$store.wallet.status");
+            ;div(class "shrink-0 fund-butn-de-m", x-text "$store.wallet.status");
           ==
           ;div(class "flex flex-col gap-2", x-show "open")
             ;div  ::  current wallet section
@@ -666,7 +666,7 @@
               ;:  welp
                   [%value (bloq:enjs:ff id.xet)]~
                   [%data-image (aset:enrl:ff tag.xet)]~
-                  ?.(=(can id.xet) ~ [%selected ~]~)
+                  ?.(&(!emt =(can id.xet)) ~ [%selected ~]~)
               ==
         ==
         ;*  ?:  emt  ~

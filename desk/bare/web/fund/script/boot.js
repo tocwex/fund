@@ -216,6 +216,7 @@ if (window.Alpine === undefined) {
 
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     styleMD,
+    delay,
     queryPage,
     copyText,
     swapHTML,
@@ -237,16 +238,19 @@ if (window.Alpine === undefined) {
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 
+  function delay(ms) {
+    return new Promise(res => setTimeout(res, ms));
+  }
+
   // https://twind.run/junior-crazy-mummy?file=script
   function styleMD() {
     return twind.css(FUND_MARKDOWN);
   }
 
   function queryPage(url, {
-    maxAttempts=Number.MAX_VALUE, // Number
+    maxAttempts=1, // Number
     timeout=5000, // Number (ms)
   } = {}) {
-    const delay = ms => new Promise(res => setTimeout(res, ms));
     const getPage = async (attempts = 0) => (
       attempts++ >= maxAttempts
       ? undefined

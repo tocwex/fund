@@ -61,7 +61,7 @@
       ^-  dez=(list [@tas tape])  ::  substitution defaults
       :~  [%stroke "#2f2f2f"]  ::  palette-primary
           [%outline "#2f2f2f"]  ::  palette-primary
-          [%dash "#2f2f2f"]  ::  palette-primary
+          [%dash ~]
           [%text "#2f2f2f"]  ::  palette-primary
       ==
     =/  vas=vase

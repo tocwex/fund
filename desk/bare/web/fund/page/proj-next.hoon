@@ -13,15 +13,20 @@
   ?~  lau  'bad dif; no project flag in the POST URL'
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
-        (crip "bad dif; expected bump-prop, not {(trip dif)}")
+        (crip "bad dif; expected (bump-prop|join-proj), not {(trip dif)}")
       %bump-prop  [%proj u.lau %bump %prop ~]
+      %join-proj  [%proj u.lau %join ~]
     ==
   ==
 ++  final
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  =/  [* lag=flag:f *]  (gref:proj:preface:fh txt)
-  [%next (flac:enrl:ff:fh lag) ~]
+  =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  :-  %next  :_  ~
+  ?+    pyp  (flac:enrl:ff:fh lag)
+      %join
+    (desc:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/join)
+  ==
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -55,33 +60,26 @@
         ~
       [pro.btn ?.(?=(%admin aut) ~ [das.btn]~)]
     ::
+        %exit
+      %^    hero-plaq:ui:fh
+          "You are now leaving project '{(flag:enjs:ff:fh lag)}'…"
+        ~
+      :_  ~
+      %-  maug:fh  :_  [%x-init "delay(2000).then(() => $el.form.requestSubmit($el))"]~
+      (~(prod-butn ui:fh "hidden") %medi %true %join-proj "join project ✓" ~ ~)
+    ::
         %join
       %^    hero-plaq:ui:fh
           "You are now joining project '{(flag:enjs:ff:fh lag)}'!"
         ~
       :_  ~
-      :_  :~  %-  maug:fh  :_  [%x-show "!ready"]~
-              (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host." ~)
-              (maug:fh pro.btn [%x-show "ready"]~)
-          ==
-      :-  %div
-      :-  [%x-data "\{ ready: false }"]
-      :_  ~
-      :-  %x-init
-      %-  zing  %+  join  "\0a"
-      ^-  (list tape)
-      :~  :(weld "const url = '" pro.syt "';")
-          ^-  tape  ^~
-          %+  rip  3
-          '''
-          queryPage(url, {maxAttempts: 5}).then(page => {
-            if (page) {
-              ready = true;
-            } else {
-              $el.firstChild.firstChild.innerHTML = "error ✗";
-            }
-          });
-          '''
+      ;div  =x-data  "\{ status: undefined }"
+          =x-init  "queryPage('{pro.syt}', \{maxAttempts: 5}).then(p => \{status = !!p;})"
+        ;+  (maug:fh pro.btn [%x-show "status == true"]~)
+        ;+  %-  maug:fh  :_  [%x-show "status == undefined"]~
+            (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host…" ~)
+        ;+  %-  maug:fh  :_  [%x-show "status == false"]~
+            (link-butn:ui:fh pro.syt %| "error ✗" "Failed to reach host." ~)
       ==
     ::
         %edit

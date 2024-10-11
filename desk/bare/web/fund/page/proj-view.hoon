@@ -250,7 +250,21 @@
                     :_  ~  u.act
                 ==
             ^-  [act=(unit manx) mix=marl]
-            :-  ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
+            :-  ?.  live.pre
+                  :-  ~
+                  =/  pur=tape  :(welp ?~(pow ~ (trip ship-url.u.pow)) (flat:enrl:ff:fh lag) "/okay")
+                  =/  nur=tape  (dest:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/exit)
+                  ;div  =class  "flex flex-row items-center"
+                      =x-data  "\{ status: undefined }"
+                      =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"
+                    ;+  %-  maug:fh  :_  [%x-show "status == true"]~
+                        (link-butn:ui:fh nur %| "reconnect 🔌" ~ ~)
+                    ;+  %-  maug:fh  :_  [%x-show "status == undefined"]~
+                        (link-butn:ui:fh nur %| "reconnect 🔌" "Checking host for project…" ~)
+                    ;+  %-  maug:fh  :_  [%x-show "status == false"]~
+                        (link-butn:ui:fh nur %| "error ✗" "Failed to reach host." ~)
+                  ==
+                ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
                   :-  ~
                   %+  ~(tipi-form ..$ bas)  "sign off ✔️"
                   :~  ;h1: Review Request

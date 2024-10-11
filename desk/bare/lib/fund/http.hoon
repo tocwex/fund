@@ -118,6 +118,7 @@
     [%next @ @ @ ~]                              `[%page | %proj-next]
     [%project @ @ suf=*]  ?+  suf.pat            ~
       ~                                          `[%page | %proj-view]
+      [%okay ~]                                  `[%page | %proj-okay]
       [%edit ~]                                  `[%page | %proj-edit]
     ==
   ==

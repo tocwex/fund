@@ -151,7 +151,12 @@
     |_  cas=tape
     ++  base-card
       |=  $:  tyt=@t  pic=(unit @t)  xoc=tape
-              pro=(unit [big=? wok=@p ora=@p sat=stat:f cos=cash:f swa=swap:f hed=(unit manx)])
+              $=  pro  %-  unit
+              $:  big=?  gud=?
+                  wok=@p  ora=@p
+                  sat=stat:f  cos=cash:f  swa=swap:f
+                  hed=(unit manx)
+              ==
           ==
       ^-  manx
       =/  big=bean  ?~(pro | big.u.pro)
@@ -168,21 +173,33 @@
         ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
           ;*  ?~  pro  ~
               :_  ~
-              ;div(class "flex flex-row flex-wrap justify-between items-center p-2 gap-2")
-                ;div(class "font-serif flex flex-row flex-wrap justify-start items-center gap-2")
-                  ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
-                    ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
+              ;div(class "h-full flex flex-col justify-between p-2")
+                ;div(class "flex flex-row flex-wrap justify-between items-center gap-2")
+                  ;div(class "font-serif flex flex-row flex-wrap justify-start items-center gap-2")
+                    ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
+                      ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
+                    ==
+                    ;div(class "bg-palette-background rounded-md p-0.5")
+                      ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
+                          :~  (aset:enrl:ff:fh symbol.swa.u.pro)
+                              (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
+                          ==
+                    ==
                   ==
-                  ;div(class "bg-palette-background rounded-md p-0.5")
-                    ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
-                        :~  (aset:enrl:ff:fh symbol.swa.u.pro)
-                            (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
-                        ==
-                  ==
+                  ;*  ?.  big  ~
+                      :_  ~
+                      (stat-pill:ui:fh %smol sat.u.pro)
                 ==
-                ;*  ?.  big  ~
-                    :_  ~
-                    (stat-pill:ui:fh %smol sat.u.pro)
+                ;div(class "flex flex-row flex-wrap justify-end items-center gap-2")
+                  ;*  ?:  gud.u.pro  ~
+                      :_  ~
+                      ;div(class "bg-palette-background rounded-md p-1")
+                        ;span  =class  "text-2xl text-red-500"
+                            =x-init  "initTippy($el, \{text: 'Disconnected from host.', hover: true})"
+                          ; ⚠
+                        ==
+                      ==
+                ==
               ==
         ==
         ;*  ?~  pro  ~
@@ -211,6 +228,7 @@
             ^=  pro
           :*  ~
               big=&
+              gud=live.pre
               wok=p.lag
               ora=p.assessment.pre
               sat=~(stat pj:fj -.pre)
@@ -226,7 +244,7 @@
           tyt=title.met
           pic=image.met
           xoc="joinProject('{(flag:enjs:ff:fh lag)}')"
-          pro=`[| worker.met oracle.met *stat:f cost.met payment.met ~]
+          pro=`[| live.met worker.met oracle.met *stat:f cost.met payment.met ~]
       ==
     ++  make-card                              ::  "create project" card
       ^-  manx

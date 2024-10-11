@@ -819,7 +819,7 @@
   ++  work-bump                                  ::  bumper for work unit
     |=  [sat=stat man=manx]
     ;div(class "flex items-center gap-x-2 {cas}")
-      ;+  (~(stat-pill ..$ ~) sat)
+      ;+  (~(stat-pill ..$ ~) %medi sat)
       ;+  %-  ~(cash-bump ..$ ~)
           :_  man
           ;span.text-nowrap: Funding Goal
@@ -836,19 +836,21 @@
       ==
     ==
   ++  stat-pill                                  ::  status pill element
-    |=  sat=stat
+    |=  [syz=?(%smol %medi %lorj) sat=stat]
     ^-  manx
+    =/  siz=@tas  (dis syz (dec (bex 8)))
     =-  ;div(class "{kas} {cas}"): {nam}
     ^-  [nam=tape kas=tape]
     :-  (stat:enjs:ff sat)
+    =-  "{-}-{(trip siz)}"
     ?-  sat
-      %born  "fund-pill-born"
-      %prop  "fund-pill-born"
-      %lock  "fund-pill-lock"
-      %work  "fund-pill-lock"
-      %sess  "fund-pill-lock"
-      %done  "fund-pill-done"
-      %dead  "fund-pill-dead"
+      %born  "fund-pill-bo"
+      %prop  "fund-pill-bo"
+      %lock  "fund-pill-lo"
+      %work  "fund-pill-lo"
+      %sess  "fund-pill-lo"
+      %done  "fund-pill-do"
+      %dead  "fund-pill-de"
     ==
   ++  icon-stax                                  ::  stack of icons (leftmost on top)
     |=  [typ=?(%circ %rect) liz=(list tape)]

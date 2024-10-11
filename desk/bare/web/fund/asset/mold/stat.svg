@@ -1,0 +1,5 @@
+<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+<rect width='24' height='24' />
+<circle cx='12' cy='12' r='10.5' fill='{stroke}' stroke='{outline}' stroke-dasharray='{dash}'/>
+<path d='M13.8182 14.1695H9.62856L9.32545 15.3322H7L8.9362 8H14.5197L16.4579 15.3332H14.1224L13.8182 14.1695ZM13.284 12.1268L12.7396 10.0213H10.697L10.1516 12.1268H13.284Z' fill='{text}'/>
+</svg>

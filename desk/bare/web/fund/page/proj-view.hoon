@@ -648,10 +648,13 @@
                     =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
                     =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex items-center justify-between")
-                    ;div(class "shrink flex inline-flex items-center gap-2")
+                    ;div(class "shrink flex inline-flex items-center gap-2 overflow-hidden")
                       ;*  =-  :~  (icon-logo:ui:fh %rect lur)
                                   %:  %~  link-butn  ui:fh
-                                        "fund-addr text-black overflow-hidden hover:text-link"
+                                        """
+                                        fund-addr text-black hover:text-link
+                                        min-w-0 text-ellipsis overflow-hidden
+                                        """
                                       wer=mur  tab=&  txt=txt  dis=~
                                       arz=[%x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
                                   ==
@@ -685,21 +688,21 @@
                           %:  ~(link-butn ui:fh "font-serif text-black {kas}")
                               wer=tur  tab=&  txt=txt  dis=~  arz=~
                           ==
-                      ;+  =-  ;div(class "fund-pill {kas}"): {tyt}
+                      ;+  =-  ;div(class kas): {tyt}
                           ^-  [tyt=tape kas=tape]
                           ?-    -.mul
                               %plej
                             =+  pej=(~(got by pledges.pro) ship.mul)
                             ?-  view.pej
-                              ~          ["pledged" "fund-pill-born"]
-                              [~ %stif]  ["welched" "fund-pill-dead"]
-                              [~ %slyd]  ["forgiven" "fund-pill-dead"]
+                              ~          ["pledged" "fund-pill-bo-m"]
+                              [~ %stif]  ["welched" "fund-pill-de-m"]
+                              [~ %slyd]  ["forgiven" "fund-pill-de-m"]
                             ==
                           ::
                               %trib
                             =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
-                            ?~  pruf.teb  ["attested" "fund-pill-lock"]
-                            =-  ["{-}verified" "fund-pill-done"]
+                            ?~  pruf.teb  ["attested" "fund-pill-lo-m"]
+                            =-  ["{-}verified" "fund-pill-do-m"]
                             ?~  ship.teb  ~
                             =-  ?~(- ~ "✔️ ")
                             .^  pro=(unit sigm:f)
@@ -709,8 +712,8 @@
                           ::
                               %pruf
                             ?-  note.mul
-                              %depo  ["deposited" "fund-pill-lock"]
-                              %with  ["withdrawn" "fund-pill-dead"]
+                              %depo  ["deposited" "fund-pill-lo-m"]
+                              %with  ["withdrawn" "fund-pill-de-m"]
                             ==
                           ==
                     ==

@@ -109,13 +109,23 @@ if (window.Alpine === undefined) {
       ['fund-input', 'fund-select read-only:bg-palette-system'],
       ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
-      ['fund-pill', 'text-nowrap font-medium px-3 py-1 border-[3px] rounded-full'],
-      ['fund-pill-born', 'fund-pill text-palette-label bg-palette-background border-palette-background'],
-      ['fund-pill-lock', 'fund-pill text-palette-label bg-none border-palette-primary'],
-      ['fund-pill-done', 'fund-pill text-palette-background bg-palette-primary border-palette-primary'],
-      ['fund-pill-dead', 'fund-pill text-palette-label bg-palette-background border-palette-contrast border-dashed'],
-      ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary hover:bg-palette-background'],
+      ['fund-pill-base', 'text-nowrap font-medium rounded-full border-[3px]'],
+      ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
+      ['fund-pill-medi', 'fund-pill-base px-3 py-1'],
+      ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
+      ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
+      ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
+      ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
+      ['fund-pill-bo-s', 'fund-pill-smol fund-pill-born'], // born
+      ['fund-pill-lo-s', 'fund-pill-smol fund-pill-lock'], // lock
+      ['fund-pill-do-s', 'fund-pill-smol fund-pill-done'], // done
+      ['fund-pill-de-s', 'fund-pill-smol fund-pill-dead'], // dead
+      ['fund-pill-bo-m', 'fund-pill-medi fund-pill-born'], // born
+      ['fund-pill-lo-m', 'fund-pill-medi fund-pill-lock'], // lock
+      ['fund-pill-do-m', 'fund-pill-medi fund-pill-done'], // done
+      ['fund-pill-de-m', 'fund-pill-medi fund-pill-dead'], // dead
+      ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],

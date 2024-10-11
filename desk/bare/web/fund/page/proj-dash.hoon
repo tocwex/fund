@@ -151,7 +151,7 @@
     |_  cas=tape
     ++  base-card
       |=  $:  tyt=@t  pic=(unit @t)  xoc=tape
-              pro=(unit [big=? wok=@p ora=@p cos=cash:f swa=swap:f hed=(unit manx)])
+              pro=(unit [big=? wok=@p ora=@p sat=stat:f cos=cash:f swa=swap:f hed=(unit manx)])
           ==
       ^-  manx
       =/  big=bean  ?~(pro | big.u.pro)
@@ -165,19 +165,24 @@
       ;div  =type  "button"
           =class  "flex flex-col gap-2 hover:cursor-pointer {cas}"
           =x-on-click  xoc
-        ;div(class "font-serif bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
+        ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
           ;*  ?~  pro  ~
               :_  ~
-              ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
-                ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
-                  ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
+              ;div(class "flex flex-row flex-wrap justify-between items-center p-2 gap-2")
+                ;div(class "font-serif flex flex-row flex-wrap justify-start items-center gap-2")
+                  ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
+                    ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
+                  ==
+                  ;div(class "bg-palette-background rounded-md p-0.5")
+                    ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
+                        :~  (aset:enrl:ff:fh symbol.swa.u.pro)
+                            (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
+                        ==
+                  ==
                 ==
-                ;div(class "bg-palette-background rounded-md p-0.5")
-                  ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
-                      :~  (aset:enrl:ff:fh symbol.swa.u.pro)
-                          (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
-                      ==
-                ==
+                ;*  ?.  big  ~
+                    :_  ~
+                    (stat-pill:ui:fh %smol sat.u.pro)
               ==
         ==
         ;*  ?~  pro  ~
@@ -208,6 +213,7 @@
               big=&
               wok=p.lag
               ora=p.assessment.pre
+              sat=~(stat pj:fj -.pre)
               cos=~(cost pj:fj -.pre)
               swa=payment.pre
               hed=`(proj-ther:ui:fh -.pre big=|)
@@ -220,7 +226,7 @@
           tyt=title.met
           pic=image.met
           xoc="joinProject('{(flag:enjs:ff:fh lag)}')"
-          pro=`[| worker.met oracle.met cost.met payment.met ~]
+          pro=`[| worker.met oracle.met *stat:f cost.met payment.met ~]
       ==
     ++  make-card                              ::  "create project" card
       ^-  manx
@@ -406,21 +412,22 @@
                             ^-  manx
                             ::  FIXME: This is so ugly, but there isn't any easy
                             ::  way to grab the color through a Tailwind class
-                            =/  clr=tape
+                            =/  [txt=tape bak=tape bor=tape das=tape]
                               ?-  sat
-                                %born  "a2a2a2"
-                                %prop  "404040"
-                                %lock  "5fb4bf"
-                                %work  "3e72cc"
-                                %sess  "1e3c71"
-                                %done  "71a481"
-                                %dead  "ff4d70"
+                                %born  ["1e1e1e" "efefef" "efefef" ~]
+                                %prop  ["1e1e1e" "efefef" "efefef" ~]
+                                %lock  ["1e1e1e" "dbdbdb" "2f2f2f" ~]
+                                %work  ["1e1e1e" "dbdbdb" "2f2f2f" ~]
+                                %sess  ["1e1e1e" "dbdbdb" "2f2f2f" ~]
+                                %done  ["efefef" "2f2f2f" "2f2f2f" ~]
+                                %dead  ["1e1e1e" "efefef" "dbdbdb" "2+2"]
                               ==
+                            =/  ext=tape  "?text=%23{txt}&stroke=%23{bak}&outline=%23{bor}&dash={das}"
                             :_  ; {(stat:enjs:ff:fh sat)}
                             :-  %option
                             ;:  welp
-                                [%value "{(trip sat)}"]~
-                                [%data-image "https://placehold.co/24x24/{clr}/{clr}?text=\\n"]~
+                                [%value (trip sat)]~
+                                [%data-image "{(aset:enrl:ff:fh %stat)}{ext}"]~
                                 ?.(&(?=(^ stat.arg) =(u.stat.arg sat)) ~ [%selected ~]~)
                             ==
                       ==

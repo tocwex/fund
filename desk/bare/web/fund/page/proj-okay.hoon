@@ -3,7 +3,7 @@
 /-  fd=fund-data
 /+  f=fund-proj, fh=fund-http
 /+  rudder
-%-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh |))
+%-  :(corl dump:preface:fh (proj:preface:fh |))
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)

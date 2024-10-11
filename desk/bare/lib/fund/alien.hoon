@@ -11,8 +11,11 @@
   ^-  rolodex:cn
   =/  pre=path  (en-beam [our.bol %contacts da+now.bol] /)
   ?.  .^(? %gu (snoc pre %$))  *rolodex:cn
-  =+  .^(non=noun %gx (weld pre /all/noun))
-  (fall ((soft rolodex:cn) non) *rolodex:cn)
+  ::  FIXME: This will break if %contacts data model changes, but the
+  ::  code below doesn't work on live ships for some reason
+  ::  =+  .^(non=rolodex:cn %gx (weld pre /all/noun))
+  ::  (fall ((soft rolodex:cn) non) *rolodex:cn)
+  .^(rolodex:cn %gx (weld pre /all/noun))
 ::
 ::  +contacts-ship: %contacts app ship data (index into "rolodex")
 ::
@@ -33,8 +36,11 @@
   =/  pre=path  (en-beam [our.bol %settings da+now.bol] /)
   ?.  .^(? %gu (snoc pre %$))  *bucket:se
   ?.  .^(? %gx (weld pre /has-bucket/landscape/'calmEngine'/noun))  *bucket:se
-  =+  .^(non=noun %gx (weld pre /bucket/landscape/'calmEngine'/noun))
-  =/  dat=data:se  (fall ((soft data:se) non) [%bucket *bucket:se])
+  =+  .^(dat=data:se %gx (weld pre /bucket/landscape/'calmEngine'/noun))
+  ::  FIXME: This will break if %settings data model changes, but the
+  ::  code below doesn't work on live ships for some reason
+  ::  =+  .^(non=noun %gx (weld pre /bucket/landscape/'calmEngine'/noun))
+  ::  =/  dat=data:se  (fall ((soft data:se) non) [%bucket *bucket:se])
   ?.(?=(%bucket -.dat) *bucket:se bucket.dat)
 ::
 ::  +ship-tytl: ship title, derived from %settings and %contacts
@@ -54,9 +60,11 @@
 ++  ship-logo
   |=  sip=@p  ~+
   ^-  tape
-  =/  dis=val:se  (~(gut by settings-calm) 'disableAvatars' [%b |])
+  =/  dia=val:se  (~(gut by settings-calm) 'disableAvatars' [%b |])
+  =/  dir=val:se  (~(gut by settings-calm) 'disableRemoteContent' [%b |])
   =/  def=tape  (surt:enrl:ff sip)
-  ?:  &(?=(%b -.dis) p.dis)    def
+  ?:  &(?=(%b -.dia) p.dia)    def
+  ?:  &(?=(%b -.dir) p.dir)    def
   ?~  con=(contacts-ship sip)  def
   ?~  avatar.u.con             def
   ?:  =(%$ u.avatar.u.con)     def

@@ -108,6 +108,10 @@
     ?>  ?=(%d -.caf)
     %-  abs:si  %-  need  %-  toi:fl  %-  grd:fl
     caf(e (sum:si e.caf (sun:si dex)))
+  ++  vers                                     ::  "1.2.3" => [1 2 3]
+    |=  ver=@t
+    ^-  [@ @ @]
+    (rash ver ;~((glue dot) dem dem dem))
   ++  real                                     ::  "12.345" => .1.2345e1
     |=  rel=@t
     ^-  @rs
@@ -140,10 +144,20 @@
     |=  lag=@t
     ^-  ^flag
     (rash lag ;~((glue fas) ;~(pfix sig fed:ag) sym))
-  ++  poke                                     ::  "lvl:~zod/nam:typ" => [p=%lvl q=[~zod %nam] q=%typ]
+  ++  poke                                     ::  "zon:~zod/nam:typ" => [p=%zon q=[~zod %nam] q=%typ]
     |=  pok=@t
     ^-  (trel @tas ^flag @tas)
     %+  rash  pok
+    ;~  (glue col)
+      ;~(pose (jest %fund) (jest %proj) (jest %prof) (jest %meta))
+      ;~((glue fas) ;~(pfix sig fed:ag) ;~(pose sym (easy '')))
+      sym
+    ==
+  ++  pokz                                     ::  "zon:~zod/nam:typ,…" => ~[[p=%zon q=[~zod %nam] q=%typ] …]
+    |=  poz=@t
+    ^-  (list (trel @tas ^flag @tas))
+    %+  rash  poz
+    %+  more  com
     ;~  (glue col)
       ;~(pose (jest %fund) (jest %proj) (jest %prof) (jest %meta))
       ;~((glue fas) ;~(pfix sig fed:ag) ;~(pose sym (easy '')))
@@ -175,6 +189,10 @@
     ?>  ?=(%d -.cax)
     =.  e.cax  (dif:si e.cax (sun:si dex))
     (flot:fx cax `[2 2])
+  ++  vers                                     ::  [1 2 3] => "1.2.3"
+    |=  ver=[@ @ @]
+    ^-  tape
+    "{<+2.ver>}.{<+6.ver>}.{<+7.ver>}"
   ++  real                                     ::  .1.2345e1 => "12.34"
     |=  rel=@rs
     ^-  tape
@@ -220,11 +238,11 @@
     |=  lag=^flag
     ^-  tape
     "{(ship p.lag)}/{(trip q.lag)}"
-  ++  poke                                     ::  [%level [~zod %nam] %type …] => "level:~zod/nam:type"
+  ++  poke                                     ::  [%zon [~zod %nam] %typ …] => "zon:~zod/nam:typ"
     |=  pok=^poke
     ^-  tape
-    =-  (zing (join ":" `(list tape)`~[lvl (flag lag) typ]))
-    ^-  [lvl=tape lag=^flag typ=tape]
+    =-  (zing (join ":" `(list tape)`~[zon (flag lag) typ]))
+    ^-  [zon=tape lag=^flag typ=tape]
     :-  (trip -.pok)
     ?-  -.pok
       %fund  [[~zod %$] (trip +<.pok)]
@@ -232,6 +250,10 @@
       %meta  [p.pok (trip -.q.pok)]
       %proj  [p.pok "{(trip -.q.pok)}{?+(-.q.pok ~ ?(%bump %mula) ['-' (trip +<.q.pok)])}"]
     ==
+  ++  pokz                                     ::  ~[[%zon [~zod %nam] %typ …] …] => "zon:~zod/nam:typ,…"
+    |=  poz=(list ^poke)
+    ^-  tape
+    (zing (join "," (turn poz poke)))
   ++  swad                                     ::  [%coin 1 0x1 %wstr %wstr 6] => "Wrapped Star"
     |=  swa=^swap
     ^-  tape

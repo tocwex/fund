@@ -33,19 +33,46 @@
   |=  [man=mane tap=tape]
   :_  tap
   ?^  man  man
-  =-  =<  +  %^  spin  rez  man
-      |=  [[pre=@tas nex=@t] acc=@tas]
-      ^-  [[@tas @t] @tas]
-      :-  [pre nex]
-      ?.  =(pre (dis pre man))  acc
-      =+  pro=[3 (met 3 pre)]
-      (con nex (lsh pro (rsh pro acc)))
-  ^-  rez=(list [@tas @t])
-  :~  [%xlass ':class']
-      [%xtyle ':style']
-      [%x-on- 'x-on:']
-      [%x-bind- 'x-bind:']
-  ==
+  |^  (srep (prep man))
+  ++  prep                                       ::  prefix replce
+    |=  cor=@t
+    =-  =<  +  %^  spin  rez  cor
+        |=  [[pre=@tas rep=@t] acc=@tas]
+        ^-  [[@tas @t] @tas]
+        :-  [pre rep]
+        ?.  =(pre (dis pre cor))  acc
+        =/  lep=[b=@ l=@]  [3 (met 3 pre)]
+        (con rep (lsh lep (rsh lep acc)))
+    ^-  rez=(list [@tas @t])
+    :~  [%xlass ':class']
+        [%xtyle ':style']
+        [%x-on- 'x-on:']
+        [%x-bind- 'x-bind:']
+    ==
+  ++  srep                                       ::  suffix replace
+    |=  cor=@t
+    =-  =<  +  %^  spin  rez  cor
+        |=  [[suf=@tas rep=@t] acc=@tas]
+        ^-  [[@tas @t] @tas]
+        :-  [suf rep]
+        =/  les=[b=@ l=@]  [3 (met 3 suf)]
+        =/  lec=[b=@ l=@]  [3 (met 3 cor)]
+        ?:  (lth l.lec l.les)  acc
+        =/  lep=[b=@ l=@]  [3 (sub l.lec l.les)]
+        ?.  =(suf (dis suf (rsh lep cor)))  acc
+        (cat 3 (cut 3 [0 l.lep] acc) rep)
+    ^-  rez=(list [@tas @t])
+    :~  [%'-enter' '.enter']
+        [%'-outside' '.outside']
+    ==
+  --
+::
+::  +maug: m(anx) aug(ment) (augment the attribute list of a manx object)
+::
+++  maug
+  |=  [man=manx mar=mart]
+  ^-  manx
+  %_(man a.g (welp mar a.g.man))
 ::
 ::  +parz: parse POST request parameters considering required arguments
 ::
@@ -91,6 +118,7 @@
     [%next @ @ @ ~]                              `[%page | %proj-next]
     [%project @ @ suf=*]  ?+  suf.pat            ~
       ~                                          `[%page | %proj-view]
+      [%okay ~]                                  `[%page | %proj-okay]
       [%edit ~]                                  `[%page | %proj-edit]
     ==
   ==
@@ -291,54 +319,48 @@
     ^-  manx
     =/  url=@t  url.request.ord
     =/  pat=(pole knot)  (slag:derl:ff url)
-    =/  bag=tape  "bg-palette-contrast rounded-lg drop-shadow-lg sm:p-2 p-1"
+    =/  bag=tape  "rounded-lg sm:p-2 p-1"
+    =/  sag=tape  "bg-palette-contrast drop-shadow-lg"
     =/  bas=tape  "fund-butn-de-m w-full text-center"
     =/  xom=tape  "($store.page.size == 'mobile')"
     =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
-    ::  FIXME: Spacing on heights here for 'overflow-visible' are not perfect
+    ::  FIXME: Spacing on heights here for 'overflow-visible' are ugly and hacky
     ;nav#fund-head
-        =x-data  "\{open: false}"
-        =class  "fund-head w-full sm:h-[4.25rem] h-14 overflow-visible flex px-0 py-2 gap-1 sm:(px-2 gap-4)"
-      ;+  =/  las=tape  "shrink-0 sm:(h-14 px-3) h-11"
-          ?:  ?=(?([%create %project ~] [%project @ @ %edit ~]) pat)
-            ;a/"{(dest:enrl:ff (snip `(list knot)`pat))}"
-                =class  "{las} flex items-center hover:text-[#2c666e] {bag}"
-                =x-show  xow
-              ;h2: ← back
-            ==
-          ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
-              =class  "{las} {bag}"
-              =x-data  "\{ hover: false }"
-              =x-show  xow
-              =x-on-mouseenter  "hover = true"
-              =x-on-mouseleave  "hover = false"
-            ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
-            ;img.h-full@"{(aset:enrl:ff %fund-off)}"(x-show "hover");
-          ==
-      ::  FIXME: This shouldn't shrink along the y-axis when minimizing
-      ::  the page
-      ;+  ;div(class "shrink w-full min-w-0", x-show xow)
-            ;div(class "w-full")
-              ;*  hed
-            ==
-          ==
-      ;div(class "shrink-0", xtyle "!{xow} && \{width: '100%'}")
-        ;div(class "shrink-0 flex flex-col gap-2 {bag}")
+        =x-data  "\{ open: false }"
+        =class  "fund-head w-full flex overflow-visible gap-1 h-12 py-2 sm:(h-[4.25rem] px-2 gap-4)"
+      ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
+          =class  "shrink-0 sm:(h-12 px-3) h-10 bg-palette-background {sag} {bag}"
+          =x-show  xow
+          =x-data  "\{ hover: false }"
+          =x-on-mouseenter  "hover = true"
+          =x-on-mouseleave  "hover = false"
+        ;img.h-full@"{(aset:enrl:ff %fund)}"(x-show "!hover");
+        ;img.h-full@"{(aset:enrl:ff %fund-off)}"(x-show "hover");
+      ==
+      ;div(class "shrink w-full min-w-0 z-50", x-show xow)
+        ;div(class "w-full")
+          ;*  ?^  hed  hed
+              :_  ~  ;div(class "hidden lg:(block h-12 rounded-lg {sag})");
+        ==
+      ==
+      ;div(class "shrink-0", xlass "!{xow} && 'w-full'")
+        ;div(class "shrink-0 flex flex-col gap-2 {sag} {bag}")
           ;button  =type  "button"
               =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
               =x-on-click  "open = ! open"
-            ;+  ;div(class "inline-flex items-center p-1.5 gap-2 rounded-md")
-                  ;+  (ship-logo src.bol bol)
-                  ;span(class "hidden font-bold", xtyle "(!{xom} || !{xow}) && \{display: 'block'}")
-                    ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
-                  ==
-                ==
-            ;div(class "shrink-0 fund-butn-de-l", x-text "$store.wallet.status");
+              =x-on-click-outside  "open = false"
+            ;div(class "inline-flex items-center gap-2 rounded-md")
+              ;+  (~(ship-logo ..$ "h-8") src.bol bol)
+              ;span(x-show "(!{xom} || !{xow})")
+                ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
+              ==
+            ==
+            ;div(class "shrink-0 fund-butn-de-m", x-text "$store.wallet.status");
           ==
           ;div(class "flex flex-col gap-2", x-show "open")
             ;div  ::  current wallet section
               ;div(class "flex flex-col gap-2", x-show "!$store.wallet.connected")
-                ;button(type "button", x-on-click "toggleWallet", class bas): connect
+                ;button(type "button", x-on-click "toggleWallet", class bas): choose wallet 💲
               ==
               ;div(class "flex flex-col gap-2", x-show "$store.wallet.connected")
                 ;div(class "rounded-md bg-palette-background py-1 px-2")
@@ -535,9 +557,9 @@
       ::  after:bg-gradient-to-b after:from-inherit
       ;*  %+  turn  ~[["!open" "line-clamp-5"] ["open" ""]]
           |=  [sow=tape kas=tape]
-          ;zero-md(class "w-full {kas} {cas}", x-show sow, xlass "cmd()", no-shadow ~)
+          ;zero-md(class "w-full {kas} {cas}", x-show sow, xlass "styleMD()", no-shadow ~)
             ;template
-              ;link/"{(dest:enrl:ff /asset/[~.mark.css])}"(rel "stylesheet");
+              ;link/"{(dest:enrl:ff /asset/[~.mdhl.css])}"(rel "stylesheet");
             ==
             ;script(type "text/markdown"): {txt}
           ==
@@ -652,7 +674,7 @@
               ;:  welp
                   [%value (bloq:enjs:ff id.xet)]~
                   [%data-image (aset:enrl:ff tag.xet)]~
-                  ?.(=(can id.xet) ~ [%selected ~]~)
+                  ?.(&(!emt =(can id.xet)) ~ [%selected ~]~)
               ==
         ==
         ;*  ?:  emt  ~
@@ -686,7 +708,7 @@
               ::  rules like all of the other <input>s
               ;label(for "tok")
                 ; Token
-                ;span(class "-ml-1 text-highlight1-500"): *
+                ;span(class "-ml-1 text-red-500"): *
               ==
               ::  FIXME: It would be better if this were an <a> element,
               ::  but that doesn't properly auto-update via 'x-bind-href'
@@ -775,7 +797,7 @@
         ;h1: {tyt}
         ;*  ?~  txt  ~
             :_  ~  ;div(class "text-xl"): {txt}
-        ;div(class "flex gap-2")
+        ;div(class "flex flex-row flex-wrap gap-x-3 gap-y-2 justify-evenly")
           ;*  buz
         ==
       ==
@@ -798,7 +820,7 @@
   ++  work-bump                                  ::  bumper for work unit
     |=  [sat=stat man=manx]
     ;div(class "flex items-center gap-x-2 {cas}")
-      ;+  (~(stat-pill ..$ ~) sat)
+      ;+  (~(stat-pill ..$ ~) %medi sat)
       ;+  %-  ~(cash-bump ..$ ~)
           :_  man
           ;span.text-nowrap: Funding Goal
@@ -815,19 +837,21 @@
       ==
     ==
   ++  stat-pill                                  ::  status pill element
-    |=  sat=stat
+    |=  [syz=?(%smol %medi %lorj) sat=stat]
     ^-  manx
+    =/  siz=@tas  (dis syz (dec (bex 8)))
     =-  ;div(class "{kas} {cas}"): {nam}
     ^-  [nam=tape kas=tape]
     :-  (stat:enjs:ff sat)
+    =-  "{-}-{(trip siz)}"
     ?-  sat
-      %born  "fund-pill-born"  ::  "primary-600"
-      %prop  "fund-pill-born"  ::  "gray-700"
-      %lock  "fund-pill-lock"  ::  "tertiary-350"
-      %work  "fund-pill-work"  ::  "secondary-300"
-      %sess  "fund-pill-work"  ::  "secondary-400"
-      %done  "fund-pill-done"  ::  "highlight2-450"
-      %dead  "fund-pill-dead"  ::  "highlight1-400"
+      %born  "fund-pill-bo"
+      %prop  "fund-pill-bo"
+      %lock  "fund-pill-lo"
+      %work  "fund-pill-lo"
+      %sess  "fund-pill-lo"
+      %done  "fund-pill-do"
+      %dead  "fund-pill-de"
     ==
   ++  icon-stax                                  ::  stack of icons (leftmost on top)
     |=  [typ=?(%circ %rect) liz=(list tape)]
@@ -851,9 +875,9 @@
         ==
     ^=  kas
     """
-    relative w-8 h-4 bg-primary-500 border-2 border-secondary-500 rounded-full
-    peer-checked:bg-secondary-450 peer-checked:after:translate-x-[175%] peer-checked:after:bg-primary-500
-    after:content-[''] after:absolute after:top-[1px] after:bg-secondary-450 after:rounded-full
+    relative w-8 h-4 bg-palette-primary border-2 border-palette-secondary rounded-full
+    peer-checked:bg-palette-secondary/80 peer-checked:after:translate-x-[175%] peer-checked:after:bg-palette-primary
+    after:content-[''] after:absolute after:top-[1px] after:bg-palette-secondary/80 after:rounded-full
     after:h-2.5 after:w-2.5 after:transition-transform
     """
   ++  edit-butn                                  ::  project edit link button
@@ -883,33 +907,55 @@
       ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %copy)}";
     ==
   ++  link-butn                                  ::  hyperlink/redirect button
-    |=  [wer=tape tab=bean txt=tape dis=tape]
+    |=  [wer=tape tab=bean txt=tape diz=tape arz=mart]
     ^-  manx
+    =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
     :_  ; {txt}
     :-  %a
     ;:  welp
-        ?~(dis ~ ~[[%disabled ~] [%title dis]])
-        ?.(tab ~ ~[[%target "_blank"]])
-        [%href wer]~
-        ::  FIXME: Hack b/c post-hoc replacement doesn't work
-        [%class ?~(cas "fund-butn-de-m" cas)]~
+        [%class ?~(cas ?~(diz "fund-butn-de-m" "fund-butn-di-m") cas)]~
+        ?~(wer ~ [%href wer]~)
+        ?~(diz ~ [%disabled ~]~)
+        ?.(tab ~ [%target "_blank"]~)
+        arz
     ==
   ++  prod-butn                                  ::  prod/poke/action button
-    |=  [pod=@tas typ=?(%action %true %false) txt=tape xon=tape diz=tape]
+    |=  [syz=?(%smol %medi %lorj) typ=?(%action %true %false) pod=@tas txt=tape xon=tape diz=tape]
     ^-  manx
+    =/  siz=@tas  (dis syz (dec (bex 8)))
     =/  tip=@tas  (dis typ (dec (bex 16)))
-    ::  TODO: Use on-click tooltips in order to allow disabled buttons
-    ::  to perform error reporting on mobile
+    =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
     :_  ; {txt}
     :-  %button
     ;:  welp
-        ?~(diz ~ ~[[%disabled ~] [%title diz]])
-        ?~(xon ~ ~[[%x-on-click xon]])
         [%id "prod-butn-{(trip pod)}"]~
         [%type "submit"]~
         [%name "dif"]~
         [%value (trip pod)]~
-        [%class "fund-butn-{(trip tip)}-m {cas}"]~
+        [%class "fund-butn-{(trip tip)}-{(trip siz)} {cas}"]~
+        ?~(diz ~ [%disabled ~]~)
+        ?~(xon ~ [%x-on-click xon]~)
+    ==
+  ::  NOTE: This is needed particularly for disabled buttons; see:
+  ::  https://atomiks.github.io/tippyjs/v6/constructor/#disabled-elements
+  ++  help-wrap                                  ::  element w/ tooltip wrapper
+    |=  [hep=tape man=manx]
+    ^-  manx
+    :_  [man]~
+    :-  %span
+    :-  [%class cas]
+    :_  ~
+    :-  %x-init
+    %-  zing  %+  join  "\0a"
+    ^-  (list tape)
+    :~  :(weld "const text = '" hep "';")
+        ^-  tape  ^~
+        %+  rip  3
+        '''
+        if (typeof initTippy !== 'undefined') {
+          initTippy($el, {text: text, hover: true});
+        }
+        '''
     ==
   --
 --

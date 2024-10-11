@@ -56,10 +56,12 @@
     ==
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
+  =/  sos=tape  "?stroke=%23adadad"  ::  palette-system
+  =/  soc=tape  "?stroke=%23dbdbdb"  ::  palette-contrast
   =/  [mez=(map flag:f mete:meta:f) pez=(map flag:f prej:proj:f)]
     ?+  dyp  !!
       %following  [~ pes]
-      %discover  [mes ~]
+      %discover   [mes ~]
     ::
         %action
       =-  [(- mes) (- pes)]
@@ -149,7 +151,12 @@
     |_  cas=tape
     ++  base-card
       |=  $:  tyt=@t  pic=(unit @t)  xoc=tape
-              pro=(unit [big=? wok=@p ora=@p cos=cash:f swa=swap:f hed=(unit manx)])
+              $=  pro  %-  unit
+              $:  big=?  gud=?
+                  wok=@p  ora=@p
+                  sat=stat:f  cos=cash:f  swa=swap:f
+                  hed=(unit manx)
+              ==
           ==
       ^-  manx
       =/  big=bean  ?~(pro | big.u.pro)
@@ -163,17 +170,34 @@
       ;div  =type  "button"
           =class  "flex flex-col gap-2 hover:cursor-pointer {cas}"
           =x-on-click  xoc
-        ;div(class "font-serif bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
+        ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
           ;*  ?~  pro  ~
               :_  ~
-              ;div(class "flex flex-row flex-wrap justify-start items-center p-2 gap-2")
-                ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
-                  ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
+              ;div(class "h-full flex flex-col justify-between p-2")
+                ;div(class "flex flex-row flex-wrap justify-between items-center gap-2")
+                  ;div(class "font-serif flex flex-row flex-wrap justify-start items-center gap-2")
+                    ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
+                      ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
+                    ==
+                    ;div(class "bg-palette-background rounded-md p-0.5")
+                      ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
+                          :~  (aset:enrl:ff:fh symbol.swa.u.pro)
+                              (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
+                          ==
+                    ==
+                  ==
+                  ;*  ?.  big  ~
+                      :_  ~
+                      (stat-pill:ui:fh %smol sat.u.pro)
                 ==
-                ;div(class "bg-palette-background rounded-md p-0.5")
-                  ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
-                      :~  (aset:enrl:ff:fh symbol.swa.u.pro)
-                          (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
+                ;div(class "flex flex-row flex-wrap justify-end items-center gap-2")
+                  ;*  ?:  gud.u.pro  ~
+                      :_  ~
+                      ;div(class "bg-palette-background rounded-md p-1")
+                        ;span  =class  "text-2xl text-red-500"
+                            =x-init  "initTippy($el, \{text: 'Disconnected from host.', hover: true})"
+                          ; ⚠
+                        ==
                       ==
                 ==
               ==
@@ -204,8 +228,10 @@
             ^=  pro
           :*  ~
               big=&
+              gud=live.pre
               wok=p.lag
               ora=p.assessment.pre
+              sat=~(stat pj:fj -.pre)
               cos=~(cost pj:fj -.pre)
               swa=payment.pre
               hed=`(proj-ther:ui:fh -.pre big=|)
@@ -218,7 +244,7 @@
           tyt=title.met
           pic=image.met
           xoc="joinProject('{(flag:enjs:ff:fh lag)}')"
-          pro=`[| worker.met oracle.met cost.met payment.met ~]
+          pro=`[| live.met worker.met oracle.met *stat:f cost.met payment.met ~]
       ==
     ++  make-card                              ::  "create project" card
       ^-  manx
@@ -229,14 +255,15 @@
           pro=~
       ==
     ++  mota-well                              ::  project (metadata) well (%action)
-      |=  [kas=tape msg=tape ski=$-([flag:f prej:proj:f] ?)]
+      |=  [kas=tape msg=$@(@t manx) ski=$-([flag:f prej:proj:f] ?)]
       ^-  manx
       =/  maz=marl
         %+  turn  (skim pyz ski)
         |=([l=flag:f p=prej:proj:f] (meta-card l (proj-meta:ex l p)))
-      =?  maz  ?=(~ msg)  [make-card maz]
+      =?  maz  ?=(%$ msg)  [make-card maz]
       ?~  maz
-        ;p.fund-warn: {msg}
+        ?^  msg  msg
+        ;p.fund-warn: {(trip msg)}
       ;div(class kas)
         ;*  maz
       ==
@@ -244,51 +271,71 @@
       |=  top=bean
       ^-  manx
       =/  kas=tape
-        ?.  top  "flex-col-reverse bg-white fund-foot p-3"
-        "flex-col bg-palette-contrast rounded-lg drop-shadow-lg p-2"
+        ?.  top  "flex-col-reverse drip-shadow-lg fund-foot p-4"
+        "flex-col rounded-lg drop-shadow-lg px-4 py-2"
       =/  syk=manx
         ;div(class "w-full flex-1 flex flex-row gap-4")
-          ;div(class "w-full flex-1 flex flex-row gap-1")
-            ;+  :_  ~  :-  %input
-                :~  [%type "text"]
-                    [%placeholder "Search projects…"]
-                    [%class "p-1 flex-1 min-w-0"]
-                    [%x-model "filt_status.params.text"]
-                    [%'x-on:keyup.enter' "tray_status.open && submitQuery()"]
-                ==
-            ;button.fund-butn-ac-m(type "button", x-on-click "submitQuery")
-              ;img@"{(aset:enrl:ff:fh %search)}";
+          ;div(class "relative w-full flex-1 flex flex-row gap-1")
+            ;input  =type  "text"
+              =class  "py-1 pl-4 pr-10 flex-1 min-w-0"
+              =placeholder  "Search projects…"
+              :: =x-ref  "fund_search"
+              =x-model  "filt_status.params.text"
+              =x-on-keyup-enter  "submitQuery";
+            ::  NOTE: CSS trick from https://stackoverflow.com/a/28456704
+            ;button  =type  "button"
+                =class  "absolute right-3 top-[50%] translate-y-[-50%]"
+                =x-on-click  "submitQuery"
+              ;img@"{(aset:enrl:ff:fh %search)}{soc}";
+              :: ;img@"{(aset:enrl:ff:fh %close)}"(x-show "$focus.focused() == $refs.fund_search");
             ==
           ==
           ;*  ?:  =(%action dyp)  ~
               %+  turn  `(list @tas)`~[%sort %filter]
               |=  mod=@tas
-              ;button(type "button", x-on-click "toggleTray('{(trip mod)}')")
+              ;button  =type  "button"
+                  =x-data  "\{ hover: false }"
+                  =x-on-mouseenter  "hover = true"
+                  =x-on-mouseleave  "hover = false"
+                  =x-on-click  "toggleTray('{(trip mod)}')"
                 ;*  %+  turn  `(list @tas)`~[%$ %off]
                     |=  sat=@tas
-                    =/  ast=tape  ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
-                    ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
-                      =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}')";
+                    =/  ext=tape  ?:(=(%$ sat) ~ sos)
+                    =/  sow=tape  ?.(=(%$ sat) "&& !hover" "|| hover")
+                    ;img.w-6@"{(aset:enrl:ff:fh mod)}{ext}"
+                      =x-show  "showTrayButton('{(trip mod)}', '{(trip sat)}'){sow}";
               ==
         ==
       ;div
-          =class  "w-full flex gap-3 {kas} {cas}"
+          =class  "w-full flex gap-3 bg-palette-contrast {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
-        ;div(class "w-full flex flex-row gap-2 {(trip ?:(top '' 'justify-center'))}")
+        ;div(class "w-full flex items-center gap-6 lg:gap-4 {(trip ?:(top '' 'justify-center'))}")
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
               |=  mod=@tas
               ^-  manx
-              =+  [cas="px-3 py-2 rounded-md" cis=?:(top "w-6" "w-8")]
-              =+  kas=?.(=(dyp mod) ~ "bg-palette-background")
+              =/  cas=tape  "rounded-md {(trip ?:(top %$ 'p-2'))}"
+              =/  cis=tape  ?:(top "w-6" "w-8")
+              =/  deb=tape  (bool:enjs:ff:fh =(dyp mod))
               ?.  ?=(%controls mod)
-                ;a/"{(dest:enrl:ff:fh /dashboard/[mod])}"(class "{cas} {kas}")
-                  ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
+                ;a  =href  (dest:enrl:ff:fh /dashboard/[mod])
+                    =class  cas
+                    =x-data  "\{ hover: {deb} }"
+                    =x-on-mouseenter  "hover = true"
+                    =x-on-mouseleave  "hover = {deb}"
+                  ;img@"{(aset:enrl:ff:fh mod)}{sos}"(class cis, x-show "!hover");
+                  ;img@"{(aset:enrl:ff:fh mod)}"(class cis, x-show "hover");
                 ==
               ?:  top  syk
-              ;button  =type  "button"
-                  =x-on-click  "toggleTray(undefined)"
-                  =class  "{cas} border-l border-gray-250"
-                ;img@"{(aset:enrl:ff:fh mod)}"(class cis);
+              ;div(class "flex items-center border-l-2 pl-6 lg:pl-4")
+                ;button  =type  "button"
+                    =class  "{cas} border-palette-background"
+                    =x-on-click  "toggleTray(undefined)"
+                    =x-data  "\{ hover: false }"
+                    =x-on-mouseenter  "hover = true"
+                    =x-on-mouseleave  "hover = false"
+                  ;img@"{(aset:enrl:ff:fh mod)}{sos}"(class cis, x-show "!(tray_status.open || hover)");
+                  ;img@"{(aset:enrl:ff:fh mod)}"(class cis, x-show "tray_status.open || hover");
+                ==
               ==
         ==
         ;div  =class  "w-full flex flex-col gap-3"
@@ -300,22 +347,31 @@
               :~  ;div(class "w-full flex flex-col gap-3", x-show "tray_status.mode == 'filter'")
                     ;div(class kas)
                       ;*  %+  turn
-                            ^-  (list @tas)
-                            %+  welp  ~[%swap %work %orac]
-                            ?:(=(%discover dyp) ~[%undo] ~[%stat %undo])
-                          |=  mod=@tas
-                          ?:  ?=(%undo mod)
-                            ;button(type "button", x-on-click "toggleFilter(undefined); wipeFilter()")
-                              ; RESET
+                            ^-  (list [@tas tape])
+                            ;:  welp
+                              [%swap "funding"]~
+                              [%work "worker"]~
+                              [%orac "oracle"]~
+                              ?:(=(%discover dyp) ~ [%stat "status"]~)
+                              [%undo "RESET"]~
                             ==
-                          ;button(type "button", x-on-click "toggleFilter('{(trip mod)}')")
+                          |=  [mod=@tas txt=tape]
+                          =/  hyd=tape  "showFilterButton('{(trip mod)}', 'off')"
+                          ?:  ?=(%undo mod)
+                            ;button(type "button", x-on-click "toggleFilter(undefined);wipeFilter()"): {txt}
+                          ;button  =type  "button"
+                              =class  "flex flex-row gap-2"
+                              =x-on-click  "toggleFilter('{(trip mod)}')"
                             ;*  %+  turn  `(list @tas)`~[%$ %off]
                                 |=  sat=@tas
-                                =/  ast=tape
-                                  %+  welp  "filter-"
-                                  ?:(=(%$ sat) (trip mod) "{(trip mod)}-{(trip sat)}")
-                                ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                                =/  ast=tape  "filter-{(trip mod)}"
+                                =/  ext=tape  ?:(=(%$ sat) ~ sos)
+                                ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                   =x-show  "showFilterButton('{(trip mod)}', '{(trip sat)}')";
+                            ;div  =class  "hidden lg:block"
+                                =xlass  "`text-palette-$\{{hyd} ? 'system' : 'primary'}`"
+                              ; {txt}
+                            ==
                           ==
                     ==
                     ;div(x-show "filt_status.mode == 'swap'")
@@ -374,37 +430,55 @@
                             ^-  manx
                             ::  FIXME: This is so ugly, but there isn't any easy
                             ::  way to grab the color through a Tailwind class
-                            =/  clr=tape
+                            =/  [txt=tape bak=tape bor=tape das=tape]
                               ?-  sat
-                                %born  "a2a2a2"
-                                %prop  "404040"
-                                %lock  "5fb4bf"
-                                %work  "3e72cc"
-                                %sess  "1e3c71"
-                                %done  "71a481"
-                                %dead  "ff4d70"
+                                %born  ["1e1e1e" "efefef" "efefef" ~]
+                                %prop  ["1e1e1e" "efefef" "efefef" ~]
+                                %lock  ["1e1e1e" "dbdbdb" "2f2f2f" ~]
+                                %work  ["1e1e1e" "dbdbdb" "2f2f2f" ~]
+                                %sess  ["1e1e1e" "dbdbdb" "2f2f2f" ~]
+                                %done  ["efefef" "2f2f2f" "2f2f2f" ~]
+                                %dead  ["1e1e1e" "efefef" "dbdbdb" "2+2"]
                               ==
+                            =/  ext=tape  "?text=%23{txt}&stroke=%23{bak}&outline=%23{bor}&dash={das}"
                             :_  ; {(stat:enjs:ff:fh sat)}
                             :-  %option
                             ;:  welp
-                                [%value "{(trip sat)}"]~
-                                [%data-image "https://placehold.co/24x24/{clr}/{clr}?text=\\n"]~
+                                [%value (trip sat)]~
+                                [%data-image "{(aset:enrl:ff:fh %stat)}{ext}"]~
                                 ?.(&(?=(^ stat.arg) =(u.stat.arg sat)) ~ [%selected ~]~)
                             ==
                       ==
                     ==
                   ==
                   ;div(class "flex-1 {kas}", x-show "tray_status.mode == 'sort'")
-                    ;*  %+  turn  `(list @tas)`~[%time %pals %cost %alph %undo]
-                        |=  mod=@tas
+                    ;*  %+  turn
+                          ^-  (list [@tas tape])
+                          :~  [%time "update time"]
+                              [%pals "pal count"]
+                              [%cost "total cost"]
+                              [%alph "alphabetical"]
+                              [%undo "RESET"]
+                          ==
+                        |=  [mod=@tas txt=tape]
+                        =/  hyd=tape  "showSortButton('{(trip mod)}', 'off')"
                         ?:  ?=(%undo mod)
-                          ;button(type "button", x-on-click "updateSort(undefined)"): RESET
-                        ;button(type "button", x-on-click "updateSort('{(trip mod)}')")
+                          ;button(type "button", x-on-click "updateSort(undefined)"): {txt}
+                        ;button  =type  "button"
+                            =class  "flex flex-row gap-2"
+                            =x-on-click  "updateSort('{(trip mod)}')"
                           ;*  %+  turn  `(list @tas)`~[%asc %des %off]
                               |=  ord=@tas
-                              =/  ast=tape  "sort-{(trip mod)}-{(trip ord)}"
-                              ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}"
+                              =/  ast=tape
+                                =?  ord  =(%off ord)  ?.(=(%alph mod) %des %asc)
+                                "sort-{(trip mod)}-{(trip ord)}"
+                              =/  ext=tape  ?.(=(%off ord) ~ sos)
+                              ;img.w-6@"{(aset:enrl:ff:fh (crip ast))}{ext}"
                                 =x-show  "showSortButton('{(trip mod)}', '{(trip ord)}')";
+                          ;div  =class  "hidden lg:block"
+                              =xlass  "`text-palette-$\{{hyd} ? 'system' : 'primary'}`"
+                            ; {txt}
+                          ==
                         ==
               ==  ==
         ==
@@ -418,7 +492,7 @@
     ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col p-2 gap-2 min-h-[100vh]")
+    ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
       ;*  =/  cas=tape  "w-full grid gap-4 justify-center"
           =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
           =/  mas=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
@@ -467,11 +541,19 @@
             ==
           ::
               %action
-            =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col overflow-x-auto"
+            =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
             =/  sus=tape  "w-[50vw] sm:w-[250px]"
+            =/  sax=manx
+              ;p.fund-warn
+                ; To serve as a %fund oracle service provider, please
+                ;a.text-link  =target  "_blank"
+                    =href  "{(trip !<(@t (slot:config %meta-help)))}/user-guides/trusted-oracles-wip#why-do-we-only-support-stars-as-escrow-providers"
+                  ;  acquire a Star-level Urbit ID.
+                ==
+              ==
             ?^  text.arg
               :_  ~
-              %^  mota-well:ui  mas  "No projects found."
+              %^  mota-well:ui  mas  'No projects found.'
               |=  [lag=flag:f pre=prej:proj:f]
               ?|  ?&  ?=(?(%prop %sess) ~(stat pj:fj -.pre))
                       =(p.assessment.pre our.bol)
@@ -487,7 +569,7 @@
                 ;div(class "flex flex-col gap-4")
                   ;div                               ::  my $prez
                     ;h2: My Open Projects
-                    ;+  %^  ~(mota-well ui sus)  sas  ~
+                    ;+  %^  ~(mota-well ui sus)  sas  %$
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             =(our.bol p.lag)
@@ -495,7 +577,8 @@
                   ==
                   ;div                               ::  $prez with %prop status
                     ;h2: Service Requests
-                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding requests."
+                    ;+  %^  ~(mota-well ui sus)  sas
+                          ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%prop ~(stat pj:fj -.pre))
                             =(p.assessment.pre our.bol)
@@ -503,7 +586,8 @@
                   ==
                   ;div                               ::  $prez with %sess status
                     ;h2: Review Requests
-                    ;+  %^  ~(mota-well ui sus)  sas  "No projects pending review."
+                    ;+  %^  ~(mota-well ui sus)  sas
+                          ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%sess ~(stat pj:fj -.pre))
                             =(p.assessment.pre our.bol)
@@ -511,7 +595,7 @@
                   ==
                   ;div                               ::  $prez with unfulfilled $plej
                     ;h2: Outstanding Pledges
-                    ;+  %^  ~(mota-well ui sus)  sas  "No outstanding pledges."
+                    ;+  %^  ~(mota-well ui sus)  sas  'No outstanding pledges.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
                             (~(has by pledges.pre) our.bol)
@@ -519,7 +603,7 @@
                   ==
                   ;div                               ::  worker|oracle done|dead $prez
                     ;h2: Work Archive
-                    ;+  %^  mota-well:ui  mas  "No archived projects."
+                    ;+  %^  mota-well:ui  mas  'No archived projects.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)
@@ -605,7 +689,11 @@
             });
           },
           submitQuery() {
-            const params = new URLSearchParams({
+            const oldParams = new URL(document.location.toString()).searchParams;
+            if (oldParams.size === 0) {
+              oldParams.set("desc", "true");
+            }
+            const newParams = new URLSearchParams({
               ...((this.filt_status.mode === "swap" || this.filt_status.mode === undefined)
                 ? {}
                 : {filt: this.filt_status.mode}
@@ -617,7 +705,13 @@
               ))),
               // TODO: Include chain number when symbols are not unique
             });
-            this.openHREF(`${window.location.pathname}?${params}`);
+
+            if (
+              [...oldParams.entries()].sort().toString() !==
+              [...newParams.entries()].sort().toString()
+            ) {
+              this.openHREF(`${window.location.pathname}?${newParams}`);
+            }
           },
           })));
           '''
@@ -625,4 +719,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 1]
+::  VERSION: [1 4 2]

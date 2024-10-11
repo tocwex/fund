@@ -13,15 +13,20 @@
   ?~  lau  'bad dif; no project flag in the POST URL'
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
-        (crip "bad dif; expected bump-prop, not {(trip dif)}")
+        (crip "bad dif; expected (bump-prop|join-proj), not {(trip dif)}")
       %bump-prop  [%proj u.lau %bump %prop ~]
+      %join-proj  [%proj u.lau %join ~]
     ==
   ==
 ++  final
   |=  [gud=? txt=brief:rudder]
   ^-  reply:rudder
-  =/  [* lag=flag:f *]  (gref:proj:preface:fh txt)
-  [%next (flac:enrl:ff:fh lag) ~]
+  =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
+  :-  %next  :_  ~
+  ?+    pyp  (flac:enrl:ff:fh lag)
+      %join
+    (desc:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/join)
+  ==
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -42,11 +47,11 @@
           pro=(dest:enrl:ff:fh pat(- %project, +>+ ~))
       ==
     =/  btn
-      :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~)
-          pro=(link-butn:ui:fh pro.syt %| "back to project" ~)
-          tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~)
-          joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~)
-          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to following" ~)
+      :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~ ~)
+          pro=(link-butn:ui:fh pro.syt %| "back to project" ~ ~)
+          tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~ ~)
+          joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~ ~)
+          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to dashboard" ~ ~)
       ==
     ?+    typ.pat  !!
         %bump
@@ -55,11 +60,27 @@
         ~
       [pro.btn ?.(?=(%admin aut) ~ [das.btn]~)]
     ::
+        %exit
+      %^    hero-plaq:ui:fh
+          "You are now leaving project '{(flag:enjs:ff:fh lag)}'…"
+        ~
+      :_  ~
+      %-  maug:fh  :_  [%x-init "delay(2000).then(() => $el.form.requestSubmit($el))"]~
+      (~(prod-butn ui:fh "hidden") %medi %true %join-proj "join project ✓" ~ ~)
+    ::
         %join
       %^    hero-plaq:ui:fh
           "You are now joining project '{(flag:enjs:ff:fh lag)}'!"
         ~
-      [pro.btn ~]
+      :_  ~
+      ;div  =x-data  "\{ status: undefined }"
+          =x-init  "queryPage('{pro.syt}', \{maxAttempts: 5}).then(p => \{status = !!p;})"
+        ;+  (maug:fh pro.btn [%x-show "status == true"]~)
+        ;+  %-  maug:fh  :_  [%x-show "status == undefined"]~
+            (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host…" ~)
+        ;+  %-  maug:fh  :_  [%x-show "status == false"]~
+            (link-butn:ui:fh pro.syt %| "error ✗" "Failed to reach host." ~)
+      ==
     ::
         %edit
       %^      hero-plaq:ui:fh
@@ -73,9 +94,9 @@
         send them a direct message via the Tlon application to let them
         know they have a pending service request!
         '''
-      :~  (prod-butn:ui:fh %bump-prop %true "request oracle ✓" ~ ~)
+      :~  (prod-butn:ui:fh %medi %true %bump-prop "request oracle ✓" ~ ~)
           =+  (dest:enrl:ff:fh pat(- %project))
-            (link-butn:ui:fh - %| "continue editing" ~)
+            (link-butn:ui:fh - %| "continue editing" ~ ~)
           pro.btn
       ==
     ::
@@ -84,7 +105,7 @@
             ;h1: Thank you!
             ;p: Your {?-(typ.pat %plej "pledge", %trib "contribution")} has been received!
             ;+  hed
-            ;div(class "flex flex-row gap-x-3")
+            ;div(class "flex flex-row flex-wrap gap-y-2 gap-x-3")
               ;+  pro.btn
               ;+  but
               ;*  ?~  pow=(~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) p.lag)  ~
@@ -106,7 +127,7 @@
       :*    ^=  but
           ?-    aut
             %clear  joi.btn
-            %eauth  (~(link-butn ui:fh "fund-butn-ac-m") "{hep.syt}/#installing-fund" %& "get %fund ~" ~)
+            %eauth  (~(link-butn ui:fh "fund-butn-ac-m") "{hep.syt}/#installing-fund" %& "get %fund ~" ~ ~)
             %admin  tlo.btn
           ==
       ::
@@ -114,7 +135,7 @@
           ;div(class "w-full flex flex-col gap-y-3")
             ;*  ?:  ?=(%trib typ.pat)  ~
                 :_  ~
-                ;p(class "bg-highlight1-150 text-highlight1-500 border-highlight1-500 border rounded-md p-3")
+                ;p(class "bg-red-150 text-red-500 border-red-500 border rounded-md p-3")
                   ; Your pledge is a public (and cryptographically provable) promise
                   ; to contribute funds that is backed by your word as {<src.bol>}.
                   ;span(class "font-bold")
@@ -322,4 +343,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 1]
+::  VERSION: [1 4 2]

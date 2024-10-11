@@ -223,7 +223,7 @@
       |=  [tyt=tape fom=marl]
       ^-  manx
       ;div
-        ;button(class "fund-butn-de-l {cas}", x-init "initTippy($el)"): {tyt}
+        ;button(class "fund-butn-de-m {cas}", x-init "initTippy($el)"): {tyt}
         ;div(class "hidden")
           ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 p-2")
             ;*  fom
@@ -233,21 +233,38 @@
     ++  dash-navi
       |=  top=bean
       ^-  manx
-      =/  bas=tape  ?.(top "w-full" "fund-butn-lorj")
+      =/  bas=tape  ?:(top ~ "w-full")
       =/  kas=tape
-        ?.  top  "flex-col gap-3 fund-foot bg-white p-3"
-        "flex-row justify-between bg-palette-contrast rounded-lg drop-shadow-lg p-2"
+        ?.  top  "flex-col drip-shadow-lg gap-3 fund-foot p-3"
+        "flex-row justify-between rounded-lg drop-shadow-lg p-2"
       ;div
-          =class  "w-full flex {kas} {cas}"
+          =class  "w-full flex bg-palette-contrast {kas} {cas}"
           =x-show  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
-        ;*  =-  :~  ;div(class "flex flex-row items-center {(trip ?:(top 'gap-2' 'justify-between'))}")
+        ;*  =-  ;:  welp
+                      :_  ~
+                    ;div(class "flex flex-row items-center {(trip ?:(top 'gap-2' 'justify-between'))}")
                       ;*  mix
                     ==
-                      ?~  act  ;div;
-                    u.act
+                ::
+                      ?~  act  ~
+                    :_  ~  u.act
                 ==
             ^-  [act=(unit manx) mix=marl]
-            :-  ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
+            :-  ?.  live.pre
+                  :-  ~
+                  =/  pur=tape  :(welp ?~(pow ~ (trip ship-url.u.pow)) (flat:enrl:ff:fh lag) "/okay")
+                  =/  nur=tape  (dest:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/exit)
+                  ;div  =class  "flex flex-row items-center"
+                      =x-data  "\{ status: undefined }"
+                      =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"
+                    ;+  %-  maug:fh  :_  [%x-show "status == true"]~
+                        (link-butn:ui:fh nur %| "reconnect 🔌" ~ ~)
+                    ;+  %-  maug:fh  :_  [%x-show "status == undefined"]~
+                        (link-butn:ui:fh nur %| "reconnect 🔌" "Checking host for project…" ~)
+                    ;+  %-  maug:fh  :_  [%x-show "status == false"]~
+                        (link-butn:ui:fh nur %| "error ✗" "Failed to reach host." ~)
+                  ==
+                ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
                   :-  ~
                   %+  ~(tipi-form ..$ bas)  "sign off ✔️"
                   :~  ;h1: Review Request
@@ -273,23 +290,23 @@
                         ; below to confirm your particpation.
                       ==
                       ;div(class "flex justify-end gap-x-2")
-                        ;+  (prod-butn:ui:fh %bump-born %action "decline ~" ~ ~)
-                        ;+  (prod-butn:ui:fh %bump-prop %true "accept ✓" "acceptContract" ~)
+                        ;+  (prod-butn:ui:fh %medi %action %bump-born "decline ~" ~ ~)
+                        ;+  (prod-butn:ui:fh %medi %true %bump-prop "accept ✓" "acceptContract" ~)
                       ==
                   ==
                 ?:  &(wok ?=(%prop sat))
                   :-  ~
                   %-  ~(bare-form ..$ ~)
                   %:  ~(prod-butn ui:fh bas)
-                      %bump-lock  %true  "launch ✔️"  "finalizeContract"
-                      ?:(?=(^ contract.pro) ~ "awaiting response from trusted oracle")
+                      %medi  %true  %bump-lock  "launch ✔️"  "finalizeContract"
+                      ?:(?=(^ contract.pro) ~ "Awaiting response from trusted oracle.")
                   ==
                 ?.  ?=(?(%born %done %dead) sat)
                   =/  nft=?  ?=(%enft -.payment.pro)
                   =+  pej=(~(get by pledges.pro) src.bol)
                   :-  ~
                   %+  ~(tipi-form ..$ bas)  "contribute 💸"
-                  :~  ;h1: {?~(pej "Contribute" "Fulfill Pledge")}
+                  :~  ;h1.text-nowrap: {?~(pej "Contribute" "Fulfill Pledge")}
                       ;div(class "fund-form-group")
                         ;+  :_  ~  :-  %input
                             ;:  welp
@@ -358,14 +375,14 @@
                       ==
                       ;div(class "flex justify-end pt-2 gap-x-2")
                         ;+  %:  prod-butn:ui:fh
-                                %mula-plej  %action  "pledge only ~"  "plejFunds"
+                                %medi  %action  %mula-plej  "pledge only ~"  "plejFunds"
                                 ?.  &((auth:fh bol) (plan:fx src.bol))
-                                  "pledges only available to authenticated planets"
+                                  "Pledges only available to authenticated planets."
                                 ?:  (~(has by pledges.pro) src.bol)
-                                  "you must fulfill your outstanding pledge"
+                                  "You must fulfill your outstanding pledge."
                                 ~
                             ==
-                        ;+  (prod-butn:ui:fh %mula-trib %true "send funds ✓" "sendFunds" ~)
+                        ;+  (prod-butn:ui:fh %medi %true %mula-trib "send funds ✓" "sendFunds" ~)
                   ==  ==
                 ~
             ;:    welp
@@ -414,7 +431,7 @@
                 ?.  &(tym ?=(?(%lock %work %sess) sat))  ~
               :_  ~
               %-  ~(bare-form ..$ ~)
-              (~(prod-butn ui:fh "fund-butn-lorj") %bump-dead %false "cancel ❌" "cancelContract" ~)
+              (prod-butn:ui:fh %medi %false %bump-dead "cancel ❌" "cancelContract" ~)
             ::  edit button  ::
                 ?.  &(wok ?=(?(%born %prop) sat))  ~
               :_  ~  (edit-butn:ui:fh lag)
@@ -450,7 +467,7 @@
                         ;span.font-bold: This action is irreversible, choose wisely.
                       ==
                       ;div(class "flex justify-end pt-2 gap-x-2")
-                        ;+  (prod-butn:ui:fh %fave-proj %true "publicize ✓" ~ ~)
+                        ;+  (prod-butn:ui:fh %medi %true %fave-proj "publicize ✓" ~ ~)
                       ==
                     ==
                   ==
@@ -473,18 +490,18 @@
   :^  bol  ord  (trip title.pro)
   :+  fut=&  hed=|
   ;div(x-data "proj_view")
+    ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col p-2 gap-3 min-h-[100vh]")
-      ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
+    ;div(class "flex flex-col gap-3 px-2 py-2 sm:px-5 min-h-[100vh]")
       ;h1(class "fund-title"): {(trip title.pro)}
-      ;+  =/  irl=tape  (trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))
-          ;div(class "w-full aspect-square bg-cover bg-center rounded-md bg-[url('{irl}')]")
-            ;div(class "flex flex-row flex-wrap justify-end p-4")
-              ;+  %+  ~(work-bump ui:fh "p-2 fund-card-fore")  sat
-                  ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
-            ==
-          ==
+      ;div.relative.w-full
+        ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))}";
+        ;div.absolute.top-4.right-4
+          ;+  %+  ~(work-bump ui:fh "p-2 fund-card-fore")  sat
+              ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
+        ==
+      ==
       ;div(class "flex flex-col gap-2")
         ;div(class "flex flex-row justify-between items-center")
           ;h1-alt: Funding Tracker
@@ -543,57 +560,57 @@
                       =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                       ;:    welp
                           ?.  &(cur wok ?=(%lock status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %bump-work %action "mark in-progress ~" ~ ~)
+                        :_  ~  (prod-butn:ui:fh %medi %action %bump-work "mark in-progress ~" ~ ~)
                       ::
                           ?.  &(cur wok ?=(%work status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %bump-sess %action "request review ~" ~ ~)
+                        :_  ~  (prod-butn:ui:fh %medi %action %bump-sess "request review ~" ~ ~)
                       ::
                           ?.  &(cur ora ?=(%sess status.mil))  ~
                         :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %bump-work %action "changes required ~" ~ ~)
-                            (prod-butn:ui:fh %bump-done %true "approve ✓" "approveMilestone" ~)
+                            (prod-butn:ui:fh %medi %action %bump-work "changes required ~" ~ ~)
+                            (prod-butn:ui:fh %medi %true %bump-done "approve ✓" "approveMilestone" ~)
                         ==
                       ::
                       ::
                           ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
                         :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %wipe-casi %true "reapprove ✓" "approveMilestone" ~)
+                            (prod-butn:ui:fh %medi %true %wipe-casi "reapprove ✓" "approveMilestone" ~)
                         ==
                       ::
                           ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %wipe-cade %false "clear approval ✗" "clearMilestone" ~)
+                        :_  ~  (prod-butn:ui:fh %medi %false %wipe-cade "clear approval ✗" "clearMilestone" ~)
                       ::
                           ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
                         :_  ~
                         %:  prod-butn:ui:fh
-                            %draw-done  %true  "claim funds ✓"  "claimMilestone"
+                            %medi  %true  %draw-done  "claim funds ✓"  "claimMilestone"
                             ?^  xact.u.withdrawal.mil
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
                                   ==
-                                "funds claimed but awaiting confirmation"
-                              "funds have already been fully claimed"
+                                "Funds claimed but awaiting confirmation."
+                              "Funds have already been fully claimed."
                             ::  NOTE: A `pruf` without an `xact` is an impossible case
                             ~
                         ==
                       ::
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %wipe-resi %true "sign refund ~" "cancelContract" ~)
+                        :_  ~  (prod-butn:ui:fh %medi %true %wipe-resi "sign refund ~" "cancelContract" ~)
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %wipe-rede %false "clear approval ✗" "clearMilestone" ~)
+                        :_  ~  (prod-butn:ui:fh %medi %false %wipe-rede "clear approval ✗" "clearMilestone" ~)
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
                         :_  ~
                         %:  prod-butn:ui:fh
-                            %draw-dead  %true  "refund funds ✓"  "refundContract"
+                            %medi  %true  %draw-dead  "refund funds ✓"  "refundContract"
                             ?^  xact.u.withdrawal.mil
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
                                   ==
-                                "funds refunded but awaiting confirmation"
-                              "funds have already been fully refunded"
+                                "Funds refunded but awaiting confirmation."
+                              "Funds have already been fully refunded."
                             ::  NOTE: A `pruf` without an `xact` is an impossible case
                             ~
                         ==
@@ -644,47 +661,62 @@
                 ;div
                     =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
                     =class   "flex flex-col gap-y-2 {mas}"
-                  ;div(class "flex flex-wrap items-center justify-between")
-                    ;div(class "flex items-center gap-x-2")
-                      ;*  =-  :~  (icon-logo:ui:fh %rect url)
-                                  ::  TODO: Needs major cleanup
-                                  ;a  =href  ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej (chat:enrl:ff:fh p.lag))
-                                      =target  "_blank"
-                                      =class  "fund-addr hover:text-link text-black"
-                                      =x-init  ?+(-.mul ~ %pruf "initENS($el, '{muf}')")
-                                    {txt}
+                  ;div(class "flex items-center justify-between")
+                    ;div(class "shrink flex inline-flex items-center gap-2 overflow-hidden")
+                      ;*  =-  :~  (icon-logo:ui:fh %rect lur)
+                                  %:  %~  link-butn  ui:fh
+                                        """
+                                        fund-addr text-black hover:text-link
+                                        min-w-0 text-ellipsis overflow-hidden
+                                        """
+                                      wer=mur  tab=&  txt=txt  dis=~
+                                      arz=[%x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
                                   ==
                               ==
-                          ^-  [url=tape txt=tape]
-                          ?-  -.mul
-                            %plej  [(surt:enrl:ff:fh ship.mul) (ship:enjs:ff:fh ship.mul)]
+                          ^-  [mur=tape lur=tape txt=tape]
+                          ?-    -.mul
+                              %plej
+                            :*  mur=(chat:enrl:ff:fh ship.mul)
+                                lur=(surt:enrl:ff:fh ship.mul)
+                                txt=(ship:enjs:ff:fh ship.mul)
+                            ==
                           ::
-                              %trib
-                            ?~  ship.mul  [(colt:enrl:ff:fh %black) "anonymous"]
-                            [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
-                          ::
-                              %pruf
-                            ?~  ship.mul  [(aset:enrl:ff:fh %link) (sadr:enjs:ff:fh from.when.mul)]
-                            [(surt:enrl:ff:fh u.ship.mul) (ship:enjs:ff:fh u.ship.mul)]
+                              ?(%trib %pruf)
+                            ?^  ship.mul
+                              :*  mur=(chat:enrl:ff:fh u.ship.mul)
+                                  lur=(surt:enrl:ff:fh u.ship.mul)
+                                  txt=(ship:enjs:ff:fh u.ship.mul)
+                              ==
+                            :-  mur=(esat:enrl:ff:fh %addr from.when.mul chain.payment.pro)
+                            ?-  -.mul
+                              %trib  [lur=(colt:enrl:ff:fh %black) txt="anonymous"]
+                              %pruf  [lur=(aset:enrl:ff:fh %link) txt=(sadr:enjs:ff:fh from.when.mul)]
+                            ==
                           ==
                     ==
-                    ;div(class "flex items-center gap-x-2")
-                      ;p(class "font-serif text-black"): {(swam:enjs:ff:fh cash.mul payment.pro)}
-                      ;+  =-  ;div(class "fund-pill {kas}"): {tyt}
+                    ;div(class "flex inline-flex items-center gap-2")
+                      ;+  =/  tur=tape
+                            ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej ~)
+                          =/  kas=tape  ?~(tur ~ "hover:text-link")
+                          =/  txt=tape  (swam:enjs:ff:fh cash.mul payment.pro)
+                          %:  ~(link-butn ui:fh "font-serif text-black {kas}")
+                              wer=tur  tab=&  txt=txt  dis=~  arz=~
+                          ==
+                      ;+  =-  ;div(class kas): {tyt}
                           ^-  [tyt=tape kas=tape]
                           ?-    -.mul
                               %plej
                             =+  pej=(~(got by pledges.pro) ship.mul)
                             ?-  view.pej
-                              ~          ["pledged" "fund-pill-born"]
-                              [~ %stif]  ["welched" "fund-pill-work"]
-                              [~ %slyd]  ["forgiven" "fund-pill-work"]
+                              ~          ["pledged" "fund-pill-bo-m"]
+                              [~ %stif]  ["welched" "fund-pill-de-m"]
+                              [~ %slyd]  ["forgiven" "fund-pill-de-m"]
                             ==
                           ::
                               %trib
                             =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
-                            ?~  pruf.teb  ["confirmed" "fund-pill-lock"]
-                            =-  ["{-}verified" "fund-pill-done"]
+                            ?~  pruf.teb  ["attested" "fund-pill-lo-m"]
+                            =-  ["{-}verified" "fund-pill-do-m"]
                             ?~  ship.teb  ~
                             =-  ?~(- ~ "✔️ ")
                             .^  pro=(unit sigm:f)
@@ -694,8 +726,8 @@
                           ::
                               %pruf
                             ?-  note.mul
-                              %depo  ["deposited" "fund-pill-lock"]
-                              %with  ["withdrawn" "fund-pill-dead"]
+                              %depo  ["deposited" "fund-pill-lo-m"]
+                              %with  ["withdrawn" "fund-pill-de-m"]
                             ==
                           ==
                     ==
@@ -733,7 +765,7 @@
                         :_  ~
                         ;form  =method  "post"
                             =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"
-                          ;+  (prod-butn:ui:fh %mula-mine %action "claim transaction ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %medi %action %mula-mine "claim transaction ~" "editMula" ~)
                         ==
                       ::  pledge edit view button  ::
                           ?.  ?&  pyr
@@ -744,7 +776,7 @@
                           ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %mula-view %action "toggle status ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %medi %action %mula-view "toggle status ~" "editMula" ~)
                         ==
                       ::  attested redo button  ::
                           ?.  ?&  pyr
@@ -755,13 +787,13 @@
                             ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %mula-redo %action "query chain ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %medi %action %mula-redo "query chain ~" "editMula" ~)
                         ==
                       ::  mula blot button  ::
                           ?.  &(pyr !?=(%pruf -.mul))  ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %mula-blot %action "toggle shown ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %medi %action %mula-blot "toggle shown ~" "editMula" ~)
                         ==
                       ==
                 ==
@@ -1011,4 +1043,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 1]
+::  VERSION: [1 4 2]

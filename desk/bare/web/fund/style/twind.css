@@ -1,0 +1,20 @@
+form { margin: unset; }
+h1, h2, h3, h4 { --apply: text-palette-primary font-serif; }
+h5, h6 { --apply: text-palette-primary font-sans; }
+h1 { --apply: text-xl sm:text-3xl; }
+h2 { --apply: text-lg sm:text-2xl; }
+h3 { --apply: text-base sm:text-xl; }
+h4 { --apply: text-base sm:text-lg; }
+h5 { --apply: font-light text-sm sm:(font-medium text-base); }
+h6 { --apply: font-light uppercase text-sm sm:font-medium; }
+h1-alt { --apply: font-serif text-palette-contrast text-xl sm:text-3xl; }
+hr { --apply: border-0 h-px bg-black; }
+select { padding: unset; --apply: fund-select; }
+textarea,input { padding: unset; --apply: fund-input; }
+label { --apply: font-light; }
+ol,ul { padding: unset; padding-inline-start: 1.5rem; list-style-position: outside; }
+ul { --apply: list-disc; }
+ol { --apply: list-decimal; }
+code { --apply: font-mono text-white bg-black rounded-md py-0.5 px-1.5; }
+blockquote { --apply: p-2 text-palette-system bg-opacity-50 border-l-4 border-palette-label; }
+*:focus { --apply: outline-2 outline outline-palette-label/50; }

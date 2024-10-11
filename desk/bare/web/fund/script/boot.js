@@ -1,6 +1,7 @@
 import alpineTurboDriveAdapter from 'https://cdn.skypack.dev/alpine-turbo-drive-adapter';
 import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1';
 import Alpine from 'https://cdn.skypack.dev/alpinejs@v3.13.9';
+// import AlpineFocus from 'https://cdn.skypack.dev/@alpinejs/focus@v3.13.9';
 import * as twind from 'https://cdn.jsdelivr.net/npm/@twind/core@1.1.3/+esm';
 import presetTwind from 'https://cdn.jsdelivr.net/npm/@twind/preset-tailwind@1.1.4/+esm';
 import presetLineClamp from 'https://cdn.jsdelivr.net/npm/@twind/preset-line-clamp@1.0.7/+esm';
@@ -19,17 +20,29 @@ import TippyJs from 'https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/+esm';
 import TomSelect from 'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/+esm';
 import UrbitOb from 'https://cdn.jsdelivr.net/npm/urbit-ob@5.0.1/+esm';
 import * as SAFE from './safe.js';
-import { FUND_SIGN_ADDR } from './config.js';
+import { FUND_DEBUG, FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
 
+import FUND_PREFLIGHT_CSS from './twind.css' with {type: 'css'};
+import FUND_MARKDOWN_CSS from './md.css' with {type: 'css'};
+import FUND_TOMSELECT_CSS from './toms.css' with {type: 'css'};
+import FUND_TIPPY_CSS from './tippy.css' with {type: 'css'};
+
 if (window.Alpine === undefined) {
-  const PALETTE = {
-    primary: '#545557',
-    secondary: '#dedfe0',
-    label: '#4a4b4c',
-    background: '#f0f0f1',
-    contrast: '#dedfe0',
-  };
+  // NOTE: We store TailwindCSS style rules as normal CSS files with the
+  // `--apply` variable as a stand-in for Tailwind's `@apply directive
+  // so that this data can be read in through the JS `import` mechanism
+  function twindCSSToString(css) {
+    const cssLines = [...css.cssRules].map(rule => (
+      rule.cssText.replace(/--apply: /, '@apply ')
+    ));
+    return cssLines.join("\n");
+  }
+  const FUND_PREFLIGHT = twindCSSToString(FUND_PREFLIGHT_CSS);
+  const FUND_MARKDOWN = twindCSSToString(FUND_MARKDOWN_CSS);
+  const FUND_TOMSELECT = twindCSSToString(FUND_TOMSELECT_CSS);
+  const FUND_TIPPY = twindCSSToString(FUND_TIPPY_CSS);
+
   twind.install({
     presets: [
       presetTwind(),
@@ -48,147 +61,43 @@ if (window.Alpine === undefined) {
           '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
         },
         colors: {
-          // new style
-          palette: PALETTE,
-          // old style
-          primary: {
-            100: '#fdfdfd',
-            150: '#fafafa',
-            200: '#f8f8f8',
-            250: '#f6f6f6',
-            300: '#f4f4f4',
-            350: '#f1f1f1',
-            400: '#efefef',
-            450: '#ededed',
-            500: '#e8e8e8',
-            550: '#bababa',
-            600: '#a2a2a2',
-            650: '#8b8b8b',
-            700: '#747474',
-            750: '#5d5d5d',
-            800: '#464646',
-            850: '#232323',
-            900: '#171717',
-          },
-          secondary: {
-            100: '#ffffff',
-            150: '#cfdcf2',
-            200: '#9eb8e5',
-            250: '#6e95d8',
-            300: '#3e72cc',
-            350: '#2b56a1',
-            400: '#1e3c71',
-            450: '#112240',
-            500: '#04080f',
-            550: '#04080e',
-            600: '#03060c',
-            650: '#03050a',
-            700: '#020408',
-            750: '#020306',
-            800: '#010204',
-            850: '#010102',
-            900: '#090909',
-          },
-          tertiary: {
-            100: '#ffffff',
-            150: '#dff0f2',
-            200: '#bfe1e6',
-            250: '#9fd2d9',
-            300: '#7fc3cc',
-            350: '#5fb4bf',
-            400: '#45a1ad',
-            450: '#38838d',
-            500: '#2c666e',
-            550: '#265960',
-            600: '#214c52',
-            650: '#214c52',
-            700: '#163337',
-            750: '#102629',
-            800: '#0b191b',
-            850: '#050d0e',
-            900: '#090909',
-          },
-          highlight1: {
-            100: '#ffe5eb',
-            150: '#ffccd6',
-            200: '#ffb3c2',
-            250: '#ff99ad',
-            300: '#ff8099',
-            350: '#ff6685',
-            400: '#ff4d70',
-            450: '#ff335c',
-            500: '#ff0033',
-            550: '#cc0029',
-            600: '#b30024',
-            650: '#99001f',
-            700: '#80001a',
-            750: '#660014',
-            800: '#4d000f',
-            850: '#33000a',
-            900: '#1a0005',
-          },
-          highlight2: {
-            100: '#edf4ef',
-            150: '#dce8e0',
-            200: '#caddd0',
-            250: '#b8d2c0',
-            300: '#a6c6b0',
-            350: '#95bba1',
-            400: '#83b091',
-            450: '#71a481',
-            500: '#568665',
-            550: '#446b51',
-            600: '#3c5e47',
-            650: '#33503c',
-            700: '#2b4332',
-            750: '#223628',
-            800: '#1a281e',
-            850: '#111b14',
-            900: '#090d0a',
+          palette: {
+            primary: '#2f2f2f',
+            secondary: '#dbdbdb',
+            label: '#1e1e1e',
+            background: '#efefef',
+            contrast: '#dbdbdb',
+            system: '#adadad',
           },
         },
       },
     },
-    // TODO: It would be great to put this all in a CSS file that
-    // was loaded by this file or the browser and then injected here
-    preflight: twind.css(`
-      form { margin: unset; }
-      h1, h2, h3, h4 { @apply font-serif; }
-      h5, h6 { @apply font-sans; }
-      h1 { @apply text-xl sm:text-3xl; }
-      h2 { @apply text-lg sm:text-2xl; }
-      h3 { @apply text-base sm:text-xl; }
-      h4 { @apply text-base sm:text-lg; }
-      h5 { @apply font-light text-sm sm:(font-medium text-base); }
-      h6 { @apply font-light uppercase text-sm sm:font-medium; }
-      h1-alt { @apply font-serif text-palette-contrast text-xl sm:text-3xl; }
-      hr { @apply border-0 h-px bg-black; }
-      select { padding: unset; @apply fund-select; }
-      textarea,input { padding: unset; @apply fund-input; }
-      label { @apply font-light; }
-      ol,ul { padding: unset; padding-inline-start: 1.5rem; list-style-position: outside; }
-      ul { @apply: list-disc; }
-      ol { @apply: list-decimal; }
-      code { @apply font-mono text-tertiary-150 bg-tertiary-850 rounded-md py-0.5 px-1.5; }
-      blockquote { @apply p-2 bg-gray-200 bg-opacity-50 border-l-4 border-gray-800; }
-    `),
+    // TODO: Are there any issues including the library CSS rules in 'preflight'?
+    preflight: twind.css([FUND_PREFLIGHT, FUND_TOMSELECT, FUND_TIPPY].join("\n")),
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
-      // FIXME: It would be great if this could be specified purely in
-      // tailwind syntax
-      ['primary-gradient', {'background': `
-        repeating-linear-gradient(-45deg,
-          ${PALETTE.label}, ${PALETTE.label} 10px,
-          ${PALETTE.primary} 10px, ${PALETTE.primary} 20px)
-      `}],
-      ['secondary-gradient', {'background': `
-        repeating-linear-gradient(-45deg,
-          ${PALETTE.label}, ${PALETTE.label} 10px,
-          ${PALETTE.secondary} 10px, ${PALETTE.secondary} 20px)
-      `}],
       ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
+      // NOTE: Inverted "drop-shadow" classes (drop upward instead of downward)
+      ['drip-shadow-sm', {'filter': 'drop-shadow(0 -1px 1px rgb(0 0 0 / 0.05))'}],
+      ['drip-shadow', {
+        'filter': 'drop-shadow(0 -1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 -1px 1px rgb(0 0 0 / 0.06))'
+      }], ['drip-shadow-md', {
+        'filter': 'drop-shadow(0 -4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 -2px 2px rgb(0 0 0 / 0.06))'
+      }], ['drip-shadow-lg', {
+        'filter': 'drop-shadow(0 -10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 -4px 3px rgb(0 0 0 / 0.1))'
+      }], ['drip-shadow-xl', {
+        'filter': 'drop-shadow(0 -20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 -8px 5px rgb(0 0 0 / 0.08))'
+      }],
+      ['drip-shadow-2xl', {'filter': 'drop-shadow(0 -25px 25px rgb(0 0 0 / 0.15))'}],
+      ['bg-gradient-mix-(.+)_(.+)', ({1: c1, 2: c2}, {theme}) => {
+        const v1 = theme('colors', c1);
+        const v2 = theme('colors', c2);
+        return {'background': `
+          repeating-linear-gradient(-45deg, ${v1}, ${v1} 10px, ${v2} 10px, ${v2} 20px)
+        `};
+      }],
       ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-black/50 disabled:bg-gray-500'],
+      ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-palette-contrast disabled:bg-palette-system'],
       ['fund-head', 'sticky z-40 top-0'],
       ['fund-foot', 'sticky z-40 bottom-0'],
       ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
@@ -197,108 +106,64 @@ if (window.Alpine === undefined) {
       ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
       ['fund-warn', 'italic mx-4'],
       ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
-      ['fund-input', 'fund-select read-only:bg-gray-500'],
+      ['fund-input', 'fund-select read-only:bg-palette-system'],
       ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
       ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
-      ['fund-pill', 'text-nowrap font-medium px-3 py-1 border-[3px] rounded-full'],
-      ['fund-pill-born', 'fund-pill text-black bg-palette-secondary border-palette-background'],
-      ['fund-pill-lock', 'fund-pill text-black bg-white border-palette-primary'],
-      ['fund-pill-work', 'fund-pill text-palette-secondary bg-palette-primary border-palette-primary'],
-      ['fund-pill-done', 'fund-pill text-palette-secondary bg-palette-primary border-palette-label'],
-      ['fund-pill-dead', 'fund-pill text-black bg-palette-background border-palette-secondary'],
-      ['fund-butn-base', 'text-nowrap font-bold leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary hover:bg-palette-background'],
+      ['fund-pill-base', 'text-nowrap font-medium rounded-full border-[3px]'],
+      ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
+      ['fund-pill-medi', 'fund-pill-base px-3 py-1'],
+      ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
+      ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
+      ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
+      ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
+      ['fund-pill-bo-s', 'fund-pill-smol fund-pill-born'], // born
+      ['fund-pill-lo-s', 'fund-pill-smol fund-pill-lock'], // lock
+      ['fund-pill-do-s', 'fund-pill-smol fund-pill-done'], // done
+      ['fund-pill-de-s', 'fund-pill-smol fund-pill-dead'], // dead
+      ['fund-pill-bo-m', 'fund-pill-medi fund-pill-born'], // born
+      ['fund-pill-lo-m', 'fund-pill-medi fund-pill-lock'], // lock
+      ['fund-pill-do-m', 'fund-pill-medi fund-pill-done'], // done
+      ['fund-pill-de-m', 'fund-pill-medi fund-pill-dead'], // dead
+      ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
       ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
       //  FIXME: These classes should use 'hover:enabled' to stop
       //  disabled buttons from changing colors, but this causes hover
       //  styling for links not to work.
-      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:(primary-gradient border-black text-black shadow-none)'],
-      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:(secondary-gradient border-black text-black shadow-none)'],
-      // ['fund-butn-true', 'fund-butn-default'],
-      // ['fund-butn-false', 'fund-butn-action'],
+      ['fund-butn-disabled', 'bg-palette-system border-palette-system text-palette-contrast shadow-none'],
+      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:fund-butn-disabled'],
+      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:fund-butn-disabled'],
+      ['fund-butn-true', '~(fund-butn-default)'],
+      ['fund-butn-false', '~(fund-butn-action)'],
       ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
       ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
-      ['fund-butn-tr-s', 'fund-butn-default fund-butn-smol'], // true
-      ['fund-butn-fa-s', 'fund-butn-action fund-butn-smol'], // false
+      ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
+      ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
+      ['fund-butn-di-s', 'fund-butn-disabled fund-butn-smol'], // disabled
       ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
       ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
-      ['fund-butn-tr-m', 'fund-butn-default fund-butn-medi'], // true
-      ['fund-butn-fa-m', 'fund-butn-action fund-butn-medi'], // false
+      ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
+      ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
+      ['fund-butn-di-m', 'fund-butn-disabled fund-butn-medi'], // disabled
       ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
       ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
-      ['fund-butn-tr-l', 'fund-butn-default fund-butn-lorj'], // true
-      ['fund-butn-fa-l', 'fund-butn-action fund-butn-lorj'], // false
+      ['fund-butn-tr-l', 'fund-butn-true fund-butn-lorj'], // true
+      ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
+      ['fund-butn-di-l', 'fund-butn-disabled fund-butn-lorj'], // false
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
-      ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-primary-700'],
+      ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
       ['fund-odit-sect', 'h-full flex rounded-lg'],
     ],
-  });
+  //  NOTE: Setting `isProduction` here to `false` allows for `:class` to
+  //  work when using `twind` (because class names are recognized and
+  //  properly added/removed by `alpine.js`)
+  }, false); // !FUND_DEBUG);
 
   window.Alpine = Alpine;
-  function cmd() {
-    // https://twind.run/junior-crazy-mummy?file=script
-    return twind.css({
-      '.markdown-body > *': {'@apply': 'mt-3'},
-      '.markdown-body > *:first-child': {'@apply': 'mt-0'},
-      '& h1': {'@apply': 'text-2xl font-bold'},
-      '& h2': {'@apply': 'text-xl font-semibold'},
-      '& h3': {'@apply': 'text-lg font-semibold'},
-      '& h4': {'@apply': 'underline font-medium italic'},
-      '& h5': {'@apply': 'underline font-medium italic'},
-      '& h6': {'@apply': 'underline italic'},
-      '& a': {'color': '-webkit-link', 'text-decoration': 'underline'},
-    });
-  }
-
-  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
-  customElements.define(
-    'zero-md',
-    class extends ZeroMd {
-      async parse(obj) {
-        const parsed = await super.parse(obj);
-        return DOMPurify.sanitize(parsed);
-      }
-      async load() {
-        const elem = document.createElement("div");
-        elem.setAttribute("id", "fund-loader");
-        elem.setAttribute("class", "fund-loader");
-        elem.innerText = "⏳";
-        this.appendChild(elem);
-
-        await super.load();
-
-        this.marked.use({
-          gfm: true,
-          breaks: false,
-          renderer: {
-            image: (href, title, text) => {
-              // FIXME: This is a really gross way to test if the 'zero-md'
-              // container is in preview mode; ideally, we'd use CSS instead
-              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
-              const imagElem = document.createElement(isPreview ? "a" : "img");
-              if (isPreview) {
-                imagElem.setAttribute("href", href);
-                imagElem.innerText = text ?? title ?? href;
-              } else {
-                imagElem.setAttribute("src", href);
-                if (text) imagElem.setAttribute("alt", text);
-                if (title) imagElem.setAttribute("title", title);
-              }
-              return imagElem.outerHTML;
-            },
-          },
-        });
-      }
-    },
-  );
-  addEventListener('zero-md-rendered', (event) => {
-    const outer = event.target;
-    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
-    if (loader) outer.removeChild(loader);
-  });
+  // Alpine.plugin(AlpineFocus);
 
   Alpine.store("page", {
     size: undefined,
@@ -313,15 +178,22 @@ if (window.Alpine === undefined) {
       this.address = address;
       this.chain = chain;
       this.connected = !!address;
-      this.status =
-        (address === undefined) ? "connect 💰"
-        : (address === null) ? "…loading…"
-        : `${address.slice(0, 5)}…${address.slice(-4)}`;
       if (!address) {
         this.balance = 0;
+        this.status =
+          (address === undefined) ? "connect 💰"
+          : (address === null) ? "…loading…"
+          : "error ✗";
       } else {
         getBalance(window.Wagmi, {address}).then(({formatted}) => {
           this.balance = `${Number(formatted).toFixed(2)} ETH`;
+        });
+        getEnsName(window.Wagmi, {address}).then((ensName) => {
+          this.status = ensName
+            ? ensName
+            : `${address.slice(0, 5)}…${address.slice(-4)}`;
+        }).catch((error) => {
+          this.status = `${address.slice(0, 5)}…${address.slice(-4)}`;
         });
       }
       window.dispatchEvent(new CustomEvent("fund-wallet", {detail: address}));
@@ -343,7 +215,9 @@ if (window.Alpine === undefined) {
   });
 
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
-    cmd,
+    styleMD,
+    delay,
+    queryPage,
     copyText,
     swapHTML,
     openHREF,
@@ -363,6 +237,36 @@ if (window.Alpine === undefined) {
     NETWORK,
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
+
+  function delay(ms) {
+    return new Promise(res => setTimeout(res, ms));
+  }
+
+  // https://twind.run/junior-crazy-mummy?file=script
+  function styleMD() {
+    return twind.css(FUND_MARKDOWN);
+  }
+
+  function queryPage(url, {
+    maxAttempts=1, // Number
+    timeout=5000, // Number (ms)
+  } = {}) {
+    const getPage = async (attempts = 0) => (
+      attempts++ >= maxAttempts
+      ? undefined
+      : fetch(url, {
+          method: "GET",
+          signal: AbortSignal.timeout(timeout),
+        }).then(response => (
+          response.ok
+          ? response
+          : delay(timeout).then(() => getPage(attempts))
+        )).catch(error => (
+          delay(timeout).then(() => getPage(attempts))
+        ))
+    );
+    return getPage();
+  }
 
   function swapHTML(elem, html) {
     if (elem.getAttribute("data-html") === null) {
@@ -486,7 +390,7 @@ if (window.Alpine === undefined) {
       [...(new FormData(event.target.form).entries())].forEach(appendInput);
     }
     // NOTE: Safari doesn't recognize the form attributes of the
-    // `requestSubmit` button, so we redundantly include them as a field
+    // `requestSubmit` button, so we redundantly include them as fields
     appendInput([button.getAttribute("name"), button.getAttribute("value")]);
 
     document.body.appendChild(form);
@@ -607,13 +511,19 @@ if (window.Alpine === undefined) {
   }
 
   function initTippy(elem, {
+    text=undefined, // String?
     dir=undefined, // String?
     hover=false, // Bool
   } = {}) {
-    const optElem = elem.nextSibling;
-    optElem.style.display = 'block';
+    var content = text;
+    if (!text) {
+      const optElem = elem.nextSibling;
+      optElem.style.display = 'block';
+      content = optElem;
+    }
+
     TippyJs(elem, {
-      content: optElem,
+      content: content,
       allowHTML: true,
       interactive: true,
       arrow: false,
@@ -624,7 +534,6 @@ if (window.Alpine === undefined) {
     });
   }
 
-  // function initTomSelect(elem, empty, upOnly=false, maxItems=undefined, create=false) {
   function initTomSelect(elem, {
     empty=false, // Bool
     forceUp=false, // Bool
@@ -775,6 +684,55 @@ if (window.Alpine === undefined) {
       handleSizeChange(sizeQuery);
     });
   }
+
+
+  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
+  customElements.define(
+    'zero-md',
+    class extends ZeroMd {
+      async parse(obj) {
+        const parsed = await super.parse(obj);
+        return DOMPurify.sanitize(parsed);
+      }
+      async load() {
+        const elem = document.createElement("div");
+        elem.setAttribute("id", "fund-loader");
+        elem.setAttribute("class", "fund-loader");
+        elem.innerText = "⏳";
+        this.appendChild(elem);
+
+        await super.load();
+
+        this.marked.use({
+          gfm: true,
+          breaks: false,
+          renderer: {
+            image: (href, title, text) => {
+              // FIXME: This is a really gross way to test if the 'zero-md'
+              // container is in preview mode; ideally, we'd use CSS instead
+              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
+              const imagElem = document.createElement(isPreview ? "a" : "img");
+              if (isPreview) {
+                imagElem.setAttribute("href", href);
+                imagElem.innerText = text ?? title ?? href;
+              } else {
+                imagElem.setAttribute("src", href);
+                if (text) imagElem.setAttribute("alt", text);
+                if (title) imagElem.setAttribute("title", title);
+              }
+              return imagElem.outerHTML;
+            },
+          },
+        });
+      }
+    },
+  );
+  addEventListener('zero-md-rendered', (event) => {
+    const outer = event.target;
+    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
+    if (loader) outer.removeChild(loader);
+  });
+
 
   window.Wagmi = createConfig({
     chains: [mainnet, sepolia],

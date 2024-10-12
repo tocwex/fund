@@ -258,11 +258,11 @@
                       =x-data  "\{ status: undefined }"
                       =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"
                     ;+  %-  maug:fh  :_  [%x-show "status == true"]~
-                        (link-butn:ui:fh nur %| "reconnect 🔌" ~ ~)
+                        (~(link-butn ui:fh bas) nur %| "reconnect 🔌" ~)
                     ;+  %-  maug:fh  :_  [%x-show "status == undefined"]~
-                        (link-butn:ui:fh nur %| "reconnect 🔌" "Checking host for project…" ~)
+                        (~(link-butn ui:fh bas) nur %| "reconnect 🔌" "Checking host for project…")
                     ;+  %-  maug:fh  :_  [%x-show "status == false"]~
-                        (link-butn:ui:fh nur %| "error ✗" "Failed to reach host." ~)
+                        (~(link-butn ui:fh bas) nur %| "error ✗" "Failed to reach host.")
                   ==
                 ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
                   :-  ~
@@ -664,14 +664,8 @@
                   ;div(class "flex items-center justify-between")
                     ;div(class "shrink flex inline-flex items-center gap-2 overflow-hidden")
                       ;*  =-  :~  (icon-logo:ui:fh %rect lur)
-                                  %:  %~  link-butn  ui:fh
-                                        """
-                                        fund-addr text-black hover:text-link
-                                        min-w-0 text-ellipsis overflow-hidden
-                                        """
-                                      wer=mur  tab=&  txt=txt  dis=~
-                                      arz=[%x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
-                                  ==
+                                    %-  maug:fh  :_  [%x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
+                                  (~(link-text ui:fh "fund-addr fund-clip") mur & txt ~)
                               ==
                           ^-  [mur=tape lur=tape txt=tape]
                           ?-    -.mul
@@ -697,11 +691,8 @@
                     ;div(class "flex inline-flex items-center gap-2")
                       ;+  =/  tur=tape
                             ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej ~)
-                          =/  kas=tape  ?~(tur ~ "hover:text-link")
                           =/  txt=tape  (swam:enjs:ff:fh cash.mul payment.pro)
-                          %:  ~(link-butn ui:fh "font-serif text-black {kas}")
-                              wer=tur  tab=&  txt=txt  dis=~  arz=~
-                          ==
+                          (~(link-text ui:fh "font-serif") tur & txt ~)
                       ;+  =-  ;div(class kas): {tyt}
                           ^-  [tyt=tape kas=tape]
                           ?-    -.mul
@@ -1043,4 +1034,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 2]
+::  VERSION: [1 4 3]

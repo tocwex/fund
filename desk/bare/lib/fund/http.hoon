@@ -866,7 +866,7 @@
     |=  [typ=?(%circ %rect) lin=tape]
     ^-  manx
     ;img@"{lin}"(class "fund-aset-{(trip typ)} {cas}");
-  ++  cheq-swix                                  ::  checkbox switch <o->
+  ++  flip-cheq                                  ::  checkbox flip switch <o->
     |=  nam=tape
     ^-  manx
     =-  ;label(class "cursor-pointer {cas}")
@@ -880,6 +880,31 @@
     after:content-[''] after:absolute after:top-[1px] after:bg-palette-secondary/80 after:rounded-full
     after:h-2.5 after:w-2.5 after:transition-transform
     """
+  ++  link-text                                  ::  hyperlink/redirect text
+    |=  [wer=tape tab=bean txt=tape diz=tape]
+    ^-  manx
+    =/  hov=tape  ?:(|(?=(~ wer) ?=(^ diz)) ~ "hover:text-link")
+    =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
+    :_  ; {txt}
+    :-  %a
+    ;:  welp
+        [%class "text-black {hov} {cas}"]~
+        ?~(wer ~ [%href wer]~)
+        ?~(diz ~ [%disabled ~]~)
+        ?.(tab ~ [%target "_blank"]~)
+    ==
+  ++  link-butn                                  ::  hyperlink/redirect button
+    |=  [wer=tape tab=bean txt=tape diz=tape]
+    ^-  manx
+    =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
+    :_  ; {txt}
+    :-  %button
+    ;:  welp
+        [%type "button"]~
+        [%class "fund-butn-de-m {cas}"]~
+        [%x-on-click "openHREF('{wer}', {(bool:enjs:ff tab)})"]~
+        ?~(diz ~ [%disabled ~]~)
+    ==
   ++  edit-butn                                  ::  project edit link button
     |=  lag=flag
     ^-  manx
@@ -905,19 +930,6 @@
       ::  element instead (we can get away with static for now because
       ::  it's the same height in all of its current use locations)
       ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %copy)}";
-    ==
-  ++  link-butn                                  ::  hyperlink/redirect button
-    |=  [wer=tape tab=bean txt=tape diz=tape arz=mart]
-    ^-  manx
-    =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
-    :_  ; {txt}
-    :-  %a
-    ;:  welp
-        [%class ?~(cas ?~(diz "fund-butn-de-m" "fund-butn-di-m") cas)]~
-        ?~(wer ~ [%href wer]~)
-        ?~(diz ~ [%disabled ~]~)
-        ?.(tab ~ [%target "_blank"]~)
-        arz
     ==
   ++  prod-butn                                  ::  prod/poke/action button
     |=  [syz=?(%smol %medi %lorj) typ=?(%action %true %false) pod=@tas txt=tape xon=tape diz=tape]

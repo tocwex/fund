@@ -15,7 +15,7 @@
 ::
 ::  $mete: profile metadata with peer information
 ::
-+$  mete  [meta live=_|]
++$  mete  [meta live=$~(| ?)]
 ::
 ::  $metz: collection of project metadata keyed by id (host/term)
 ::

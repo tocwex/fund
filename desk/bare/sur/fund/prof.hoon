@@ -11,7 +11,7 @@
 ::
 ::  $pref: profile with peer information
 ::
-+$  pref  [prof live=_|]
++$  pref  [prof live=$~(| ?)]
 ::
 ::  $proz: collection of projects keyed by id (host/term)
 ::

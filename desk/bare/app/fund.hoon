@@ -580,7 +580,7 @@
 --
 ::
 ++  pj-core
-  |_  [lag=flag:f pro=proj:proj:f gon=_|]
+  |_  [lag=flag:f pro=proj:proj:f gon=$~(| ?)]
   ++  pj-core  .
   ++  pj-abet
     =.  pro  -:(~(gut by pj-our) lag *prej:proj:f)
@@ -803,7 +803,7 @@
   --
 ::
 ++  me-core
-  |_  [lag=flag:f met=meta:meta:f gon=_|]
+  |_  [lag=flag:f met=meta:meta:f gon=$~(| ?)]
   ++  me-core  .
   ++  me-abet  cor
   ++  me-abed
@@ -858,7 +858,7 @@
   --
 ::
 ++  pf-core
-  |_  [sip=@p pro=prof:prof:f lad=(map addr:f sigm:f) gon=_|]
+  |_  [sip=@p pro=prof:prof:f lad=(map addr:f sigm:f) gon=$~(| ?)]
   ++  pf-core  .
   ++  pf-abet
     ^+  cor

@@ -47,11 +47,11 @@
           pro=(dest:enrl:ff:fh pat(- %project, +>+ ~))
       ==
     =/  btn
-      :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~ ~)
-          pro=(link-butn:ui:fh pro.syt %| "back to project" ~ ~)
-          tlo=(~(link-butn ui:fh "fund-butn-ac-m") tlo.syt %& "join group ~" ~ ~)
-          joi=(~(link-butn ui:fh "fund-butn-ac-m") hos.syt %& "get urbit ~" ~ ~)
-          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to dashboard" ~ ~)
+      :*  hep=(link-butn:ui:fh hep.syt %& "what is %fund?" ~)
+          pro=(link-butn:ui:fh pro.syt %| "back to project" ~)
+          tlo=(link-butn:ui:fh tlo.syt %& "join group ~" ~)
+          joi=(link-butn:ui:fh hos.syt %& "get urbit ~" ~)
+          das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to dashboard" ~)
       ==
     ?+    typ.pat  !!
         %bump
@@ -77,9 +77,9 @@
           =x-init  "queryPage('{pro.syt}', \{maxAttempts: 5}).then(p => \{status = !!p;})"
         ;+  (maug:fh pro.btn [%x-show "status == true"]~)
         ;+  %-  maug:fh  :_  [%x-show "status == undefined"]~
-            (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host…" ~)
+            (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host…")
         ;+  %-  maug:fh  :_  [%x-show "status == false"]~
-            (link-butn:ui:fh pro.syt %| "error ✗" "Failed to reach host." ~)
+            (link-butn:ui:fh pro.syt %| "error ✗" "Failed to reach host.")
       ==
     ::
         %edit
@@ -95,8 +95,7 @@
         know they have a pending service request!
         '''
       :~  (prod-butn:ui:fh %medi %true %bump-prop "request oracle ✓" ~ ~)
-          =+  (dest:enrl:ff:fh pat(- %project))
-            (link-butn:ui:fh - %| "continue editing" ~ ~)
+          (link-butn:ui:fh (dest:enrl:ff:fh pat(- %project)) %| "continue editing" ~)
           pro.btn
       ==
     ::
@@ -127,7 +126,7 @@
       :*    ^=  but
           ?-    aut
             %clear  joi.btn
-            %eauth  (~(link-butn ui:fh "fund-butn-ac-m") "{hep.syt}/#installing-fund" %& "get %fund ~" ~ ~)
+            %eauth  (link-butn:ui:fh "{hep.syt}/#installing-fund" %& "get %fund ~" ~)
             %admin  tlo.btn
           ==
       ::
@@ -135,7 +134,7 @@
           ;div(class "w-full flex flex-col gap-y-3")
             ;*  ?:  ?=(%trib typ.pat)  ~
                 :_  ~
-                ;p(class "bg-red-150 text-red-500 border-red-500 border rounded-md p-3")
+                ;p(class "text-red-500 border-red-500 border rounded-md p-3")
                   ; Your pledge is a public (and cryptographically provable) promise
                   ; to contribute funds that is backed by your word as {<src.bol>}.
                   ;span(class "font-bold")

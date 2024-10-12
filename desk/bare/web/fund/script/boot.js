@@ -105,6 +105,7 @@ if (window.Alpine === undefined) {
       ['fund-card-back', 'fund-card-base bg-palette-background'],
       ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
       ['fund-warn', 'italic mx-4'],
+      ['fund-clip', 'min-w-0 text-ellipsis overflow-hidden'],
       ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
       ['fund-input', 'fund-select read-only:bg-palette-system'],
       ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],

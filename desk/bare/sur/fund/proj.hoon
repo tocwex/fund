@@ -43,7 +43,7 @@
 ::
 ::  $prej: project with peer information
 ::
-+$  prej  [proj live=_|]
++$  prej  [proj live=$~(| ?)]
 ::
 ::  $proz: collection of projects keyed by id (host/term)
 ::

@@ -258,13 +258,13 @@
                       =x-data  "\{ status: undefined }"
                       =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"
                     ;+  %.  [%x-show "status == true"]~
-                        %~  joia  ma:fh
+                        %~  joat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" ~)
                     ;+  %.  [%x-show "status == undefined"]~
-                        %~  joia  ma:fh
+                        %~  joat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" "Checking host for project…")
                     ;+  %.  [%x-show "status == false"]~
-                        %~  joia  ma:fh
+                        %~  joat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "error ✗" "Failed to reach host.")
                   ==
                 ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
@@ -680,7 +680,7 @@
                             :-  (ship-logo:ui:fh sip bol)
                             :_  ~
                             %.  [(ship-tytl:ui:fh sip bol)]~
-                            %~  swac  ma:fh
+                            %~  such  ma:fh
                             %-  ~(link-text ui:fh "fund-clip")
                             [wer=(chat:enrl:ff:fh sip) tab=& txt="~" diz=~]
                           ++  addr-bump
@@ -689,7 +689,7 @@
                             :-  (icon-logo:ui:fh %rect lur)
                             :_  ~
                             %.  [%x-init "initENS($el, '{(addr:enjs:ff:fh adr)}')"]~
-                            %~  joia  ma:fh
+                            %~  joat  ma:fh
                             %:  ~(link-text ui:fh "fund-addr fund-clip")
                                 wer=(esat:enrl:ff:fh %addr adr chain.payment.pro)
                                 tab=&

@@ -232,11 +232,11 @@
 ::
 ++  ma
   |_  man=manx
-  ++  joia                                     ::  join node attributes
+  ++  joat                                     ::  join node attributes
     |=  mar=mart
     ^-  manx
     %_(man a.g (welp mar a.g.man))
-  ++  swac                                     ::  swap node children
+  ++  such                                     ::  substitute node children
     |=  mar=marl
     ^-  manx
     %_(man c mar)

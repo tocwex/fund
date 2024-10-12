@@ -67,13 +67,6 @@
     ==
   --
 ::
-::  +maug: m(anx) aug(ment) (augment the attribute list of a manx object)
-::
-++  maug
-  |=  [man=manx mar=mart]
-  ^-  manx
-  %_(man a.g (welp mar a.g.man))
-::
 ::  +parz: parse POST request parameters considering required arguments
 ::
 ::    ?+  arz=(parz:http bod (sy ~[%req ...]))  p.arz  [%| *]
@@ -235,7 +228,21 @@
     --
   --
 ::
-::  +ui: ui-related rendering functions and data
+::  +ma: manx-related manipulation functions
+::
+++  ma
+  |_  man=manx
+  ++  joia                                     ::  join node attributes
+    |=  mar=mart
+    ^-  manx
+    %_(man a.g (welp mar a.g.man))
+  ++  swac                                     ::  swap node children
+    |=  mar=marl
+    ^-  manx
+    %_(man c mar)
+  --
+::
+::  +ui: ui-related rendering functions
 ::
 ++  ui
   |_  cas=tape

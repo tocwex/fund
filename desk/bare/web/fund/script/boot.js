@@ -43,6 +43,16 @@ if (window.Alpine === undefined) {
   const FUND_TOMSELECT = twindCSSToString(FUND_TOMSELECT_CSS);
   const FUND_TIPPY = twindCSSToString(FUND_TIPPY_CSS);
 
+  function twindSizeRules(base, types) {
+    const sizes = ['smol', 'medi', 'lorj'];
+    //  NOTE: https://stackoverflow.com/a/43053803
+    const cartesian = (...a) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+    return cartesian(sizes, types).map(([size, type]) => ([
+      `${base}-${type.substring(0, 2)}-${size.substring(0, 1)}`,
+      `${base}-${size} ${base}-${type}`,
+    ]));
+  }
+
   twind.install({
     presets: [
       presetTwind(),
@@ -77,21 +87,8 @@ if (window.Alpine === undefined) {
     rules: [
       ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
       ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
-      // NOTE: Inverted "drop-shadow" classes (drop upward instead of downward)
-      ['drip-shadow-sm', {'filter': 'drop-shadow(0 -1px 1px rgb(0 0 0 / 0.05))'}],
-      ['drip-shadow', {
-        'filter': 'drop-shadow(0 -1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 -1px 1px rgb(0 0 0 / 0.06))'
-      }], ['drip-shadow-md', {
-        'filter': 'drop-shadow(0 -4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 -2px 2px rgb(0 0 0 / 0.06))'
-      }], ['drip-shadow-lg', {
-        'filter': 'drop-shadow(0 -10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 -4px 3px rgb(0 0 0 / 0.1))'
-      }], ['drip-shadow-xl', {
-        'filter': 'drop-shadow(0 -20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 -8px 5px rgb(0 0 0 / 0.08))'
-      }],
-      ['drip-shadow-2xl', {'filter': 'drop-shadow(0 -25px 25px rgb(0 0 0 / 0.15))'}],
       ['bg-gradient-mix-(.+)_(.+)', ({1: c1, 2: c2}, {theme}) => {
-        const v1 = theme('colors', c1);
-        const v2 = theme('colors', c2);
+        const [v1, v2] = [theme('colors', c1), theme('colors', c2)];
         return {'background': `
           repeating-linear-gradient(-45deg, ${v1}, ${v1} 10px, ${v2} 10px, ${v2} 20px)
         `};
@@ -114,18 +111,12 @@ if (window.Alpine === undefined) {
       ['fund-pill-base', 'text-nowrap font-medium rounded-full border-[3px]'],
       ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
       ['fund-pill-medi', 'fund-pill-base px-3 py-1'],
+      ['fund-pill-lorj', 'fund-pill-base px-4 py-2'],
       ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
       ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
       ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
       ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
-      ['fund-pill-bo-s', 'fund-pill-smol fund-pill-born'], // born
-      ['fund-pill-lo-s', 'fund-pill-smol fund-pill-lock'], // lock
-      ['fund-pill-do-s', 'fund-pill-smol fund-pill-done'], // done
-      ['fund-pill-de-s', 'fund-pill-smol fund-pill-dead'], // dead
-      ['fund-pill-bo-m', 'fund-pill-medi fund-pill-born'], // born
-      ['fund-pill-lo-m', 'fund-pill-medi fund-pill-lock'], // lock
-      ['fund-pill-do-m', 'fund-pill-medi fund-pill-done'], // done
-      ['fund-pill-de-m', 'fund-pill-medi fund-pill-dead'], // dead
+      ...twindSizeRules('fund-pill', ['born', 'lock', 'done', 'dead']),
       ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
       ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
       ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
@@ -138,21 +129,7 @@ if (window.Alpine === undefined) {
       ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:fund-butn-disabled'],
       ['fund-butn-true', '~(fund-butn-default)'],
       ['fund-butn-false', '~(fund-butn-action)'],
-      ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
-      ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
-      ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
-      ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
-      ['fund-butn-di-s', 'fund-butn-disabled fund-butn-smol'], // disabled
-      ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
-      ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
-      ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
-      ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
-      ['fund-butn-di-m', 'fund-butn-disabled fund-butn-medi'], // disabled
-      ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
-      ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
-      ['fund-butn-tr-l', 'fund-butn-true fund-butn-lorj'], // true
-      ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
-      ['fund-butn-di-l', 'fund-butn-disabled fund-butn-lorj'], // false
+      ...twindSizeRules('fund-butn', ['disabled', 'default', 'action', 'true', 'false']),
       ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
       ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
       ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],

@@ -235,7 +235,15 @@
   ++  joat                                     ::  join node attributes
     |=  mar=mart
     ^-  manx
-    %_(man a.g (welp mar a.g.man))
+    %_(man a.g (welp a.g.man mar))
+  ++  suat                                     ::  substitude node attributes
+    |=  mar=mart
+    ^-  manx
+    %_(man a.g mar)
+  ++  joch                                     ::  join node children
+    |=  mar=marl
+    ^-  manx
+    %_(man c (welp c.man mar))
   ++  such                                     ::  substitute node children
     |=  mar=marl
     ^-  manx
@@ -321,7 +329,7 @@
           ;meta(property "twitter:domain", content dom);
       ==
     --
-  ++  head
+  ++  head                                     ::  document top matter
     |=  [bol=bowl:gall ord=order:rudder hed=marl]
     ^-  manx
     =/  url=@t  url.request.ord
@@ -421,7 +429,7 @@
         ==
       ==
     ==
-  ++  foot
+  ++  foot                                     ::  document bottom matter
     |=  [bol=bowl:gall ord=order:rudder fut=marl]
     ^-  manx
     ::  NOTE: CSS trick for pushing footer to page bottom

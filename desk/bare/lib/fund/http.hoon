@@ -628,9 +628,7 @@
     |=  [pro=proj big=bean]
     ^-  manx
     =+  pod=~(odit pj pro)
-    =+  [udr ovr]=(need void:(filo:fk pod))
-    =+  tot=(add cost.pod ?:(udr 0 ovr))
-    =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) tot))
+    =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) cost.pod))
     ;div(class "w-full flex flex-row items-center gap-3")
       ;div(class "w-full min-w-0 flex-1 flex flex-col gap-1")
         ;div(class "w-full min-w-0 flex-1 flex flex-row gap-1")
@@ -751,10 +749,10 @@
           ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =/  kaz=(list tape)
-          =+  qaz=[con="palette-primary" pej="palette-secondary" ovr=?:(udr "white" "black")]
+          =+  qaz=[con="palette-primary" pej="palette-secondary" ovr=?:(udr "white" "palette-primary")]
           :~  "bg-{con.qaz} border-{con.qaz}"
               "bg-{pej.qaz} border-{ovr.qaz}"
-              "bg-{ovr.qaz} border-{ovr.qaz}"
+              "bg-{?:(udr ovr.qaz (trip 'gradient-mix-palette-primary_palette-system'))} border-{ovr.qaz}"
           ==
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
@@ -776,7 +774,7 @@
           ;*  ?~  tyt  ~
               :_  ~
               ::  NOTE: https://stackoverflow.com/a/1777282/837221
-              ;div(class "hidden sm:(block absolute left-[50%] pt-1.5 font-medium text-nowrap)")
+              ;div(class "hidden sm:(block text-shadow-white font-medium text-nowrap absolute left-[50%] pt-1.5)")
                 ;div(class "relative left-[-50%]"): {tyt}
               ==
         ==

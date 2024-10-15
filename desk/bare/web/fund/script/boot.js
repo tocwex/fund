@@ -100,6 +100,17 @@ if (window.Alpine === undefined) {
       rules: [
         ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
         ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
+        ['text-shadow-(.+)', ({1: c}, {theme}) => {
+          const v = theme('colors', c);
+          const l = "1px";
+          const b = "0";
+          return {'text-shadow': `
+            -${l} -${l} ${b} ${v},
+            ${l} -${l} ${b} ${v},
+            -${l} ${l} ${b} ${v},
+            ${l} ${l} ${b} ${v}
+          `};
+        }],
         ['bg-gradient-mix-(.+)_(.+)', ({1: c1, 2: c2}, {theme}) => {
           const [v1, v2] = [theme('colors', c1), theme('colors', c2)];
           return {'background': `

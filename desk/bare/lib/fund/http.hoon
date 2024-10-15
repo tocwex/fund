@@ -358,12 +358,11 @@
               :_  ~  ;div(class "hidden lg:(block h-12 rounded-lg {sag})");
         ==
       ==
-      ;div(class "shrink-0", xlass "!{xow} && 'w-full'")
+      ;div(class "shrink-0", xlass "!{xow} && 'w-full'", x-on-click-outside "open = false")
         ;div(class "shrink-0 flex flex-col gap-2 {sag} {bag}")
           ;button  =type  "button"
               =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
               =x-on-click  "open = ! open"
-              =x-on-click-outside  "open = false"
             ;div(class "inline-flex items-center gap-2 rounded-md")
               ;+  (~(ship-logo ..$ "h-8") src.bol bol)
               ;span(x-show "(!{xom} || !{xow})")
@@ -419,12 +418,12 @@
             ==
             ;*  ?.  =(our src):bol  ~
                 :~  ;hr;
-                    ;a/"{(dest:enrl:ff /config)}"(class bas): config ⚙️
+                    ;a/"{(dest:enrl:ff /config)}"(class bas): config ⚙
                 ==
             ;hr;  ::  login/logout section
             ;+  =-  ;a/"/~/{pre}redirect={(trip url)}"(class bas, target tgt): {txt}
                 ^-  [pre=tape tgt=tape txt=tape]
-                ?.((auth bol) ["login?eauth&" "_blank" "login ~"] ["logout?" "_self" "logout ↩️"])
+                ?.((auth bol) ["login?eauth&" "_blank" "login ~"] ["logout?" "_self" "logout ↩︎"])
           ==
         ==
       ==

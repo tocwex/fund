@@ -719,7 +719,7 @@
                             ?~  pruf.teb  ["attested" "fund-pill-lo-m"]
                             =-  ["{-}verified" "fund-pill-do-m"]
                             ?~  ship.teb  ~
-                            =-  ?~(- ~ "✔️ ")
+                            =-  ?~(- ~ "✔ ")
                             .^  pro=(unit sigm:f)
                                 %gx  (scot %p our.bol)  dap.bol  (scot %da now.bol)
                                 /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)/noun

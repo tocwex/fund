@@ -154,7 +154,7 @@
                         ;+  ?:  ?=(%born status.mil)
                               ::  FIXME: Using the X SVG causes a weird pop-in effect
                               ::  for new milestones, so we just use raw text for now
-                              ;button(class "font-light", type "button", x-on-click "deleteMile"): ❌
+                              ;button(class "font-light", type "button", x-on-click "deleteMile"): ✖
                             (stat-pill:ui:fh %medi status.mil)
                       ==
                       ;div(class "grid grid-cols-1 sm:grid-cols-2")

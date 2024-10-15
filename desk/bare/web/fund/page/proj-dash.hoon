@@ -274,7 +274,7 @@
         ?.  top  "flex-col-reverse drip-shadow-lg fund-foot p-4"
         "flex-col rounded-lg drop-shadow-lg px-4 py-2"
       =/  syk=manx
-        ;div(class "w-full flex-1 flex flex-row gap-4")
+        ;div(class "w-full flex-1 flex flex-row gap-3")
           ;div(class "relative w-full flex-1 flex flex-row gap-1")
             ;input  =type  "text"
               =class  "py-1 pl-4 pr-10 flex-1 min-w-0"
@@ -294,6 +294,7 @@
               %+  turn  `(list @tas)`~[%sort %filter]
               |=  mod=@tas
               ;button  =type  "button"
+                  =class  "p-1"
                   =x-data  "\{ hover: false }"
                   =x-on-mouseenter  "hover = true"
                   =x-on-mouseleave  "hover = false"
@@ -313,7 +314,7 @@
           ;*  %+  turn  `(list @tas)`~[%following %discover %action %controls]
               |=  mod=@tas
               ^-  manx
-              =/  cas=tape  "rounded-md {(trip ?:(top %$ 'p-2'))}"
+              =/  cas=tape  "rounded-md {(trip ?:(top 'p-1' 'p-2'))}"
               =/  cis=tape  ?:(top "w-6" "w-8")
               =/  deb=tape  (bool:enjs:ff:fh =(dyp mod))
               ?.  ?=(%controls mod)
@@ -380,11 +381,13 @@
                               &
                               swap.arg
                               "filt_status.params.swap"
-                              ~
+                              "submitQuery"
                           ==
                     ==
                     ;div(x-show "filt_status.mode == 'work'")
-                      ;select#filt-worker(x-init sin, x-model "filt_status.params.work")
+                      ;select  =x-init  sin
+                          =x-model  "filt_status.params.work"
+                          =x-on-change  "submitQuery"
                         ;*  =/  woz=(set @p)
                               %+  roll  `(list (set flag:f))`~[~(key by mez) ~(key by pez)]
                               |=  [nex=(set flag:f) acc=(set @p)]
@@ -403,7 +406,9 @@
                       ==
                     ==
                     ;div(x-show "filt_status.mode == 'orac'")
-                      ;select#filt-oracle(x-init sin, x-model "filt_status.params.orac")
+                      ;select  =x-init  sin
+                          =x-model  "filt_status.params.orac"
+                          =x-on-change  "submitQuery"
                         ;*  =/  orz=(set @p)
                               =-  (~(uni in (silt mel)) (silt pel))
                               ^-  [mel=(list @p) pel=(list @p)]
@@ -423,7 +428,9 @@
                       ==
                     ==
                     ;div(x-show "filt_status.mode == 'stat'")
-                      ;select#filt-status(x-init sin, x-model "filt_status.params.stat")
+                      ;select  =x-init  sin
+                          =x-model  "filt_status.params.stat"
+                          =x-on-change  "submitQuery"
                         ;*  :-  ;option(value ""): Any Status
                             %+  turn  `(list stat:f)`~[%born %prop %lock %work %sess %done %dead]
                             |=  sat=stat:f
@@ -648,6 +655,7 @@
                 this.sort_status.desc = mode !== "alph";
               }
             }
+            this.submitQuery();
           },
           wipeFilter() {
             // NOTE: Changing the selected entries automatically updates the

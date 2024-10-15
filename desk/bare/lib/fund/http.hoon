@@ -359,11 +359,11 @@
         ==
       ==
       ;div(class "shrink-0", xlass "!{xow} && 'w-full'", x-on-click-outside "open = false")
-        ;div(class "shrink-0 flex flex-col gap-2 {sag} {bag}")
+        ;div(class "shrink-0 flex flex-col gap-2 rounded-lg {sag}")
           ;button  =type  "button"
-              =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
+              =class  "shrink-0 flex inline-flex justify-between items-center gap-2 rounded-md {bag}"
               =x-on-click  "open = ! open"
-            ;div(class "inline-flex items-center gap-2 rounded-md")
+            ;div(class "inline-flex items-center gap-2")
               ;+  (~(ship-logo ..$ "h-8") src.bol bol)
               ;span(x-show "(!{xom} || !{xow})")
                 ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
@@ -371,7 +371,7 @@
             ==
             ;div(class "shrink-0 fund-butn-de-m", x-text "$store.wallet.status");
           ==
-          ;div(class "flex flex-col gap-2", x-show "open")
+          ;div(class "flex flex-col gap-2 {bag}", x-show "open")
             ;div  ::  current wallet section
               ;div(class "flex flex-col gap-2", x-show "!$store.wallet.connected")
                 ;button(type "button", x-on-click "toggleWallet", class bas): choose wallet 💲

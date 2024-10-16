@@ -500,9 +500,11 @@
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
-      ;*  =/  cas=tape  "w-full grid gap-4 justify-center"
-          =/  pas=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
-          =/  mas=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
+      ;*  =/  cas=tape  "w-full grid gap-4"
+          =/  pam=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
+          =/  pas=tape  "{pam} justify-center"
+          =/  mam=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
+          =/  mas=tape  "{mam} justify-center"
           =/  wax=manx
             ;p.fund-warn
               ; No projects found.
@@ -610,7 +612,7 @@
                   ==
                   ;div                               ::  worker|oracle done|dead $prez
                     ;h2: Work Archive
-                    ;+  %^  mota-well:ui  mas  'No archived projects.'
+                    ;+  %^  mota-well:ui  mam  'No archived projects.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)

@@ -963,7 +963,7 @@
   ++  copy-butn                                  ::  arbitrary text copy button
     |=  txt=tape
     ^-  manx
-    ;button(type "button", class cas, x-on-click "copyText('{txt}'); swapHTML($el, '✔️');")
+    ;button(type "button", class cas, x-on-click "copyText('{txt}'); swapHTML($el, '✔');")
       ::  TODO: Remove static width here and control size from caller
       ::  element instead (we can get away with static for now because
       ::  it's the same height in all of its current use locations)

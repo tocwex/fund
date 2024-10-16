@@ -18,3 +18,5 @@ ol { --apply: list-decimal; }
 code { --apply: font-mono text-white bg-black rounded-md py-0.5 px-1.5; }
 blockquote { --apply: p-2 text-palette-system bg-opacity-50 border-l-4 border-palette-label; }
 *:focus { --apply: outline-2 outline outline-palette-label/50; }
+button { --apply: rounded-md; }
+a { --apply: rounded-md; }

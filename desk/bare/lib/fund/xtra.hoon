@@ -114,7 +114,8 @@
 ++  perc
   |=  [val=@ tot=@]
   ^-  @rs
-  ?:  =(0 tot)  .100  ::  FIXME: Probably should be NaN instead
+  ?:  =(0 tot)
+    ?:(=(0 val) .0 .100)  ::  FIXME: Probably should be NaN instead
   (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
 ::
 ::  +flot: render decimal float as tape (optionally decimal-truncated

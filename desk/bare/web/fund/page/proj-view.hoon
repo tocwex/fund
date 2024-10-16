@@ -211,6 +211,7 @@
   =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  muz=(list mula:f)  ~(mula pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
+  =/  sos=@t  'adadad'
   =/  ui
     |_  cas=tape
     ++  bare-form
@@ -257,11 +258,14 @@
                   ;div  =class  "flex flex-row items-center"
                       =x-data  "\{ status: undefined }"
                       =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"
-                    ;+  %-  maug:fh  :_  [%x-show "status == true"]~
+                    ;+  %.  [%x-show "status == true"]~
+                        %~  joat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" ~)
-                    ;+  %-  maug:fh  :_  [%x-show "status == undefined"]~
+                    ;+  %.  [%x-show "status == undefined"]~
+                        %~  joat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" "Checking host for project…")
-                    ;+  %-  maug:fh  :_  [%x-show "status == false"]~
+                    ;+  %.  [%x-show "status == false"]~
+                        %~  joat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "error ✗" "Failed to reach host.")
                   ==
                 ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
@@ -387,7 +391,9 @@
                 ~
             ;:    welp
             ::  explain button  ::
-              :~  ;button(type "button", x-init "initTippy($el, \{hover: true})")
+              :~  %.  sos
+                  %~  hoal  ma:fh
+                  ;button(type "button", x-init "initTippy($el, \{hover: true})")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
                   ;div(class "hidden")
@@ -434,11 +440,21 @@
               (prod-butn:ui:fh %medi %false %bump-dead "cancel ❌" "cancelContract" ~)
             ::  edit button  ::
                 ?.  &(wok ?=(?(%born %prop) sat))  ~
-              :_  ~  (edit-butn:ui:fh lag)
+              :_  ~
+              %.  sos
+              %~  hoal  ma:fh
+              (edit-butn:ui:fh lag)
             ::  bookmark button  ::
-              ?:  |(?=(?(%born %prop) sat) !(auth:fh bol) =(our src):bol (~(has in roz) %fund))  ~
+              ?:  ?|  ?=(?(%born %prop) sat)
+                      !(auth:fh bol)
+                      =(our src):bol
+                      (~(has in roz) %fund)
+                  ==
+                ~
               :_  ~
               %-  ~(bare-form ..$ "flex flex-row items-center")
+              %.  sos
+              %~  hoal  ma:fh
               ;button#prod-butn-folo-proj(type "submit", name "dif", value "folo-proj")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %bookmark)}";
               ==
@@ -451,7 +467,9 @@
                         (~(has in favorites.u.pou) lag)
                     ==
                 ~
-              :~  ;button(type "button", x-init "initTippy($el)")
+              :~  %.  sos
+                  %~  hoal  ma:fh
+                  ;button(type "button", x-init "initTippy($el)")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %publicize)}";
                   ==
                   ;div(class "hidden")
@@ -475,10 +493,14 @@
             ::  share button  ::
                 ?:  |(?=(%born sat) ?=(~ pow))  ~
               :_  ~
+              %.  sos
+              %~  hoal  ma:fh
               (pink-butn:ui:fh lag (trip ship-url.u.pow))
             ::  contract link button  ::
                 ?:  ?=(?(%born %prop) sat)  ~
               :_  ~
+              %.  sos
+              %~  hoal  ma:fh
               ;a/"{(esat:enrl:ff:fh %addr safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
               ==
@@ -663,30 +685,37 @@
                     =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex items-center justify-between")
                     ;div(class "shrink flex inline-flex items-center gap-2 overflow-hidden")
-                      ;*  =-  :~  (icon-logo:ui:fh %rect lur)
-                                    %-  maug:fh  :_  [%x-init ?+(-.mul ~ %pruf "initENS($el, '{muf}')")]~
-                                  (~(link-text ui:fh "fund-addr fund-clip") mur & txt ~)
+                      ;*  |^  ?-  -.mul
+                                %plej  (ship-bump ship.mul)
+                              ::
+                                  ?(%trib %pruf)
+                                ?^  ship.mul  (ship-bump u.ship.mul)
+                                %+  addr-bump  from.when.mul
+                                ?-(-.mul %trib (colt:enrl:ff:fh %black), %pruf (aset:enrl:ff:fh %link))
                               ==
-                          ^-  [mur=tape lur=tape txt=tape]
-                          ?-    -.mul
-                              %plej
-                            :*  mur=(chat:enrl:ff:fh ship.mul)
-                                lur=(surt:enrl:ff:fh ship.mul)
-                                txt=(ship:enjs:ff:fh ship.mul)
+                          ++  ship-bump
+                            |=  sip=ship
+                            ^-  marl
+                            :-  (ship-logo:ui:fh sip bol)
+                            :_  ~
+                            %.  [(ship-tytl:ui:fh sip bol)]~
+                            %~  rech  ma:fh
+                            %-  ~(link-text ui:fh "fund-clip")
+                            [wer=(chat:enrl:ff:fh sip) tab=& txt="~" diz=~]
+                          ++  addr-bump
+                            |=  [adr=addr:f lur=tape]
+                            ^-  marl
+                            :-  (icon-logo:ui:fh %rect lur)
+                            :_  ~
+                            %.  [%x-init "initENS($el, '{(addr:enjs:ff:fh adr)}')"]~
+                            %~  joat  ma:fh
+                            %:  ~(link-text ui:fh "fund-addr fund-clip")
+                                wer=(esat:enrl:ff:fh %addr adr chain.payment.pro)
+                                tab=&
+                                txt=(sadr:enjs:ff:fh adr)
+                                diz=~
                             ==
-                          ::
-                              ?(%trib %pruf)
-                            ?^  ship.mul
-                              :*  mur=(chat:enrl:ff:fh u.ship.mul)
-                                  lur=(surt:enrl:ff:fh u.ship.mul)
-                                  txt=(ship:enjs:ff:fh u.ship.mul)
-                              ==
-                            :-  mur=(esat:enrl:ff:fh %addr from.when.mul chain.payment.pro)
-                            ?-  -.mul
-                              %trib  [lur=(colt:enrl:ff:fh %black) txt="anonymous"]
-                              %pruf  [lur=(aset:enrl:ff:fh %link) txt=(sadr:enjs:ff:fh from.when.mul)]
-                            ==
-                          ==
+                          --
                     ==
                     ;div(class "flex inline-flex items-center gap-2")
                       ;+  =/  tur=tape
@@ -709,7 +738,7 @@
                             ?~  pruf.teb  ["attested" "fund-pill-lo-m"]
                             =-  ["{-}verified" "fund-pill-do-m"]
                             ?~  ship.teb  ~
-                            =-  ?~(- ~ "✔️ ")
+                            =-  ?~(- ~ "✔ ")
                             .^  pro=(unit sigm:f)
                                 %gx  (scot %p our.bol)  dap.bol  (scot %da now.bol)
                                 /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)/noun

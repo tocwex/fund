@@ -67,13 +67,6 @@
     ==
   --
 ::
-::  +maug: m(anx) aug(ment) (augment the attribute list of a manx object)
-::
-++  maug
-  |=  [man=manx mar=mart]
-  ^-  manx
-  %_(man a.g (welp mar a.g.man))
-::
 ::  +parz: parse POST request parameters considering required arguments
 ::
 ::    ?+  arz=(parz:http bod (sy ~[%req ...]))  p.arz  [%| *]
@@ -235,7 +228,55 @@
     --
   --
 ::
-::  +ui: ui-related rendering functions and data
+::  +ma: manx-related manipulation functions
+::
+++  ma
+  |_  man=manx
+  ++  joat                                     ::  join node attributes
+    |=  mar=mart
+    ^-  manx
+    %_(man a.g (welp a.g.man mar))
+  ++  reat                                     ::  replace node attributes
+    |=  mar=mart
+    ^-  manx
+    %_(man a.g mar)
+  ++  suat                                     ::  substitute node attributes
+    |=  mar=mart
+    ^-  manx
+    %_    man
+        a.g
+      %~  tap  by
+      (~(uni by (malt a.g.man)) (malt mar))
+    ==
+  ++  joch                                     ::  join node children
+    |=  mar=marl
+    ^-  manx
+    %_(man c (welp c.man mar))
+  ++  rech                                     ::  replace node children
+    |=  mar=marl
+    ^-  manx
+    %_(man c mar)
+  ++  hoal                                     ::  make hover alpine
+    |=  clr=@t
+    ^-  manx
+    ?~  kid=`(unit manx)`?~(kiz=c.man ~ `i.kiz)  man
+    ?~  url=`(unit [mane tape])`(find:fx a.g.u.kid |=([m=mane tape] =(%src m)))  man
+    =/  cur=tape  "?stroke=%23{(trip clr)}"
+    =.  man
+      %-  rech
+      :~  (~(suat ..$ u.kid) ~[[%x-show "hover"]])
+          (~(suat ..$ u.kid) ~[[%x-show "!hover"] [%src "{+.u.url}{cur}"]])
+      ==
+    =.  man
+      %-  joat
+      :~  [%x-data "\{ hover: false }"]
+          [%x-on-mouseenter "hover = true"]
+          [%x-on-mouseleave "hover = false"]
+      ==
+    man
+  --
+::
+::  +ui: ui-related rendering functions
 ::
 ++  ui
   |_  cas=tape
@@ -314,7 +355,7 @@
           ;meta(property "twitter:domain", content dom);
       ==
     --
-  ++  head
+  ++  head                                     ::  document top matter
     |=  [bol=bowl:gall ord=order:rudder hed=marl]
     ^-  manx
     =/  url=@t  url.request.ord
@@ -343,13 +384,12 @@
               :_  ~  ;div(class "hidden lg:(block h-12 rounded-lg {sag})");
         ==
       ==
-      ;div(class "shrink-0", xlass "!{xow} && 'w-full'")
-        ;div(class "shrink-0 flex flex-col gap-2 {sag} {bag}")
+      ;div(class "shrink-0", xlass "!{xow} && 'w-full'", x-on-click-outside "open = false")
+        ;div(class "shrink-0 flex flex-col gap-2 rounded-lg {sag}")
           ;button  =type  "button"
-              =class  "shrink-0 flex inline-flex justify-between items-center gap-2"
+              =class  "shrink-0 flex inline-flex justify-between items-center gap-2 rounded-md {bag}"
               =x-on-click  "open = ! open"
-              =x-on-click-outside  "open = false"
-            ;div(class "inline-flex items-center gap-2 rounded-md")
+            ;div(class "inline-flex items-center gap-2")
               ;+  (~(ship-logo ..$ "h-8") src.bol bol)
               ;span(x-show "(!{xom} || !{xow})")
                 ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
@@ -357,7 +397,7 @@
             ==
             ;div(class "shrink-0 fund-butn-de-m", x-text "$store.wallet.status");
           ==
-          ;div(class "flex flex-col gap-2", x-show "open")
+          ;div(class "flex flex-col gap-2 {bag}", x-show "open")
             ;div  ::  current wallet section
               ;div(class "flex flex-col gap-2", x-show "!$store.wallet.connected")
                 ;button(type "button", x-on-click "toggleWallet", class bas): choose wallet 💲
@@ -404,17 +444,17 @@
             ==
             ;*  ?.  =(our src):bol  ~
                 :~  ;hr;
-                    ;a/"{(dest:enrl:ff /config)}"(class bas): config ⚙️
+                    ;a/"{(dest:enrl:ff /config)}"(class bas): config ⚙
                 ==
             ;hr;  ::  login/logout section
             ;+  =-  ;a/"/~/{pre}redirect={(trip url)}"(class bas, target tgt): {txt}
                 ^-  [pre=tape tgt=tape txt=tape]
-                ?.((auth bol) ["login?eauth&" "_blank" "login ~"] ["logout?" "_self" "logout ↩️"])
+                ?.((auth bol) ["login?eauth&" "_blank" "login ~"] ["logout?" "_self" "logout ↩︎"])
           ==
         ==
       ==
     ==
-  ++  foot
+  ++  foot                                     ::  document bottom matter
     |=  [bol=bowl:gall ord=order:rudder fut=marl]
     ^-  manx
     ::  NOTE: CSS trick for pushing footer to page bottom
@@ -614,9 +654,7 @@
     |=  [pro=proj big=bean]
     ^-  manx
     =+  pod=~(odit pj pro)
-    =+  [udr ovr]=(need void:(filo:fk pod))
-    =+  tot=(add cost.pod ?:(udr 0 ovr))
-    =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) tot))
+    =+  cen=(srel:enjs:ff (perc:fx (add fill.pod plej.pod) cost.pod))
     ;div(class "w-full flex flex-row items-center gap-3")
       ;div(class "w-full min-w-0 flex-1 flex flex-col gap-1")
         ;div(class "w-full min-w-0 flex-1 flex flex-row gap-1")
@@ -662,7 +700,9 @@
       ::  in the filter UI
       ;div(class "fund-form-group col-span-1 {?.(emt ~ (trip %p-0))}")
         ;select(name "can", required ~, x-init its, x-ref cid, x-on-change uts)
-          ;*  =+  can=?~(swa id:(~(got by xmap:fc) %ethereum) chain.u.swa)
+          ;*  =/  can=@ud
+                ?^  swa  chain.u.swa
+                ?:(emt 0 id:(~(got by xmap:fc) %ethereum))
               %+  welp
                 ?.  emt  ~
                 :_  ~  ;option(value ~): Any Chain
@@ -674,7 +714,7 @@
               ;:  welp
                   [%value (bloq:enjs:ff id.xet)]~
                   [%data-image (aset:enrl:ff tag.xet)]~
-                  ?.(&(!emt =(can id.xet)) ~ [%selected ~]~)
+                  ?.(=(can id.xet) ~ [%selected ~]~)
               ==
         ==
         ;*  ?:  emt  ~
@@ -737,10 +777,10 @@
           ~[fil pej ovr]
         =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
         =/  kaz=(list tape)
-          =+  qaz=[con="palette-primary" pej="palette-secondary" ovr=?:(udr "white" "black")]
+          =+  qaz=[con="palette-primary" pej="palette-secondary" ovr=?:(udr "white" "palette-primary")]
           :~  "bg-{con.qaz} border-{con.qaz}"
               "bg-{pej.qaz} border-{ovr.qaz}"
-              "bg-{ovr.qaz} border-{ovr.qaz}"
+              "bg-{?:(udr ovr.qaz (trip 'gradient-mix-palette-primary_palette-system'))} border-{ovr.qaz}"
           ==
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
@@ -762,7 +802,7 @@
           ;*  ?~  tyt  ~
               :_  ~
               ::  NOTE: https://stackoverflow.com/a/1777282/837221
-              ;div(class "hidden sm:(block absolute left-[50%] pt-1.5 font-medium text-nowrap)")
+              ;div(class "hidden sm:(block text-shadow-white font-medium text-nowrap absolute left-[50%] pt-1.5)")
                 ;div(class "relative left-[-50%]"): {tyt}
               ==
         ==
@@ -914,7 +954,7 @@
   ++  pink-butn                                  ::  project link copy button
     |=  [lag=flag url=tape]
     ^-  manx
-    =-  ;button(type "button", class cas, x-data ~, x-on-click xoc)
+    =-  ;button(type "button", class cas, x-on-click xoc)
           ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
         ==
     ^=  xoc
@@ -925,7 +965,7 @@
   ++  copy-butn                                  ::  arbitrary text copy button
     |=  txt=tape
     ^-  manx
-    ;button(type "button", class cas, x-data ~, x-on-click "copyText('{txt}'); swapHTML($el, '✔️');")
+    ;button(type "button", class cas, x-on-click "copyText('{txt}'); swapHTML($el, '✔');")
       ::  TODO: Remove static width here and control size from caller
       ::  element instead (we can get away with static for now because
       ::  it's the same height in all of its current use locations)

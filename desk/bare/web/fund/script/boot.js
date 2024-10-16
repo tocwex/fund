@@ -10,7 +10,7 @@ import {
   http, createConfig, injected,
   connect, disconnect, reconnect,
   getAccount, getBalance, getEnsName, signMessage,
-  getConnections, switchAccount,
+  getConnections, watchAccount, watchChainId, switchAccount,
 } from 'https://esm.sh/@wagmi/core@2.10.0';
 import { fromHex } from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
@@ -23,12 +23,17 @@ import * as SAFE from './safe.js';
 import { FUND_DEBUG, FUND_SIGN_ADDR } from './config.js';
 import { CONTRACT, NETWORK } from './const.js';
 
-import FUND_PREFLIGHT_CSS from './twind.css' with {type: 'css'};
-import FUND_MARKDOWN_CSS from './md.css' with {type: 'css'};
-import FUND_TOMSELECT_CSS from './toms.css' with {type: 'css'};
-import FUND_TIPPY_CSS from './tippy.css' with {type: 'css'};
+// NOTE: This syntax is really convenient, but it isn't supported on Firefox
+// import FUND_PREFLIGHT_CSS from './twind.css' with {type: 'css'};
+// import FUND_MARKDOWN_CSS from './md.css' with {type: 'css'};
+// import FUND_TOMSELECT_CSS from './toms.css' with {type: 'css'};
+// import FUND_TIPPY_CSS from './tippy.css' with {type: 'css'};
 
 if (window.Alpine === undefined) {
+  /////////////////////////////////////////////////////////////////////////////
+  //                              twind.css                                  //
+  /////////////////////////////////////////////////////////////////////////////
+
   // NOTE: We store TailwindCSS style rules as normal CSS files with the
   // `--apply` variable as a stand-in for Tailwind's `@apply directive
   // so that this data can be read in through the JS `import` mechanism
@@ -38,130 +43,219 @@ if (window.Alpine === undefined) {
     ));
     return cssLines.join("\n");
   }
-  const FUND_PREFLIGHT = twindCSSToString(FUND_PREFLIGHT_CSS);
-  const FUND_MARKDOWN = twindCSSToString(FUND_MARKDOWN_CSS);
-  const FUND_TOMSELECT = twindCSSToString(FUND_TOMSELECT_CSS);
-  const FUND_TIPPY = twindCSSToString(FUND_TIPPY_CSS);
+  function twindSizeRules(base, types) {
+    const sizes = ['smol', 'medi', 'lorj'];
+    //  NOTE: https://stackoverflow.com/a/43053803
+    const cartesian = (...a) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+    return cartesian(sizes, types).map(([size, type]) => ([
+      `${base}-${type.substring(0, 2)}-${size.substring(0, 1)}`,
+      `${base}-${size} ${base}-${type}`,
+    ]));
+  }
+  // NOTE: We use this instead of `import … with …` for wider browser support
+  function twindCSSLoad(filename) {
+    return fetch(`/apps/fund/asset/${filename}`).then((response) => (
+      response.text()
+    )).then((text) => (
+      new CSSStyleSheet().replace(text)
+    )).then((sheet) => (
+      Promise.resolve(twindCSSToString(sheet))
+    ));
+  }
 
-  twind.install({
-    presets: [
-      presetTwind(),
-      presetLineClamp(),
-      presetAutoPrefix(),
-    ],
-    theme: {
-      fontFamily: {
-        serif: ['Chaney Wide', 'Noto Emoji', 'serif'],
-        sans: ['Safiro Medium', 'Noto Emoji', 'sans-serif'],
-        mono: ['Ubuntu Mono', 'mono'],
-      },
-      extend: {
-        fontSize: {
-          '3xs': ['0.25rem', {lineHeight: '0.5rem'}],
-          '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
+  Promise.all(
+    ["twind.css", "toms.css", "tippy.css"].map(twindCSSLoad)
+  ).then((cssStrings) => {
+    twind.install({
+      presets: [
+        presetTwind(),
+        presetLineClamp(),
+        presetAutoPrefix(),
+      ],
+      theme: {
+        fontFamily: {
+          serif: ['Chaney Wide', 'Noto Emoji', 'serif'],
+          sans: ['Safiro Medium', 'Noto Emoji', 'sans-serif'],
+          mono: ['Ubuntu Mono', 'mono'],
         },
-        colors: {
-          palette: {
-            primary: '#2f2f2f',
-            secondary: '#dbdbdb',
-            label: '#1e1e1e',
-            background: '#efefef',
-            contrast: '#dbdbdb',
-            system: '#adadad',
+        extend: {
+          fontSize: {
+            '3xs': ['0.25rem', {lineHeight: '0.5rem'}],
+            '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
+          },
+          colors: {
+            palette: {
+              primary: '#2f2f2f',
+              secondary: '#dbdbdb',
+              label: '#1e1e1e',
+              background: '#efefef',
+              contrast: '#dbdbdb',
+              system: '#adadad',
+            },
           },
         },
       },
+      // TODO: Are there any issues including the library CSS rules in 'preflight'?
+      preflight: twind.css(cssStrings.join("\n")),
+      rules: [
+        ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
+        ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
+        ['text-shadow-(.+)', ({1: c}, {theme}) => {
+          const v = theme('colors', c);
+          const l = "1px";
+          const b = "0";
+          return {'text-shadow': `
+            -${l} -${l} ${b} ${v},
+            ${l} -${l} ${b} ${v},
+            -${l} ${l} ${b} ${v},
+            ${l} ${l} ${b} ${v}
+          `};
+        }],
+        ['bg-gradient-mix-(.+)_(.+)', ({1: c1, 2: c2}, {theme}) => {
+          const [v1, v2] = [theme('colors', c1), theme('colors', c2)];
+          return {'background': `
+            repeating-linear-gradient(-45deg, ${v1}, ${v1} 10px, ${v2} 10px, ${v2} 20px)
+          `};
+        }],
+        ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
+        ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-palette-contrast disabled:bg-palette-system'],
+        ['fund-head', 'sticky z-40 top-0'],
+        ['fund-foot', 'sticky z-40 bottom-0'],
+        ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
+        ['fund-card-base', 'rounded-md px-3 py-2 border-[3px] border-palette-contrast'],
+        ['fund-card-back', 'fund-card-base bg-palette-background'],
+        ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
+        ['fund-warn', 'italic mx-4'],
+        ['fund-clip', 'min-w-0 text-ellipsis overflow-hidden'],
+        ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
+        ['fund-input', 'fund-select read-only:bg-palette-system'],
+        ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
+        ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
+        ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary'], /*hover:bg-palette-background*/
+        ['fund-pill-base', 'text-nowrap font-medium rounded-full border-[3px]'],
+        ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
+        ['fund-pill-medi', 'fund-pill-base px-3 py-1'],
+        ['fund-pill-lorj', 'fund-pill-base px-4 py-2'],
+        ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
+        ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
+        ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
+        ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
+        ...twindSizeRules('fund-pill', ['born', 'lock', 'done', 'dead']),
+        ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
+        ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
+        ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
+        ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
+        //  FIXME: These classes should use 'hover:enabled' to stop
+        //  disabled buttons from changing colors, but this causes hover
+        //  styling for links not to work.
+        ['fund-butn-disabled', 'bg-palette-system border-palette-system text-palette-contrast shadow-none'],
+        ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:fund-butn-disabled'],
+        ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:fund-butn-disabled'],
+        ['fund-butn-true', '~(fund-butn-default)'],
+        ['fund-butn-false', '~(fund-butn-action)'],
+        ...twindSizeRules('fund-butn', ['disabled', 'default', 'action', 'true', 'false']),
+        ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
+        ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
+        ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
+        ['fund-odit-sect', 'h-full flex rounded-lg'],
+      ],
+    //  NOTE: Setting `isProduction` here to `false` allows for `:class` to
+    //  work when using `twind` (because class names are recognized and
+    //  properly added/removed by `alpine.js`)
+    }, false); // !FUND_DEBUG);
+  });
+
+  // FIXME: For some reason, twind's style refresher doesn't fire when a
+  // submission fails, so we replicate its "reveal content" behavior manually
+  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
+  document.addEventListener('turbo:submit-end', (event) => {
+    if (!event.detail.success) {
+      document.documentElement.setAttribute("class", "");
+      document.documentElement.setAttribute("style", "");
+    }
+  });
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                               zero-md                                   //
+  /////////////////////////////////////////////////////////////////////////////
+
+  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
+  window.customElements.define(
+    'zero-md',
+    class extends ZeroMd {
+      async parse(obj) {
+        const parsed = await super.parse(obj);
+        return DOMPurify.sanitize(parsed);
+      }
+      async load() {
+        const elem = document.createElement("div");
+        elem.setAttribute("id", "fund-loader");
+        elem.setAttribute("class", "fund-loader");
+        elem.innerText = "⏳";
+        this.appendChild(elem);
+
+        await super.load();
+
+        this.marked.use({
+          gfm: true,
+          breaks: false,
+          renderer: {
+            image: (href, title, text) => {
+              // FIXME: This is a really gross way to test if the 'zero-md'
+              // container is in preview mode; ideally, we'd use CSS instead
+              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
+              const imagElem = document.createElement(isPreview ? "a" : "img");
+              if (isPreview) {
+                imagElem.setAttribute("href", href);
+                imagElem.innerText = text ?? title ?? href;
+              } else {
+                imagElem.setAttribute("src", href);
+                if (text) imagElem.setAttribute("alt", text);
+                if (title) imagElem.setAttribute("title", title);
+              }
+              return imagElem.outerHTML;
+            },
+          },
+        });
+      }
     },
-    // TODO: Are there any issues including the library CSS rules in 'preflight'?
-    preflight: twind.css([FUND_PREFLIGHT, FUND_TOMSELECT, FUND_TIPPY].join("\n")),
-    rules: [
-      ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
-      ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
-      // NOTE: Inverted "drop-shadow" classes (drop upward instead of downward)
-      ['drip-shadow-sm', {'filter': 'drop-shadow(0 -1px 1px rgb(0 0 0 / 0.05))'}],
-      ['drip-shadow', {
-        'filter': 'drop-shadow(0 -1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 -1px 1px rgb(0 0 0 / 0.06))'
-      }], ['drip-shadow-md', {
-        'filter': 'drop-shadow(0 -4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 -2px 2px rgb(0 0 0 / 0.06))'
-      }], ['drip-shadow-lg', {
-        'filter': 'drop-shadow(0 -10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 -4px 3px rgb(0 0 0 / 0.1))'
-      }], ['drip-shadow-xl', {
-        'filter': 'drop-shadow(0 -20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 -8px 5px rgb(0 0 0 / 0.08))'
-      }],
-      ['drip-shadow-2xl', {'filter': 'drop-shadow(0 -25px 25px rgb(0 0 0 / 0.15))'}],
-      ['bg-gradient-mix-(.+)_(.+)', ({1: c1, 2: c2}, {theme}) => {
-        const v1 = theme('colors', c1);
-        const v2 = theme('colors', c2);
-        return {'background': `
-          repeating-linear-gradient(-45deg, ${v1}, ${v1} 10px, ${v2} 10px, ${v2} 20px)
-        `};
-      }],
-      ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
-      ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-palette-contrast disabled:bg-palette-system'],
-      ['fund-head', 'sticky z-40 top-0'],
-      ['fund-foot', 'sticky z-40 bottom-0'],
-      ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
-      ['fund-card-base', 'rounded-md px-3 py-2 border-[3px] border-palette-contrast'],
-      ['fund-card-back', 'fund-card-base bg-palette-background'],
-      ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
-      ['fund-warn', 'italic mx-4'],
-      ['fund-clip', 'min-w-0 text-ellipsis overflow-hidden'],
-      ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
-      ['fund-input', 'fund-select read-only:bg-palette-system'],
-      ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
-      ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
-      ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary hover:bg-palette-background'],
-      ['fund-pill-base', 'text-nowrap font-medium rounded-full border-[3px]'],
-      ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
-      ['fund-pill-medi', 'fund-pill-base px-3 py-1'],
-      ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
-      ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
-      ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
-      ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
-      ['fund-pill-bo-s', 'fund-pill-smol fund-pill-born'], // born
-      ['fund-pill-lo-s', 'fund-pill-smol fund-pill-lock'], // lock
-      ['fund-pill-do-s', 'fund-pill-smol fund-pill-done'], // done
-      ['fund-pill-de-s', 'fund-pill-smol fund-pill-dead'], // dead
-      ['fund-pill-bo-m', 'fund-pill-medi fund-pill-born'], // born
-      ['fund-pill-lo-m', 'fund-pill-medi fund-pill-lock'], // lock
-      ['fund-pill-do-m', 'fund-pill-medi fund-pill-done'], // done
-      ['fund-pill-de-m', 'fund-pill-medi fund-pill-dead'], // dead
-      ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
-      ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
-      ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
-      ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
-      //  FIXME: These classes should use 'hover:enabled' to stop
-      //  disabled buttons from changing colors, but this causes hover
-      //  styling for links not to work.
-      ['fund-butn-disabled', 'bg-palette-system border-palette-system text-palette-contrast shadow-none'],
-      ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:fund-butn-disabled'],
-      ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:fund-butn-disabled'],
-      ['fund-butn-true', '~(fund-butn-default)'],
-      ['fund-butn-false', '~(fund-butn-action)'],
-      ['fund-butn-de-s', 'fund-butn-default fund-butn-smol'], // default
-      ['fund-butn-ac-s', 'fund-butn-action fund-butn-smol'], // action
-      ['fund-butn-tr-s', 'fund-butn-true fund-butn-smol'], // true
-      ['fund-butn-fa-s', 'fund-butn-false fund-butn-smol'], // false
-      ['fund-butn-di-s', 'fund-butn-disabled fund-butn-smol'], // disabled
-      ['fund-butn-de-m', 'fund-butn-default fund-butn-medi'], // default
-      ['fund-butn-ac-m', 'fund-butn-action fund-butn-medi'], // action
-      ['fund-butn-tr-m', 'fund-butn-true fund-butn-medi'], // true
-      ['fund-butn-fa-m', 'fund-butn-false fund-butn-medi'], // false
-      ['fund-butn-di-m', 'fund-butn-disabled fund-butn-medi'], // disabled
-      ['fund-butn-de-l', 'fund-butn-default fund-butn-lorj'], // default
-      ['fund-butn-ac-l', 'fund-butn-action fund-butn-lorj'], // action
-      ['fund-butn-tr-l', 'fund-butn-true fund-butn-lorj'], // true
-      ['fund-butn-fa-l', 'fund-butn-false fund-butn-lorj'], // false
-      ['fund-butn-di-l', 'fund-butn-disabled fund-butn-lorj'], // false
-      ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
-      ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
-      ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
-      ['fund-odit-sect', 'h-full flex rounded-lg'],
-    ],
-  //  NOTE: Setting `isProduction` here to `false` allows for `:class` to
-  //  work when using `twind` (because class names are recognized and
-  //  properly added/removed by `alpine.js`)
-  }, false); // !FUND_DEBUG);
+  );
+  document.addEventListener('zero-md-rendered', (event) => {
+    const outer = event.target;
+    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
+    if (loader) outer.removeChild(loader);
+  });
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                              wagmi.sh                                   //
+  /////////////////////////////////////////////////////////////////////////////
+
+  window.Wagmi = createConfig({
+    chains: [mainnet, sepolia],
+    connectors: [injected()],
+    transports: {
+      [mainnet.id]: http(NETWORK.RPC.ETHEREUM),
+      [sepolia.id]: http(NETWORK.RPC.SEPOLIA),
+    },
+  });
+  watchAccount(window.Wagmi, {onChange: (curr, prev) => {
+    // NOTE: Filter only `watchAccount` events that affect the wallet address
+    if (
+      ["connected", "disconnected"].includes(curr?.status) &&
+      (curr?.status !== prev?.status || curr?.address !== prev?.address)
+    ) {
+      setWallet(curr);
+    }
+  }});
+  watchChainId(window.Wagmi, {onChange: (curr, prev) => {
+    // NOTE: We `setWallet` on chain change also because it enables
+    // per-network ENS support
+    setWallet(getAccount(window.Wagmi));
+  }});
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                              alpine.js                                  //
+  /////////////////////////////////////////////////////////////////////////////
 
   window.Alpine = Alpine;
   // Alpine.plugin(AlpineFocus);
@@ -215,7 +309,13 @@ if (window.Alpine === undefined) {
     },
   });
 
+  Alpine.store("getAccount", getAccount);
+
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
+    init() {
+      watchViewport();
+      reconnect(window.Wagmi);
+    },
     styleMD,
     delay,
     queryPage,
@@ -239,13 +339,31 @@ if (window.Alpine === undefined) {
     ...SAFE, // FIXME: Makes 'safe.js' available to inline/non-module scripts
   })));
 
+  Alpine.start();
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                         library functions                               //
+  /////////////////////////////////////////////////////////////////////////////
+
   function delay(ms) {
     return new Promise(res => setTimeout(res, ms));
   }
 
   // https://twind.run/junior-crazy-mummy?file=script
   function styleMD() {
-    return twind.css(FUND_MARKDOWN);
+    // NOTE: This has been inlined because it's short and loading it
+    // from a file is annoying
+    return twind.css(`
+      .markdown-body > * { @apply mt-3; }
+      .markdown-body > *:first-child: {@apply mt-0; }
+      & h1 { @apply text-2xl font-bold; }
+      & h2 { @apply text-xl font-semibold; }
+      & h3 { @apply text-lg font-semibold; }
+      & h4 { @apply underline font-medium italic; }
+      & h5 { @apply underline font-medium italic; }
+      & h6 { @apply underline italic; }
+      & a { color: -webkit-link; text-decoration: underline; }
+    `);
   }
 
   function queryPage(url, {
@@ -409,18 +527,12 @@ if (window.Alpine === undefined) {
       throw new Error(`connected wallet is not the ${roleTitle} wallet for this project; please connect one of the follwing wallets to continue:\n${expectedAddresses.join("\n")}`);
   }
 
-  function setWallet({connections, current, status}) {
+  function setWallet({address, chainId, status}) {
     if (status === "disconnected") {
-      const connection = connections.get(current);
-      if (!connection) {
-        Alpine.store("wallet").update(undefined, undefined);
-      } else {
-        reconnect(window.Wagmi, {connector: connection.connector});
-      }
+      Alpine.store("wallet").update(undefined, undefined);
     } else if (status === "reconnecting") {
       Alpine.store("wallet").update(null, null);
     } else if (status === "connected") {
-      const { address, chainId } = getAccount(window.Wagmi);
       Alpine.store("wallet").update(address, chainId);
     }
   }
@@ -430,18 +542,17 @@ if (window.Alpine === undefined) {
     const connection = connections.get(current);
 
     if (status === "connected") {
-      // FIXME: Actually calling disconnects tells MetaMask to stop giving
-      // this site permission to the associated wallets. Is there any way to
-      // soft disconnect the wallet, i.e. set its status to disconnected without
-      // removing it?
       disconnect(window.Wagmi, {connector: connection.connector});
     } else if (status === "disconnected") {
-      if (connection) {
-        reconnect(window.Wagmi, {connector: connection.connector});
-      } else {
+      // FIXME: For some reason, `reconnect` tends to silently fail the
+      // first time, so we "reconnect" and then actually connect
+      (!connection
+        ? Promise.resolve(undefined)
+        : reconnect(window.Wagmi, {connector: connection.connector})
+      ).then(() => {
         const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
-        const getAddress = () => getAccount(window.Wagmi).address.toLowerCase();
-        connect(window.Wagmi, {connector: Wagmi.connectors[0]}).then(() => (
+        const getAddress = () => (getAccount(window.Wagmi)?.address ?? '').toLowerCase();
+        connect(window.Wagmi, {connector: window.Wagmi.connectors[0]}).then(() => (
           fetch(`${appUrl}/ship`, {method: "GET"})
         )).then((responseStream) => (
           responseStream.text()
@@ -478,7 +589,7 @@ if (window.Alpine === undefined) {
             });
           }
         });
-      }
+      });
     }
   }
 
@@ -490,16 +601,6 @@ if (window.Alpine === undefined) {
   //   const result = await switchAccount(window.Wagmi, {
   //     connector: connections[0]?.connector,
   //   });
-  // }
-
-  // FIXME: This doesn't work well for calculating line clamps on the
-  // 'zero-md' elements because they generate content dynamically
-  //
-  // function needsClamp(elem, clamp) {
-  //   const divHeight = elem.offsetHeight
-  //   const lineHeight = parseInt(elem.style.lineHeight);
-  //   const lines = divHeight / lineHeight;
-  //   return lines > clamp;
   // }
 
   function initENS(elem, address) {
@@ -685,86 +786,4 @@ if (window.Alpine === undefined) {
       handleSizeChange(sizeQuery);
     });
   }
-
-
-  // https://zerodevx.github.io/zero-md/?a=advanced-usage.md
-  customElements.define(
-    'zero-md',
-    class extends ZeroMd {
-      async parse(obj) {
-        const parsed = await super.parse(obj);
-        return DOMPurify.sanitize(parsed);
-      }
-      async load() {
-        const elem = document.createElement("div");
-        elem.setAttribute("id", "fund-loader");
-        elem.setAttribute("class", "fund-loader");
-        elem.innerText = "⏳";
-        this.appendChild(elem);
-
-        await super.load();
-
-        this.marked.use({
-          gfm: true,
-          breaks: false,
-          renderer: {
-            image: (href, title, text) => {
-              // FIXME: This is a really gross way to test if the 'zero-md'
-              // container is in preview mode; ideally, we'd use CSS instead
-              const isPreview = !/\/project\/(~[^\/]+)\/([^\/]+).*$/.test(window.location.toString());
-              const imagElem = document.createElement(isPreview ? "a" : "img");
-              if (isPreview) {
-                imagElem.setAttribute("href", href);
-                imagElem.innerText = text ?? title ?? href;
-              } else {
-                imagElem.setAttribute("src", href);
-                if (text) imagElem.setAttribute("alt", text);
-                if (title) imagElem.setAttribute("title", title);
-              }
-              return imagElem.outerHTML;
-            },
-          },
-        });
-      }
-    },
-  );
-  addEventListener('zero-md-rendered', (event) => {
-    const outer = event.target;
-    const loader = Array.from(outer.children).find(e => e.id === "fund-loader");
-    if (loader) outer.removeChild(loader);
-  });
-
-
-  window.Wagmi = createConfig({
-    chains: [mainnet, sepolia],
-    connectors: [injected()],
-    transports: {
-      [mainnet.id]: http(NETWORK.RPC.ETHEREUM),
-      [sepolia.id]: http(NETWORK.RPC.SEPOLIA),
-    },
-  });
-  window.Wagmi.subscribe(
-    (state) => state,
-    (state) => setWallet(state),
-  );
-
-
-  // FIXME: For some reason, twind's style refresher doesn't fire when a
-  // submission fails, so we replicate its "reveal content" behavior manually
-  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
-  document.addEventListener('turbo:submit-end', (event) => {
-    if (!event.detail.success) {
-      document.documentElement.setAttribute("class", "");
-      document.documentElement.setAttribute("style", "");
-    }
-  });
-  // https://turbo.hotwired.dev/reference/events#turbo%3Aload
-  document.addEventListener("turbo:load", (event) => {
-    setWallet(window.Wagmi.state);
-  });
-
-  // TODO: Including in 'turbo:load' causes this to fire too late
-  watchViewport();
-
-  Alpine.start();
 }

@@ -700,7 +700,9 @@
       ::  in the filter UI
       ;div(class "fund-form-group col-span-1 {?.(emt ~ (trip %p-0))}")
         ;select(name "can", required ~, x-init its, x-ref cid, x-on-change uts)
-          ;*  =+  can=?~(swa id:(~(got by xmap:fc) %ethereum) chain.u.swa)
+          ;*  =/  can=@ud
+                ?^  swa  chain.u.swa
+                ?:(emt 0 id:(~(got by xmap:fc) %ethereum))
               %+  welp
                 ?.  emt  ~
                 :_  ~  ;option(value ~): Any Chain
@@ -712,7 +714,7 @@
               ;:  welp
                   [%value (bloq:enjs:ff id.xet)]~
                   [%data-image (aset:enrl:ff tag.xet)]~
-                  ?.(&(!emt =(can id.xet)) ~ [%selected ~]~)
+                  ?.(=(can id.xet) ~ [%selected ~]~)
               ==
         ==
         ;*  ?:  emt  ~

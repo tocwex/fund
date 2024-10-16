@@ -211,6 +211,7 @@
   =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  muz=(list mula:f)  ~(mula pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
+  =/  sos=@t  'adadad'
   =/  ui
     |_  cas=tape
     ++  bare-form
@@ -390,7 +391,9 @@
                 ~
             ;:    welp
             ::  explain button  ::
-              :~  ;button(type "button", x-init "initTippy($el, \{hover: true})")
+              :~  %.  sos
+                  %~  hoal  ma:fh
+                  ;button(type "button", x-init "initTippy($el, \{hover: true})")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
                   ;div(class "hidden")
@@ -437,11 +440,21 @@
               (prod-butn:ui:fh %medi %false %bump-dead "cancel ❌" "cancelContract" ~)
             ::  edit button  ::
                 ?.  &(wok ?=(?(%born %prop) sat))  ~
-              :_  ~  (edit-butn:ui:fh lag)
+              :_  ~
+              %.  sos
+              %~  hoal  ma:fh
+              (edit-butn:ui:fh lag)
             ::  bookmark button  ::
-              ?:  |(?=(?(%born %prop) sat) !(auth:fh bol) =(our src):bol (~(has in roz) %fund))  ~
+              ?:  ?|  ?=(?(%born %prop) sat)
+                      !(auth:fh bol)
+                      =(our src):bol
+                      (~(has in roz) %fund)
+                  ==
+                ~
               :_  ~
               %-  ~(bare-form ..$ "flex flex-row items-center")
+              %.  sos
+              %~  hoal  ma:fh
               ;button#prod-butn-folo-proj(type "submit", name "dif", value "folo-proj")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %bookmark)}";
               ==
@@ -454,7 +467,9 @@
                         (~(has in favorites.u.pou) lag)
                     ==
                 ~
-              :~  ;button(type "button", x-init "initTippy($el)")
+              :~  %.  sos
+                  %~  hoal  ma:fh
+                  ;button(type "button", x-init "initTippy($el)")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %publicize)}";
                   ==
                   ;div(class "hidden")
@@ -478,10 +493,14 @@
             ::  share button  ::
                 ?:  |(?=(%born sat) ?=(~ pow))  ~
               :_  ~
+              %.  sos
+              %~  hoal  ma:fh
               (pink-butn:ui:fh lag (trip ship-url.u.pow))
             ::  contract link button  ::
                 ?:  ?=(?(%born %prop) sat)  ~
               :_  ~
+              %.  sos
+              %~  hoal  ma:fh
               ;a/"{(esat:enrl:ff:fh %addr safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
               ==
@@ -680,7 +699,7 @@
                             :-  (ship-logo:ui:fh sip bol)
                             :_  ~
                             %.  [(ship-tytl:ui:fh sip bol)]~
-                            %~  such  ma:fh
+                            %~  rech  ma:fh
                             %-  ~(link-text ui:fh "fund-clip")
                             [wer=(chat:enrl:ff:fh sip) tab=& txt="~" diz=~]
                           ++  addr-bump

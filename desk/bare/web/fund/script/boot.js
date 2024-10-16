@@ -131,7 +131,7 @@ if (window.Alpine === undefined) {
         ['fund-input', 'fund-select read-only:bg-palette-system'],
         ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
         ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
-        ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary hover:bg-palette-background'],
+        ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary'], /*hover:bg-palette-background*/
         ['fund-pill-base', 'text-nowrap font-medium rounded-full border-[3px]'],
         ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
         ['fund-pill-medi', 'fund-pill-base px-3 py-1'],

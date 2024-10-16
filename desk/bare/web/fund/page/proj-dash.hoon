@@ -284,7 +284,7 @@
               =x-on-keyup-enter  "submitQuery";
             ::  NOTE: CSS trick from https://stackoverflow.com/a/28456704
             ;button  =type  "button"
-                =class  "absolute right-3 top-[50%] translate-y-[-50%]"
+                =class  "p-0.5 absolute right-3 top-[50%] translate-y-[-50%]"
                 =x-on-click  "submitQuery"
               ;img@"{(aset:enrl:ff:fh %search)}{soc}";
               :: ;img@"{(aset:enrl:ff:fh %close)}"(x-show "$focus.focused() == $refs.fund_search");

@@ -236,18 +236,44 @@
     |=  mar=mart
     ^-  manx
     %_(man a.g (welp a.g.man mar))
-  ++  suat                                     ::  substitude node attributes
+  ++  reat                                     ::  replace node attributes
     |=  mar=mart
     ^-  manx
     %_(man a.g mar)
+  ++  suat                                     ::  substitute node attributes
+    |=  mar=mart
+    ^-  manx
+    %_    man
+        a.g
+      %~  tap  by
+      (~(uni by (malt a.g.man)) (malt mar))
+    ==
   ++  joch                                     ::  join node children
     |=  mar=marl
     ^-  manx
     %_(man c (welp c.man mar))
-  ++  such                                     ::  substitute node children
+  ++  rech                                     ::  replace node children
     |=  mar=marl
     ^-  manx
     %_(man c mar)
+  ++  hoal                                     ::  make hover alpine
+    |=  clr=@t
+    ^-  manx
+    ?~  kid=`(unit manx)`?~(kiz=c.man ~ `i.kiz)  man
+    ?~  url=`(unit [mane tape])`(find:fx a.g.u.kid |=([m=mane tape] =(%src m)))  man
+    =/  cur=tape  "?stroke=%23{(trip clr)}"
+    =.  man
+      %-  rech
+      :~  (~(suat ..$ u.kid) ~[[%x-show "hover"]])
+          (~(suat ..$ u.kid) ~[[%x-show "!hover"] [%src "{+.u.url}{cur}"]])
+      ==
+    =.  man
+      %-  joat
+      :~  [%x-data "\{ hover: false }"]
+          [%x-on-mouseenter "hover = true"]
+          [%x-on-mouseleave "hover = false"]
+      ==
+    man
   --
 ::
 ::  +ui: ui-related rendering functions
@@ -926,7 +952,7 @@
   ++  pink-butn                                  ::  project link copy button
     |=  [lag=flag url=tape]
     ^-  manx
-    =-  ;button(type "button", class cas, x-data ~, x-on-click xoc)
+    =-  ;button(type "button", class cas, x-on-click xoc)
           ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
         ==
     ^=  xoc
@@ -937,7 +963,7 @@
   ++  copy-butn                                  ::  arbitrary text copy button
     |=  txt=tape
     ^-  manx
-    ;button(type "button", class cas, x-data ~, x-on-click "copyText('{txt}'); swapHTML($el, '✔️');")
+    ;button(type "button", class cas, x-on-click "copyText('{txt}'); swapHTML($el, '✔️');")
       ::  TODO: Remove static width here and control size from caller
       ::  element instead (we can get away with static for now because
       ::  it's the same height in all of its current use locations)

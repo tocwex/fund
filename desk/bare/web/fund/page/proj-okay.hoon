@@ -15,7 +15,7 @@
   :-  %full
   ^-  simple-payload:http
   :_  ~
-  :-  ?:(&(?=(^ lau) =(our.bol u.lau)) 200 404)
+  :-  ?:(&(?=(^ lau) =(our.bol p.u.lau)) 200 404)
   ~[[%content-type 'text/plain'] ['Access-Control-Allow-Origin' '*']]
 --
-::  VERSION: [1 4 4]
+::  VERSION: [1 4 5]

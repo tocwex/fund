@@ -309,8 +309,6 @@ if (window.Alpine === undefined) {
     },
   });
 
-  Alpine.store("getAccount", getAccount);
-
   document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
     init() {
       watchViewport();
@@ -370,10 +368,14 @@ if (window.Alpine === undefined) {
     maxAttempts=1, // Number
     timeout=5000, // Number (ms)
   } = {}) {
+    var queryUrl = !(window.location.protocol === "https:" && new URL(url).protocol === "http:")
+      ? url
+      : url.replace(/^http:/, 'https:');
+
     const getPage = async (attempts = 0) => (
       attempts++ >= maxAttempts
       ? undefined
-      : fetch(url, {
+      : fetch(queryUrl, {
           method: "GET",
           signal: AbortSignal.timeout(timeout),
         }).then(response => (
@@ -384,6 +386,7 @@ if (window.Alpine === undefined) {
           delay(timeout).then(() => getPage(attempts))
         ))
     );
+
     return getPage();
   }
 

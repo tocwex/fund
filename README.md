@@ -3,6 +3,20 @@
 A sovereign platform for peer-to-peer economic activity with on-chain
 settlement and trusted identity assessment of work completion.
 
+## Demos ##
+
+### Project Setup ###
+
+![%fund setup demo](https://github.com/tocwex/fund/raw/release/meta/demo/fund-demo-setup.gif)
+
+### Contribute Funds ###
+
+![%fund contribute demo](https://github.com/tocwex/fund/raw/release/meta/demo/fund-demo-donate.gif)
+
+### Get Paid ###
+
+![%fund cash out demo](https://github.com/tocwex/fund/raw/release/meta/demo/fund-demo-cashout.gif)
+
 ## Install ##
 
 Within your Urbit ship's command-line interface, enter the following command(s):

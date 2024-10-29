@@ -30,7 +30,7 @@
                 |=  [nex=prej:proj:f acc=(set addr:f)]
                 %-  ~(uni in acc)
                 %-  silt
-                %+  murn  ~(rula pj:fj -.nex)
+                %+  murn  ~(fula pj:fj -.nex)
                 |=(m=mula:f ?.(?=(?(%trib %pruf) -.m) ~ `from.when.m))
           ==
           ;li
@@ -39,7 +39,7 @@
                 ^-  con=@ud
                 %+  roll  pez
                 |=  [nex=prej:proj:f acc=@ud]
-                (add acc (lent ~(rula pj:fj -.nex)))
+                (add acc (lent ~(fula pj:fj -.nex)))
           ==
           ;li
             ;span(class "font-semibold"): Amount Raised:

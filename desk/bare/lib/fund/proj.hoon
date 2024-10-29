@@ -75,16 +75,17 @@
         (turn ~(val by proofs) |=(p=pruf `^mula`[%pruf p]))
         (murn miz |=(m=mile `(unit ^mula)`?~(withdrawal.m ~ (bind pruf.u.withdrawal.m (lead %pruf)))))
     ==
-  ++  rula                                       ::  project-wide "real" $mula list
+  ++  fula                                       ::  project-wide "filled" $mula list
     ^-  (list ^mula)
-    |^  (welp trib-rula pruf-rula)
-    ++  trib-rula
+    |^  (welp trib-fula pruf-fula)
+    ++  trib-fula
       ^-  (list ^mula)
       %-  turn  :_  |=([t=treb *] `^mula`[%trib -.t])
       (skip ~(val by contribs) |=([t=treb *] ?=(~ pruf.t)))
-    ++  pruf-rula
+    ++  pruf-fula
       ^-  (list ^mula)
-      (turn ~(val by proofs) |=(p=pruf `^mula`[%pruf p]))
+      %-  turn  :_  |=(p=pruf `^mula`[%pruf p])
+      (skim ~(val by proofs) |=(p=pruf ?=(%depo note.p)))
     --
   ++  bloq                                       ::  project-wide latest block
     ^-  ^bloq

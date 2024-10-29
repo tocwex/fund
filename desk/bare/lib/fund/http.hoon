@@ -1,7 +1,8 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
 /-  fd=fund-data
-/+  *fund-proj, fk=fund-core, ff=fund-form, fc=fund-chain, fa=fund-alien, fx=fund-xtra
+/+  *fund-proj, fp=fund-prof, fk=fund-core
+/+  ff=fund-form, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -109,6 +110,10 @@
       [%project ~]                               `[%page | %proj-edit]
     ==
     [%next @ @ @ ~]                              `[%page | %proj-next]
+    [%profile @ suf=*]    ?+  suf.pat            ~
+      ~                                          `[%page | %prof-view]
+      ::  [%edit ~]                                  `[%page | %prof-edit]
+    ==
     [%project @ @ suf=*]  ?+  suf.pat            ~
       ~                                          `[%page | %proj-view]
       [%okay ~]                                  `[%page | %proj-okay]
@@ -171,6 +176,52 @@
       |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
       ?.(myn [%auth url.request.ord] (build:tis arz msg))
     --
+  ++  prof                                       ::  profile checks
+    =<  core
+    |%
+    ++  grab
+      |=  arz=(pole [@t @t])
+      ^-  [(unit @p) (unit pref:fp)]
+      ?+    arz  [~ ~]
+          [[%ship sip=@] [%prof pro=@] *]
+        [;;((unit @p) (cue sip.arz)) ;;((unit pref:fp) (cue pro.arz))]
+      ==
+    ++  greb
+      |=  arz=(pole [@t @t])
+      ^-  [@p pref:fp]
+      =+  g=(grab arz)
+      [(need -.g) (need +.g)]
+    ++  gref
+      |=  txt=brief:rudder
+      ^-  [@tas @p @tas]
+      ;;([@tas @p @tas] (cue txt))
+    ++  core
+      |=  req=$~(| ?)
+      |=  pag=page:fd
+      ^-  page:fd
+      |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
+      +*  tis  ~(. pag bol ord dat)
+      ::  FIXME: Should probably make these hacky argument names more unique
+      ++  argue
+        |=  [hed=header-list:http bod=(unit octs)]
+        =/  sip=(unit @p)  (ship:derl:ff url.request.ord)
+        =/  pro=(unit pref:fp)
+          ?~(sip ~ (~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) u.sip))
+        ?:  &(req ?=(~ pro))  'profile does not exist'
+        (argue:tis [[%ship (jam sip)] [%prof (jam pro)] hed] bod)
+      ++  final
+        |=  [gud=? txt=brief:rudder]
+        ?.  gud  [%code 500 txt]
+        (final:tis gud (jam (poke:dejs:ff ?~(txt '' txt))))
+      ++  build
+        |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
+        =/  sip=(unit @p)  (ship:derl:ff url.request.ord)
+        =/  pro=(unit pref:fp)
+          ?~(sip ~ (~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) u.sip))
+        ?:  &(req ?=(~ pro))  [%code 404 'profile does not exist']
+        (build:tis [[%ship (jam sip)] [%prof (jam pro)] arz] msg)
+      --
+    --
   ++  proj                                       ::  project checks
     =<  core
     |%
@@ -191,7 +242,7 @@
       ^-  [@tas flag @tas]
       ;;([@tas flag @tas] (cue txt))
     ++  core
-      |=  req=_|
+      |=  req=$~(| ?)
       |=  pag=page:fd
       ^-  page:fd
       |_  [bol=bowl:gall ord=order:rudder dat=data:fd]

@@ -14,6 +14,12 @@
     ::  `path`(rash '/a/b/' ;~(sfix stap fas))
     =?  pre  ?=([%'/' *] (flop pre))  (snip pre)
     (need (chip:fx /apps/fund (stab (crip pre))))
+  ++  ship                                       ::  (url path) (item) ship
+    |=  cor=cord  ~+
+    ^-  (unit @p)
+    ?+  pat=`(pole knot)`(slag cor)  ~
+      [@ sip=@ *]  (slaw %p sip.pat)
+    ==
   ++  flag                                       ::  (url path) (project) flag
     |=  cor=cord  ~+
     ^-  (unit ^flag)
@@ -39,6 +45,14 @@
     |=  sip=@p  ~+
     ^-  cord
     (spat /apps/groups/dm/(scot %p sip))
+  ++  prot                                       ::  pro(file) t(ape) (url path)
+    |=  sip=@p  ~+
+    ^-  tape
+    (dest /profile/(scot %p sip))
+  ++  proc                                       ::  pro(file) c(ord) (url path)
+    |=  sip=@p  ~+
+    ^-  cord
+    (desc /profile/(scot %p sip))
   ++  flat                                       ::  fla(g) t(ape) (url path)
     |=  lag=flag  ~+
     ^-  tape

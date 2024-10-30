@@ -15,32 +15,23 @@
   ++  cost                                       ::  summed milestone costs
     ^-  cash
     (roll (turn miz |=(n=mile cost.n)) add)
-  ++  plej                                       ::  summed pledge amounts
+  ++  plej                                       ::  project-wide open pledge amount
     ^-  cash
     %-  ~(rep by pledges)
     |=([[k=@p v=[^plej peta]] a=cash] (add a cash.v))
   ++  fill                                       ::  project-wide cost fill
     ^-  cash
-    |^  (add trib-cash pruf-cash)
-    ++  trib-cash
-      %-  ~(rep by contribs)
-      |=([[k=addr v=[treb deta]] a=cash] (add a ?~(pruf.v 0 cash.u.pruf.v)))
-    ++  pruf-cash
-      %-  ~(rep by proofs)
-      |=([[k=addr v=pruf] a=cash] (add a ?-(note.v %with 0, %depo cash.v)))
-    --
+    (roll (turn fula |=(m=^mula cash.m)) add)
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
-    %+  turn  miz
-    |=  mil=mile
-    ?.  ?&  ?=(%done status.mil)
-            ?=(^ withdrawal.mil)
-            ?=(^ xact.u.withdrawal.mil)
-            |(=(0x0 q.u.xact.u.withdrawal.mil) ?=(^ pruf.u.withdrawal.mil))
-        ==
-      0
-    cash.u.withdrawal.mil  ::  cash.u.pruf.u.withdrawal.mil
+    %+  turn  prec
+    |=([@ m=mile] ?.(?&(?=(%done status.m) ?=(^ withdrawal.m)) 0 cash.u.withdrawal.m))
+  ++  give                                       ::  project-wide refunded funds
+    ^-  cash
+    %-  roll  :_  add
+    %+  turn  prec
+    |=([@ m=mile] ?.(?&(?=(%dead status.m) ?=(^ withdrawal.m)) 0 cash.u.withdrawal.m))
   ++  odit                                       ::  project-wide audit
     ^-  ^odit
     (filo:fc [cost fill plej ~])
@@ -87,6 +78,11 @@
       %-  turn  :_  |=(p=pruf `^mula`[%pruf p])
       (skim ~(val by proofs) |=(p=pruf ?=(%depo note.p)))
     --
+  ++  pula                                       ::  project-wide "pledged" $mula list
+    ^-  (list ^mula)
+    %+  welp  (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
+    %+  murn  ~(val by contribs)
+    |=([t=treb *] ?~(plej.t ~ `(unit ^mula)`[~ %plej u.plej.t]))
   ++  bloq                                       ::  project-wide latest block
     ^-  ^bloq
     =/  mul=(list ^mula)  mula
@@ -99,6 +95,18 @@
     =-  ?^(- i.- [(lent miz) (rear miz)])
     %+  skip  (enum:fx miz)
     |=([@ n=mile] ?=(?(%done %dead) status.n))
+  ++  prev                                       ::  all inactive milestones
+    ^-  (list [min=@ mil=mile])
+    %+  skim  (enum:fx miz)
+    |=([@ n=mile] ?=(?(%done %dead) status.n))
+  ++  prec                                       ::  all claimed inactive milestones
+    ^-  (list [min=@ mil=mile])
+    %+  skim  prev
+    |=  [@ mil=mile]
+    ?&  ?=(^ withdrawal.mil)
+        ?=(^ xact.u.withdrawal.mil)
+        |(=(0x0 q.u.xact.u.withdrawal.mil) ?=(^ pruf.u.withdrawal.mil))
+    ==
   ++  whos                                       ::  all ships involved in the project
     ^-  (set @p)
     %-  silt

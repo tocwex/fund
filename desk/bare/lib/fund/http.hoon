@@ -35,7 +35,7 @@
   :_  tap
   ?^  man  man
   |^  (srep (prep man))
-  ++  prep                                       ::  prefix replce
+  ++  prep                                       ::  prefix replace
     |=  cor=@t
     =-  =<  +  %^  spin  rez  cor
         |=  [[pre=@tas rep=@t] acc=@tas]

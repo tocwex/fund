@@ -218,7 +218,7 @@
                     |=  adr=addr:f
                     ^-  manx
                     ;tr.bg-palette-contrast
-                      ;td.w-1.whitespace-nowrap.rounded-l-md.py-4
+                      ;td.w-1.whitespace-nowrap.rounded-l-lg.py-4
                         ;+  (~(icon-logo ui:fh "mx-auto") %circ (aset:enrl:ff:fh %ethereum))
                       ==
                       ;td.w-1.whitespace-nowrap
@@ -226,7 +226,7 @@
                           ;img.mx-auto.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
                         ==
                       ==
-                      ;td.rounded-r-md: {(addr:enjs:ff:fh adr)}
+                      ;td.rounded-r-lg: {(addr:enjs:ff:fh adr)}
                     ==
               ==
             ==
@@ -272,31 +272,35 @@
                     |=  [lag=flag:f pre=prej:proj:f mul=mula:f]
                     ^-  manx
                     ;tr.bg-palette-contrast
-                      ;td.italic.whitespace-nowrap.rounded-l-md.py-4
+                      ;td.italic.w-1.whitespace-nowrap.rounded-l-lg.py-4
                         ; {(swam:enjs:ff:fh cash.mul payment.pre)}
                       ==
-                      ;td.w-1.whitespace-nowrap
+                      ;td.w-1.px-2.whitespace-nowrap
                         ;+  (mula-pill:ui:fh %smol mul pre bol)
                       ==
                       ;td(class "font-semibold w-60 overflow-hidden")
                         ;span.line-clamp-1: {(trip title.pre)}
                       ==
-                      ;td
-                        ;+  (ship-agis:ui:fh %medi p.lag bol)
+                      ;td.w-1.px-4.whitespace-nowrap
+                        ::  ;+  (ship-agis:ui:fh %medi p.lag bol)
+                        ;+  (ship-agis:ui:fh %medi ~sampel-palnet bol)
                       ==
-                      ;td
-                        ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
+                      ;td.w-1.px-4.whitespace-nowrap
+                        ::  ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
+                        ;+  (ship-agis:ui:fh %medi ~midlev-mindyr bol)
                       ==
-                      ;td
+                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap
                         ; {(bloq:enjs:ff:fh (tula:fk mul))}
                       ==
-                      ;td.text-nowrap
+                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center
                         ; {?+(-.mul (sadr:enjs:ff:fh from.when.mul) %plej "—")}
                       ==
-                      ;td.text-nowrap
+                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center
                         ; {?+(-.mul (sadr:enjs:ff:fh q.xact.when.mul) %plej "—")}
                       ==
-                      ;td.rounded-r-md.line-clamp-1: {(trip note.mul)}
+                      ;td(class "w-60 overflow-hidden rounded-r-lg")
+                        ;span.line-clamp-1: {(trip note.mul)}
+                      ==
                     ==
               ==
             ==

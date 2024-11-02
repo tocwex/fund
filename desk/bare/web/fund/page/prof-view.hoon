@@ -282,12 +282,10 @@
                         ;span.line-clamp-1: {(trip title.pre)}
                       ==
                       ;td.w-1.px-4.whitespace-nowrap
-                        ::  ;+  (ship-agis:ui:fh %medi p.lag bol)
-                        ;+  (ship-agis:ui:fh %medi ~sampel-palnet bol)
+                        ;+  (ship-agis:ui:fh %medi p.lag bol)
                       ==
                       ;td.w-1.px-4.whitespace-nowrap
-                        ::  ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
-                        ;+  (ship-agis:ui:fh %medi ~midlev-mindyr bol)
+                        ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
                       ==
                       ;td.w-1.px-2.whitespace-nowrap.text-nowrap
                         ; {(bloq:enjs:ff:fh (tula:fk mul))}

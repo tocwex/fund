@@ -66,7 +66,7 @@
         ~
       :_  ~
       %.  [%x-init "delay(2000).then(() => $el.form.requestSubmit($el))"]~
-      %~  joat  ma:fh
+      %~  riat  ma:fh
       (~(prod-butn ui:fh "hidden") %medi %true %join-proj "join project ✓" ~ ~)
     ::
         %join
@@ -76,12 +76,12 @@
       :_  ~
       ;div  =x-data  "\{ status: undefined }"
           =x-init  "queryPage('{pro.syt}', \{maxAttempts: 5}).then(p => \{status = !!p;})"
-        ;+  (~(joat ma:fh pro.btn) [%x-show "status == true"]~)
+        ;+  (~(riat ma:fh pro.btn) [%x-show "status == true"]~)
         ;+  %.  [%x-show "status == undefined"]~
-            %~  joat  ma:fh
+            %~  riat  ma:fh
             (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host…")
         ;+  %.  [%x-show "status == false"]~
-            %~  joat  ma:fh
+            %~  riat  ma:fh
             (link-butn:ui:fh pro.syt %| "error ✗" "Failed to reach host.")
       ==
     ::

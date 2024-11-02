@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-dash/hoon: render project dashboard page for %fund
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
+/+  fj=fund-proj, fy=fund, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  rudder, config
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
@@ -78,23 +78,10 @@
   =/  ex
     |%
     +$  mexa  [status=stat:f mete:meta:f]
-    ++  proj-meta
-      |=  [lag=flag:f pre=prej:proj:f]
-      ^-  mete:meta:f
-      :_  live.pre
-      ::  FIXME: Duplicated from '/app/fund/hoon'
-      :*  title=title.pre
-          image=image.pre
-          cost=~(cost pj:fj -.pre)
-          payment=payment.pre
-          launch=p:xact:(fall contract.pre *oath:f)
-          worker=p.lag
-          oracle=p.assessment.pre
-      ==
     ++  proj-mexa
       |=  [lag=flag:f pre=prej:proj:f]
       ^-  mexa
-      =+  met=(proj-meta lag pre)
+      =+  met=(prej-mete:fy lag pre)
       [~(stat pj:fj -.pre) `mete:meta:f`met(launch ~(bloq pj:fj -.pre))]
     ++  meta-mexa
       |=  [lag=flag:f met=mete:meta:f]
@@ -149,123 +136,12 @@
     ==
   =/  ui
     |_  cas=tape
-    ++  base-card
-      |=  $:  tyt=@t  pic=(unit @t)  xoc=tape
-              $=  pro  %-  unit
-              $:  big=?  gud=?
-                  wok=@p  ora=@p
-                  sat=stat:f  cos=cash:f  swa=swap:f
-                  hed=(unit manx)
-              ==
-          ==
+    ++  meta-stax
+      |=  [syz=?(%smol %medi %lorj) emt=$@(@t manx) ski=$-([flag:f prej:proj:f] ?)]
       ^-  manx
-      =/  big=bean  ?~(pro | big.u.pro)
-      =/  syz=@sd   ?:(big --0 -2)
-      =/  asp=tape  ?:(big "aspect-video" "aspect-square")
-      =/  url=tape
-        ?^  pic  (trip u.pic)
-        ?^  pro  (~(ship-logo fa bol) wok.u.pro)  ::  TODO: implement wok/ora double logo
-        "https://placehold.co/24x24/lightgray/gray?text=?"
-      ::  FIXME: This should really be 'button,' but that introduces problems with CSS
-      ;div  =type  "button"
-          =class  "flex flex-col gap-2 hover:cursor-pointer {cas}"
-          =x-on-click  xoc
-        ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
-          ;*  ?~  pro  ~
-              :_  ~
-              ;div(class "h-full flex flex-col justify-between p-2")
-                ;div(class "flex flex-row flex-wrap justify-between items-center gap-2")
-                  ;div(class "font-serif flex flex-row flex-wrap justify-start items-center gap-2")
-                    ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff:fh syz)} p-1.5")
-                      ; {(swam:enjs:ff:fh cos.u.pro swa.u.pro)}
-                    ==
-                    ;div(class "bg-palette-background rounded-md p-0.5")
-                      ;+  %+  ~(icon-stax ui:fh ?.(big ~ "h-8"))  %circ
-                          :~  (aset:enrl:ff:fh symbol.swa.u.pro)
-                              (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.swa.u.pro))
-                          ==
-                    ==
-                  ==
-                  ;*  ?.  big  ~
-                      :_  ~
-                      (stat-pill:ui:fh %smol sat.u.pro)
-                ==
-                ;div(class "flex flex-row flex-wrap justify-end items-center gap-2")
-                  ;*  ?:  gud.u.pro  ~
-                      :_  ~
-                      ;div(class "bg-palette-background rounded-md p-1")
-                        ;span  =class  "text-2xl text-red-500"
-                            =x-init  "initTippy($el, \{text: 'Disconnected from host.', hover: true})"
-                          ; ⚠
-                        ==
-                      ==
-                ==
-              ==
-        ==
-        ;*  ?~  pro  ~
-            ?~  hed.u.pro  ~
-            :_  ~  u.hed.u.pro
-        ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
-          ;div(class "font-semibold flex-1 min-w-0 line-clamp-2 text-{(size:enjs:ff:fh (sum:si --1 syz))}")
-            ; {(trip tyt)}
-          ==
-          ;*  ?~  pro  ~
-              :_  ~
-              ;div(class "bg-white rounded-lg p-0.5")
-                ;+  %+  icon-stax:ui:fh  %rect
-                        (turn ~[wok.u.pro ora.u.pro] ~(ship-logo fa bol))
-              ==
-        ==
-      ==
-    ++  proj-card                              ::  summary card for a project
-      |=  [lag=flag:f pre=prej:proj:f]
-      ^-  manx
-      %:  base-card
-          tyt=title.pre
-          pic=image.pre
-          xoc="openHREF('{(flat:enrl:ff:fh lag)}')"
-      ::
-            ^=  pro
-          :*  ~
-              big=&
-              gud=live.pre
-              wok=p.lag
-              ora=p.assessment.pre
-              sat=~(stat pj:fj -.pre)
-              cos=~(cost pj:fj -.pre)
-              swa=payment.pre
-              hed=`(proj-ther:ui:fh -.pre big=|)
-          ==
-      ==
-    ++  meta-card                              ::  summary card for project metadata
-      |=  [lag=flag:f met=mete:meta:f]
-      ^-  manx
-      %:  base-card
-          tyt=title.met
-          pic=image.met
-          xoc="joinProject('{(flag:enjs:ff:fh lag)}')"
-          pro=`[| live.met worker.met oracle.met *stat:f cost.met payment.met ~]
-      ==
-    ++  make-card                              ::  "create project" card
-      ^-  manx
-      %:  base-card
-          tyt='Create New Project'
-          pic=`'https://placehold.co/24x24/lightgray/gray?text=%2b'
-          xoc="openHREF('{(dest:enrl:ff:fh /create/project)}')"
-          pro=~
-      ==
-    ++  mota-well                              ::  project (metadata) well (%action)
-      |=  [kas=tape msg=$@(@t manx) ski=$-([flag:f prej:proj:f] ?)]
-      ^-  manx
-      =/  maz=marl
-        %+  turn  (skim pyz ski)
-        |=([l=flag:f p=prej:proj:f] (meta-card l (proj-meta:ex l p)))
-      =?  maz  ?=(%$ msg)  [make-card maz]
-      ?~  maz
-        ?^  msg  msg
-        ;p.fund-warn: {(trip msg)}
-      ;div(class kas)
-        ;*  maz
+      %:  ~(meta-stax ui:fh cas)  bol  syz  emt
+          %+  turn  (skim pyz ski)
+          |=([l=flag:f p=prej:proj:f] [l (prej-mete:fy l p)])
       ==
     ++  dash-navi
       |=  top=bean
@@ -500,12 +376,7 @@
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
-      ;*  =/  cas=tape  "w-full grid gap-4"
-          =/  pam=tape  "{cas} grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))]"
-          =/  pas=tape  "{pam} justify-center"
-          =/  mam=tape  "{cas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
-          =/  mas=tape  "{mam} justify-center"
-          =/  wax=manx
+      ;*  =/  wax=manx
             ;p.fund-warn
               ; No projects found.
               ;span
@@ -517,8 +388,8 @@
           ?+    dyp  !!
               %following
             :~  ;h1-alt: Following
-                  ?~  paz=(turn pyz proj-card:ui)  wax
-                ;div(class pas)
+                  ?~  paz=(turn pyz (cury proj-card:ui:fh bol))  wax
+                ;div(class "w-full grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))] justify-center")
                   ;*  paz
                 ==
             ==
@@ -543,15 +414,10 @@
                     ==
                   ==
                 ==
-                  ?~  maz=(turn myz meta-card:ui)  wax
-                ;div(class mas)
-                  ;*  maz
-                ==
+                (meta-stax:ui:fh bol %lorj wax myz)
             ==
           ::
               %action
-            =/  sas=tape  "grid gap-4 grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
-            =/  sus=tape  "w-[50vw] sm:w-[250px]"
             =/  sax=manx
               ;p.fund-warn
                 ; To serve as a %fund oracle service provider, please
@@ -562,7 +428,7 @@
               ==
             ?^  text.arg
               :_  ~
-              %^  mota-well:ui  mas  'No projects found.'
+              %^  meta-stax:ui  %lorj  'No projects found.'
               |=  [lag=flag:f pre=prej:proj:f]
               ?|  ?&  ?=(?(%prop %sess) ~(stat pj:fj -.pre))
                       =(p.assessment.pre our.bol)
@@ -578,7 +444,12 @@
                 ;div(class "flex flex-col gap-4")
                   ;div                               ::  my $prez
                     ;h2: My Open Projects
-                    ;+  %^  ~(mota-well ui sus)  sas  %$
+                    ::  TODO: If empty list of projects, then use a
+                    ::  dummy and replace it with a 'create project' card
+                    ::  TODO: If non-empty, then inser 'create project'
+                    ::  card before all the other cards
+                    ::  ;+  (~(link-card ui:fh cas) bol "%2b" (dest:enrl:ff:fh /create/project))
+                    ;+  %^  meta-stax:ui  %smol  %$
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             =(our.bol p.lag)
@@ -586,7 +457,7 @@
                   ==
                   ;div                               ::  $prez with %prop status
                     ;h2: Service Requests
-                    ;+  %^  ~(mota-well ui sus)  sas
+                    ;+  %^  meta-stax:ui  %smol
                           ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%prop ~(stat pj:fj -.pre))
@@ -595,7 +466,7 @@
                   ==
                   ;div                               ::  $prez with %sess status
                     ;h2: Review Requests
-                    ;+  %^  ~(mota-well ui sus)  sas
+                    ;+  %^  meta-stax:ui  %smol
                           ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%sess ~(stat pj:fj -.pre))
@@ -604,7 +475,7 @@
                   ==
                   ;div                               ::  $prez with unfulfilled $plej
                     ;h2: Outstanding Pledges
-                    ;+  %^  ~(mota-well ui sus)  sas  'No outstanding pledges.'
+                    ;+  %^  meta-stax:ui  %smol  'No outstanding pledges.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
                             (~(has by pledges.pre) our.bol)
@@ -612,7 +483,7 @@
                   ==
                   ;div                               ::  worker|oracle done|dead $prez
                     ;h2: Work Archive
-                    ;+  %^  mota-well:ui  mam  'No archived projects.'
+                    ;+  %^  meta-stax:ui  %medi  'No archived projects.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)

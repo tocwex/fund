@@ -259,13 +259,13 @@
                       =x-data  "\{ status: undefined }"
                       =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"
                     ;+  %.  [%x-show "status == true"]~
-                        %~  joat  ma:fh
+                        %~  riat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" ~)
                     ;+  %.  [%x-show "status == undefined"]~
-                        %~  joat  ma:fh
+                        %~  riat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" "Checking host for project…")
                     ;+  %.  [%x-show "status == false"]~
-                        %~  joat  ma:fh
+                        %~  riat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "error ✗" "Failed to reach host.")
                   ==
                 ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
@@ -544,7 +544,7 @@
         ;div(class "sm:col-span-1 lg:col-span-2 flex flex-col gap-3")
           ;div(class "flex flex-col gap-2")
             ;h1-alt: Project Overview
-            ;+  (mark-well:ui:fh (trip summary.pro) %togl)
+            ;+  (mark-well:ui:fh %togl (trip summary.pro))
           ==
           ;div(class "flex flex-col gap-2")
             ;h1-alt: Milestone Details
@@ -572,7 +572,7 @@
                       ;span:  pledged
                     ==
                   ==
-                  ;+  (mark-well:ui:fh (trip summary.mil) %togl)
+                  ;+  (mark-well:ui:fh %togl (trip summary.mil))
                   ;*  =-  ?~  buz  ~
                           :_  ~
                           ;div(class "flex flex-wrap items-center justify-end gap-2")
@@ -684,72 +684,13 @@
                     =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
                     =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex items-center justify-between")
-                    ;div(class "shrink flex inline-flex items-center gap-2 overflow-hidden")
-                      ;*  |^  ?-  -.mul
-                                %plej  (ship-bump ship.mul)
-                              ::
-                                  ?(%trib %pruf)
-                                ?^  ship.mul  (ship-bump u.ship.mul)
-                                %+  addr-bump  from.when.mul
-                                ?-(-.mul %trib (colt:enrl:ff:fh %black), %pruf (aset:enrl:ff:fh %link))
-                              ==
-                          ++  ship-bump
-                            |=  sip=ship
-                            ^-  marl
-                            :-  (ship-logo:ui:fh sip bol)
-                            :_  ~
-                            %.  [(ship-tytl:ui:fh sip bol)]~
-                            %~  rech  ma:fh
-                            %-  ~(link-text ui:fh "fund-clip")
-                            [wer=(chat:enrl:ff:fh sip) tab=& txt="~" diz=~]
-                          ++  addr-bump
-                            |=  [adr=addr:f lur=tape]
-                            ^-  marl
-                            :-  (icon-logo:ui:fh %rect lur)
-                            :_  ~
-                            %.  [%x-init "initENS($el, '{(addr:enjs:ff:fh adr)}')"]~
-                            %~  joat  ma:fh
-                            %:  ~(link-text ui:fh "fund-addr fund-clip")
-                                wer=(esat:enrl:ff:fh %addr adr chain.payment.pro)
-                                tab=&
-                                txt=(sadr:enjs:ff:fh adr)
-                                diz=~
-                            ==
-                          --
-                    ==
+                    ;+  (mula-agis:ui:fh %smol mul payment.pro bol)
                     ;div(class "flex inline-flex items-center gap-2")
                       ;+  =/  tur=tape
                             ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej ~)
                           =/  txt=tape  (swam:enjs:ff:fh cash.mul payment.pro)
                           (~(link-text ui:fh "font-serif") tur & txt ~)
-                      ;+  =-  ;div(class kas): {tyt}
-                          ^-  [tyt=tape kas=tape]
-                          ?-    -.mul
-                              %plej
-                            =+  pej=(~(got by pledges.pro) ship.mul)
-                            ?-  view.pej
-                              ~          ["pledged" "fund-pill-bo-m"]
-                              [~ %stif]  ["welched" "fund-pill-de-m"]
-                              [~ %slyd]  ["forgiven" "fund-pill-de-m"]
-                            ==
-                          ::
-                              %trib
-                            =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
-                            ?~  pruf.teb  ["attested" "fund-pill-lo-m"]
-                            =-  ["{-}verified" "fund-pill-do-m"]
-                            ?~  ship.teb  ~
-                            =-  ?~(- ~ "✔ ")
-                            .^  pro=(unit sigm:f)
-                                %gx  (scot %p our.bol)  dap.bol  (scot %da now.bol)
-                                /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)/noun
-                            ==
-                          ::
-                              %pruf
-                            ?-  note.mul
-                              %depo  ["deposited" "fund-pill-lo-m"]
-                              %with  ["withdrawn" "fund-pill-de-m"]
-                            ==
-                          ==
+                      ;+  (mula-pill:ui:fh %medi mul pre bol)
                     ==
                   ==
                   ;div(class "flex flex-col gap-2")

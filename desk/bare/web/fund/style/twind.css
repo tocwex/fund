@@ -8,6 +8,7 @@ h4 { --apply: text-base sm:text-lg; }
 h5 { --apply: font-light text-sm sm:(font-medium text-base); }
 h6 { --apply: font-light uppercase text-sm sm:font-medium; }
 h1-alt { --apply: font-serif text-palette-contrast text-xl sm:text-3xl; }
+h2-alt { --apply: font-serif text-palette-contrast text-lg sm:text-2xl; }
 hr { --apply: border-0 h-px bg-black; }
 select { padding: unset; --apply: fund-select; }
 textarea,input { padding: unset; --apply: fund-input; }

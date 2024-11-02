@@ -1,7 +1,7 @@
 ::  /web/fund/page/prof-view/hoon: profile page for ship
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fh=fund-http, fx=fund-xtra
+/+  fj=fund-proj, fk=fund-core, fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh &))
 ^-  page:fd
@@ -12,6 +12,10 @@
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   =/  [sip=ship pro=pref:prof:f]  (greb:prof:preface:fh arz)
+  =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
+  =/  waz=(list addr:f)
+    .^((list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
+  =/  was=(set addr:f)  (silt waz)
   =/  ui
     |_  cas=tape
     ++  prez-stat
@@ -141,15 +145,162 @@
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
-      ;h1-alt: {(ship:enjs:ff:fh sip)} User Profile
-      ;+  %+  prez-well:ui  "Worker Projects"
-          ~(val by ~(mine conn:proj:fd bol [proj-subs proj-pubs]:dat))
-      ;+  %+  prez-well:ui  "Oracle Projects"
-          %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
-          |=  [[flag:f nex=prej:proj:f] acc=(list prej:proj:f)]
-          ?.  =(sip p.assessment.nex)  acc  [nex acc]
-      ;+  %+  prez-well:ui  "All Projects"
-          ~(val by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
+      ;h1: {(ship:enjs:ff:fh sip)} User Profile
+      ::  TODO: Move to 'stats' page
+      ::  ;+  %+  prez-well:ui  "Worker Projects"
+      ::      ~(val by ~(mine conn:proj:fd bol [proj-subs proj-pubs]:dat))
+      ::  ;+  %+  prez-well:ui  "Oracle Projects"
+      ::      %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
+      ::      |=  [[flag:f nex=prej:proj:f] acc=(list prej:proj:f)]
+      ::      ?.  =(sip p.assessment.nex)  acc  [nex acc]
+      ::  ;+  %+  prez-well:ui  "All Projects"
+      ::      ~(val by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
+      ;div(class "flex flex-col gap-1 text-black")
+        ;div(class "flex justify-start gap-2")
+          ;+  (~(ship-logo ui:fh "h-32") sip bol)
+          ;div(class "flex flex-col justify-between")
+            ;div(class "flex flex-col justify-start items-start")
+              ;div(class "inline-flex items-center gap-1")
+                ;h3
+                  ;+  (ship-tytl:ui:fh sip bol)
+                ==
+                ;+  (copy-butn:ui:fh (ship:enjs:ff:fh sip))
+              ==
+              ;div(class "inline-flex items-center gap-1")
+                ;a/"https://network.urbit.org/{<sip>}"
+                    =target  "_blank"
+                    =class  "text-base sm:text-xl font-normal hover:text-link"
+                  ; AZP: {<`@`sip>}
+                ==
+                ;+  (copy-butn:ui:fh (bloq:enjs:ff:fh `@`sip))
+              ==
+            ==
+            ;div(class "inline-flex items-center gap-2 sm:gap-4")
+              ;*  %-  turn  :_  |=(m=manx (~(hoal ma:fh m) 'adadad'))
+                  ;:  welp
+                        ?:  %.n  ~  ::  |(!=(our src):bol =(sip src.bol))  ~
+                      :_  ~
+                      ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
+                        ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
+                      ==
+                  ::
+                      [(sink-butn:ui:fh sip (trip ship-url.pro))]~
+                  ::
+                        ?.  (star:fx sip)  ~
+                      :_  ~
+                      ;a/"{(prot:enrl:ff:fh sip)}/stats"(target "_blank")
+                        ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
+                      ==
+                  ==
+            ==
+          ==
+        ==
+      ==
+      ;h1-alt: Favorites
+      ;+  %:  meta-stax:ui:fh  bol  %smol  'No favorites found.'
+              %+  murn  ~(tap in favorites.pro)
+              |=  lag=flag:f
+              ?~(met=(~(get by mes) lag) ~ `[lag u.met])
+          ==
+      ;h1-alt: Attested Wallets
+      ;+  ?~  waz  ;p.fund-warn: No wallets found.
+          ;div(class "w-full overflow-x-auto overflow-y-hidden")
+            ;table(class "w-full table-auto border-separate border-spacing-y-2 -mt-2")
+              ;thead
+                ;tr.text-sm.text-palette-contrast.underline
+                  ;th.text-center: chain
+                  ;th.text-center: link
+                  ;th.text-left: wallet address
+                ==
+              ==
+              ;tbody
+                ;*  %+  turn  waz
+                    |=  adr=addr:f
+                    ^-  manx
+                    ;tr.bg-palette-contrast
+                      ;td.w-1.whitespace-nowrap.rounded-l-md.py-4
+                        ;+  (~(icon-logo ui:fh "mx-auto") %circ (aset:enrl:ff:fh %ethereum))
+                      ==
+                      ;td.w-1.whitespace-nowrap
+                        ;a/"{(esat:enrl:ff:fh %addr adr 1)}"(target "_blank")
+                          ;img.mx-auto.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
+                        ==
+                      ==
+                      ;td.rounded-r-md: {(addr:enjs:ff:fh adr)}
+                    ==
+              ==
+            ==
+          ==
+      ;h1-alt: Fund Contributions
+      ;+  =/  txz=(list [flag:f prej:proj:f mula:f])
+            =-  %+  sort  txz
+                |=  [a=[flag:f prej:proj:f m=mula:f] b=[flag:f prej:proj:f m=mula:f]]
+                (gth (tula:fk m.a) (tula:fk m.b))
+            ^-  txz=(list [flag:f prej:proj:f mula:f])
+            %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
+            |=  [[lag=flag:f nex=prej:proj:f] acc=(list [flag:f prej:proj:f mula:f])]
+            =-  (welp acc (turn muz |=(mul=mula:f [lag nex mul])))
+            ^-  muz=(list mula:f)
+            %+  skim  ~(mula pj:fj -.nex)
+            |=  mul=mula:f
+            =/  who=(unit @p)  ?-(-.mul %trib ship.mul, %plej `ship.mul, %pruf ~)
+            =/  adr=(unit addr:f)  ?+(-.mul `from.when.mul %plej ~)
+            ?|  ?&(?=(^ who) =(sip u.who))
+                ?&  ?=(^ adr)
+                    (~(has in was) u.adr)
+                    ?!(&(?=(%pruf -.mul) ?=(%with note.mul)))
+                ==
+            ==
+          ?~  txz  ;p.fund-warn: No transactions found.
+          ;div(class "w-full overflow-x-auto overflow-y-hidden")
+            ;table(class "w-full table-auto border-separate border-spacing-y-2 -mt-2")
+              ;thead
+                ;tr.text-sm.text-palette-contrast.underline
+                  ;th.text-center: amount
+                  ;th.text-center: status
+                  ;th.text-center: project
+                  ;th.text-center: worker
+                  ;th.text-center: oracle
+                  ;th.text-center: block
+                  ;th.text-center: wallet
+                  ;th.text-center: transaction
+                  ;th.text-left: message
+                ==
+              ==
+              ;tbody
+                ;*  %+  turn  txz
+                    |=  [lag=flag:f pre=prej:proj:f mul=mula:f]
+                    ^-  manx
+                    ;tr.bg-palette-contrast
+                      ;td.italic.whitespace-nowrap.rounded-l-md.py-4
+                        ; {(swam:enjs:ff:fh cash.mul payment.pre)}
+                      ==
+                      ;td.w-1.whitespace-nowrap
+                        ;+  (mula-pill:ui:fh %smol mul pre bol)
+                      ==
+                      ;td(class "font-semibold w-60 overflow-hidden")
+                        ;span.line-clamp-1: {(trip title.pre)}
+                      ==
+                      ;td
+                        ;+  (ship-agis:ui:fh %medi p.lag bol)
+                      ==
+                      ;td
+                        ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
+                      ==
+                      ;td
+                        ; {(bloq:enjs:ff:fh (tula:fk mul))}
+                      ==
+                      ;td.text-nowrap
+                        ; {?+(-.mul (sadr:enjs:ff:fh from.when.mul) %plej "—")}
+                      ==
+                      ;td.text-nowrap
+                        ; {?+(-.mul (sadr:enjs:ff:fh q.xact.when.mul) %plej "—")}
+                      ==
+                      ;td.rounded-r-md.line-clamp-1: {(trip note.mul)}
+                    ==
+              ==
+            ==
+          ==
     ==
   ==
 --

@@ -1,6 +1,6 @@
 /-  f=fund, p=pals
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
-/+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fx=fund-xtra
+/+  fy=fund, fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fx=fund-xtra
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -606,16 +606,7 @@
   ++  pj-is-new  !(~(has by pj-our) lag)
   ++  pj-pa-pub  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  pj-pa-sub  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
-  ++  pj-me-met
-    ^-  meta:meta:f
-    :*  title=title.pro
-        image=image.pro
-        cost=~(cost pj:fj pro)
-        payment=payment.pro
-        launch=p:xact:(fall contract.pro *oath:f)
-        worker=p.lag
-        oracle=p.assessment.pro
-    ==
+  ++  pj-me-met  (proj-meta:fy lag pro)
   ::
   ++  pj-pj-bloq
     ^-  @

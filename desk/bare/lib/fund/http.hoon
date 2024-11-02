@@ -1,7 +1,7 @@
 :: /lib/fund/http/hoon: http data and helper functions for %fund
 ::
 /-  fd=fund-data
-/+  *fund-proj, fp=fund-prof, fk=fund-core
+/+  *fund-proj, fp=fund-prof, fm=fund-meta, fk=fund-core
 /+  ff=fund-form, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
@@ -283,10 +283,14 @@
 ::
 ++  ma
   |_  man=manx
-  ++  joat                                     ::  join node attributes
+  ++  riat                                     ::  right join (append) node attributes
     |=  mar=mart
     ^-  manx
     %_(man a.g (welp a.g.man mar))
+  ++  leat                                     ::  left join (prepend) node attributes
+    |=  mar=mart
+    ^-  manx
+    %_(man a.g (welp mar a.g.man))
   ++  reat                                     ::  replace node attributes
     |=  mar=mart
     ^-  manx
@@ -299,14 +303,20 @@
       %~  tap  by
       (~(uni by (malt a.g.man)) (malt mar))
     ==
-  ++  joch                                     ::  join node children
+  ::
+  ++  rich                                     ::  right join (append) node children
     |=  mar=marl
     ^-  manx
     %_(man c (welp c.man mar))
+  ++  lech                                     ::  left join (prepend) node children
+    |=  mar=marl
+    ^-  manx
+    %_(man c (welp mar c.man))
   ++  rech                                     ::  replace node children
     |=  mar=marl
     ^-  manx
     %_(man c mar)
+  ::
   ++  hoal                                     ::  make hover alpine
     |=  clr=@t
     ^-  manx
@@ -319,7 +329,7 @@
           (~(suat ..$ u.kid) ~[[%x-show "!hover"] [%src "{+.u.url}{cur}"]])
       ==
     =.  man
-      %-  joat
+      %-  riat
       :~  [%x-data "\{ hover: false }"]
           [%x-on-mouseenter "hover = true"]
           [%x-on-mouseleave "hover = false"]
@@ -493,9 +503,9 @@
                 ==
               ==
             ==
-            ;*  ?.  =(our src):bol  ~
+            ;*  ?.  (auth bol)  ~  ::  user action section
                 :~  ;hr;
-                    ;a/"{(dest:enrl:ff /config)}"(class bas): config ⚙
+                    ;a/"{(prot:enrl:ff src.bol)}"(class bas): profile 👤
                 ==
             ;hr;  ::  login/logout section
             ;+  =-  ;a/"/~/{pre}redirect={(trip url)}"(class bas, target tgt): {txt}
@@ -546,6 +556,24 @@
           ;img.fund-butn-icon@"{(aset:enrl:ff %urbit)}";
         ==
       ==
+    ==
+  ++  meta-stax                                  ::  metadata card stack
+    |=  [bol=bowl:gall syz=?(%smol %medi %lorj) emt=$@(@t manx) mez=(list [flag mete:fm])]
+    ^-  manx
+    =-  ?~  mez
+          ?^  emt  emt
+          ;p.fund-warn: {(trip emt)}
+        ;div(class kas)
+          ;*  (turn mez |=([f=flag m=mete:fm] (~(meta-card ..$ qas) bol f m)))
+        ==
+    ^-  [qas=tape kas=tape]
+    =/  bas=tape  "w-full grid gap-4"
+    =/  das=tape  "{bas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
+    :-  "w-[50vw] sm:w-[250px]"
+    ?-  syz
+      %smol  "{bas} grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
+      %medi  das
+      %lorj  "{das} justify-center"
     ==
   ++  ship-card                                  ::  summary card for user ship
     |=  [sip=@p bol=bowl:gall rol=role cid=@ud adr=addr]
@@ -636,8 +664,117 @@
         ==
       ==
     ==
+  ++  mold-card                                  ::  template card for project data
+    |=  $:  bol=bowl:gall  tyt=@t  pic=(unit @t)  xoc=tape
+            $=  pro  %-  unit
+            $:  big=?  gud=?
+                wok=@p  ora=@p
+                sat=stat  cos=cash  swa=swap
+                hed=(unit manx)
+            ==
+        ==
+    ^-  manx
+    =/  big=bean  ?~(pro | big.u.pro)
+    =/  syz=@sd   ?:(big --0 -2)
+    =/  asp=tape  ?:(big "aspect-video" "aspect-square")
+    =/  url=tape
+      ?^  pic  (trip u.pic)
+      ?^  pro  (~(ship-logo fa bol) wok.u.pro)  ::  TODO: implement wok/ora double logo
+      "https://placehold.co/24x24/lightgray/gray?text=?"
+    ::  FIXME: This should really be 'button,' but that introduces problems with CSS
+    ;div  =type  "button"
+        =class  "flex flex-col gap-2 hover:cursor-pointer {cas}"
+        =x-on-click  xoc
+      ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
+        ;*  ?~  pro  ~
+            :_  ~
+            ;div(class "h-full flex flex-col justify-between p-2")
+              ;div(class "flex flex-row flex-wrap justify-between items-center gap-2")
+                ;div(class "font-serif flex flex-row flex-wrap justify-start items-center gap-2")
+                  ;div(class "bg-palette-background rounded-md text-{(size:enjs:ff syz)} p-1.5")
+                    ; {(swam:enjs:ff cos.u.pro swa.u.pro)}
+                  ==
+                  ;div(class "bg-palette-background rounded-md p-0.5")
+                    ;+  %+  ~(icon-stax ..$ ?.(big ~ "h-8"))  %circ
+                        :~  (aset:enrl:ff symbol.swa.u.pro)
+                            (aset:enrl:ff tag:(~(got by xmap:fc) chain.swa.u.pro))
+                        ==
+                  ==
+                ==
+                ;*  ?.  big  ~
+                    :_  ~
+                    (~(stat-pill ..$ ~) %smol sat.u.pro)
+              ==
+              ;div(class "flex flex-row flex-wrap justify-end items-center gap-2")
+                ;*  ?:  gud.u.pro  ~
+                    :_  ~
+                    ;div(class "bg-palette-background rounded-md p-1")
+                      ;span  =class  "text-2xl text-red-500"
+                          =x-init  "initTippy($el, \{text: 'Disconnected from host.', hover: true})"
+                        ; ⚠
+                      ==
+                    ==
+              ==
+            ==
+      ==
+      ;*  ?~  pro  ~
+          ?~  hed.u.pro  ~
+          :_  ~  u.hed.u.pro
+      ;div(class "w-full flex-1 flex flex-row gap-2 justify-between items-start")
+        ;div(class "font-semibold flex-1 min-w-0 line-clamp-2 text-{(size:enjs:ff (sum:si --1 syz))}")
+          ; {(trip tyt)}
+        ==
+        ;*  ?~  pro  ~
+            :_  ~
+            ;div(class "bg-white rounded-lg p-0.5")
+              ;+  %+  ~(icon-stax ..$ ~)  %rect
+                      (turn ~[wok.u.pro ora.u.pro] ~(ship-logo fa bol))
+            ==
+      ==
+    ==
+  ++  proj-card                              ::  summary card for a project
+    |=  [bol=bowl:gall lag=flag pre=prej]
+    ^-  manx
+    %:  mold-card
+        bol=bol
+        tyt=title.pre
+        pic=image.pre
+        xoc="openHREF('{(flat:enrl:ff lag)}')"
+    ::
+          ^=  pro
+        :*  ~
+            big=&
+            gud=live.pre
+            wok=p.lag
+            ora=p.assessment.pre
+            sat=~(stat pj -.pre)
+            cos=~(cost pj -.pre)
+            swa=payment.pre
+            hed=`(~(proj-ther ..$ ~) -.pre big=|)
+        ==
+    ==
+  ++  meta-card                              ::  summary card for project metadata
+    |=  [bol=bowl:gall lag=flag met=mete:fm]
+    ^-  manx
+    %:  mold-card
+        bol=bol
+        tyt=title.met
+        pic=image.met
+        xoc="joinProject('{(flag:enjs:ff lag)}')"
+        pro=`[| live.met worker.met oracle.met *stat cost.met payment.met ~]
+    ==
+  ++  link-card                              ::  raw link card (like 'meta-card')
+    |=  [bol=bowl:gall txt=tape lin=tape]
+    ^-  manx
+    %:  mold-card
+        bol=bol
+        tyt='Create New Project'
+        pic=`(crip "https://placehold.co/24x24/lightgray/gray?text={txt}")
+        xoc="openHREF('{lin}')"
+        pro=~
+    ==
   ++  mark-well                                  ::  markdown (github) well
-    |=  [txt=tape typ=?(%ters %togl %verb)]
+    |=  [typ=?(%ters %togl %verb) txt=tape]
     ^-  manx
     ::  FIXME: This is hacky and wasteful, but attempting to use Alpine.js to
     ::  just edit in/out the 'line-clamp-5' class doesn't work due to
@@ -893,12 +1030,46 @@
         ==
       ==
     ==
-  ++  work-tytl                                  ::  work unit (project/milestone) title
-    |=  [tyt=tape sat=stat man=manx]
+  ++  mula-agis                                  ::  aegis (icon + title) for a mula
+    |=  [syz=?(%smol %medi %lorj) mul=mula swa=swap bol=bowl:gall]
     ^-  manx
-    ;div(class "flex flex-wrap items-center justify-between {cas}")
-      ;h1(class "fund-title"): {tyt}
-      ;+  (~(work-bump ..$ ~) sat man)
+    ?-  -.mul
+      %plej  (ship-agis syz ship.mul bol)
+    ::
+        ?(%trib %pruf)
+      ?^  ship.mul  (ship-agis syz u.ship.mul bol)
+      %:  addr-agis  syz  from.when.mul  swa
+          ?-  -.mul
+            %trib  (colt:enrl:ff %black)
+            %pruf  (aset:enrl:ff %link)
+          ==
+      ==
+    ==
+  ++  addr-agis                                  ::  aegis (icon + title) for an address
+    |=  [syz=?(%smol %medi %lorj) adr=addr swa=swap lur=tape]
+    ^-  manx
+    =/  sas=tape  ?.(?=(%smol syz) ~ "shrink overflow-hidden")
+    ;div(class "flex inline-flex items-center gap-2 {sas} {cas}")
+      ;+  (~(icon-logo ..$ ~) %rect lur)
+      ;+  %.  [%x-init "initENS($el, '{(addr:enjs:ff adr)}')"]~
+          %~  riat  ma
+          %:  ~(link-text ..$ (welp "fund-addr " ?.(?=(%smol syz) ~ "fund-clip")))
+              wer=(esat:enrl:ff %addr adr chain.swa)
+              tab=&
+              txt=(sadr:enjs:ff adr)
+              diz=~
+          ==
+    ==
+  ++  ship-agis                                  ::  aegis (icon + title) for a user ship
+    |=  [syz=?(%smol %medi %lorj) sip=@p bol=bowl:gall]
+    ^-  manx
+    =/  sas=tape  ?.(?=(%smol syz) ~ "shrink overflow-hidden")
+    ;div(class "flex inline-flex items-center gap-2 {sas} {cas}")
+      ;+  (~(ship-logo ..$ ~) sip bol)
+      ;+  %.  [(~(ship-tytl ..$ ~) sip bol)]~
+          %~  rech  ma
+          %-  ~(link-text ..$ ?.(?=(%smol syz) ~ "fund-clip"))
+          [wer=(prot:enrl:ff sip) tab=& txt="~" diz=~]
     ==
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]
@@ -916,6 +1087,13 @@
           :_  man
           ;span.text-nowrap: Funding Goal
     ==
+  ++  work-tytl                                  ::  work unit (project/milestone) title
+    |=  [tyt=tape sat=stat man=manx]
+    ^-  manx
+    ;div(class "flex flex-wrap items-center justify-between {cas}")
+      ;h1(class "fund-title"): {tyt}
+      ;+  (~(work-bump ..$ ~) sat man)
+    ==
   ++  cash-bump                                  ::  bumper for cash amount
     |=  [tan=manx ban=manx]
     ^-  manx
@@ -925,6 +1103,38 @@
       ==
       ;h2.text-nowrap
         ;+  ban
+      ==
+    ==
+  ++  mula-pill                                  ::  mula pill element
+    |=  [syz=?(%smol %medi %lorj) mul=mula pre=prej bol=bowl:gall]
+    ^-  manx
+    =/  siz=@tas  (dis syz (dec (bex 8)))
+    =-  ;div(class "{kas}-{(trip siz)} {cas}"): {tyt}
+    ^-  [tyt=tape kas=tape]
+    ?-    -.mul
+        %plej
+      =+  pej=(~(got by pledges.pre) ship.mul)
+      ?-  view.pej
+        ~          ["pledged" "fund-pill-bo"]
+        [~ %stif]  ["welched" "fund-pill-de"]
+        [~ %slyd]  ["forgiven" "fund-pill-de"]
+      ==
+    ::
+        %trib
+      =+  teb=-:(~(got by contribs.pre) q.xact.when.mul)
+      ?~  pruf.teb  ["attested" "fund-pill-lo"]
+      =-  ["{-}verified" "fund-pill-do"]
+      ?~  ship.teb  ~
+      =-  ?~(- ~ "✔ ")
+      .^  pro=(unit sigm)
+          %gx  (scot %p our.bol)  dap.bol  (scot %da now.bol)
+          /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)/noun
+      ==
+    ::
+        %pruf
+      ?-  note.mul
+        %depo  ["deposited" "fund-pill-lo"]
+        %with  ["withdrawn" "fund-pill-de"]
       ==
     ==
   ++  stat-pill                                  ::  status pill element
@@ -1002,6 +1212,17 @@
     ;a/"{(flat:enrl:ff lag)}/edit"(class cas)
       ;img.fund-butn-icon@"{(aset:enrl:ff %edit)}";
     ==
+  ++  sink-butn                                  ::  ship (profile) link copy button
+    |=  [sip=@p url=tape]
+    ^-  manx
+    =-  ;button(type "button", class cas, x-on-click xoc)
+          ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
+        ==
+    ^=  xoc
+    """
+    copyText('{url}{(prot:enrl:ff sip)}');
+    alert('profile url copied to clipboard');
+    """
   ++  pink-butn                                  ::  project link copy button
     |=  [lag=flag url=tape]
     ^-  manx

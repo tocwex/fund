@@ -23,9 +23,8 @@
   ^-  reply:rudder
   =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
   :-  %next  :_  ~
-  ?+    pyp  (flac:enrl:ff:fh lag)
-      %join
-    (desc:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/join)
+  ?+  pyp  (flac:enrl:ff:fh lag)
+    %join  (nexc:enrl:ff:fh lag %join)
   ==
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
@@ -35,6 +34,8 @@
   =/  lag=flag:f  (fall lau *flag:f)
   =/  aut=?(%clear %eauth %admin)
     ?.((auth:fh bol) %clear ?:(=(our src):bol %admin %eauth))
+  ?:  &(?=([%next @ @ %join ~] pat) ?=(^ pru))
+    [%next (flac:enrl:ff:fh lag) 'redirecting to existing project page']
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))

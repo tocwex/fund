@@ -6,32 +6,8 @@
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
-++  argue
-  |=  [hed=header-list:http bod=(unit octs)]
-  ^-  $@(brief:rudder diff:fd)
-  ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
-    ?+      dif=(~(got by p.arz) %dif)
-          (crip "bad dif; expected join, not {(trip dif)}")
-        %join
-      ?+  arz=(parz:fh bod (sy ~[%lag]))  p.arz  [%| *]
-        =/  pes=(map flag:f prej:proj:f)  ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)
-        =/  lag=flag:f  (flag:dejs:ff:fh (~(got by p.arz) %lag))
-        :+  %proj  lag
-        ::  FIXME: The %lure case doesn't actually do anything; it's
-        ::  just a hack to differentiate the action type taken in the
-        ::  `+final` step (%join is a real join; %lure is a no-op join)
-        ?.((~(has by pes) lag) [%join ~] [%lure our.bol %fund])
-      ==
-    ==
-  ==
-++  final
-  |=  [gud=? txt=brief:rudder]
-  ^-  reply:rudder
-  =/  [dyp=@tas lag=flag:f pyp=@tas]  (poke:dejs:ff:fh ?~(txt '' txt))
-  ?+  pyp  !!
-    %join  [%next (desc:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/join) ~]
-    %lure  [%next (flac:enrl:ff:fh lag) ~]
-  ==
+++  argue  |=([header-list:http (unit octs)] !!)
+++  final  (alert:rudder url.request.ord build)
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -562,12 +538,6 @@
             } else {
               return (stat === "");
             }
-          },
-          joinProject(flag) {
-            this.sendFormData({
-              dif: "join",
-              lag: flag,
-            });
           },
           submitQuery() {
             const oldParams = new URL(document.location.toString()).searchParams;

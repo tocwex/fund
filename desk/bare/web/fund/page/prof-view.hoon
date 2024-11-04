@@ -178,7 +178,7 @@
             ;div(class "inline-flex items-center gap-2 sm:gap-4")
               ;*  %-  turn  :_  |=(m=manx (~(hoal ma:fh m) 'adadad'))
                   ;:  welp
-                        ?:  %.n  ~  ::  |(!=(our src):bol =(sip src.bol))  ~
+                        ?:  |(!=(our src):bol =(sip src.bol))  ~
                       :_  ~
                       ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
                         ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
@@ -281,10 +281,10 @@
                       ;td(class "font-semibold w-60 overflow-hidden")
                         ;span.line-clamp-1: {(trip title.pre)}
                       ==
-                      ;td.w-1.px-4.whitespace-nowrap
+                      ;td.w-1.px-6.whitespace-nowrap
                         ;+  (ship-agis:ui:fh %medi p.lag bol)
                       ==
-                      ;td.w-1.px-4.whitespace-nowrap
+                      ;td.w-1.px-6.whitespace-nowrap
                         ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
                       ==
                       ;td.w-1.px-2.whitespace-nowrap.text-nowrap

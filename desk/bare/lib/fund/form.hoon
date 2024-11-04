@@ -61,6 +61,14 @@
     |=  lag=flag  ~+
     ^-  cord
     (desc /project/(scot %p p.lag)/[q.lag])
+  ++  next                                       ::  nex(t) t(ape) (url path)
+    |=  [lag=flag typ=?(%bump %exit %join %edit %trib %plej)]  ~+
+    ^-  tape
+    (dest /next/(scot %p p.lag)/[q.lag]/[typ])
+  ++  nexc                                       ::  nex(t) c(ord) (url path)
+    |=  [lag=flag typ=?(%bump %exit %join %edit %trib %plej)]  ~+
+    ^-  cord
+    (desc /next/(scot %p p.lag)/[q.lag]/[typ])
   ++  aset                                       ::  as(s)e(t) t(ape) (url path)
     |=  ast=@t  ~+
     ^-  tape

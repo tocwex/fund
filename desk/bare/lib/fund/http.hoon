@@ -630,9 +630,10 @@
         ;+  (~(ship-logo ..$ "h-20") sip bol)
         ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
           ;div(class "inline-flex items-center gap-1")
-            ;h5.text-lg.font-bold.tracking-tight
-              ;+  (ship-tytl sip bol)
-            ==
+            ;+  %.  [(~(ship-tytl ..$ "text-lg font-bold tracking-tight") sip bol)]~
+                %~  rech  ma
+                %-  ~(link-text ..$ ~)
+                [wer=(prot:enrl:ff sip) tab=| txt="~" diz=~]
             ;+  (copy-butn (ship:enjs:ff sip))
           ==
           ;div(class "inline-flex items-center gap-1")
@@ -665,7 +666,7 @@
       ==
     ==
   ++  mold-card                                  ::  template card for project data
-    |=  $:  bol=bowl:gall  tyt=@t  pic=(unit @t)  xoc=tape
+    |=  $:  bol=bowl:gall  tyt=@t  pic=(unit @t)  lin=tape
             $=  pro  %-  unit
             $:  big=?  gud=?
                 wok=@p  ora=@p
@@ -681,10 +682,7 @@
       ?^  pic  (trip u.pic)
       ?^  pro  (~(ship-logo fa bol) wok.u.pro)  ::  TODO: implement wok/ora double logo
       "https://placehold.co/24x24/lightgray/gray?text=?"
-    ::  FIXME: This should really be 'button,' but that introduces problems with CSS
-    ;div  =type  "button"
-        =class  "flex flex-col gap-2 hover:cursor-pointer {cas}"
-        =x-on-click  xoc
+    ;a(href lin, class "flex flex-col gap-2 hover:cursor-pointer {cas}")
       ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
         ;*  ?~  pro  ~
             :_  ~
@@ -739,7 +737,7 @@
         bol=bol
         tyt=title.pre
         pic=image.pre
-        xoc="openHREF('{(flat:enrl:ff lag)}')"
+        lin=(flat:enrl:ff lag)
     ::
           ^=  pro
         :*  ~
@@ -760,7 +758,7 @@
         bol=bol
         tyt=title.met
         pic=image.met
-        xoc="joinProject('{(flag:enjs:ff lag)}')"
+        lin=(next:enrl:ff lag %join)
         pro=`[| live.met worker.met oracle.met *stat cost.met payment.met ~]
     ==
   ++  link-card                              ::  raw link card (like 'meta-card')
@@ -770,7 +768,7 @@
         bol=bol
         tyt='Create New Project'
         pic=`(crip "https://placehold.co/24x24/lightgray/gray?text={txt}")
-        xoc="openHREF('{lin}')"
+        lin=lin
         pro=~
     ==
   ++  mark-well                                  ::  markdown (github) well
@@ -1049,7 +1047,7 @@
     |=  [syz=?(%smol %medi %lorj) adr=addr swa=swap lur=tape]
     ^-  manx
     =/  sas=tape  ?.(?=(%smol syz) ~ "shrink overflow-hidden")
-    ;div(class "flex inline-flex items-center gap-2 {sas} {cas}")
+    ;div(class "flex items-center gap-2 {sas} {cas}")
       ;+  (~(icon-logo ..$ ~) %rect lur)
       ;+  %.  [%x-init "initENS($el, '{(addr:enjs:ff adr)}')"]~
           %~  riat  ma
@@ -1064,12 +1062,12 @@
     |=  [syz=?(%smol %medi %lorj) sip=@p bol=bowl:gall]
     ^-  manx
     =/  sas=tape  ?.(?=(%smol syz) ~ "shrink overflow-hidden")
-    ;div(class "flex inline-flex items-center gap-2 {sas} {cas}")
+    ;div(class "flex items-center gap-2 {sas} {cas}")
       ;+  (~(ship-logo ..$ ~) sip bol)
       ;+  %.  [(~(ship-tytl ..$ ~) sip bol)]~
           %~  rech  ma
           %-  ~(link-text ..$ ?.(?=(%smol syz) ~ "fund-clip"))
-          [wer=(prot:enrl:ff sip) tab=& txt="~" diz=~]
+          [wer=(prot:enrl:ff sip) tab=| txt="~" diz=~]
     ==
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]

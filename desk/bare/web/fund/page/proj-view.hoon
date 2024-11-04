@@ -189,8 +189,8 @@
   ::  action and profiles do not have an associted project
   =?  lag  ?=(%fave pyp)  (need (flag:derl:ff:fh url.request.ord))
   :-  %next  :_  ~
-  %-  desc:enrl:ff:fh
-  /next/(scot %p p.lag)/[q.lag]/[?+(pyp %bump %mula-trib %trib, %mula-plej %plej)]
+  %+  nexc:enrl:ff:fh  lag
+  ?+(pyp %bump %mula-trib %trib, %mula-plej %plej)
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -254,7 +254,7 @@
             :-  ?.  live.pre
                   :-  ~
                   =/  pur=tape  :(welp ?~(pow ~ (trip ship-url.u.pow)) (flat:enrl:ff:fh lag) "/okay")
-                  =/  nur=tape  (dest:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/exit)
+                  =/  nur=tape  (next:enrl:ff:fh lag %exit)
                   ;div  =class  "flex flex-row items-center"
                       =x-data  "\{ status: undefined }"
                       =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"

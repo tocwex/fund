@@ -112,6 +112,7 @@
     [%next @ @ @ ~]                              `[%page | %proj-next]
     [%profile @ suf=*]    ?+  suf.pat            ~
       ~                                          `[%page | %prof-view]
+      [%statistics ~]                            `[%page | %prof-stat]
       ::  [%edit ~]                                  `[%page | %prof-edit]
     ==
     [%project @ @ suf=*]  ?+  suf.pat            ~

@@ -57,7 +57,7 @@
   ++  trix  ::  "-ab---3" => "xab---3"
     |=  tap=tape  ^-  tape
     ?~  tap  tap
-    [?~((rush i.tap hep) i.tap 'x') t.tap]
+    [?~((rush i.tap ;~(pose hep nud)) i.tap 'x') t.tap]
   ++  weed  ::  "-ab^-#3" => "-ab---3"
     |=  tap=tape  ^-  tape
     %+  turn  (tuba tap)

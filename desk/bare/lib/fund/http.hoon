@@ -561,7 +561,7 @@
   ++  meta-stax                                  ::  metadata card stack
     |=  [bol=bowl:gall syz=?(%smol %medi %lorj) emt=$@(@t manx) mez=(list [flag mete:fm])]
     ^-  manx
-    =-  ?~  mez
+    =-  ?:  &(?=(~ mez) !=(%$ emt))
           ?^  emt  emt
           ;p.fund-warn: {(trip emt)}
         ;div(class kas)
@@ -570,7 +570,7 @@
     ^-  [qas=tape kas=tape]
     =/  bas=tape  "w-full grid gap-4"
     =/  das=tape  "{bas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
-    :-  "w-[50vw] sm:w-[250px]"
+    :-  ?.(?=(%smol syz) ~ "w-[50vw] sm:w-[250px]")
     ?-  syz
       %smol  "{bas} grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
       %medi  das

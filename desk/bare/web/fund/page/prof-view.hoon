@@ -45,7 +45,7 @@
                 ;+  (copy-butn:ui:fh (bloq:enjs:ff:fh `@`sip))
               ==
             ==
-            ;div(class "inline-flex items-center gap-2 sm:gap-4")
+            ;div(class "inline-flex items-center gap-2")
               ;*  %-  turn  :_  |=(m=manx (~(hoal ma:fh m) 'adadad'))
                   ;:  welp
                         ?:  |(!=(our src):bol =(sip src.bol))  ~

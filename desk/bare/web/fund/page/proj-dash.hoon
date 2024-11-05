@@ -420,15 +420,15 @@
                 ;div(class "flex flex-col gap-4")
                   ;div                               ::  my $prez
                     ;h2: My Open Projects
-                    ::  TODO: If empty list of projects, then use a
-                    ::  dummy and replace it with a 'create project' card
-                    ::  TODO: If non-empty, then inser 'create project'
-                    ::  card before all the other cards
-                    ::  ;+  (~(link-card ui:fh cas) bol "%2b" (dest:enrl:ff:fh /create/project))
-                    ;+  %^  meta-stax:ui  %smol  %$
+                    ;+  =-  %-  ~(lech ma:fh div)
+                            :_  ~
+                            %^  ~(link-card ui:fh "w-[50vw] sm:w-[250px]")  bol  "%2b"
+                            (dest:enrl:ff:fh /create/project)
+                        ^-  div=manx
+                        %^  meta-stax:ui  %smol  %$
                         |=  [lag=flag:f pre=prej:proj:f]
-                        ?&  ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
-                            =(our.bol p.lag)
+                        ?&  =(our.bol p.lag)
+                            ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                         ==
                   ==
                   ;div                               ::  $prez with %prop status
@@ -438,6 +438,7 @@
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%prop ~(stat pj:fj -.pre))
                             =(p.assessment.pre our.bol)
+                            ?=(~ contract.pre)
                         ==
                   ==
                   ;div                               ::  $prez with %sess status

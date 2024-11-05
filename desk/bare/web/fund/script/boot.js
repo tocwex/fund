@@ -620,23 +620,29 @@ if (window.Alpine === undefined) {
     dir=undefined, // String?
     hover=false, // Bool
   } = {}) {
-    var content = text;
-    if (!text) {
-      const optElem = elem.nextSibling;
-      optElem.style.display = 'block';
-      content = optElem;
-    }
+    if (elem?._tippy === undefined) {
+      var content = text;
+      if (!text) {
+        // NOTE: Need to keep original 'optElem' because of conflict
+        // between Tippy.js (which deletes the original) and Turbo.js
+        // (which keeps elements and not JS objects when going forward/back)
+        const optElem = elem.nextSibling;
+        const tipElem = optElem.cloneNode(true);
+        tipElem.style.display = 'block';
+        content = tipElem;
+      }
 
-    TippyJs(elem, {
-      content: content,
-      allowHTML: true,
-      interactive: true,
-      arrow: false,
-      trigger: ["click", ...(!hover ? [] : ["mouseenter"])].join(" "),
-      theme: "fund",
-      offset: [0, 5],
-      ...(!dir ? {} : {placement: dir}),
-    });
+      TippyJs(elem, {
+        content: content,
+        allowHTML: true,
+        interactive: true,
+        arrow: false,
+        trigger: ["click", ...(!hover ? [] : ["mouseenter"])].join(" "),
+        theme: "fund",
+        offset: [0, 5],
+        ...(!dir ? {} : {placement: dir}),
+      });
+    }
   }
 
   function initTomSelect(elem, {
@@ -657,7 +663,7 @@ if (window.Alpine === undefined) {
       `;
     };
 
-    if (elem.tomselect === undefined) {
+    if (elem?.tomselect === undefined) {
       const tselElem = new TomSelect(elem, {
         allowEmptyOption: empty,
         render: {

@@ -3,7 +3,7 @@
 /-  fd=fund-data, f=fund
 /+  fj=fund-proj, fk=fund-core, fh=fund-http, fx=fund-xtra
 /+  rudder
-%-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh &))
+%-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh |))
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)
@@ -11,7 +11,14 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  [sip=ship pro=pref:prof:f]  (greb:prof:preface:fh arz)
+  =/  [sup=(unit @p) pru=(unit pref:prof:f)]  (grab:prof:preface:fh arz)
+  ?.  ?=(^ sup)
+    [%code 404 'invalid ship name']
+  =*  sip  u.sup
+  =/  aut=?(%clear %eauth %mauth %admin)
+    ?.((auth:fh bol) %clear ?:(=(our src):bol %admin ?:(=(sip src.bol) %mauth %eauth)))
+  ?:  ?=(%clear aut)
+    [%auth url.request.ord]
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =/  waz=(list addr:f)
     .^((list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
@@ -24,7 +31,7 @@
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
-      ;h1: {(ship:enjs:ff:fh sip)} User Profile
+      ;h1: {(ship:enjs:ff:fh sip)}'s Profile ({(ship:enjs:ff:fh our.bol)}'s View)
       ;div(class "flex flex-col gap-1 text-black")
         ;div(class "flex justify-start gap-2")
           ;+  (~(ship-logo ui:fh "h-32") sip bol)
@@ -54,9 +61,11 @@
                         ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
                       ==
                   ::
-                      [(sink-butn:ui:fh sip (trip ship-url.pro))]~
+                        ?:  ?=(~ pru)  ~
+                      :_  ~
+                      (sink-butn:ui:fh sip (trip ship-url.u.pru))
                   ::
-                        ?.  (star:fx sip)  ~
+                        ?.  &(?=(%admin aut) =(sip src.bol) (star:fx sip))  ~
                       :_  ~
                       ;a/"{(prot:enrl:ff:fh sip)}/statistics"
                         ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
@@ -68,12 +77,13 @@
       ==
       ;h1-alt: Favorites
       ;+  %:  meta-stax:ui:fh  bol  %smol  'No favorites found.'
-              %+  murn  ~(tap in favorites.pro)
+              %+  murn  ~(tap in ?:(?=(~ pru) *(set flag:f) favorites.u.pru))
               |=  lag=flag:f
               ?~(met=(~(get by mes) lag) ~ `[lag u.met])
           ==
       ;h1-alt: Attested Wallets
       ;+  ?~  waz  ;p.fund-warn: No wallets found.
+          ?.  ?=(?(%mauth %admin) aut)  ;p.fund-warn: Unavailable to external users.
           ;div(class "w-full overflow-x-auto overflow-y-hidden")
             ;table(class "w-full table-auto border-separate border-spacing-y-2 -mt-2")
               ;thead
@@ -122,6 +132,7 @@
                 ==
             ==
           ?~  txz  ;p.fund-warn: No transactions found.
+          ?.  ?=(?(%mauth %admin) aut)  ;p.fund-warn: Unavailable to external users.
           ;div(class "w-full overflow-x-auto overflow-y-hidden")
             ;table(class "w-full table-auto border-separate border-spacing-y-2 -mt-2")
               ;thead

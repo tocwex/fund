@@ -634,7 +634,7 @@
             ;+  %.  [(~(ship-tytl ..$ "text-lg font-bold tracking-tight") sip bol)]~
                 %~  rech  ma
                 %-  ~(link-text ..$ ~)
-                [wer=(prot:enrl:ff sip) tab=| txt="~" diz=~]
+                [wer=?.((auth bol) ~ (prot:enrl:ff sip)) tab=| txt="~" diz=~]
             ;+  (copy-butn (ship:enjs:ff sip))
           ==
           ;div(class "inline-flex items-center gap-1")
@@ -1068,7 +1068,7 @@
       ;+  %.  [(~(ship-tytl ..$ ~) sip bol)]~
           %~  rech  ma
           %-  ~(link-text ..$ ?.(?=(%smol syz) ~ "fund-clip"))
-          [wer=(prot:enrl:ff sip) tab=| txt="~" diz=~]
+          [wer=?.((auth bol) ~ (prot:enrl:ff sip)) tab=| txt="~" diz=~]
     ==
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]

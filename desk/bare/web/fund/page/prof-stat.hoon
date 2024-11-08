@@ -12,9 +12,7 @@
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
   =/  [sip=ship pro=pref:prof:f]  (greb:prof:preface:fh arz)
-  ?.  (star:fx sip)
-    [%code 404 'oracle statistics unavailable for non-stars/galaxies']
-  ?.  =(our src):bol
+  ?.  |(=(our src):bol =(sip src.bol))
     [%auth url.request.ord]
   ::  TODO: Need a UI overhaul (based on input from ~litneb-maltyp)
   =/  ui
@@ -38,18 +36,22 @@
         (add amo (~(gut by acc) payment.nex 0))
       ;li
         ;span(class "font-semibold"): {tyt}:
-        ;ul
-          ;*  %+  turn  ~(tap by sam)
-              |=  [swa=swap:f amo=cash:f]
-              ;li
-                ;span(class "italic"): {(swap:enjs:ff:fh swa)}:
-                ;span:  {(comp:enjs:ff:fh amo swa)}
-              ==
-        ==
+        ;+  ?:  =(~ sam)  ;span.italic:  None
+            ;ul
+              ;*  %+  turn  ~(tap by sam)
+                  |=  [swa=swap:f amo=cash:f]
+                  ;li
+                    ;span.italic: {(swap:enjs:ff:fh swa)}:
+                    ;span:  {(comp:enjs:ff:fh amo swa)}
+                  ==
+            ==
       ==
     ++  prez-well
-      |=  [tyt=tape pez=(list prej:proj:f)]
+      |=  [tyt=tape pix=$-([flag:f prej:proj:f] ?)]
       ^-  manx
+      =/  pez=(list prej:proj:f)
+        %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
+        |=([n=[flag:f prej:proj:f] a=(list prej:proj:f)] ?.((pix n) a [+.n a]))
       ;div
         ;h3: {tyt}
         ;ul
@@ -140,21 +142,18 @@
     --
   :-  %page
   %-  page:ui:fh
-  :^  bol  ord  "{(ship:enjs:ff:fh sip)}'s profile"
+  :^  bol  ord  "{(ship:enjs:ff:fh sip)}'s statistics"
   :+  fut=&  hed=&
-  ;div(x-data ~)  ::  "prof_view"
+  ;div(x-data ~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
-      ;h1: {(ship:enjs:ff:fh sip)} Oracle Statistics
-      ;+  %+  prez-well:ui  "Worker Projects"
-          ~(val by ~(mine conn:proj:fd bol [proj-subs proj-pubs]:dat))
-      ;+  %+  prez-well:ui  "Oracle Projects"
-          %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
-          |=  [[flag:f nex=prej:proj:f] acc=(list prej:proj:f)]
-          ?.  =(sip p.assessment.nex)  acc  [nex acc]
-      ;+  %+  prez-well:ui  "All Projects"
-          ~(val by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
+      ;h1: {(ship:enjs:ff:fh sip)}'s Statistics ({(ship:enjs:ff:fh our.bol)}'s Lens)
+      ;+  (prez-well:ui "Worker Projects" |=([f=flag:f *] =(sip p.f)))
+      ;*  ?.  (star:fx sip)  ~
+          [(prez-well:ui "Oracle Projects" |=([* p=prej:proj:f] =(sip p.assessment.p)))]~
+      ;*  ?.  &(=(our src):bol =(sip src.bol))  ~
+          [(prez-well:ui "All Projects" _&)]~
     ==
   ==
 --

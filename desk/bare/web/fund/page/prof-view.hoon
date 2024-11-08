@@ -27,11 +27,11 @@
   %-  page:ui:fh
   :^  bol  ord  "{(ship:enjs:ff:fh sip)}'s profile"
   :+  fut=&  hed=&
-  ;div(x-data ~)  ::  "prof_view"
+  ;div(x-data ~)
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
-      ;h1: {(ship:enjs:ff:fh sip)}'s Profile ({(ship:enjs:ff:fh our.bol)}'s View)
+      ;h1: {(ship:enjs:ff:fh sip)}'s Profile ({(ship:enjs:ff:fh our.bol)}'s Lens)
       ;div(class "flex flex-col gap-1 text-black")
         ;div(class "flex justify-start gap-2")
           ;+  (~(ship-logo ui:fh "h-32") sip bol)
@@ -89,7 +89,6 @@
               ;thead
                 ;tr.text-sm.text-palette-contrast.underline
                   ;th.text-center: chain
-                  ;th.text-center: link
                   ;th.text-left: wallet address
                 ==
               ==
@@ -98,15 +97,17 @@
                     |=  adr=addr:f
                     ^-  manx
                     ;tr.bg-palette-contrast
-                      ;td.w-1.whitespace-nowrap.rounded-l-lg.py-4
+                      ;td.w-12.whitespace-nowrap.rounded-l-lg.py-4
                         ;+  (~(icon-logo ui:fh "mx-auto") %circ (aset:enrl:ff:fh %ethereum))
                       ==
-                      ;td.w-1.whitespace-nowrap
-                        ;a/"{(esat:enrl:ff:fh %addr adr 1)}"(target "_blank")
-                          ;img.mx-auto.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
+                      ;td.rounded-r-lg.font-mono
+                        ;div.flex.items-center.gap-1
+                          ;*  =/  tad=tape  (addr:enjs:ff:fh adr)
+                              :~  (link-text:ui:fh (esat:enrl:ff:fh %addr adr 1) & tad ~)
+                                  (copy-butn:ui:fh tad)
+                              ==
                         ==
                       ==
-                      ;td.rounded-r-lg: {(addr:enjs:ff:fh adr)}
                     ==
               ==
             ==
@@ -159,8 +160,8 @@
                       ;td.w-1.px-2.whitespace-nowrap
                         ;+  (mula-pill:ui:fh %smol mul pre bol)
                       ==
-                      ;td(class "font-semibold w-60 overflow-hidden")
-                        ;span.line-clamp-1: {(trip title.pre)}
+                      ;td.w-60.overflow-hidden
+                        ;+  (~(link-text ui:fh "line-clamp-1") (flat:enrl:ff:fh lag) | (trip title.pre) ~)
                       ==
                       ;td.w-1.px-6.whitespace-nowrap
                         ;+  (ship-agis:ui:fh %medi p.lag bol)
@@ -168,14 +169,44 @@
                       ;td.w-1.px-6.whitespace-nowrap
                         ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
                       ==
-                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap
+                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.font-mono
                         ; {(bloq:enjs:ff:fh (tula:fk mul))}
                       ==
-                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center
-                        ; {?+(-.mul (sadr:enjs:ff:fh from.when.mul) %plej "—")}
+                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center.font-mono
+                        ;+  ?-    -.mul
+                                %plej
+                              ;span: —
+                            ::
+                                ?(%trib %pruf)
+                              ;div.flex.items-center.gap-1
+                                ;*  :~  %:  link-text:ui:fh
+                                            wer=(esat:enrl:ff:fh %addr from.when.mul chain.payment.pre)
+                                            tab=&
+                                            txt=(sadr:enjs:ff:fh from.when.mul)
+                                            diz=~
+                                        ==
+                                        (copy-butn:ui:fh (addr:enjs:ff:fh from.when.mul))
+                                    ==
+                              ==
+                            ==
                       ==
-                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center
-                        ; {?+(-.mul (sadr:enjs:ff:fh q.xact.when.mul) %plej "—")}
+                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center.font-mono
+                        ;+  ?-    -.mul
+                                %plej
+                              ;span: —
+                            ::
+                                ?(%trib %pruf)
+                              ;div.flex.items-center.gap-1
+                                ;*  :~  %:  link-text:ui:fh
+                                            wer=(esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pre)
+                                            tab=&
+                                            txt=(sadr:enjs:ff:fh q.xact.when.mul)
+                                            diz=~
+                                        ==
+                                        (copy-butn:ui:fh (addr:enjs:ff:fh q.xact.when.mul))
+                                    ==
+                              ==
+                            ==
                       ==
                       ;td(class "w-60 overflow-hidden rounded-r-lg")
                         ;span.line-clamp-1: {(trip note.mul)}

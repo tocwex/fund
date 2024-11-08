@@ -1,0 +1,1 @@
+../../bare/ted/find-proz.hoon

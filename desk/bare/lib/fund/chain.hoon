@@ -20,6 +20,22 @@
   |=  [xet=xeta acc=(map @ xeta)]
   ::  NOTE: There could be collisions here, but it's quite unlikely
   (~(gas by acc) ~[[`@`id.xet xet] [`@`tag.xet xet]])
+++  plis                                         ::  chain pact list
+  ~+
+  ^-  (list pact)
+  :~  [1 0xce13.ec86.bd8b.8827.9ec6.3eb9.f1ae.d967.59ce.5063 19.763.774]
+      [11.155.111 0xafd2.dcb1.e947.01e5.b96d.88d1.6586.8590.4578.c2f7 5.793.125]
+  ==
+++  pmap                                         ::  chain pact map
+  ~+
+  ^-  (map @ pact)
+  %+  roll  plis
+  |=  [pac=pact acc=(map @ pact)]
+  ::  NOTE: There could be collisions here, but it's quite unlikely
+  %-  ~(gas by acc)
+  :~  [`@`chain.pac pac]
+      [`@`tag:(~(got by xmap) chain.pac) pac]
+  ==
 ++  slis                                         ::  swap metadata list
   ~+
   ^-  (list swap)

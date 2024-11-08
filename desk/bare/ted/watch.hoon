@@ -1,4 +1,4 @@
-::  /ted/watch.hoon: watch a subscription wire on the %fund-watcher agent for
+::  /ted/watch/hoon: watch a subscription wire on the %fund-watcher agent for
 ::  some (optionally) specified number of %fact updates
 ::
 ::    -fund!watch /fund/test `1

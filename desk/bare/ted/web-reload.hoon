@@ -1,4 +1,4 @@
-::  /ted/web-reload.hoon: force a reload of all web-based hoon pages
+::  /ted/web-reload/hoon: force a reload of all web-based hoon pages
 ::
 ::    -fund!web-reload
 ::

@@ -55,6 +55,14 @@
       rpc=@t
   ==
 ::
+::  $pact: blockchain contract information
+::
++$  pact
+  $:  chain=@ud
+      =addr
+      start=bloq
+  ==
+::
 ::  $coin: blockchain coin (ERC-20) information
 ::
 +$  coin

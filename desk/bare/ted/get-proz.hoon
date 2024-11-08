@@ -69,7 +69,7 @@
   =|  cur=(list [pact:f json])
   |-  ^-  form:m
   ?~  qyz  (pure:m (flop cur))
-  ;<  ~  bind:m  (send-raw-card:io %pass /request %arvo %i %request +.i.qyz *outbound-config:iris)
+  ;<  ~  bind:m  (send-request:io +.i.qyz)
   ;<  res=client-response:iris  bind:m  take-client-response:io
   =/  bod=@t  ?>(?=(%finished -.res) ?~(full-file.res '' q.data.u.full-file.res))
   =/  jon=(unit json)  (de:json:html bod)

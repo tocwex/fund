@@ -148,6 +148,7 @@
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
+      ;a/"{(prot:enrl:ff:fh sip)}"(class "w-fit hover:text-link"): ← back
       ;h1: {(ship:enjs:ff:fh sip)}'s Statistics ({(ship:enjs:ff:fh our.bol)}'s Lens)
       ;+  (prez-well:ui "Worker Projects" |=([f=flag:f *] =(sip p.f)))
       ;*  ?.  (star:fx sip)  ~

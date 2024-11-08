@@ -65,7 +65,7 @@
                       :_  ~
                       (sink-butn:ui:fh sip (trip ship-url.u.pru))
                   ::
-                        ?.  &(?=(%admin aut) =(sip src.bol) (star:fx sip))  ~
+                        ?.  ?=(?(%mauth %admin) aut)  ~
                       :_  ~
                       ;a/"{(prot:enrl:ff:fh sip)}/statistics"
                         ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";

@@ -29,7 +29,7 @@
 ;<  ~  bind:m  (take-kick:io /awaiting/[tid])
 =/  loz=loglist:fund-watcher
   ?+  p.caj  ~|([%strange-thread-result p.caj %child tid] !!)
-    %thread-fail  (strand-fail:strand %get-pact-error ~)
+    %thread-fail  ~|([%failed-thread-result p.caj %child tid] !!)
     %thread-done  =+(!<(res=* q.caj) ;;(loglist:fund-watcher res))
   ==
 =/  paz=(list pact:f)

@@ -39,20 +39,54 @@
   =/  boq=(unit bloq:f)  ?.(?=(^ mined.log) ~ `block-number.u.mined.log)
   =/  adr=(unit addr:f)  (rust (scag 66 (trip data.log)) ;~(pfix (jest '0x') hex))
   :(both `id.xet adr boq)
-=/  qyz=(list [pact:f request:http])
-  %+  roll  paz
-  |=  [nex=pact:f acc=(list [pact:f request:http])]
-  %+  welp  acc
-  :~    =-  [nex %'GET' (crip "{rp3}/getCollectionsForOwner{arz}") ~ ~]
-      ^-  arz=tape
+~&  "fetching {<(lent paz)>} projects"
+|^  =|  poz=(list [pac=pact:f swa=swap:f cur=cash:f tot=cash:f])
+    |-  ^-  form:m
+    ?~  paz  (pure:m !>((flop poz)))
+    =*  pac  i.paz
+    =/  adr=@t  (crip (addr:enjs:ff addr.pac))
+    ~&  >  "fetching project {<addr.pac>}"
+    ;<    njs=(unit json)
+        bind:m
+      %-  quri-json
+      =-  [%'GET' (crip "{rp3}/getCollectionsForOwner{-}") ~ ~]
       %-  tail:en-purl:html
-      :~  ['owner' (crip (addr:enjs:ff addr.nex))]
+      :~  ['owner' adr]
           ['withMetadata' 'false']
       ==
-  ::
-        =-  [nex %'POST' (crip rp2) hez `bod]
-      ^-  [hez=header-list:http bod=octs]
-      :-  ['Content-Type' 'application/json']~
+    ~?  ?=(~ njs)  "unable to fetch nft information"
+    ?^  nur=(dejs-enft-curr (fall njs *json))
+      ;<    njs=(unit json)
+          bind:m
+        %-  quri-json
+        :*  %'POST'  (crip rp2)
+            ~[['accept' 'application/json'] ['Content-Type' 'application/json']]
+            ~   %-  as-octs:mimes:html
+            %-  en:json:html  ^-  json
+            :-  %o
+            %-  malt  ^-  (list [@t json])
+            :~  ['id' s+'1']
+                ['jsonrpc' s+'2.0']
+                ['method' s+'alchemy_getAssetTransfers']
+            ::
+                  :-  'params'
+                :-  %a
+                :_  ~
+                :-  %o
+                %-  malt  ^-  (list [@t json])
+                :~  ['toAddress' s+adr]
+                    ['category' a+[s+'erc721']~]
+                    ['withMetadata' b+&]
+                    ['excludeZeroValue' b+&]
+                ==
+            ==
+        ==
+      =/  not  (fall (dejs-enft-totl (fall njs *json)) [-.u.nur 0])
+      $(paz t.paz, poz [[pac -.u.nur +.u.nur +.not] poz])
+    ;<    cjs=(unit json)
+        bind:m
+      %-  quri-json
+      =-  [%'POST' (crip rp2) ['Content-Type' 'application/json']~ `-]
       %-  as-octs:mimes:html
       %-  en:json:html  ^-  json
       :-  %o
@@ -60,40 +94,92 @@
       :~  ['id' s+'1']
           ['jsonrpc' s+'2.0']
           ['method' s+'alchemy_getTokenBalances']
-          ['params' a+~[s+(crip (addr:enjs:ff addr.nex)) s+'erc20']]
+          ['params' a+~[s+adr s+'erc20']]
       ==
-  ==
-;<    joz=(list [pact:f json])
-    bind:m
-  =/  m  (strand ,(list [pact:f json]))
-  =|  cur=(list [pact:f json])
-  |-  ^-  form:m
-  ?~  qyz  (pure:m (flop cur))
-  ;<  ~  bind:m  (send-request:io +.i.qyz)
+    ~?  ?=(~ cjs)  "unable to fetch coin information"
+    ?^  cur=(dejs-coin-curr (fall cjs *json))
+      ;<    cjs=(unit json)
+          bind:m
+        %-  quri-json
+        :*  %'POST'  (crip rp2)
+            ~[['accept' 'application/json'] ['Content-Type' 'application/json']]
+            ~   %-  as-octs:mimes:html
+            %-  en:json:html  ^-  json
+            :-  %o
+            %-  malt  ^-  (list [@t json])
+            :~  ['id' s+'1']
+                ['jsonrpc' s+'2.0']
+                ['method' s+'alchemy_getAssetTransfers']
+            ::
+                  :-  'params'
+                :-  %a
+                :_  ~
+                :-  %o
+                %-  malt  ^-  (list [@t json])
+                :~  ['toAddress' s+adr]
+                    ['category' a+[s+'erc20']~]
+                    ['withMetadata' b+&]
+                    ['excludeZeroValue' b+&]
+                ==
+            ==
+        ==
+      =/  cot  (fall (dejs-coin-totl (fall cjs *json)) [-.u.cur 0])
+      $(paz t.paz, poz [[pac -.u.cur +.u.cur +.cot] poz])
+    ~&  >>  "skipping; no funds found"
+    $(paz t.paz)
+++  quri-json
+  |=  req=request:http
+  =/  m  (strand ,(unit json))
+  ;<  ~  bind:m  (send-request:io req)
   ;<  res=client-response:iris  bind:m  take-client-response:io
-  =/  bod=@t  ?>(?=(%finished -.res) ?~(full-file.res '' q.data.u.full-file.res))
-  =/  jon=(unit json)  (de:json:html bod)
-  ::  TODO: If any of the given endpoints has invalid JSON, throw error
-  ::  for the whole thread; should this be more forgiving?
-  ?~  jon  (strand-fail:strand %json-parse-error ~)
-  ::  NOTE: Need to wait a second so as not to exceed API compute per second
-  ;<  ~  bind:m  (sleep:io ~s1)
-  $(qyz t.qyz, cur [[-.i.qyz u.jon] cur])
-=/  poz=(list [pac=pact:f swa=swap:f amo=cash:f])
-  %+  murn  joz
-  |=  [pac=pact:f jon=json]
-  ^-  (unit [pact:f swap:f cash:f])
-  =-  ?~(res ~ `[pac i.res])
-  ^-  res=(list [swap:f cash:f])
-  %-  murn  :_  |=([a=addr:f c=cash:f] ?~(s=(~(get by smap:fc) can a) ~ `[u.s c]))
-  %-  fall  :_  *(list [addr:f cash:f])
+  =-  (pure:m (de:json:html -))
+  ?>(?=(%finished -.res) ?~(full-file.res '' q.data.u.full-file.res))
+++  nu  |=(j=json `(unit @ux)`?.(?=([%s *] j) ~ (rush p.j ;~(pfix (jest '0x') hex))))
+++  ku  (ci:dejs-soft:format |=(=@ux ``@`ux) nu)
+++  dejs-swap-curr
+  |=  saz=(unit (list [addr:f cash:f]))
+  ^-  (unit [swap:f cash:f])
+  =-  ?~(- ~ `i.-)
+  %+  murn  (fall saz *(list [addr:f cash:f]))
+  |=([a=addr:f c=cash:f] ?~(s=(~(get by smap:fc) can a) ~ `[u.s c]))
+++  dejs-enft-curr
+  |=  jon=json
+  ^-  (unit [swap:f cash:f])
+  %-  dejs-swap-curr
   =,  dejs-soft:format
-  =+  nu=|=(j=json `(unit @ux)`?.(?=([%s *] j) ~ (rush p.j ;~(pfix (jest '0x') hex))))
-  =-  (clap nft con tail)
-  ^-  [nft=(unit (list [addr:f cash:f])) con=(unit (list [addr:f cash:f]))]
-  :-  %.(jon (ot [collections+(ar (ot ~[address+nu [%'totalBalance' ni]]))]~))
+  %.  jon
+  (ot [collections+(ar (ot ~[address+nu [%'totalBalance' ni]]))]~)
+++  dejs-coin-curr
+  |=  jon=json
+  ^-  (unit [swap:f cash:f])
+  %-  dejs-swap-curr
+  =,  dejs-soft:format
   %.  jon
   %-  ot  :_  ~  :-  %result
   %-  ot  :_  ~  :-  %'tokenBalances'
-  (ar (ot ~[[%'contractAddress' nu] [%'tokenBalance' (ci |=(=@ux ``@`ux) nu)]]))
-(pure:m !>(poz))
+  (ar (ot ~[[%'contractAddress' nu] [%'tokenBalance' ku]]))
+++  dejs-swap-totl
+  |=  saz=(unit (list [addr:f cash:f]))
+  ^-  (unit [swap:f cash:f])
+  =-  ?~(- ~ `[-.i.- (roll (turn - tail) add)])
+  %+  murn  (fall saz *(list [addr:f cash:f]))
+  |=([a=addr:f c=cash:f] ?~(s=(~(get by smap:fc) can a) ~ `[u.s c]))
+++  dejs-enft-totl
+  |=  jon=json
+  ^-  (unit [swap:f cash:f])
+  %-  dejs-swap-totl
+  =,  dejs-soft:format
+  %.  jon
+  %-  ot  :_  ~  :-  %result
+  %-  ot  :_  ~  :-  %transfers
+  (ar (ot [%'rawContract' (ot ~[address+nu value+_`1])]~))
+++  dejs-coin-totl
+  |=  jon=json
+  ^-  (unit [swap:f cash:f])
+  %-  dejs-swap-totl
+  =,  dejs-soft:format
+  %.  jon
+  %-  ot  :_  ~  :-  %result
+  %-  ot  :_  ~  :-  %transfers
+  (ar (ot [%'rawContract' (ot ~[address+nu value+ku])]~))
+--

@@ -95,7 +95,8 @@
     ^-  tape
     =/  tyt=@t  ?-(typ %xact %tx, %addr %address)
     =/  cit=@t  ?+(cid %$ %1 %$, %11.155.111 'sepolia.')
-    "https://{(trip cit)}etherscan.io/{(trip tyt)}/{(z-co:co hex)}"
+    =/  h2t     ?-(typ %xact xact:enjs, %addr addr:enjs)
+    "https://{(trip cit)}etherscan.io/{(trip tyt)}/{(h2t hex)}"
   ++  esac                                       ::  e(ther)s(c)a(n) c(ord) (url path)
     |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  cord
@@ -158,6 +159,11 @@
     |=  sig=@t
     ^-  ^sign
     (rash sig ;~(pfix (jest '0x') hex))
+  ++  xact                                     ::  "0xabcdef…" => 0xabcd.ef…
+    |=  act=@t
+    ^-  ^xact
+    ::  FIXME: Is there any way to derive the block number?
+    [0 (rash act ;~(pfix (jest '0x') hex))]
   ++  ship                                     ::  "~zod" => ~zod
     |=  sip=@t
     ^-  ^ship
@@ -244,6 +250,11 @@
     |=  sig=^sign
     ^-  tape
     ['0' 'x' ((x-co:co 130) sig)]
+  ++  xact                                     ::  0xabcd.ef… => "0xabcdef…"
+    |=  act=$@(@ux ^xact)
+    ^-  tape
+    =/  raw=@ux  ?@(act act q.act)
+    ['0' 'x' ((x-co:co 64) raw)]
   ++  ship                                     ::  ~zod => "~zod"
     |=  sip=^ship
     ^-  tape

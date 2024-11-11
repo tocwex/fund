@@ -3,7 +3,7 @@
 /-  fd=fund-data, f=fund
 /+  fj=fund-proj, fk=fund-core, fh=fund-http, fx=fund-xtra
 /+  rudder
-%-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh &))
+%-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh |))
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
 ++  argue  |=([header-list:http (unit octs)] !!)
@@ -11,7 +11,10 @@
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
-  =/  [sip=ship pro=pref:prof:f]  (greb:prof:preface:fh arz)
+  =/  [sup=(unit @p) pru=(unit pref:prof:f)]  (grab:prof:preface:fh arz)
+  ?.  ?=(^ sup)
+    [%code 404 'invalid ship name']
+  =*  sip  u.sup
   ?.  |(=(our src):bol =(sip src.bol))
     [%auth url.request.ord]
   ::  TODO: Need a UI overhaul (based on input from ~litneb-maltyp)

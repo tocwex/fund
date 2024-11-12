@@ -1167,10 +1167,15 @@
     ^-  manx
     ;img@"{lin}"(class "fund-aset-{(trip typ)} {cas}");
   ++  flip-cheq                                  ::  checkbox flip switch <o->
-    |=  nam=tape
+    |=  [ahn=bean xoc=tape]
     ^-  manx
     =-  ;label(class "cursor-pointer {cas}")
-          ;input(name nam, type "checkbox", class "sr-only peer");
+          ;+  :_  ~  :-  %input
+              ;:  welp
+                  ~[[%type "checkbox"] [%class "sr-only peer"]]
+                  ?.(ahn ~ [%checked ~]~)
+                  ?~(xoc ~ [%x-on-change xoc]~)
+              ==
           ;div(class kas);
         ==
     ^=  kas

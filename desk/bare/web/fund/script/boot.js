@@ -325,6 +325,7 @@ if (window.Alpine === undefined) {
     sendForm,
     checkWallet,
     toggleWallet,
+    toggleUsage,
     // switchWallet,
     initENS,
     initTippy,
@@ -594,6 +595,16 @@ if (window.Alpine === undefined) {
         });
       });
     }
+  }
+
+  function toggleUsage(event) {
+    const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
+    const configData = new URLSearchParams({dif: "vita-toggle"});
+    return fetch(`${appUrl}/config`, {
+      method: "POST",
+      headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+      body: configData,
+    });
   }
 
   // FIXME: This doesn't work... may need to upgrade `wagmi.sh` to

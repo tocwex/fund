@@ -9,11 +9,13 @@
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
+  =+  .^(vit=? %gx (en-beam [our.bol %fund da+now.bol] /vita/enabled/noun))
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")
       %vita-enable   [%fund %vita &]
       %vita-disable  [%fund %vita |]
+      %vita-toggle   [%fund %vita !vit]
     ==
   ==
 ++  final

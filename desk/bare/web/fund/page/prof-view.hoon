@@ -20,42 +20,47 @@
   ?:  ?=(%clear aut)
     [%auth url.request.ord]
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
-  =/  waz=(list addr:f)
-    .^((list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
+  =+  .^(waz=(list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
+  =+  .^(vit=? %gx (en-beam [our.bol %fund da+now.bol] /vita/enabled/noun))
   =/  was=(set addr:f)  (silt waz)
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "{(ship:enjs:ff:fh sip)}'s profile"
   :+  fut=&  hed=&
-  ;div(x-data ~)
+  ;div(x-data "prof_view")
     ::  NOTE: Using another trick to always push footer to the bottom
     ::  https://stackoverflow.com/a/59865099
     ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
-      ;h1: {(ship:enjs:ff:fh sip)}'s Profile ({(ship:enjs:ff:fh our.bol)}'s Lens)
-      ;div(class "flex flex-col gap-1 text-black")
+      ;div(class "flex flex-col")
+        ;h1: {(ship:enjs:ff:fh sip)}'s Profile
+        ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens
+      ==
+      ;div(class "flex flex-row justify-between text-black")
         ;div(class "flex justify-start gap-2")
           ;+  (~(ship-logo ui:fh "h-32") sip bol)
           ;div(class "flex flex-col justify-between")
-            ;div(class "flex flex-col justify-start items-start")
-              ;div(class "inline-flex items-center gap-1")
-                ;h3
-                  ;+  (ship-tytl:ui:fh sip bol)
+            ;div(class "flex justify-between")
+              ;div(class "flex flex-col justify-start items-start")
+                ;div(class "inline-flex items-center gap-1")
+                  ;h3
+                    ;+  (ship-tytl:ui:fh sip bol)
+                  ==
+                  ;+  (copy-butn:ui:fh (ship:enjs:ff:fh sip))
                 ==
-                ;+  (copy-butn:ui:fh (ship:enjs:ff:fh sip))
-              ==
-              ;div(class "inline-flex items-center gap-1")
-                ;a/"https://network.urbit.org/{<sip>}"
-                    =target  "_blank"
-                    =class  "text-base sm:text-xl font-normal hover:text-link"
-                  ; AZP: {<`@`sip>}
+                ;div(class "inline-flex items-center gap-1")
+                  ;a/"https://network.urbit.org/{<sip>}"
+                      =target  "_blank"
+                      =class  "text-base sm:text-xl font-normal hover:text-link"
+                    ; AZP: {<`@`sip>}
+                  ==
+                  ;+  (copy-butn:ui:fh (bloq:enjs:ff:fh `@`sip))
                 ==
-                ;+  (copy-butn:ui:fh (bloq:enjs:ff:fh `@`sip))
               ==
             ==
             ;div(class "inline-flex items-center gap-2")
               ;*  %-  turn  :_  |=(m=manx (~(hoal ma:fh m) 'adadad'))
                   ;:  welp
-                        ?:  |(!=(our src):bol =(sip src.bol))  ~
+                        ?.  &(=(%admin aut) !=(sip src.bol))  ~
                       :_  ~
                       ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
                         ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
@@ -69,6 +74,14 @@
                       :_  ~
                       ;a/"{(prot:enrl:ff:fh sip)}/statistics"
                         ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
+                      ==
+                  ::
+                        ?.  &(=(%admin aut) =(sip src.bol))  ~
+                      :_  ~
+                      ;div(class "flex flex-col justify-start items-center")
+                        ;span.text-xs: usage?
+                        ;+  %+  flip-cheq:ui:fh  vit
+                            "toggleUsage().then(() => window.location.reload())"
                       ==
                   ==
             ==
@@ -222,6 +235,16 @@
               ==
             ==
           ==
+    ==
+    ;script
+      ;+  ;/
+      ::  FIXME: Hack to reduce build times and fix build stack overflows
+      ::  on some ships
+      %-  zing  %+  join  "\0a"
+      ^-  (list tape)
+      :~  "document.addEventListener('alpine:init', () => Alpine.data('prof_view', () => (\{"
+          "})));"
+      ==
     ==
   ==
 --

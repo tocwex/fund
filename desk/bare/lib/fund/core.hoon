@@ -30,7 +30,7 @@
 ++  tloq
   |=  [boq=bloq can=@ud]
   ^-  @da
-  =-  =-  (add sod (^mul (sub boq sob) sbp))
+  =-  =-  (add sod (^mul (sub boq (min boq sob)) sbp))
       `sbp=@dr`(abs:si (need (toi:rs (mul:rs rpm (sun:rs (bex 64))))))
   ^-  [rpm=@rs sob=bloq sod=@da]
   ?+  can        [.12.500 0 *@da]

@@ -132,7 +132,14 @@
     ++  on-peek
       |=  =path
       ^-  (unit (unit cage))
-      (on-peek:ag path)
+      ?.  ?=([@ %vita *] path)
+        (on-peek:ag path)
+      ?+  path  [~ ~]
+        [%u %vita ~]           ``noun+!>(&)
+        [%x %vita %last ~]     ``noun+!>(last)
+        [%x %vita %enabled ~]  ``noun+!>(enabled.config)
+        [%x %vita %parent ~]   ``noun+!>(vita-parent.config)
+      ==
     ::
     ++  on-agent
       |=  [=wire =sign:agent:gall]

@@ -1,7 +1,7 @@
 ::  /web/fund/page/prof-view/hoon: profile page for ship
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fk=fund-core, fh=fund-http, fx=fund-xtra
+/+  fj=fund-proj, fk=fund-core, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder
 %-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh |))
 ^-  page:fd
@@ -115,8 +115,8 @@
       ;h1-alt: Fund Contributions
       ;+  =/  txz=(list [flag:f prej:proj:f mula:f])
             =-  %+  sort  txz
-                |=  [a=[flag:f prej:proj:f m=mula:f] b=[flag:f prej:proj:f m=mula:f]]
-                (gth (tula:fk m.a) (tula:fk m.b))
+                =+  salv=|=([p=prej:proj:f m=mula:f] (tloq:fk (tula:fk m) chain.payment.p))
+                |=([[* a=[prej:proj:f mula:f]] [* b=[prej:proj:f mula:f]]] (gth (salv a) (salv b)))
             ^-  txz=(list [flag:f prej:proj:f mula:f])
             %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
             |=  [[lag=flag:f nex=prej:proj:f] acc=(list [flag:f prej:proj:f mula:f])]
@@ -169,9 +169,15 @@
                       ;td.w-1.px-6.whitespace-nowrap
                         ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
                       ==
-                      ;td.w-1.px-2.whitespace-nowrap.text-nowrap.font-mono
-                        ; {(bloq:enjs:ff:fh (tula:fk mul))}
-                        ::  ; {(date:enjs:ff:fh (tloq:fk (tula:fk mul) chain.payment.pre))}
+                      ;td.w-1.px-6.whitespace-nowrap.text-nowrap.font-mono
+                        ;div.flex.items-center.gap-2
+                          ::  ; {(date:enjs:ff:fh (tloq:fk (tula:fk mul) chain.payment.pre))}
+                          ;*  :~    %+  icon-logo:ui:fh  %circ
+                                  (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pre))
+                              ::
+                                  ;span: {(bloq:enjs:ff:fh (tula:fk mul))}
+                              ==
+                        ==
                       ==
                       ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center.font-mono
                         ;+  ?-    -.mul

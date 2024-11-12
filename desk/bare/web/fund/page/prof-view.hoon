@@ -171,6 +171,7 @@
                       ==
                       ;td.w-1.px-2.whitespace-nowrap.text-nowrap.font-mono
                         ; {(bloq:enjs:ff:fh (tula:fk mul))}
+                        ::  ; {(date:enjs:ff:fh (tloq:fk (tula:fk mul) chain.payment.pre))}
                       ==
                       ;td.w-1.px-2.whitespace-nowrap.text-nowrap.text-center.font-mono
                         ;+  ?-    -.mul

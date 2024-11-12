@@ -255,6 +255,11 @@
     ^-  tape
     =/  raw=@ux  ?@(act act q.act)
     ['0' 'x' ((x-co:co 64) raw)]
+  ++  date                                     ::  ~2024.4.28..4.9.0..abcd => "~2024.4.28"
+    |=  dat=@da
+    ^-  tape
+    =/  tar=tarp  (yell dat)
+    "{<`@da`(yule tar(h 0, m 0, s 0, f ~))>}"
   ++  ship                                     ::  ~zod => "~zod"
     |=  sip=^ship
     ^-  tape

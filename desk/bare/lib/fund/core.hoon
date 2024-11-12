@@ -25,6 +25,19 @@
     %pruf  p.xact.when.mul
   ==
 ::
+::  +tloq: t(ime) associated with a $(b)loq (measured by approximate date)
+::
+++  tloq
+  |=  [boq=bloq can=@ud]
+  ^-  @da
+  =-  =-  (add sod (^mul (sub boq sob) sbp))
+      `sbp=@dr`(abs:si (need (toi:rs (mul:rs rpm (sun:rs (bex 64))))))
+  ^-  [rpm=@rs sob=bloq sod=@da]
+  ?+  can        [.12.500 0 *@da]
+    %1           [.12.065 19.763.774 ~2024.4.29..21.54.11]
+    %11.155.111  [.13.520 5.793.125 ~2024.4.28..4.9.0]
+  ==
+::
 ::  +csig: c(heck) (Ethereum EIP-191) sig(nature)
 ::
 ++  csig

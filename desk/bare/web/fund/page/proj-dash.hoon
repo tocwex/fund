@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-dash/hoon: render project dashboard page for %fund
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fy=fund, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
+/+  fj=fund-proj, fy=fund, fk=fund-core, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
 /+  rudder, config
 %-  :(corl mine:preface:fh init:preface:fh)
 ^-  page:fd
@@ -88,8 +88,11 @@
         ==
     |=  [[laa=flag:f mea=mexa:ex] [lab=flag:f meb=mexa:ex]]
     ^-  bean
-    ?+  sort.arg  !!
-      %time  (?:(desc.arg gth lth) launch.mea launch.meb)
+    ?+    sort.arg  !!
+        %time
+      =+  lea=(tloq:fk launch.mea chain.payment.mea)
+      =+  leb=(tloq:fk launch.meb chain.payment.meb)
+      (?:(desc.arg gth lth) lea leb)
     ::
         %alph
       =+  tea=(cass (trip title.mea))

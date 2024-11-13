@@ -90,6 +90,19 @@
     |=  sip=@p  ~+
     ^-  cord
     (crip (surt +<))
+  ++  nurt                                       ::  n(etwork) ur(l) t(ape) (url path)
+    |=  sip=@p  ~+
+    ^-  tape
+    %+  welp  "https://network.urbit.org/"
+    ?-  (clan:title sip)
+      %pawn  ~
+      %earl  "{<`@p`(end 5 sip)>}"
+      *      "{<sip>}"
+    ==
+  ++  nurc                                       ::  n(etwork) ur(l) c(ord) (url path)
+    |=  sip=@p  ~+
+    ^-  cord
+    (crip (nurt +<))
   ++  esat                                       ::  e(ther)s(c)a(n) t(ape) (url path)
     |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  tape

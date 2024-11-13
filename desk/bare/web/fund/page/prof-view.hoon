@@ -25,7 +25,7 @@
   =/  was=(set addr:f)  (silt waz)
   :-  %page
   %-  page:ui:fh
-  :^  bol  ord  "{(ship:enjs:ff:fh sip)}'s profile"
+  :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s profile"
   :+  fut=&  hed=&
   ;div(x-data "prof_view")
     ::  NOTE: Using another trick to always push footer to the bottom
@@ -48,7 +48,7 @@
                   ;+  (copy-butn:ui:fh (ship:enjs:ff:fh sip))
                 ==
                 ;div(class "inline-flex items-center gap-1")
-                  ;a/"https://network.urbit.org/{<sip>}"
+                  ;a/"{(nurt:enrl:ff:fh sip)}"
                       =target  "_blank"
                       =class  "text-base sm:text-xl font-normal hover:text-link"
                     ; AZP: {<`@`sip>}
@@ -71,9 +71,11 @@
                       (sink-butn:ui:fh sip (trip ship-url.u.pru))
                   ::
                         ?.  ?=(?(%mauth %admin) aut)  ~
-                      :_  ~
-                      ;a/"{(prot:enrl:ff:fh sip)}/statistics"
-                        ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
+                      ::  FIXME: Replace these icons with final counterparts
+                      %+  turn  `(list [@tas @tas])`~[[%statistics %etherscan] [%graph %discover]]
+                      |=  [loc=@tas ast=@tas]
+                      ;a/"{(prot:enrl:ff:fh sip)}/{(trip loc)}"
+                        ;img.fund-butn-icon@"{(aset:enrl:ff:fh ast)}";
                       ==
                   ::
                         ?.  &(=(%admin aut) =(sip src.bol))  ~
@@ -106,7 +108,7 @@
                 ==
               ==
               ;tbody
-                ;*  %+  turn  waz
+                ;*  %+  turn  (sort waz lth)
                     |=  adr=addr:f
                     ^-  manx
                     ;tr.bg-palette-contrast

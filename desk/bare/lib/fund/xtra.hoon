@@ -21,6 +21,15 @@
   ?~  b  ~
   [[i.a i.b] $(a t.a, b t.b)]
 ::
+::  +ozip: given lists [l1, …, lN] and [m1, …, mM], return an
+::  outer-zipped list of units [[`l1, `m1], …, [`l(max N M) `m(max N M)]]
+::
+++  ozip
+  |*  [a=(list *) b=(list *)]
+  ?~  a  (turn b (cork (lead ~) (lead ~)))
+  ?~  b  (turn a (cork (lead ~) (late ~)))
+  [[`i.a `i.b] $(a t.a, b t.b)]
+::
 ::  +find: given list [l1, …, lN] and gate of g: li -> ?, return the
 ::  first item where g(li) is true
 ::
@@ -108,6 +117,13 @@
   |=  who=@p
   ^-  bean
   (gte 4 (met 3 who))
+::
+::  +dist: absolute distance between two values
+::
+++  dist
+  |=  [a=@ b=@]
+  ^-  @
+  (sub (max a b) (min a b))
 ::
 ::  +perc: perc(entage) of value relative to given total
 ::

@@ -36,11 +36,15 @@
     ?.((auth:fh bol) %clear ?:(=(our src):bol %admin %eauth))
   ?:  &(?=([%next @ @ %join ~] pat) ?=(^ pru))
     [%next (flac:enrl:ff:fh lag) 'redirecting to existing project page']
-  :-  %page
-  %-  page:ui:fh
-  :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))
-  :+  fut=&  hed=&
-  ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
+  ?+      pat
+        [%code 404 'invalid project interstitial url']
+      [%next sip=@ nam=@ typ=@ ~]
+    ?.  ?=(?(%bump %exit %join %edit %trib %plej) typ.pat)
+      [%code 404 'invalid project interstitial type']
+    :-  %page
+    %-  page:ui:fh
+    :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))
+    :+  fut=&  hed=&
     =/  syt
       :*  hep=(trip !<(@t (slot:config %meta-help)))
           hos=(trip !<(@t (slot:config %meta-site)))
@@ -54,7 +58,7 @@
           joi=(link-butn:ui:fh hos.syt %& "get urbit ~" ~)
           das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to dashboard" ~)
       ==
-    ?+    typ.pat  !!
+    ?-    typ.pat
         %bump
       %^    hero-plaq:ui:fh
           "Your project action has been submitted."

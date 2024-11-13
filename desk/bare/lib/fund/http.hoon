@@ -113,6 +113,8 @@
     [%profile @ suf=*]    ?+  suf.pat            ~
       ~                                          `[%page | %prof-view]
       [%statistics ~]                            `[%page | %prof-stat]
+      [%graph ~]                                 `[%away (welp syt /fund/proj)]
+      [%graph @ @ ~]                             `[%page | %prof-graf]
       ::  [%edit ~]                                  `[%page | %prof-edit]
     ==
     [%project @ @ suf=*]  ?+  suf.pat            ~
@@ -648,7 +650,7 @@
           ==
           ;div(class "self-stretch justify-between items-center inline-flex")
             ;div(class "inline-flex items-center gap-1")
-              ;a/"https://network.urbit.org/{<sip>}"
+              ;a/"{(nurt:enrl:ff sip)}"
                   =target  "_blank"
                   =class  "font-normal hover:text-link"
                 ; AZP: {<`@`sip>}

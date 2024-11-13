@@ -1,4 +1,4 @@
-::  /web/fund/page/prof-stat/hoon: oracle statistics page for ship
+::  /web/fund/page/prof-stat/hoon: project statistics page for ship
 ::
 /-  fd=fund-data, f=fund
 /+  fj=fund-proj, fk=fund-core, fh=fund-http, fx=fund-xtra
@@ -145,7 +145,7 @@
     --
   :-  %page
   %-  page:ui:fh
-  :^  bol  ord  "{(ship:enjs:ff:fh sip)}'s statistics"
+  :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s statistics"
   :+  fut=&  hed=&
   ;div(x-data ~)
     ::  NOTE: Using another trick to always push footer to the bottom

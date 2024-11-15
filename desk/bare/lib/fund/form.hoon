@@ -204,6 +204,20 @@
       ;~((glue fas) ;~(pfix sig fed:ag) ;~(pose sym (easy '')))
       sym
     ==
+  ++  size                                     ::  "lg" => --1
+    |=  syz=@t
+    ^-  @sd
+    ?+  syz   --0
+      %'3xs'  -4
+      %'2xs'  -3
+      %xs     -2
+      %sm     -1
+      %md     --0
+      %lg     --1
+      %xl     --2
+      %'2xl'  %--3
+      %'3xl'  %--4
+    ==
   --
 ++  enjs                                       ::  noun => js-tape
   |%
@@ -370,7 +384,7 @@
       %done  "completed"
       %dead  "canceled"
     ==
-  ++  size                                     ::  --1 => "lg"
+  ++  size                                     ::  --0 => "md"
     |=  syz=@sd
     ^-  tape
     ?+  syz   "md"
@@ -384,5 +398,10 @@
       %--3    "2xl"
       %--4    "3xl"
     ==
+  ++  syze                                     ::  --0 => "base"
+    |=  syz=@sd
+    ^-  tape
+    =/  siz=tape  (size syz)
+    ?.(=("md" siz) siz "base")
   --
 --

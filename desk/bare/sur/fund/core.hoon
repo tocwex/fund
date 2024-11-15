@@ -172,6 +172,17 @@
       %v1-2-0
   ==
 ::
+::  $size: scale/specificity of an element (usually for rendering)
+::
++$  size
+  $~  %md
+  $?  %xs
+      %sm
+      %md
+      %lg
+      %xl
+  ==
+::
 ::  $sess: assessment information (ship, cut)
 ::
 +$  sess  (pair @p cash)

@@ -124,6 +124,25 @@
     ==
   ==
 ::
+::  +pogo: p(roject) (l)ogo (link to the logo for a project)
+::
+::    TODO: find a more appropriate home for this function
+::
+++  pogo
+  |=  [lag=flag pro=proj bol=bowl:gall]
+  ^-  tape
+  ?^  image.pro  (trip u.image.pro)
+  (~(ship-logo fa bol) p.lag)
+::
+::  +hink: h(over) (l)ink (make an icon into a hoverable link)
+::
+::    TODO: find a more appropriate home for this function
+::
+++  hink
+  |=  man=manx
+  ^-  manx
+  (~(hoal ma man) 'adadad')
+::
 ::  +preface: rudder page trandformers (primarily for pre-render checks)
 ::
 ++  preface
@@ -426,7 +445,7 @@
     =/  pat=(pole knot)  (slag:derl:ff url)
     =/  bag=tape  "rounded-lg sm:p-2 p-1"
     =/  sag=tape  "bg-palette-contrast drop-shadow-lg"
-    =/  bas=tape  "fund-butn-de-m w-full text-center"
+    =/  bas=tape  "fund-butn-de-md w-full text-center"
     =/  xom=tape  "($store.page.size == 'mobile')"
     =/  xow=tape  "!({xom} && open)"  ::  x-show for non-wallet
     ::  FIXME: Spacing on heights here for 'overflow-visible' are ugly and hacky
@@ -459,7 +478,7 @@
                 ; {?.((auth bol) "login ~" (ssip:enjs:ff src.bol))}
               ==
             ==
-            ;div(class "shrink-0 fund-butn-de-m", x-text "$store.wallet.status");
+            ;div(class "shrink-0 fund-butn-de-md", x-text "$store.wallet.status");
           ==
           ;div(class "flex flex-col gap-2 {bag}", x-show "open")
             ;div  ::  current wallet section
@@ -499,7 +518,7 @@
                               /prof/(scot %p src.bol)/adrz/noun
                           ==
                       ?~  adz  :_  ~  ;span.text-gray-300: (none available)
-                      %+  turn  adz
+                      %+  turn  (sort adz lth)
                       |=  adr=addr
                       ^-  manx
                       ;span(class "fund-addr", x-init "initENS($el, '{(addr:enjs:ff adr)}')");
@@ -560,23 +579,39 @@
         ==
       ==
     ==
-  ++  meta-stax                                  ::  metadata card stack
-    |=  [bol=bowl:gall syz=?(%smol %medi %lorj) emt=$@(@t manx) mez=(list [flag mete:fm])]
+  ++  mold-card                                  ::  template for summary cards
+    |=  [syz=size pic=tape liz=(list [txt=tape lin=tape cop=tape]) buz=marl]
     ^-  manx
-    =-  ?:  &(?=(~ mez) !=(%$ emt))
-          ?^  emt  emt
-          ;p.fund-warn: {(trip emt)}
-        ;div(class kas)
-          ;*  (turn mez |=([f=flag m=mete:fm] (~(meta-card ..$ qas) bol f m)))
+    ;div(class "flex flex-row justify-start gap-2 {cas}")
+      ;+  %.  [%rect pic]
+          %~  icon-logo  ..$
+          ['h' '-' (bloq:enjs:ff ?-(syz %xs 6, %sm 12, %md 20, %lg 32, %xl 48))]
+      ;div(class "flex flex-col justify-between")
+        ;div(class "flex flex-col justify-start items-start")
+          ;*  %+  turn  (enum:fx liz)
+              |=  [lid=@ud txt=tape lin=tape cop=tape]
+              ^-  manx
+              =/  siz=@sd  (sum:si (size:dejs:ff syz) ?.(=(0 lid) --0 --1))
+              =/  tab=?
+                ?=  ?([%~ [%& *]])
+                =,  de-purl:html
+                (rust lin ;~(pose ;~(plug (easy %&) auri) ;~(plug (easy %|) apat yque)))
+              ;div(class "inline-flex items-center gap-1")
+                ;+  %.  [wer=lin tab=tab txt=txt diz=~]
+                    %~  link-text  ..$
+                    %+  welp  ?.(=(0 lid) ~ "font-serif ")
+                    ::  "text-{(syze:enjs:ff (sum:si -2 siz))} sm:text-{(syze:enjs:ff siz)}"
+                    "font-normal text-{(syze:enjs:ff siz)} line-clamp-1"
+                ;*  ?~  cop  ~
+                    [(copy-butn:ui cop)]~
+              ==
         ==
-    ^-  [qas=tape kas=tape]
-    =/  bas=tape  "w-full grid gap-4"
-    =/  das=tape  "{bas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
-    :-  ?.(?=(%smol syz) ~ "w-[50vw] sm:w-[250px]")
-    ?-  syz
-      %smol  "{bas} grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
-      %medi  das
-      %lorj  "{das} justify-center"
+        ;*  ?~  buz  ~
+            :_  ~
+            ;div(class "inline-flex items-center gap-2")
+              ;*  (turn buz |=(m=manx (~(hoal ma m) 'adadad')))
+            ==
+      ==
     ==
   ++  ship-card                                  ::  summary card for user ship
     |=  [sip=@p bol=bowl:gall rol=role cid=@ud adr=addr]
@@ -614,61 +649,71 @@
         ==
       ==
     ;div(class "fund-card-fore flex flex-col gap-1 text-black")
-      ;div(class "inline-flex gap-1 items-center")
-        ;h6(class "leading-none"): {tyt}
-        ;button(type "button", x-init "initTippy($el, \{hover: true})")
-          ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
-        ==
-        ;div(class "hidden")
-          ;p: {hep}
-          ;p
-            ; To learn more,
-            ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/{lin}"(target "_blank")
-              ; read the docs.
-            ==
+      ;div(class "flex justify-between items-center")
+        ;div(class "inline-flex gap-1 items-center")
+          ;h6(class "leading-none"): {tyt}
+          ;button(type "button", x-init "initTippy($el, \{hover: true})")
+            ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %help)}";
           ==
-        ==
-      ==
-      ;div(class "inline-flex self-stretch justify-start items-center gap-2")
-        ;+  (~(ship-logo ..$ "h-20") sip bol)
-        ;div(class "grow shrink basis-0 flex-col justify-start items-start inline-flex")
-          ;div(class "inline-flex items-center gap-1")
-            ;+  %.  [(~(ship-tytl ..$ "text-lg font-bold tracking-tight") sip bol)]~
-                %~  rech  ma
-                %-  ~(link-text ..$ ~)
-                [wer=?.((auth bol) ~ (prot:enrl:ff sip)) tab=| txt="~" diz=~]
-            ;+  (copy-butn (ship:enjs:ff sip))
-          ==
-          ;div(class "inline-flex items-center gap-1")
-            ;*  ?:  =(0x0 adr)  :_  ~  ;p: {nun}
-                :~  ;a/"{(esat:enrl:ff %addr adr cid)}"
-                        =target  "_blank"
-                        =class  "fund-addr hover:text-link"
-                        =x-init  "initENS($el, '{(addr:enjs:ff adr)}')";
-                    (copy-butn (addr:enjs:ff adr))
-                ==
-          ==
-          ;div(class "self-stretch justify-between items-center inline-flex")
-            ;div(class "inline-flex items-center gap-1")
-              ;a/"{(nurt:enrl:ff sip)}"
-                  =target  "_blank"
-                  =class  "font-normal hover:text-link"
-                ; AZP: {<`@`sip>}
+          ;div(class "hidden")
+            ;p: {hep}
+            ;p
+              ; To learn more,
+              ;a.text-link/"{(trip !<(@t (slot:config %meta-help)))}/{lin}"(target "_blank")
+                ; read the docs.
               ==
-              ;+  (copy-butn (bloq:enjs:ff `@`sip))
-            ==
-            ;div(class "inline-flex gap-1")
-              ;*  ?:  |(!=(our src):bol =(sip src.bol))  ~
-                  :_  ~
-                  ;a/"{(chat:enrl:ff sip)}"(target "_blank")
-                    ;img.fund-butn-icon@"{(aset:enrl:ff %chat)}";
-                  ==
             ==
           ==
         ==
+        ;*  ?:  |(!=(our src):bol =(sip src.bol))  ~
+            :_  ~
+            %.  'adadad'  %~  hoal  ma
+            ;a/"{(chat:enrl:ff sip)}"(target "_blank")
+              ;img.fund-butn-icon@"{(aset:enrl:ff %chat)}";
+            ==
       ==
+      ;+  %^  ~(mold-card ..$ ~)  syz=%md  pic=(~(ship-logo fa bol) sip)
+          :_  buz=~
+          :~  :*  txt=(~(ship-tytl fa bol) sip)
+                  lin=?.((auth bol) ~ (prot:enrl:ff sip))
+                  cop=(ship:enjs:ff sip)
+              ==
+          ::
+              ::  FIXME: Missing ENS behavior here; fix w/ class?
+              ::  ;a/"{(esat:enrl:ff %addr adr cid)}"
+              ::      =target  "_blank"
+              ::      =class  "fund-addr hover:text-link"
+              ::      =x-init  "initENS($el, '{(addr:enjs:ff adr)}')";
+              :*  txt=?:(=(0x0 adr) nun (sadr:enjs:ff adr))
+                  lin=(esat:enrl:ff %addr adr cid)
+                  cop=(addr:enjs:ff adr)
+              ==
+          ::
+              :*  txt="AZP: {<`@`sip>}"
+                  lin=(nurt:enrl:ff sip)
+                  cop=(bloq:enjs:ff `@`sip)
+              ==
+          ==
     ==
-  ++  mold-card                                  ::  template card for project data
+  ++  meta-mosa                                  ::  metadata "mosaic" (tile grid)
+    |=  [bol=bowl:gall syz=size emt=$@(@t manx) mez=(list [flag mete:fm])]
+    ^-  manx
+    =-  ?:  &(?=(~ mez) !=(%$ emt))
+          ?^  emt  emt
+          ;p.fund-warn: {(trip emt)}
+        ;div(class kas)
+          ;*  (turn mez |=([f=flag m=mete:fm] (~(meta-tile ..$ qas) bol f m)))
+        ==
+    ^-  [qas=tape kas=tape]
+    =/  bas=tape  "w-full grid gap-4"
+    =/  das=tape  "{bas} grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(auto,250px))]"
+    :-  ?.(?=(?(%xs %sm) syz) ~ "w-[50vw] sm:w-[250px]")
+    ?-  syz
+      ?(%sm %xs)  "{bas} grid-rows-1 grid-flow-col auto-cols-min overflow-x-auto"
+      %md         das
+      ?(%lg %xl)  "{das} justify-center"
+    ==
+  ++  mold-tile                                  ::  template tile for project data
     |=  $:  bol=bowl:gall  tyt=@t  pic=(unit @t)  lin=tape
             $=  pro  %-  unit
             $:  big=?  gud=?
@@ -704,7 +749,7 @@
                 ==
                 ;*  ?.  big  ~
                     :_  ~
-                    (~(stat-pill ..$ ~) %smol sat.u.pro)
+                    (~(stat-pill ..$ ~) %sm sat.u.pro)
               ==
               ;div(class "flex flex-row flex-wrap justify-end items-center gap-2")
                 ;*  ?:  gud.u.pro  ~
@@ -733,10 +778,10 @@
             ==
       ==
     ==
-  ++  proj-card                              ::  summary card for a project
+  ++  proj-tile                              ::  summary tile for a project
     |=  [bol=bowl:gall lag=flag pre=prej]
     ^-  manx
-    %:  mold-card
+    %:  mold-tile
         bol=bol
         tyt=title.pre
         pic=image.pre
@@ -754,20 +799,20 @@
             hed=`(~(proj-ther ..$ ~) -.pre big=|)
         ==
     ==
-  ++  meta-card                              ::  summary card for project metadata
+  ++  meta-tile                              ::  summary tile for project metadata
     |=  [bol=bowl:gall lag=flag met=mete:fm]
     ^-  manx
-    %:  mold-card
+    %:  mold-tile
         bol=bol
         tyt=title.met
         pic=image.met
         lin=(next:enrl:ff lag %join)
         pro=`[| live.met worker.met oracle.met *stat cost.met payment.met ~]
     ==
-  ++  link-card                              ::  raw link card (like 'meta-card')
+  ++  link-tile                              ::  raw link tile
     |=  [bol=bowl:gall txt=tape lin=tape]
     ^-  manx
-    %:  mold-card
+    %:  mold-tile
         bol=bol
         tyt='Create New Project'
         pic=`(crip "https://placehold.co/24x24/lightgray/gray?text={txt}")
@@ -800,7 +845,7 @@
                 ::  FIXME: Attempt at eliminating the button when the
                 ::  clamp doesn't even truncate extra lines
                 ::  =x-show  "{sow} && needsClamp($el.parentElement.previousElementSibling, 5)"
-                ;button.fund-butn-ac-s(type "button", x-show sow, x-on-click "open = {qiq}"): {txt}
+                ;button.fund-butn-ac-sm(type "button", x-show sow, x-on-click "open = {qiq}"): {txt}
           ==
     ==
   ++  udon-well                                  ::  udon (hoon-markdown) well
@@ -1032,7 +1077,7 @@
       ==
     ==
   ++  mula-agis                                  ::  aegis (icon + title) for a mula
-    |=  [syz=?(%smol %medi %lorj) mul=mula swa=swap bol=bowl:gall]
+    |=  [syz=size mul=mula swa=swap bol=bowl:gall]
     ^-  manx
     ?-  -.mul
       %plej  (ship-agis syz ship.mul bol)
@@ -1046,36 +1091,44 @@
           ==
       ==
     ==
-  ++  addr-agis                                  ::  aegis (icon + title) for an address
-    |=  [syz=?(%smol %medi %lorj) adr=addr swa=swap lur=tape]
+  ++  mold-agis                                  ::  agis template function
+    |=  [syz=size mar=marl]
     ^-  manx
-    =/  sas=tape  ?.(?=(%smol syz) ~ "shrink overflow-hidden")
+    =/  sas=tape  ?.(?=(?(%xs %sm) syz) ~ "shrink overflow-hidden")
     ;div(class "flex items-center gap-2 {sas} {cas}")
-      ;+  (~(icon-logo ..$ ~) %rect lur)
-      ;+  %.  [%x-init "initENS($el, '{(addr:enjs:ff adr)}')"]~
-          %~  riat  ma
-          %:  ~(link-text ..$ (welp "fund-addr " ?.(?=(%smol syz) ~ "fund-clip")))
-              wer=(esat:enrl:ff %addr adr chain.swa)
-              tab=&
-              txt=(sadr:enjs:ff adr)
-              diz=~
-          ==
+      ;*  mar
     ==
-  ++  ship-agis                                  ::  aegis (icon + title) for a user ship
-    |=  [syz=?(%smol %medi %lorj) sip=@p bol=bowl:gall]
+  ++  addr-agis                                  ::  aegis (icon + title) for an address
+    |=  [syz=size adr=addr swa=swap lur=tape]
     ^-  manx
-    =/  sas=tape  ?.(?=(%smol syz) ~ "shrink overflow-hidden")
-    ;div(class "flex items-center gap-2 {sas} {cas}")
-      ;+  (~(ship-logo ..$ ~) sip bol)
-      ;+  %.  [(~(ship-tytl ..$ ~) sip bol)]~
-          %~  rech  ma
-          %-  ~(link-text ..$ ?.(?=(%smol syz) ~ "fund-clip"))
-          [wer=?.((auth bol) ~ (prot:enrl:ff sip)) tab=| txt="~" diz=~]
+    %+  mold-agis  syz
+    :~  (~(icon-logo ..$ ~) %rect lur)
+        %.  [%x-init "initENS($el, '{(addr:enjs:ff adr)}')"]~
+        %~  riat  ma
+        %:  ~(link-text ..$ (welp "fund-addr " ?.(?=(?(%xs %sm) syz) ~ "fund-clip")))
+            wer=(esat:enrl:ff %addr adr chain.swa)
+            tab=&
+            txt=(sadr:enjs:ff adr)
+            diz=~
+    ==  ==
+  ++  ship-agis                                  ::  aegis (icon + title) for a user ship
+    |=  [syz=size sip=@p bol=bowl:gall]
+    ^-  manx
+    %+  mold-agis  syz
+    :~  (~(ship-logo ..$ ~) sip bol)
+        %.  [(~(ship-tytl ..$ ~) sip bol)]~
+        %~  rech  ma
+        %-  ~(link-text ..$ ?.(?=(?(%xs %sm) syz) ~ "fund-clip"))
+        [wer=?.((auth bol) ~ (prot:enrl:ff sip)) tab=| txt="~" diz=~]
     ==
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
     (icon-logo %rect (~(ship-logo fa bol) sip))
+  ++  proj-logo                                  ::  icon for a project
+    |=  [lag=flag pro=proj bol=bowl:gall]
+    ^-  manx
+    (icon-logo %rect (pogo lag pro bol))
   ++  ship-tytl                                  ::  title for a user ship
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
@@ -1083,7 +1136,7 @@
   ++  work-bump                                  ::  bumper for work unit
     |=  [sat=stat man=manx]
     ;div(class "flex items-center gap-x-2 {cas}")
-      ;+  (~(stat-pill ..$ ~) %medi sat)
+      ;+  (~(stat-pill ..$ ~) %md sat)
       ;+  %-  ~(cash-bump ..$ ~)
           :_  man
           ;span.text-nowrap: Funding Goal
@@ -1107,10 +1160,9 @@
       ==
     ==
   ++  mula-pill                                  ::  mula pill element
-    |=  [syz=?(%smol %medi %lorj) mul=mula pre=prej bol=bowl:gall]
+    |=  [syz=size mul=mula pre=prej bol=bowl:gall]
     ^-  manx
-    =/  siz=@tas  (dis syz (dec (bex 8)))
-    =-  ;div(class "{kas}-{(trip siz)} {cas}"): {tyt}
+    =-  ;div(class "{kas}-{(trip syz)} {cas}"): {tyt}
     ^-  [tyt=tape kas=tape]
     ?-    -.mul
         %plej
@@ -1139,13 +1191,12 @@
       ==
     ==
   ++  stat-pill                                  ::  status pill element
-    |=  [syz=?(%smol %medi %lorj) sat=stat]
+    |=  [syz=size sat=stat]
     ^-  manx
-    =/  siz=@tas  (dis syz (dec (bex 8)))
     =-  ;div(class "{kas} {cas}"): {nam}
     ^-  [nam=tape kas=tape]
     :-  (stat:enjs:ff sat)
-    =-  "{-}-{(trip siz)}"
+    =-  "{-}-{(trip syz)}"
     ?-  sat
       %born  "fund-pill-bo"
       %prop  "fund-pill-bo"
@@ -1208,51 +1259,32 @@
     :-  %button
     ;:  welp
         [%type "button"]~
-        [%class "fund-butn-de-m {cas}"]~
+        [%class "fund-butn-de-md {cas}"]~
         [%x-on-click "openHREF('{wer}', {(bool:enjs:ff tab)})"]~
         ?~(diz ~ [%disabled ~]~)
     ==
-  ++  edit-butn                                  ::  project edit link button
-    |=  lag=flag
+  ++  sher-butn                                  ::  arbitrary text share button
+    |=  lin=tape
     ^-  manx
-    ;a/"{(flat:enrl:ff lag)}/edit"(class cas)
-      ;img.fund-butn-icon@"{(aset:enrl:ff %edit)}";
+    ;button  =type  "button"
+        =class  cas
+        =x-on-click  "copyText('{lin}'); alert('link copied to clipboard');"
+      ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
     ==
-  ++  sink-butn                                  ::  ship (profile) link copy button
-    |=  [sip=@p url=tape]
-    ^-  manx
-    =-  ;button(type "button", class cas, x-on-click xoc)
-          ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
-        ==
-    ^=  xoc
-    """
-    copyText('{url}{(prot:enrl:ff sip)}');
-    alert('profile url copied to clipboard');
-    """
-  ++  pink-butn                                  ::  project link copy button
-    |=  [lag=flag url=tape]
-    ^-  manx
-    =-  ;button(type "button", class cas, x-on-click xoc)
-          ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
-        ==
-    ^=  xoc
-    """
-    copyText('{url}{(flat:enrl:ff lag)}');
-    alert('project url copied to clipboard');
-    """
   ++  copy-butn                                  ::  arbitrary text copy button
     |=  txt=tape
     ^-  manx
-    ;button(type "button", class cas, x-on-click "copyText('{txt}'); swapHTML($el, '✔');")
+    ;button  =type  "button"
+        =class  cas
+        =x-on-click  "copyText('{txt}'); swapHTML($el, '✔');"
       ::  TODO: Remove static width here and control size from caller
       ::  element instead (we can get away with static for now because
       ::  it's the same height in all of its current use locations)
       ;img.w-6.fund-butn-icon@"{(aset:enrl:ff %copy)}";
     ==
   ++  prod-butn                                  ::  prod/poke/action button
-    |=  [syz=?(%smol %medi %lorj) typ=?(%action %true %false) pod=@tas txt=tape xon=tape diz=tape]
+    |=  [syz=size typ=?(%action %true %false) pod=@tas txt=tape xon=tape diz=tape]
     ^-  manx
-    =/  siz=@tas  (dis syz (dec (bex 8)))
     =/  tip=@tas  (dis typ (dec (bex 16)))
     =-  ?~(diz - (~(help-wrap ..$ ~) diz -))
     :_  ; {txt}
@@ -1262,7 +1294,7 @@
         [%type "submit"]~
         [%name "dif"]~
         [%value (trip pod)]~
-        [%class "fund-butn-{(trip tip)}-{(trip siz)} {cas}"]~
+        [%class "fund-butn-{(trip tip)}-{(trip syz)} {cas}"]~
         ?~(diz ~ [%disabled ~]~)
         ?~(xon ~ [%x-on-click xon]~)
     ==

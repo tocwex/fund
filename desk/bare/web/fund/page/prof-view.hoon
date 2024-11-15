@@ -35,63 +35,41 @@
         ;h1: {(ship:enjs:ff:fh sip)}'s Profile
         ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens
       ==
-      ;div(class "flex flex-row justify-between text-black")
-        ;div(class "flex justify-start gap-2")
-          ;+  (~(ship-logo ui:fh "h-32") sip bol)
-          ;div(class "flex flex-col justify-between")
-            ;div(class "flex justify-between")
-              ;div(class "flex flex-col justify-start items-start")
-                ;div(class "inline-flex items-center gap-1")
-                  ;h3
-                    ;+  (ship-tytl:ui:fh sip bol)
-                  ==
-                  ;+  (copy-butn:ui:fh (ship:enjs:ff:fh sip))
-                ==
-                ;div(class "inline-flex items-center gap-1")
-                  ;a/"{(nurt:enrl:ff:fh sip)}"
-                      =target  "_blank"
-                      =class  "text-base sm:text-xl font-normal hover:text-link"
-                    ; AZP: {<`@`sip>}
-                  ==
-                  ;+  (copy-butn:ui:fh (bloq:enjs:ff:fh `@`sip))
-                ==
+      ;+  %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(~(ship-logo fa:fh bol) sip)
+          :-  ^=  liz
+              :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip)]
+                  [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip)]
               ==
-            ==
-            ;div(class "inline-flex items-center gap-2")
-              ;*  %-  turn  :_  |=(m=manx (~(hoal ma:fh m) 'adadad'))
-                  ;:  welp
-                        ?.  &(=(%admin aut) !=(sip src.bol))  ~
-                      :_  ~
-                      ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
-                        ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
-                      ==
-                  ::
-                        ?:  ?=(~ pru)  ~
-                      :_  ~
-                      (sink-butn:ui:fh sip (trip ship-url.u.pru))
-                  ::
-                        ?.  ?=(?(%mauth %admin) aut)  ~
-                      ::  FIXME: Replace these icons with final counterparts
-                      %+  turn  `(list [@tas @tas])`~[[%statistics %etherscan] [%graph %discover]]
-                      |=  [loc=@tas ast=@tas]
-                      ;a/"{(prot:enrl:ff:fh sip)}/{(trip loc)}"
-                        ;img.fund-butn-icon@"{(aset:enrl:ff:fh ast)}";
-                      ==
-                  ::
-                        ?.  &(=(%admin aut) =(sip src.bol))  ~
-                      :_  ~
-                      ;div(class "flex flex-col justify-start items-center")
-                        ;span.text-xs: usage?
-                        ;+  %+  flip-cheq:ui:fh  vit
-                            "toggleUsage().then(() => window.location.reload())"
-                      ==
-                  ==
-            ==
+          ^=  buz
+          ;:  welp
+                ?.  &(=(%admin aut) !=(sip src.bol))  ~
+              :_  ~
+              ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
+                ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
+              ==
+          ::
+                ?:  ?=(~ pru)  ~
+              :_  ~
+              (sher-butn:ui:fh "{(trip ship-url.u.pru)}{(prot:enrl:ff:fh sip)}")
+          ::
+                ?.  ?=(?(%mauth %admin) aut)  ~
+              ::  FIXME: Replace these icons with final counterparts
+              %+  turn  `(list [@tas @tas])`~[[%statistics %etherscan] [%graph %discover]]
+              |=  [loc=@tas ast=@tas]
+              ;a/"{(prot:enrl:ff:fh sip)}/{(trip loc)}"
+                ;img.fund-butn-icon@"{(aset:enrl:ff:fh ast)}";
+              ==
+          ::
+                ?.  &(=(%admin aut) =(sip src.bol))  ~
+              :_  ~
+              ;div(class "flex flex-col justify-start items-center")
+                ;span.text-xs: usage?
+                ;+  %+  flip-cheq:ui:fh  vit
+                    "toggleUsage().then(() => window.location.reload())"
+              ==
           ==
-        ==
-      ==
       ;h1-alt: Favorites
-      ;+  %:  meta-stax:ui:fh  bol  %smol  'No favorites found.'
+      ;+  %:  meta-mosa:ui:fh  bol  %sm  'No favorites found.'
               %+  murn  ~(tap in ?:(?=(~ pru) *(set flag:f) favorites.u.pru))
               |=  lag=flag:f
               ?~(met=(~(get by mes) lag) ~ `[lag u.met])
@@ -173,16 +151,16 @@
                         ; {(swam:enjs:ff:fh cash.mul payment.pre)}
                       ==
                       ;td.w-1.px-2.whitespace-nowrap
-                        ;+  (mula-pill:ui:fh %smol mul pre bol)
+                        ;+  (mula-pill:ui:fh %sm mul pre bol)
                       ==
                       ;td.w-60.overflow-hidden
                         ;+  (~(link-text ui:fh "line-clamp-1") (flat:enrl:ff:fh lag) | (trip title.pre) ~)
                       ==
                       ;td.w-1.px-6.whitespace-nowrap
-                        ;+  (ship-agis:ui:fh %medi p.lag bol)
+                        ;+  (ship-agis:ui:fh %md p.lag bol)
                       ==
                       ;td.w-1.px-6.whitespace-nowrap
-                        ;+  (ship-agis:ui:fh %medi p.assessment.pre bol)
+                        ;+  (ship-agis:ui:fh %md p.assessment.pre bol)
                       ==
                       ;td.w-1.px-6.whitespace-nowrap.text-nowrap.font-mono
                         ;div.flex.items-center.gap-2

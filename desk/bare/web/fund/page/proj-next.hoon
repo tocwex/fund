@@ -72,7 +72,7 @@
       :_  ~
       %.  [%x-init "delay(2000).then(() => $el.form.requestSubmit($el))"]~
       %~  riat  ma:fh
-      (~(prod-butn ui:fh "hidden") %medi %true %join-proj "join project ✓" ~ ~)
+      (~(prod-butn ui:fh "hidden") %md %true %join-proj "join project ✓" ~ ~)
     ::
         %join
       %^    hero-plaq:ui:fh
@@ -102,7 +102,7 @@
         send them a direct message via the Tlon application to let them
         know they have a pending service request!
         '''
-      :~  (prod-butn:ui:fh %medi %true %bump-prop "request oracle ✓" ~ ~)
+      :~  (prod-butn:ui:fh %md %true %bump-prop "request oracle ✓" ~ ~)
           (link-butn:ui:fh (dest:enrl:ff:fh pat(- %project)) %| "continue editing" ~)
           pro.btn
       ==
@@ -117,7 +117,7 @@
               ;+  but
               ;*  ?~  pow=(~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) p.lag)  ~
                   :_  ~
-                  (pink-butn:ui:fh lag (trip ship-url.u.pow))
+                  (sher-butn:ui:fh "{(trip ship-url.u.pow)}{(flat:enrl:ff:fh lag)}")
             ==
             ;+  bod
             ;p

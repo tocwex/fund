@@ -115,10 +115,10 @@
     ==
   =/  ui
     |_  cas=tape
-    ++  meta-stax
-      |=  [syz=?(%smol %medi %lorj) emt=$@(@t manx) ski=$-([flag:f prej:proj:f] ?)]
+    ++  meta-mosa
+      |=  [syz=size:f emt=$@(@t manx) ski=$-([flag:f prej:proj:f] ?)]
       ^-  manx
-      %:  ~(meta-stax ui:fh cas)  bol  syz  emt
+      %:  ~(meta-mosa ui:fh cas)  bol  syz  emt
           %+  turn  (skim pyz ski)
           |=([l=flag:f p=prej:proj:f] [l (prej-mete:fy l p)])
       ==
@@ -367,7 +367,7 @@
           ?+    dyp  !!
               %following
             :~  ;h1-alt: Following
-                  ?~  paz=(turn pyz (cury proj-card:ui:fh bol))  wax
+                  ?~  paz=(turn pyz (cury proj-tile:ui:fh bol))  wax
                 ;div(class "w-full grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(auto,500px))] justify-center")
                   ;*  paz
                 ==
@@ -393,7 +393,7 @@
                     ==
                   ==
                 ==
-                (meta-stax:ui:fh bol %lorj wax myz)
+                (meta-mosa:ui:fh bol %lg wax myz)
             ==
           ::
               %action
@@ -407,7 +407,7 @@
               ==
             ?^  text.arg
               :_  ~
-              %^  meta-stax:ui  %lorj  'No projects found.'
+              %^  meta-mosa:ui  %lg  'No projects found.'
               |=  [lag=flag:f pre=prej:proj:f]
               ?|  ?&  ?=(?(%prop %sess) ~(stat pj:fj -.pre))
                       =(p.assessment.pre our.bol)
@@ -425,10 +425,10 @@
                     ;h2: My Open Projects
                     ;+  =-  %-  ~(lech ma:fh div)
                             :_  ~
-                            %^  ~(link-card ui:fh "w-[50vw] sm:w-[250px]")  bol  "%2b"
+                            %^  ~(link-tile ui:fh "w-[50vw] sm:w-[250px]")  bol  "%2b"
                             (dest:enrl:ff:fh /create/project)
                         ^-  div=manx
-                        %^  meta-stax:ui  %smol  %$
+                        %^  meta-mosa:ui  %sm  %$
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  =(our.bol p.lag)
                             ?!  ?=(?(%done %dead) ~(stat pj:fj -.pre))
@@ -436,7 +436,7 @@
                   ==
                   ;div                               ::  $prez with %prop status
                     ;h2: Service Requests
-                    ;+  %^  meta-stax:ui  %smol
+                    ;+  %^  meta-mosa:ui  %sm
                           ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%prop ~(stat pj:fj -.pre))
@@ -446,7 +446,7 @@
                   ==
                   ;div                               ::  $prez with %sess status
                     ;h2: Review Requests
-                    ;+  %^  meta-stax:ui  %smol
+                    ;+  %^  meta-mosa:ui  %sm
                           ?.((star:fx our.bol) sax 'No outstanding requests.')
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(%sess ~(stat pj:fj -.pre))
@@ -455,7 +455,7 @@
                   ==
                   ;div                               ::  $prez with unfulfilled $plej
                     ;h2: Outstanding Pledges
-                    ;+  %^  meta-stax:ui  %smol  'No outstanding pledges.'
+                    ;+  %^  meta-mosa:ui  %sm  'No outstanding pledges.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  !?=(?(%born %prop %done %dead) ~(stat pj:fj -.pre))
                             (~(has by pledges.pre) our.bol)
@@ -463,7 +463,7 @@
                   ==
                   ;div                               ::  worker|oracle done|dead $prez
                     ;h2: Work Archive
-                    ;+  %^  meta-stax:ui  %medi  'No archived projects.'
+                    ;+  %^  meta-mosa:ui  %md  'No archived projects.'
                         |=  [lag=flag:f pre=prej:proj:f]
                         ?&  ?=(?(%done %dead) ~(stat pj:fj -.pre))
                             (~(has in (sy ~[p.lag p.assessment.pre])) our.bol)

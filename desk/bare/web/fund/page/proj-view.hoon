@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
+/+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  page:fd
@@ -211,7 +211,6 @@
   =/  moz=(list odit:f)  ~(odim pj:f pro)
   =/  muz=(list mula:f)  ~(mula pj:f pro)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
-  =/  sos=@t  'adadad'
   =/  ui
     |_  cas=tape
     ++  bare-form
@@ -224,7 +223,7 @@
       |=  [tyt=tape fom=marl]
       ^-  manx
       ;div
-        ;button(class "fund-butn-de-m {cas}", x-init "initTippy($el)"): {tyt}
+        ;button(class "fund-butn-de-md {cas}", x-init "initTippy($el)"): {tyt}
         ;div(class "hidden")
           ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 p-2")
             ;*  fom
@@ -294,15 +293,15 @@
                         ; below to confirm your particpation.
                       ==
                       ;div(class "flex justify-end gap-x-2")
-                        ;+  (prod-butn:ui:fh %medi %action %bump-born "decline ~" ~ ~)
-                        ;+  (prod-butn:ui:fh %medi %true %bump-prop "accept ✓" "acceptContract" ~)
+                        ;+  (prod-butn:ui:fh %md %action %bump-born "decline ~" ~ ~)
+                        ;+  (prod-butn:ui:fh %md %true %bump-prop "accept ✓" "acceptContract" ~)
                       ==
                   ==
                 ?:  &(wok ?=(%prop sat))
                   :-  ~
                   %-  ~(bare-form ..$ ~)
                   %:  ~(prod-butn ui:fh bas)
-                      %medi  %true  %bump-lock  "launch ✔️"  "finalizeContract"
+                      %md  %true  %bump-lock  "launch ✔️"  "finalizeContract"
                       ?:(?=(^ contract.pro) ~ "Awaiting response from trusted oracle.")
                   ==
                 ?.  ?=(?(%born %done %dead) sat)
@@ -379,20 +378,20 @@
                       ==
                       ;div(class "flex justify-end pt-2 gap-x-2")
                         ;+  %:  prod-butn:ui:fh
-                                %medi  %action  %mula-plej  "pledge only ~"  "plejFunds"
+                                %md  %action  %mula-plej  "pledge only ~"  "plejFunds"
                                 ?.  &((auth:fh bol) (plan:fx src.bol))
                                   "Pledges only available to authenticated planets."
                                 ?:  (~(has by pledges.pro) src.bol)
                                   "You must fulfill your outstanding pledge."
                                 ~
                             ==
-                        ;+  (prod-butn:ui:fh %medi %true %mula-trib "send funds ✓" "sendFunds" ~)
+                        ;+  (prod-butn:ui:fh %md %true %mula-trib "send funds ✓" "sendFunds" ~)
                   ==  ==
                 ~
+            ::
             ;:    welp
             ::  explain button  ::
-              :~  %.  sos
-                  %~  hoal  ma:fh
+              :~  %-  hink:fh
                   ;button(type "button", x-init "initTippy($el, \{hover: true})")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
@@ -437,13 +436,14 @@
                 ?.  &(tym ?=(?(%lock %work %sess) sat))  ~
               :_  ~
               %-  ~(bare-form ..$ ~)
-              (prod-butn:ui:fh %medi %false %bump-dead "cancel ❌" "cancelContract" ~)
+              (prod-butn:ui:fh %md %false %bump-dead "cancel ❌" "cancelContract" ~)
             ::  edit button  ::
                 ?.  &(wok ?=(?(%born %prop) sat))  ~
               :_  ~
-              %.  sos
-              %~  hoal  ma:fh
-              (edit-butn:ui:fh lag)
+              %-  hink:fh
+              ;a/"{(flat:enrl:ff:fh lag)}/edit"
+                ;img.fund-butn-icon@"{(aset:enrl:ff:fh %edit)}";
+              ==
             ::  bookmark button  ::
               ?:  ?|  ?=(?(%born %prop) sat)
                       !(auth:fh bol)
@@ -453,8 +453,7 @@
                 ~
               :_  ~
               %-  ~(bare-form ..$ "flex flex-row items-center")
-              %.  sos
-              %~  hoal  ma:fh
+              %-  hink:fh
               ;button#prod-butn-folo-proj(type "submit", name "dif", value "folo-proj")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %bookmark)}";
               ==
@@ -467,8 +466,7 @@
                         (~(has in favorites.u.pou) lag)
                     ==
                 ~
-              :~  %.  sos
-                  %~  hoal  ma:fh
+              :~  %-  hink:fh
                   ;button(type "button", x-init "initTippy($el)")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %publicize)}";
                   ==
@@ -485,7 +483,7 @@
                         ;span.font-bold: This action is irreversible, choose wisely.
                       ==
                       ;div(class "flex justify-end pt-2 gap-x-2")
-                        ;+  (prod-butn:ui:fh %medi %true %fave-proj "publicize ✓" ~ ~)
+                        ;+  (prod-butn:ui:fh %md %true %fave-proj "publicize ✓" ~ ~)
                       ==
                     ==
                   ==
@@ -493,14 +491,12 @@
             ::  share button  ::
                 ?:  |(?=(%born sat) ?=(~ pow))  ~
               :_  ~
-              %.  sos
-              %~  hoal  ma:fh
-              (pink-butn:ui:fh lag (trip ship-url.u.pow))
+              %-  hink:fh
+              (sher-butn:ui:fh "{(trip ship-url.u.pow)}{(flat:enrl:ff:fh lag)}")
             ::  contract link button  ::
                 ?:  ?=(?(%born %prop) sat)  ~
               :_  ~
-              %.  sos
-              %~  hoal  ma:fh
+              %-  hink:fh
               ;a/"{(esat:enrl:ff:fh %addr safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
               ==
@@ -518,7 +514,7 @@
     ;div(class "flex flex-col gap-3 px-2 py-2 sm:px-5 min-h-[100vh]")
       ;h1(class "fund-title"): {(trip title.pro)}
       ;div.relative.w-full
-        ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))}";
+        ;img.w-full@"{(pogo:fh lag pro bol)}";
         ;div.absolute.top-4.right-4
           ;+  %+  ~(work-bump ui:fh "p-2 fund-card-fore")  sat
               ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
@@ -582,30 +578,30 @@
                       =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                       ;:    welp
                           ?.  &(cur wok ?=(%lock status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %action %bump-work "mark in-progress ~" ~ ~)
+                        :_  ~  (prod-butn:ui:fh %md %action %bump-work "mark in-progress ~" ~ ~)
                       ::
                           ?.  &(cur wok ?=(%work status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %action %bump-sess "request review ~" ~ ~)
+                        :_  ~  (prod-butn:ui:fh %md %action %bump-sess "request review ~" ~ ~)
                       ::
                           ?.  &(cur ora ?=(%sess status.mil))  ~
                         :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %medi %action %bump-work "changes required ~" ~ ~)
-                            (prod-butn:ui:fh %medi %true %bump-done "approve ✓" "approveMilestone" ~)
+                            (prod-butn:ui:fh %md %action %bump-work "changes required ~" ~ ~)
+                            (prod-butn:ui:fh %md %true %bump-done "approve ✓" "approveMilestone" ~)
                         ==
                       ::
                       ::
                           ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
                         :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %medi %true %wipe-casi "reapprove ✓" "approveMilestone" ~)
+                            (prod-butn:ui:fh %md %true %wipe-casi "reapprove ✓" "approveMilestone" ~)
                         ==
                       ::
                           ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %false %wipe-cade "clear approval ✗" "clearMilestone" ~)
+                        :_  ~  (prod-butn:ui:fh %md %false %wipe-cade "clear approval ✗" "clearMilestone" ~)
                       ::
                           ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
                         :_  ~
                         %:  prod-butn:ui:fh
-                            %medi  %true  %draw-done  "claim funds ✓"  "claimMilestone"
+                            %md  %true  %draw-done  "claim funds ✓"  "claimMilestone"
                             ?^  xact.u.withdrawal.mil
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
@@ -618,15 +614,15 @@
                       ::
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %true %wipe-resi "sign refund ~" "cancelContract" ~)
+                        :_  ~  (prod-butn:ui:fh %md %true %wipe-resi "sign refund ~" "cancelContract" ~)
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %false %wipe-rede "clear approval ✗" "clearMilestone" ~)
+                        :_  ~  (prod-butn:ui:fh %md %false %wipe-rede "clear approval ✗" "clearMilestone" ~)
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
                         :_  ~
                         %:  prod-butn:ui:fh
-                            %medi  %true  %draw-dead  "refund funds ✓"  "refundContract"
+                            %md  %true  %draw-dead  "refund funds ✓"  "refundContract"
                             ?^  xact.u.withdrawal.mil
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
@@ -684,13 +680,13 @@
                     =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
                     =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex items-center justify-between")
-                    ;+  (mula-agis:ui:fh %smol mul payment.pro bol)
+                    ;+  (mula-agis:ui:fh %sm mul payment.pro bol)
                     ;div(class "flex inline-flex items-center gap-2")
                       ;+  =/  tur=tape
                             ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej ~)
                           =/  txt=tape  (swam:enjs:ff:fh cash.mul payment.pro)
                           (~(link-text ui:fh "font-serif") tur & txt ~)
-                      ;+  (mula-pill:ui:fh %medi mul pre bol)
+                      ;+  (mula-pill:ui:fh %md mul pre bol)
                     ==
                   ==
                   ;div(class "flex flex-col gap-2")
@@ -726,7 +722,7 @@
                         :_  ~
                         ;form  =method  "post"
                             =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"
-                          ;+  (prod-butn:ui:fh %medi %action %mula-mine "claim transaction ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-mine "claim transaction ~" "editMula" ~)
                         ==
                       ::  pledge edit view button  ::
                           ?.  ?&  pyr
@@ -737,7 +733,7 @@
                           ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %medi %action %mula-view "toggle status ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-view "toggle status ~" "editMula" ~)
                         ==
                       ::  attested redo button  ::
                           ?.  ?&  pyr
@@ -748,13 +744,13 @@
                             ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %medi %action %mula-redo "query chain ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-redo "query chain ~" "editMula" ~)
                         ==
                       ::  mula blot button  ::
                           ?.  &(pyr !?=(%pruf -.mul))  ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %medi %action %mula-blot "toggle shown ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-blot "toggle shown ~" "editMula" ~)
                         ==
                       ==
                 ==

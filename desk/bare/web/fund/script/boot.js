@@ -44,11 +44,11 @@ if (window.Alpine === undefined) {
     return cssLines.join("\n");
   }
   function twindSizeRules(base, types) {
-    const sizes = ['smol', 'medi', 'lorj'];
+    const sizes = ['sm', 'md', 'lg'];
     //  NOTE: https://stackoverflow.com/a/43053803
     const cartesian = (...a) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
     return cartesian(sizes, types).map(([size, type]) => ([
-      `${base}-${type.substring(0, 2)}-${size.substring(0, 1)}`,
+      `${base}-${type.substring(0, 2)}-${size}`,
       `${base}-${size} ${base}-${type}`,
     ]));
   }
@@ -132,19 +132,19 @@ if (window.Alpine === undefined) {
         ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
         ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
         ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary'], /*hover:bg-palette-background*/
-        ['fund-pill-base', 'text-nowrap text-center font-medium rounded-full border-[3px]'],
-        ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
-        ['fund-pill-medi', 'fund-pill-base px-3 py-1'],
-        ['fund-pill-lorj', 'fund-pill-base px-4 py-2'],
+        ['fund-pill', 'text-nowrap text-center font-medium rounded-full border-[3px]'],
+        ['fund-pill-sm', 'fund-pill px-2 py-0.5'],
+        ['fund-pill-md', 'fund-pill px-3 py-1'],
+        ['fund-pill-lg', 'fund-pill px-4 py-2'],
         ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
         ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
         ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
         ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
         ...twindSizeRules('fund-pill', ['born', 'lock', 'done', 'dead']),
-        ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
-        ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
-        ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
-        ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
+        ['fund-butn', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
+        ['fund-butn-sm', 'fund-butn text-xs px-1.5 py-0.5'],
+        ['fund-butn-md', 'fund-butn text-sm px-3 py-1.5'],
+        ['fund-butn-lg', 'fund-butn text-base px-4 py-2'],
         //  FIXME: These classes should use 'hover:enabled' to stop
         //  disabled buttons from changing colors, but this causes hover
         //  styling for links not to work.

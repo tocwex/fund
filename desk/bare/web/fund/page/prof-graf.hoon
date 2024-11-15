@@ -1,7 +1,7 @@
 ::  /web/fund/page/prof-graf/hoon: 'subjective reputation graph' page for ship
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fa=fund-alien, fh=fund-http, fx=fund-xtra
+/+  fj=fund-proj, fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh &))
 ^-  page:fd
@@ -17,7 +17,7 @@
     [%auth url.request.ord]
   ?+      pat
         [%code 404 'invalid graph url']
-      [%profile @ %graph rol=@ foc=@ ~]
+      [%profile sip=@ %graph rol=@ foc=@ ~]
     ?.  ?=(role:f rol.pat)
       [%code 404 'invalid graph role']
     ?.  ?=(?(%ship %proj) foc.pat)
@@ -25,24 +25,83 @@
     =/  ui
       |_  cas=tape
       +*  kas  "rounded-lg aspect-square border-white border-2 sm:border-4"
-      ++  ship-item
+      ++  ship-tile
         |=  [sip=@p syz=@ud]
         ^-  manx
         ;a/"{(prot:enrl:ff:fh sip)}"(class "col-span-{<syz>} row-span-{<syz>}")
           ;+  (~(ship-logo ui:fh "h-full {kas} {cas}") sip bol)
         ==
-      ++  proj-item
+      ++  proj-tile
         |=  [lag=flag:f pre=prej:proj:f]
         ^-  manx
-        =/  irl=tape  ?^(image.pre (trip u.image.pre) (~(ship-logo fa bol) p.lag))
+        =/  irl=tape  ?^(image.pre (trip u.image.pre) (~(ship-logo fa:fh bol) p.lag))
         ;a/"{(flat:enrl:ff:fh lag)}"
           ;img@"{irl}"(class "{kas} {cas}");
         ==
-      ++  empt-item
+      ++  empt-tile
         |=  lvl=@ud
         ^-  manx
         =/  qas=tape  ?:(=(2 lvl) "bg-palette-contrast" "bg-palette-background")
         ;div(class "{qas} {kas} {cas}");
+      ++  ship-prev
+        |=  sip=@p
+        ^-  manx
+        %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(~(ship-logo fa:fh bol) sip)
+        :-  ^=  liz
+            :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip)]
+                [txt="Owner: {(sadr:enjs:ff:fh 0x0)}" lin=(esat:enrl:ff:fh %addr 0x0 1) cop=(addr:enjs:ff:fh 0x0)]
+                [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip)]
+            ==
+        ^=  buz
+        ;:  welp
+              ?.  &(=(our src):bol !=(sip src.bol))  ~
+            :_  ~
+            ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
+              ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
+            ==
+        ::
+              ?.  |(=(our src):bol =(sip src.bol))  ~
+            ::  FIXME: Replace these icons with final counterparts
+            :_  ~
+            ;a/"{(dest:enrl:ff:fh pat(sip (scot %p sip)))}"
+              ;img.fund-butn-icon@"{(aset:enrl:ff:fh %search)}";
+            ==
+        ==
+      ++  proj-prev
+        |=  [lag=flag:f pre=prej:proj:f]
+        ^-  manx
+        %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(pogo:fh lag -.pre bol)
+        :_  buz=~
+        ^=  liz
+        ;:  welp
+            [txt=(trip title.pre) lin=(flat:enrl:ff:fh lag) cop=(flag:enjs:ff:fh lag)]~
+        ::
+              %+  turn  `(list [@t @p])`~[['Worker' p.lag] ['Oracle' p.assessment.pre]]
+            |=  [tyt=@t sip=@p]
+            :*  txt="{(trip tyt)}: {(~(ship-tytl fa:fh bol) sip)}"
+                lin=(prot:enrl:ff:fh sip)
+                cop=(ship:enjs:ff:fh sip)
+            ==
+        ::
+              :_  ~
+            :*  txt="Amount: {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}"
+            ::
+                  ^=  lin
+                ?:  ?=(?(%born %prop) ~(stat pj:fj -.pre))  ~
+                (esat:enrl:ff:fh %addr safe:(need contract.pre) chain.payment.pre)
+            ::
+                cop=(comp:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)
+            ==
+        ==
+      ++  dash-navi
+        |=  poz=(list [flag:f prej:proj:f])
+        ^-  manx
+        =/  kas=tape  "flex-col-reverse drip-shadow-lg fund-foot p-4"
+        ;div
+          ;+  (ship-prev sip)
+          ;*  ?~  poz  ~
+              [(proj-prev i.poz)]~
+        ==
       --
     ::  TODO: Apply some sort of relevance score and sorting to this list
     =/  poz=(list [flag:f prej:proj:f])
@@ -64,7 +123,7 @@
     %-  page:ui:fh
     :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s reputation"
     :+  fut=&  hed=&
-    ;div(x-data ~)
+    ;div(x-data "prof_graf")
       ::  NOTE: Using another trick to always push footer to the bottom
       ::  https://stackoverflow.com/a/59865099
       ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
@@ -82,13 +141,23 @@
               =*  pid  u.pud
               =/  [pix=@ud piy=@ud]  [(mod pid 7) (div pid 7)]
               =/  pil=@ud  (max (dist:fx pix 3) (dist:fx piy 3))
-              ?:  (lte pil 1)  ?.(=(17 pid) ~ `(ship-item:ui sip 3))
-              ?~  itu  `(empt-item:ui pil)
+              ?:  (lte pil 1)  ?.(=(17 pid) ~ `(ship-tile:ui sip 3))
+              ?~  itu  `(empt-tile:ui pil)
               =*  ite  u.itu
               ?-  -.ite
-                %ship  `(ship-item:ui +.ite 1)
-                %proj  `(proj-item:ui +.ite)
+                %ship  `(ship-tile:ui +.ite 1)
+                %proj  `(proj-tile:ui +.ite)
               ==
+        ==
+      ==
+      ::  ;+  (~(dash-navi ui ~) poz=poz)
+      ;script
+        ;+  ;/
+        %-  zing  %+  join  "\0a"
+        ^-  (list tape)
+        :~  "document.addEventListener('alpine:init', () => Alpine.data('prof_graf', () => (\{"
+            "tray_status: \{prof: undefined, open: false},"
+            "})));"
         ==
       ==
     ==

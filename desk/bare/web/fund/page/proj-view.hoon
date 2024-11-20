@@ -388,7 +388,6 @@
                         ;+  (prod-butn:ui:fh %md %true %mula-trib "send funds ✓" "sendFunds" ~)
                   ==  ==
                 ~
-            ::
             ;:    welp
             ::  explain button  ::
               :~  %-  hink:fh

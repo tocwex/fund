@@ -54,7 +54,7 @@
           ::
                 ?.  ?=(?(%mauth %admin) aut)  ~
               ::  FIXME: Replace these icons with final counterparts
-              %+  turn  `(list [@tas @tas])`~[[%statistics %etherscan] [%graph %discover]]
+              %+  turn  `(list [@tas @tas])`~[[%statistics %graph] [%graph %discover]]
               |=  [loc=@tas ast=@tas]
               ;a/"{(prot:enrl:ff:fh sip)}/{(trip loc)}"
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh ast)}";

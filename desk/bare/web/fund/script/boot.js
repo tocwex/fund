@@ -154,8 +154,9 @@ if (window.Alpine === undefined) {
         ['fund-butn-true', '~(fund-butn-default)'],
         ['fund-butn-false', '~(fund-butn-action)'],
         ...twindSizeRules('fund-butn', ['disabled', 'default', 'action', 'true', 'false']),
-        ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
-        ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
+        ['fund-aset', 'h-6 aspect-square'],
+        ['fund-aset-circ', 'fund-aset bg-white rounded-full'],
+        ['fund-aset-rect', 'fund-aset bg-white rounded'],
         ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
         ['fund-odit-sect', 'h-full flex rounded-lg'],
       ],
@@ -168,11 +169,19 @@ if (window.Alpine === undefined) {
   // FIXME: For some reason, twind's style refresher doesn't fire when a
   // submission fails, so we replicate its "reveal content" behavior manually
   // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
-  document.addEventListener('turbo:submit-end', (event) => {
+  document.documentElement.addEventListener('turbo:submit-end', (event) => {
     if (!event.detail.success) {
       document.documentElement.setAttribute("class", "");
       document.documentElement.setAttribute("style", "");
     }
+  });
+
+  // NOTE: In order to get TomSelect elements to work when using Turbo navigation,
+  // we need to clean up the page listeners on old instances
+  document.documentElement.addEventListener('turbo:visit', (event) => {
+    document.querySelectorAll(`.fund-tsel`).forEach((tselElem) => {
+      tselElem?.tomselect?.destroy();
+    });
   });
 
   /////////////////////////////////////////////////////////////////////////////
@@ -659,14 +668,16 @@ if (window.Alpine === undefined) {
   function initTomSelect(elem, {
     empty=false, // Bool
     forceUp=false, // Bool
+    asButton=true, // Bool
     maxItems=undefined, // Number?
     create=undefined, // ((value, data) => void)?
     load=undefined, // ((query, callback) => void)?
   } = {}) {
+    const renderClass = !asButton ? "fund-aset" : "fund-aset-circ";
     function renderSelector(data, escape) {
       return `
         <div class='flex flex-row items-center gap-x-2'>
-          <img class='fund-aset-circ' src='${data.image ??
+          <img class='${renderClass}' src='${data.image ??
             "https://placehold.co/24x24/white/black?font=roboto&text=~"
           }' />
           <span>${data.text}</span>

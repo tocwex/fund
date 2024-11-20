@@ -609,7 +609,7 @@
         ;*  ?~  buz  ~
             :_  ~
             ;div(class "inline-flex items-center gap-2")
-              ;*  (turn buz |=(m=manx (~(hoal ma m) 'adadad')))
+              ;*  (turn buz hink)
             ==
       ==
     ==
@@ -667,7 +667,7 @@
         ==
         ;*  ?:  |(!=(our src):bol =(sip src.bol))  ~
             :_  ~
-            %.  'adadad'  %~  hoal  ma
+            %-  hink
             ;a/"{(chat:enrl:ff sip)}"(target "_blank")
               ;img.fund-butn-icon@"{(aset:enrl:ff %chat)}";
             ==

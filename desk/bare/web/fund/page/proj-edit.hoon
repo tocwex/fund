@@ -191,7 +191,7 @@
                     ==
               ==
               ;div.flex.justify-center.mx-auto
-                ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): add milestone +
+                ;button.fund-butn-ac-md(type "button", x-on-click "appendMile"): add milestone +
               ==
             ==
             ;div(class "flex flex-col gap-2")

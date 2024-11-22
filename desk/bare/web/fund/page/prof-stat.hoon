@@ -15,8 +15,11 @@
   ?.  ?=(^ sup)
     [%code 404 'invalid ship name']
   =*  sip  u.sup
+  ::  =/  pro  (fall pru *pref:prof:f)
   ?.  |(=(our src):bol =(sip src.bol))
     [%auth url.request.ord]
+  =+  .^(waz=(list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
+  =/  was=(set addr:f)  (silt waz)
   ::  TODO: Need a UI overhaul (based on input from ~litneb-maltyp)
   =/  ui
     |_  cas=tape
@@ -28,11 +31,11 @@
         ;span:  {val}
       ==
     ++  prez-swal
-      |=  [tyt=tape pez=(list prej:proj:f) red=$-(prej:proj:f cash:f)]
+      |=  [tyt=tape pez=(list [flag:f prej:proj:f]) red=$-(prej:proj:f cash:f)]
       ^-  manx
       =/  sam=(map swap:f cash:f)
         %+  roll  pez
-        |=  [nex=prej:proj:f acc=(map swap:f cash:f)]
+        |=  [[flag:f nex=prej:proj:f] acc=(map swap:f cash:f)]
         =/  amo=cash:f  (red nex)
         ?:  =(0 amo)  acc
         %+  ~(put by acc)  payment.nex
@@ -50,32 +53,48 @@
             ==
       ==
     ++  prez-well
-      |=  [tyt=tape pix=$-([flag:f prej:proj:f] ?)]
+      |=  [fun=? tyt=tape pix=$-([flag:f prej:proj:f] ?)]
       ^-  manx
-      =/  pez=(list prej:proj:f)
+      =/  pez=(list [flag:f prej:proj:f])
         %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
-        |=([n=[flag:f prej:proj:f] a=(list prej:proj:f)] ?.((pix n) a [+.n a]))
+        |=([n=[flag:f prej:proj:f] a=(list [flag:f prej:proj:f])] ?.((pix n) a [n a]))
       ;div
         ;h3: {tyt}
         ;ul
           ;+  %+  prez-stat  "Total Projects"
               (bloq:enjs:ff:fh (lent pez))
-          ;+  %+  prez-stat  "Unique Donors"
+          ;+  ?:  fun
+                %+  prez-stat  "Unique Workers"
+                %-  bloq:enjs:ff:fh
+                %~  wyt  in
+                ^-  (set @p)
+                %+  roll  pez
+                |=  [[nex=flag:f prej:proj:f] acc=(set @p)]
+                (~(put in acc) p.nex)
+              %+  prez-stat  "Unique Donors"
               %-  bloq:enjs:ff:fh
               %~  wyt  in
               ^-  (set addr:f)
               %+  roll  pez
-              |=  [nex=prej:proj:f acc=(set addr:f)]
+              |=  [[flag:f nex=prej:proj:f] acc=(set addr:f)]
               %-  ~(uni in acc)
               %-  silt
               %+  murn  ~(fula pj:fj -.nex)
               |=(m=mula:f ?.(?=(?(%trib %pruf) -.m) ~ `from.when.m))
-          ;+  %+  prez-stat  "Unique Pledgers"
+          ;+  ?:  fun
+                %+  prez-stat  "Unique Oracles"
+                %-  bloq:enjs:ff:fh
+                %~  wyt  in
+                ^-  (set @p)
+                %+  roll  pez
+                |=  [[flag:f nex=prej:proj:f] acc=(set @p)]
+                (~(put in acc) p.assessment.nex)
+              %+  prez-stat  "Unique Pledgers"
               %-  bloq:enjs:ff:fh
               %~  wyt  in
               ^-  (set @p)
               %+  roll  pez
-              |=  [nex=prej:proj:f acc=(set @p)]
+              |=  [[flag:f nex=prej:proj:f] acc=(set @p)]
               %-  ~(uni in acc)
               %-  silt
               %+  murn  ~(pula pj:fj -.nex)
@@ -83,41 +102,75 @@
           ;+  %+  prez-stat  "Total Contributions"
               %-  bloq:enjs:ff:fh
               %+  roll  pez
-              |=  [nex=prej:proj:f acc=@ud]
-              (add acc (lent ~(fula pj:fj -.nex)))
+              |=  [[flag:f nex=prej:proj:f] acc=@ud]
+              %+  add  acc
+              =/  ful=(list mula:f)  ~(fula pj:fj -.nex)
+              %-  lent
+              ?.  fun  ful
+              %+  murn  ful
+              |=  mul=mula:f
+              ?.(&(?=(%trib -.mul) (~(has in was) from.when.mul)) ~ `mul)
           ;+  %+  prez-stat  "Total Pledges"
               %-  bloq:enjs:ff:fh
               %+  roll  pez
-              |=  [nex=prej:proj:f acc=@ud]
-              (add acc (lent ~(pula pj:fj -.nex)))
-          ;+  (prez-swal "Amount Raised" pez |=(p=prej:proj:f ~(fill pj:fj -.p)))
-          ;+  (prez-swal "Amount Claimed" pez |=(p=prej:proj:f ~(take pj:fj -.p)))
-          ;+  (prez-swal "Amount Refunded" pez |=(p=prej:proj:f ~(give pj:fj -.p)))
+              |=  [[flag:f nex=prej:proj:f] acc=@ud]
+              %+  add  acc
+              =/  pul=(list mula:f)  ~(pula pj:fj -.nex)
+              %-  lent
+              ?.  fun  pul
+              %+  murn  pul
+              |=  mul=mula:f
+              ?.(&(?=(%plej -.mul) =(sip ship.mul)) ~ `mul)
+          ;+  ?.  fun  (prez-swal "Amount Raised" pez |=(p=prej:proj:f ~(fill pj:fj -.p)))
+              %^  prez-swal  "Amount Contributed"  pez
+              |=  pre=prej:proj:f
+              %-  roll  :_  add
+              %+  turn  ~(fula pj:fj -.pre)
+              |=  mul=mula:f
+              ?.  ?=(%trib -.mul)  0
+              ?.((~(has in was) from.when.mul) 0 cash.mul)
+          ;*  ?:  fun  ~
+              :_  ~  (prez-swal "Amount Claimed" pez |=(p=prej:proj:f ~(take pj:fj -.p)))
+          ;*  ?:  fun  ~
+              :_  ~  (prez-swal "Amount Refunded" pez |=(p=prej:proj:f ~(give pj:fj -.p)))
           ;+  %^  prez-swal  "Amount Pledged"  pez
               |=  pre=prej:proj:f
-              (roll (turn ~(pula pj:fj -.pre) |=(m=mula:f cash.m)) add)
+              %-  roll  :_  add
+              %+  turn  ~(pula pj:fj -.pre)
+              |=  mul=mula:f
+              ?.  fun  cash.mul
+              ?.(&(?=(%plej -.mul) =(sip ship.mul)) 0 cash.mul)
           ;+  %^  prez-swal  "Outstanding Pledged"  pez
               |=  pre=prej:proj:f
+              ?:  ?=(?(%done %dead) ~(stat pj:fj -.pre))  0
+              ?:  fun  ?~(pej=(~(get by pledges.pre) sip) 0 cash.u.pej)
               (roll (turn ~(val by pledges.pre) |=([p=plej:f *] cash.p)) add)
           ;+  %^  prez-swal  "Fulfilled Pledged"  pez
               |=  pre=prej:proj:f
               %-  roll  :_  add
               %+  turn  ~(val by contribs.pre)
-              |=([t=treb:f *] ?~(plej.t 0 cash.u.plej.t))
+              |=  [teb=treb:f *]
+              ?~  pej=plej.teb  0
+              ?.  fun  cash.u.pej
+              ?.(=(sip ship.u.pej) 0 cash.u.pej)
           ;+  %^  prez-swal  "Welched Pledged"  pez
               |=  pre=prej:proj:f
               ?.  ?=(?(%done %dead) ~(stat pj:fj -.pre))  0
               %-  roll  :_  add
               %+  turn  ~(val by pledges.pre)
               |=  [pej=plej:f met=peta:fj]
-              ?.(&(?=(^ view.met) ?=(%stif u.view.met)) 0 cash.pej)
+              ?.  &(?=(^ view.met) ?=(%stif u.view.met))  0
+              ?.  fun  cash.pej
+              ?.(=(sip ship.pej) 0 cash.pej)
           ;+  %^  prez-swal  "Forgiven Pledged"  pez
               |=  pre=prej:proj:f
               ?.  ?=(?(%done %dead) ~(stat pj:fj -.pre))  0
               %-  roll  :_  add
               %+  turn  ~(val by pledges.pre)
               |=  [pej=plej:f met=peta:fj]
-              ?.(&(?=(^ view.met) ?=(%slyd u.view.met)) 0 cash.pej)
+              ?.  &(?=(^ view.met) ?=(%slyd u.view.met))  0
+              ?.  fun  cash.pej
+              ?.(=(sip ship.pej) 0 cash.pej)
           ;+  %+  prez-stat  "Average Fulfillment Lapse"
               =-  "{-} blocks"
               %-  real:enjs:ff:fh
@@ -128,18 +181,32 @@
                   (turn tez |=(t=treb:f (sub p.xact.when.t ?~(plej.t 0 when.u.plej.t))))
               ^-  tez=(list treb:f)
               %+  roll  pez
-              |=  [nex=prej:proj:f acc=(list treb:f)]
+              |=  [[flag:f nex=prej:proj:f] acc=(list treb:f)]
               %+  welp  acc
-              (murn ~(val by contribs.nex) |=([t=treb:f *] ?:(?=(~ plej.t) ~ `t)))
+              %+  murn  ~(val by contribs.nex)
+              |=  [teb=treb:f *]
+              ?:(|(?=(~ plej.teb) &(fun !=(sip ship.u.plej.teb))) ~ `teb)
           ;+  %+  prez-stat  "Average Fulfillment Rate"
               =-  "{-}%"
               %-  real:enjs:ff:fh
               =-  (perc:fx fil tot)
               ^-  [tot=@ud fil=@ud]
-              :-  (roll (turn pez |=(p=prej:proj:f (lent ~(pula pj:fj -.p)))) add)
+              :-  %-  roll  :_  add
+                  %+  turn  pez
+                  |=  [lag=flag:f pre=prej:proj:f]
+                  =/  pul=(list mula:f)  ~(pula pj:fj -.pre)
+                  %-  lent
+                  ?.  fun  pul
+                  %+  murn  pul
+                  |=  mul=mula:f
+                  ?.(&(?=(%plej -.mul) =(sip ship.mul)) ~ `mul)
               %-  roll  :_  add
               %+  turn  pez
-              |=(p=prej:proj:f (lent (murn ~(val by contribs.p) |=([t=treb:f *] plej.t))))
+              |=  [lag=flag:f pre=prej:proj:f]
+              %-  lent
+              %+  murn  ~(val by contribs.pre)
+              |=  [teb=treb:f *]
+              ?:(|(?=(~ plej.teb) &(fun !=(sip ship.u.plej.teb))) ~ `u.plej.teb)
         ==
       ==
     --
@@ -148,19 +215,22 @@
   :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s statistics"
   :+  fut=&  hed=&
   ;div(x-data ~)
-    ::  NOTE: Using another trick to always push footer to the bottom
-    ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
+    ;div(class "fund-main")
       ;a/"{(prot:enrl:ff:fh sip)}"(class "w-fit hover:text-link"): ← back
       ;div(class "flex flex-col")
         ;h1: {(ship:enjs:ff:fh sip)}'s Profile
         ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens
       ==
-      ;+  (prez-well:ui "Worker Projects" |=([f=flag:f *] =(sip p.f)))
+      ;+  %^  prez-well:ui  &  "Funder Statistics"
+          |=([f=flag:f p=prej:proj:f] (~(has in (~(rols pj:fj -.p) -.f sip)) %fund))
+      ;+  %^  prez-well:ui  |  "Worker Statistics"
+          |=([f=flag:f p=prej:proj:f] (~(has in (~(rols pj:fj -.p) -.f sip)) %work))
       ;*  ?.  (star:fx sip)  ~
-          [(prez-well:ui "Oracle Projects" |=([* p=prej:proj:f] =(sip p.assessment.p)))]~
+          :_  ~
+          %^  prez-well:ui  |  "Oracle Statistics"
+          |=([f=flag:f p=prej:proj:f] (~(has in (~(rols pj:fj -.p) -.f sip)) %orac))
       ;*  ?.  &(=(our src):bol =(sip src.bol))  ~
-          [(prez-well:ui "All Projects" _&)]~
+          [(prez-well:ui | "All Projects" _&)]~
     ==
   ==
 --

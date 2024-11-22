@@ -121,7 +121,10 @@ if (window.Alpine === undefined) {
         ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-palette-contrast disabled:bg-palette-system'],
         ['fund-head', 'sticky z-40 top-0'],
         ['fund-foot', 'sticky z-40 bottom-0'],
-        ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
+        // NOTE: Using a trick to always push footer to the bottom:
+        // https://stackoverflow.com/a/59865099
+        ['fund-main', 'flex flex-col gap-2 min-h-[100vh] py-2 px-3 sm:px-6'],
+        ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label'],
         ['fund-card-base', 'rounded-md px-3 py-2 border-[3px] border-palette-contrast'],
         ['fund-card-back', 'fund-card-base bg-palette-background'],
         ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
@@ -179,7 +182,7 @@ if (window.Alpine === undefined) {
   // NOTE: In order to get TomSelect elements to work when using Turbo navigation,
   // we need to clean up the page listeners on old instances
   document.documentElement.addEventListener('turbo:visit', (event) => {
-    document.querySelectorAll(`.fund-tsel`).forEach((tselElem) => {
+    document.querySelectorAll('.fund-tsel').forEach((tselElem) => {
       tselElem?.tomselect?.destroy();
     });
   });

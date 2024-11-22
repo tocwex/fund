@@ -352,9 +352,7 @@
   :+  fut=&  hed=|
   ;div(x-data "proj_dash")
     ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
-    ::  NOTE: Using another trick to always push footer to the bottom
-    ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
+    ;div(class "fund-main")
       ;*  =/  wax=manx
             ;p.fund-warn
               ; No projects found.

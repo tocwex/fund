@@ -508,9 +508,7 @@
   :+  fut=&  hed=|
   ;div(x-data "proj_view")
     ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
-    ::  NOTE: Using another trick to always push footer to the bottom
-    ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col gap-3 px-2 py-2 sm:px-5 min-h-[100vh]")
+    ;div(class "fund-main")
       ;h1(class "fund-title"): {(trip title.pro)}
       ;div.relative.w-full
         ;img.w-full@"{(pogo:fh lag pro bol)}";

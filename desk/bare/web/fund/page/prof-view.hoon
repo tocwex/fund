@@ -28,9 +28,7 @@
   :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s profile"
   :+  fut=&  hed=&
   ;div(x-data "prof_view")
-    ::  NOTE: Using another trick to always push footer to the bottom
-    ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
+    ;div(class "fund-main")
       ;div(class "flex flex-col")
         ;h1: {(ship:enjs:ff:fh sip)}'s Profile
         ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens

@@ -24,7 +24,7 @@
       [%code 404 'invalid graph focus']
     =/  ui
       |_  cas=tape
-      +*  kas  "rounded-lg aspect-square border-white border-2 sm:border-4"
+      +*  kas  "rounded-lg aspect-square border-white border-2"
       +$  focu  $%([%ship @p] [%proj flag:f prej:proj:f])
       ++  focu-tile
         |=  foc=focu
@@ -105,7 +105,7 @@
             ==
         ::
               :_  ~
-            :*  txt="Amount: {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}"
+            :*  txt="Goal: {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}"
             ::
                   ^=  lin
                 ?:  ?=(?(%born %prop) ~(stat pj:fj -.pre))  ~
@@ -159,7 +159,7 @@
                     :-  %option
                     ;:  welp
                         [%value (trip foc)]~
-                        ::  [%data-image (aset:enrl:ff:fh tag.xet)]~
+                        [%data-image (aset:enrl:ff:fh foc)]~
                         ?.(=(foc.pat foc) ~ [%selected ~]~)
                     ==
               ==
@@ -197,14 +197,12 @@
     :+  fut=&  hed=|
     ;div(x-data "prof_graf")
       ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=& fuz=fuz)]~)
-      ::  NOTE: Using another trick to always push footer to the bottom
-      ::  https://stackoverflow.com/a/59865099
-      ;div(class "flex flex-col gap-2 px-2 py-2 sm:px-5 min-h-[100vh]")
+      ;div(class "fund-main")
         ;div(class "flex flex-col")
           ;h1: {(ship:enjs:ff:fh sip)}'s Reputation Graph
           ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens
         ==
-        ;div(class "grid grid-cols-7 gap-1 sm:gap-2 mx-auto max-w-[80vh]")
+        ;div(class "grid grid-cols-7 gap-1 mx-auto max-w-[80vh]")
           ::  TODO: fill algorithm is just linear fill for now;
           ::  probably want "even distribution starting from center"
           ;*  %+  murn  (ozip:fx (gulf 0 (dec (mul 7 7))) fuz)
@@ -240,7 +238,6 @@
               this.openHREF(newUrl);
             },
             showTile(id) {
-              console.log('showing tile');
               this.tray_status.prof = id;
               this.tray_status.open = true;
             },

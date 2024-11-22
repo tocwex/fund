@@ -451,7 +451,7 @@
     ::  FIXME: Spacing on heights here for 'overflow-visible' are ugly and hacky
     ;nav#fund-head
         =x-data  "\{ open: false }"
-        =class  "fund-head w-full flex overflow-visible gap-1 h-12 py-2 sm:(h-[4.25rem] px-2 gap-4)"
+        =class  "fund-head w-full flex overflow-visible gap-1 h-12 px-1 py-2 sm:(h-[4.25rem] px-3 gap-4)"
       ;a/"{?:(=(our src):bol (dest:enrl:ff /) (trip !<(@t (slot:config %meta-site))))}"
           =class  "shrink-0 sm:(h-12 px-3) h-10 bg-palette-background {sag} {bag}"
           =x-show  xow

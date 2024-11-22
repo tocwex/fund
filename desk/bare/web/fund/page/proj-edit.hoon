@@ -93,10 +93,7 @@
   %-  page:ui:fh
   :^  bol  ord  "project edit"
   :+  fut=&  hed=&
-  ;form  =x-data  "proj_edit"
-      =method  "post"
-      =autocomplete  "off"
-      =class  "flex flex-col gap-2 px-2 py-2 sm:px-5"
+  ;form(x-data "proj_edit", method "post", autocomplete "off", class "fund-main")
     ;+  :-  [%fieldset [%class "flex flex-col gap-2"] ?:(=(%born sat) ~ [%disabled ~]~)]
         :~  ;div(class "flex flex-col gap-2")
               ;*  ?~  lau  ~

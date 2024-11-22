@@ -72,7 +72,7 @@ export const CONTRACT = Object.freeze({
   // https://docs.urbit.org/system/identity/reference/ecliptic
   ...(["AZP", "AZP-TEST"].reduce((a, v) => ({...a, [v]: Object.freeze({
     ADDRESS: Object.freeze({
-      ETHEREUM: "0x3066F428D935a44bE7AA845B6C6b812519CE1e17",
+      ETHEREUM: "0x33EeCbf908478C10614626A9D304bfe18B78DD73",
       SEPOLIA: "0xabe28C76e1c9750EB78f32A07c295Afa99B557fd",
     }),
     DECIMALS: 0,

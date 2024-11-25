@@ -90,8 +90,8 @@
     ^-  bean
     ?+    sort.arg  !!
         %time
-      =+  lea=(tloq:fk launch.mea chain.payment.mea)
-      =+  leb=(tloq:fk launch.meb chain.payment.meb)
+      =+  lea=(daoq:fk launch.mea chain.payment.mea)
+      =+  leb=(daoq:fk launch.meb chain.payment.meb)
       (?:(desc.arg gth lth) lea leb)
     ::
         %alph
@@ -126,8 +126,8 @@
       |=  top=bean
       ^-  manx
       =/  kas=tape
-        ?.  top  "flex-col-reverse drip-shadow-lg fund-foot p-4"
-        "flex-col rounded-lg drop-shadow-lg px-4 py-2"
+        ?:  top  "flex-col rounded-lg drop-shadow-lg px-4 py-2"
+        "flex-col-reverse drip-shadow-lg rounded-t-[30px] fund-foot p-4"
       =/  syk=manx
         ;div(class "w-full flex-1 flex flex-row gap-3")
           ;div(class "relative w-full flex-1 flex flex-row gap-1")

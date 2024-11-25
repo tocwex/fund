@@ -106,7 +106,7 @@
       ;h1-alt: Fund Contributions
       ;+  =/  txz=(list [flag:f prej:proj:f mula:f])
             =-  %+  sort  txz
-                =+  salv=|=([p=prej:proj:f m=mula:f] (tloq:fk (tula:fk m) chain.payment.p))
+                =+  salv=|=([p=prej:proj:f m=mula:f] (daoq:fk (tula:fk m) chain.payment.p))
                 |=([[* a=[prej:proj:f mula:f]] [* b=[prej:proj:f mula:f]]] (gth (salv a) (salv b)))
             ^-  txz=(list [flag:f prej:proj:f mula:f])
             %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
@@ -162,7 +162,7 @@
                       ==
                       ;td.w-1.px-6.whitespace-nowrap.text-nowrap.font-mono
                         ;div.flex.items-center.gap-2
-                          ::  ; {(date:enjs:ff:fh (tloq:fk (tula:fk mul) chain.payment.pre))}
+                          ::  ; {(date:enjs:ff:fh (daoq:fk (tula:fk mul) chain.payment.pre))}
                           ;*  :~    %+  icon-logo:ui:fh  %circ
                                   (aset:enrl:ff:fh tag:(~(got by xmap:fc) chain.payment.pre))
                               ::

@@ -118,6 +118,19 @@
   ^-  bean
   (gte 4 (met 3 who))
 ::
+::  +link: is the given string a link (and is it relative or absolute)?
+::
+++  link
+  |=  lin=tape
+  ^-  (unit bean)
+  =,  de-purl:html
+  =-  (bind - head)
+  %+  rust  lin
+  ;~  pose
+      ;~(plug (easy %&) auri)       ::  absolute link
+      ;~(plug (easy %|) apat yque)  ::  relative link
+  ==
+::
 ::  +dist: absolute distance between two values
 ::
 ++  dist
@@ -125,14 +138,21 @@
   ^-  @
   (sub (max a b) (min a b))
 ::
+::  +rato: rat(i)o of value relative to given total
+::
+++  rato
+  |=  [val=@ tot=@]
+  ^-  @rs
+  ?:  =(0 tot)
+    ?:(=(0 val) .0 .1)  ::  FIXME: Probably should be NaN instead
+  (div:rs (sun:rs val) (sun:rs tot))
+::
 ::  +perc: perc(entage) of value relative to given total
 ::
 ++  perc
   |=  [val=@ tot=@]
   ^-  @rs
-  ?:  =(0 tot)
-    ?:(=(0 val) .0 .100)  ::  FIXME: Probably should be NaN instead
-  (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
+  (mul:rs .100 (rato val tot))
 ::
 ::  +flot: render decimal float as tape (optionally decimal-truncated
 ::  and/or padded)

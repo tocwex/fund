@@ -304,7 +304,7 @@
                       %md  %true  %bump-lock  "launch ✔️"  "finalizeContract"
                       ?:(?=(^ contract.pro) ~ "Awaiting response from trusted oracle.")
                   ==
-                ?.  ?=(?(%born %done %dead) sat)
+                ?.  ?=(?(%born %prop %done %dead) sat)
                   =/  nft=?  ?=(%enft -.payment.pro)
                   =+  pej=(~(get by pledges.pro) src.bol)
                   :-  ~

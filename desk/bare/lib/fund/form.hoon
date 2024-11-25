@@ -287,6 +287,11 @@
     ^-  tape
     =/  tar=tarp  (yell dat)
     "{<`@da`(yule tar(h 0, m 0, s 0, f ~))>}"
+  ++  span                                     ::  ~h5.m30.s12..abcd => "~h5.m30.s12"
+    |=  lap=@dr
+    ^-  tape
+    =/  tar=tarp  (yell lap)
+    "{<`@dr`(yule tar(f ~))>}"
   ++  ship                                     ::  ~zod => "~zod"
     |=  sip=^ship
     ^-  tape

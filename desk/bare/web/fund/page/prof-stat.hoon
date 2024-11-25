@@ -58,6 +58,9 @@
       =/  pez=(list [flag:f prej:proj:f])
         %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
         |=([n=[flag:f prej:proj:f] a=(list [flag:f prej:proj:f])] ?.((pix n) a [n a]))
+      ::  TODO: Really needs a refactoring badly; should generate a list
+      ::  of comprehensive and legible values (e.g. all %mula from this
+      ::  ship, etc.) and create/render derived values in sequence
       ;div
         ;h3: {tyt}
         ;ul
@@ -172,8 +175,10 @@
               ?.  fun  cash.pej
               ?.(=(sip ship.pej) 0 cash.pej)
           ;+  %+  prez-stat  "Average Fulfillment Lapse"
-              =-  "{-} blocks"
-              %-  real:enjs:ff:fh
+              ::  FIXME: This needs to be normalized (or, more
+              ::  appropriately, separated out) by chain; currently
+              ::  always assuming mainnet
+              =-  ?~(val=(toi:rs -) "(unknown)" "{(span:enjs:ff:fh (droq:fk (abs:si u.val) 1))}")
               =-  (div:rs (sun:rs sum) (sun:rs con))
               ^-  [con=@ud sum=@ud]
               =-  :-  (lent tez)

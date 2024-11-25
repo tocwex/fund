@@ -592,10 +592,7 @@
               |=  [lid=@ud txt=tape lin=tape cop=tape]
               ^-  manx
               =/  siz=@sd  (sum:si (size:dejs:ff syz) ?.(=(0 lid) --0 --1))
-              =/  tab=?
-                ?=  ?([%~ [%& *]])
-                =,  de-purl:html
-                (rust lin ;~(pose ;~(plug (easy %&) auri) ;~(plug (easy %|) apat yque)))
+              =/  tab=?    ?=(?([%~ [%& *]]) (link:fx lin))
               ;div(class "inline-flex items-center gap-1")
                 ;+  %.  [wer=lin tab=tab txt=txt diz=~]
                     %~  link-text  ..$
@@ -603,7 +600,7 @@
                     ::  "text-{(syze:enjs:ff (sum:si -2 siz))} sm:text-{(syze:enjs:ff siz)}"
                     "font-normal text-{(syze:enjs:ff siz)} line-clamp-1"
                 ;*  ?~  cop  ~
-                    [(copy-butn:ui cop)]~
+                    [?:(?=(^ (link:fx cop)) (sher-butn:ui cop) (copy-butn:ui cop))]~
               ==
         ==
         ;*  ?~  buz  ~

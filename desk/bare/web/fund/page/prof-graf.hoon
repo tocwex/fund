@@ -22,6 +22,8 @@
       [%code 404 'invalid graph role']
     ?.  ?=(?(%ship %proj) foc.pat)
       [%code 404 'invalid graph focus']
+    =+  .^(waz=(list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
+    =/  was=(set addr:f)  (silt waz)
     =/  ui
       |_  cas=tape
       +*  kas  "rounded-lg aspect-square border-white border-2"
@@ -56,70 +58,185 @@
       ++  focu-prev
         |=  foc=focu
         ^-  manx
-        ?-  -.foc
-          %ship  (ship-prev +.foc)
-          %proj  (proj-prev +.foc)
-        ==
-      ++  ship-prev
-        |=  sip=@p
-        ^-  manx
-        %.  [%id (ship:enjs:ff:fh sip)]~
-        %~  riat  ma:fh
-        %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(~(ship-logo fa:fh bol) sip)
-        :-  ^=  liz
-            :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip)]
-                [txt="Owner: {(sadr:enjs:ff:fh 0x0)}" lin=(esat:enrl:ff:fh %addr 0x0 1) cop=(addr:enjs:ff:fh 0x0)]
-                [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip)]
+        =/  fid=tape
+          ?:  ?=(%ship -.foc)  (ship:enjs:ff:fh +.foc)
+          (flag:enjs:ff:fh +<.foc)
+        =/  ros=role:f
+          ?:  |(?=(%proj -.foc) =(sip +.foc))  rol.pat
+          ?-(rol.pat %fund %work, %work %orac, %orac %work)
+        ;div(id fid, class "flex flex-col gap-2")
+          ;div(class "flex justify-between items-center")
+            ;div(class "inline-flex gap-1 items-center")
+              ;h3(class "leading-none")
+                ;+  ;/  ?-    -.foc
+                          %proj  "Project Summary"
+                        ::
+                            %ship
+                          =-  "{-} Profile"
+                          ?-(ros %fund "Funder", %work "Worker", %orac "Oracle")
+                        ==
+              ==
+              ;button(type "button", x-init "initTippy($el, \{hover: true})")
+                ;img.w-6.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
+              ==
+              ;div(class "hidden")
+                ;+  ;/  ?-    -.foc
+                            %proj
+                          ^-  tape  ^~
+                          %+  rip  3
+                          '''
+                          The project score is the percentage of funds
+                          secured relative to the project goal.
+                          '''
+                        ::
+                            %ship
+                          ?-    ros
+                              %fund
+                            ^-  tape  ^~
+                            %+  rip  3
+                            '''
+                            The funder score the ratio of realized
+                            contributions to open pledges.
+                            '''
+                          ::
+                              %work
+                            ^-  tape  ^~
+                            %+  rip  3
+                            '''
+                            The worker score is percentage of successful
+                            payouts relative to total open milestone
+                            goals.
+                            '''
+                          ::
+                              %orac
+                            ^-  tape  ^~
+                            %+  rip  3
+                            '''
+                            The oracle score is the approval rate
+                            relative to all reviewed and pending
+                            milestones.
+                            '''
+                          ==
+                        ==
+              ==
             ==
-        ^=  buz
-        ;:  welp
-              ?.  &(=(our src):bol !=(sip src.bol))  ~
-            :_  ~
-            ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
-              ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
+            ;div(class "inline-flex gap-1 items-center")
+              ;*  ?:  ?=(%proj -.foc)  ~
+                  %-  turn  :_  hink:fh
+                  %+  welp
+                    ?.  &(=(our src):bol !=(+.foc src.bol))  ~
+                    :_  ~
+                    ;a/"{(chat:enrl:ff:fh sip)}"(target "_blank")
+                      ;img.fund-butn-icon@"{(aset:enrl:ff:fh %chat)}";
+                    ==
+                  %+  turn  `(list role:f)`~[%fund %work %orac]
+                  |=  rol=role:f
+                  =/  rot=@t  (crip "filter-{(trip rol)}")
+                  ::  TODO: This isn't the correct ship; need to use JS
+                  ::  probably for that
+                  ;a/"{(dest:enrl:ff:fh pat(sip (scot %p sip), rol rol))}"
+                    ;img.fund-butn-icon@"{(aset:enrl:ff:fh rot)}";
+                  ==
             ==
-        ::
-              ?.  |(=(our src):bol =(sip src.bol))  ~
-            ::  FIXME: Replace these icons with final counterparts
-            :_  ~
-            ;a/"{(dest:enrl:ff:fh pat(sip (scot %p sip)))}"
-              ;img.fund-butn-icon@"{(aset:enrl:ff:fh %search)}";
-            ==
-        ==
-      ++  proj-prev
-        |=  [lag=flag:f pre=prej:proj:f]
-        ^-  manx
-        %.  [%id (flag:enjs:ff:fh lag)]~
-        %~  riat  ma:fh
-        %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(pogo:fh lag -.pre bol)
-        :_  buz=~
-        ^=  liz
-        ;:  welp
-            [txt=(trip title.pre) lin=(flat:enrl:ff:fh lag) cop=(flag:enjs:ff:fh lag)]~
-        ::
-              %+  turn  `(list [@t @p])`~[['Worker' p.lag] ['Oracle' p.assessment.pre]]
-            |=  [tyt=@t sip=@p]
-            :*  txt="{(trip tyt)}: {(~(ship-tytl fa:fh bol) sip)}"
-                lin=(prot:enrl:ff:fh sip)
-                cop=(ship:enjs:ff:fh sip)
-            ==
-        ::
-              :_  ~
-            :*  txt="Goal: {(swam:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)}"
-            ::
-                  ^=  lin
-                ?:  ?=(?(%born %prop) ~(stat pj:fj -.pre))  ~
-                (esat:enrl:ff:fh %addr safe:(need contract.pre) chain.payment.pre)
-            ::
-                cop=(comp:enjs:ff:fh ~(cost pj:fj -.pre) payment.pre)
-            ==
+          ==
+          ;+  %+  ~(mold-card ui:fh ~)  syz=%lg
+              ?-    -.foc
+                  %ship
+                =*  sip  +.foc
+                =/  poz=(list [flag:f prej:proj:f])
+                  %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
+                  |=  [[lag=flag:f pre=prej:proj:f] acc=(list [flag:f prej:proj:f])]
+                  ?.((~(has in (~(rols pj:fj -.pre) p.lag sip)) ros) acc [[lag pre] acc])
+                =/  sco=tape
+                  %-  real:enjs:ff:fh
+                  ?-    ros
+                      %fund
+                    ::  (amount for all contributions) / (amount for all open pledges)
+                    %-  rato:fx
+                    :_  %+  roll  poz
+                        |=  [[* pre=prej:proj:f] acc=@ud]
+                        %+  add  acc
+                        ?~(pej=(~(get by pledges.pre) sip) 0 cash.u.pej)
+                    %+  roll  poz
+                    |=  [[* pre=prej:proj:f] acc=@ud]
+                    %+  add  acc
+                    %+  roll  ~(fula pj:fj -.pre)
+                    |=  [mul=mula:f acc=@ud]
+                    ?.(&(?=(%trib -.mul) (~(has in was) from.when.mul)) 0 cash.mul)
+                  ::
+                      %work
+                    ::  (amount of successfully withdrawn funds) / (cost of all open milestones)
+                    %-  rato:fx
+                    :-  (roll poz |=([[* p=prej:proj:f] a=@] (add a ~(take pj:fj -.p))))
+                    %+  roll  poz
+                    |=  [[* pre=prej:proj:f] acc=@]
+                    %+  add  acc
+                    %+  roll  `(list mile:proj:f)`milestones.pre
+                    |=  [mil=mile:proj:f acc=@]
+                    %+  add  acc
+                    ?:(?=(?(%done %dead) status.mil) 0 cost.mil)
+                  ::
+                      %orac
+                    ::  (# approved milestones) / (# reviewed/pending milestones)
+                    %-  perc:fx
+                    :_  (roll poz |=([[* p=prej:proj:f] a=@] (add a (lent milestones.p))))
+                    %+  roll  poz
+                    |=  [[* pre=prej:proj:f] acc=@]
+                    %+  add  acc
+                    %-  lent
+                    %+  skim  `(list mile:proj:f)`milestones.pre
+                    |=(m=mile:proj:f =(%done status.m))
+                  ==
+                :-  pic=(~(ship-logo fa:fh bol) sip)
+                :_  buz=~
+                ^=  liz
+                :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip)]
+                    [txt="Owner: {(sadr:enjs:ff:fh 0x0)}" lin=(esat:enrl:ff:fh %addr 0x0 1) cop=(addr:enjs:ff:fh 0x0)]
+                    [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip)]
+                    [txt="Score: {sco}" lin=~ cop=sco]
+                ==
+              ::
+                  %proj
+                =*  lag  +<.foc
+                =*  pre  +>.foc
+                =/  sco=tape
+                  %-  real:enjs:ff:fh
+                  (perc:fx ~(take pj:fj -.pre) ~(cost pj:fj -.pre))
+                :-  pic=(pogo:fh lag -.pre bol)
+                :_  buz=~
+                ^=  liz
+                ;:  welp
+                      :_  ~
+                    :*  txt=(trip title.pre)
+                        lin=(flat:enrl:ff:fh lag)
+                        cop=(flat:enrl:ff:fh lag)
+                    ==
+                ::
+                      %+  turn  `(list [@t @p])`~[['Worker' p.lag] ['Oracle' p.assessment.pre]]
+                    |=  [tyt=@t sip=@p]
+                    :*  txt="{(trip tyt)}: {(~(ship-tytl fa:fh bol) sip)}"
+                        lin=(prot:enrl:ff:fh sip)
+                        cop=(ship:enjs:ff:fh sip)
+                    ==
+                ::
+                      :_  ~
+                    :*  txt="Score: {sco}"
+                    ::
+                          ^=  lin
+                        ?:  ?=(?(%born %prop) ~(stat pj:fj -.pre))  ~
+                        (esat:enrl:ff:fh %addr safe:(need contract.pre) chain.payment.pre)
+                    ::
+                        cop=sco
+                    ==
+                ==
+              ==
         ==
       ++  dash-navi
         |=  [top=bean fuz=(list focu)]
         ^-  manx
         =/  kas=tape
-          ?.  top  "flex-col-reverse drip-shadow-lg fund-foot p-4"
-          "flex-col rounded-lg drop-shadow-lg px-4 py-2"
+          ?:  top  "flex-col rounded-lg drop-shadow-lg px-4 py-2"
+          "flex-col-reverse drip-shadow-lg rounded-t-[30px] fund-foot p-4"
         =/  xow=tape  "$store.page.size {(trip ?:(top '=' '!'))}= 'desktop'"
         =/  xop=tape  ?:(top "false" "tray_status.open")
         ;div
@@ -165,9 +282,7 @@
               ==
             ==
           ==
-          ;div  =class  "w-full flex flex-col gap-3"
-              =x-show  xop
-              =x-on-click-outside  "tray_status.open = false"
+          ;div(class "w-full", x-show xop, x-on-click-outside "tray_status.open = false")
             ;*  %+  turn  fuz
                 |=  foc=focu
                 %-  ~(riat ma:fh (focu-prev foc))
@@ -196,7 +311,7 @@
     :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s reputation"
     :+  fut=&  hed=|
     ;div(x-data "prof_graf")
-      ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=& fuz=fuz)]~)
+      ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=& fuz=[[%ship sip] fuz])]~)
       ;div(class "fund-main")
         ;div(class "flex flex-col")
           ;h1: {(ship:enjs:ff:fh sip)}'s Reputation Graph
@@ -217,7 +332,7 @@
               `(focu-tile:ui u.fuc)
         ==
       ==
-      ;+  (~(dash-navi ui ~) top=| fuz=fuz)
+      ;+  (~(dash-navi ui ~) top=| fuz=[[%ship sip] fuz])
       ;script
         ;+  ;/
         %-  zing  %+  join  "\0a"

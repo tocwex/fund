@@ -36,7 +36,7 @@
             (sign:dejs:ff:fh (~(got by p.arz) %mis))
           (addr:dejs:ff:fh (~(got by p.arz) %mia))
         ?:  emt  [%& (~(got by p.arz) %mit)]
-        [%| (addr:dejs:ff:fh (~(got by p.arz) %mit))]
+        [%| (hexa:dejs:ff:fh (~(got by p.arz) %mit))]
       ==
     ::
         %wipe-resi
@@ -47,7 +47,7 @@
             (sign:dejs:ff:fh (~(got by p.arz) %des))
           (addr:dejs:ff:fh (~(got by p.arz) %dea))
         ?:  emt  [%& (~(got by p.arz) %det)]
-        [%| (addr:dejs:ff:fh (~(got by p.arz) %det))]
+        [%| (hexa:dejs:ff:fh (~(got by p.arz) %det))]
       ==
     ::
         %bump-prop
@@ -66,7 +66,7 @@
       ?+  arz=(parz:fh bod (sy ~[%sxb %sxa %swa %soa %ssa]))  p.arz  [%| *]
         :+  %bump  %lock  :-  ~
         :*  :-  (bloq:dejs:ff:fh (~(got by p.arz) %sxb))
-              (addr:dejs:ff:fh (~(got by p.arz) %sxa))
+              +:(xact:dejs:ff:fh (~(got by p.arz) %sxa))
             sigm:(need contract.pro)
             (addr:dejs:ff:fh (~(got by p.arz) %swa))
             (addr:dejs:ff:fh (~(got by p.arz) %soa))
@@ -83,7 +83,7 @@
           :*  (sign:dejs:ff:fh (~(got by p.arz) %mis))
               (addr:dejs:ff:fh (~(got by p.arz) %mia))
               ?:  emt  [%& (~(got by p.arz) %mit)]
-              [%| (addr:dejs:ff:fh (~(got by p.arz) %mit))]
+              [%| (hexa:dejs:ff:fh (~(got by p.arz) %mit))]
           ==
         ==
       ==
@@ -97,7 +97,7 @@
           :*  (sign:dejs:ff:fh (~(got by p.arz) %des))
               (addr:dejs:ff:fh (~(got by p.arz) %dea))
               ?:  emt  [%& (~(got by p.arz) %det)]
-              [%| (addr:dejs:ff:fh (~(got by p.arz) %det))]
+              [%| (hexa:dejs:ff:fh (~(got by p.arz) %det))]
           ==
         ==
       ==
@@ -107,7 +107,7 @@
         :^  %draw
             (bloq:dejs:ff:fh (~(got by p.arz) %mii))
           (bloq:dejs:ff:fh (~(got by p.arz) %mib))
-        (addr:dejs:ff:fh (~(got by p.arz) %mih))
+        +:(xact:dejs:ff:fh (~(got by p.arz) %mih))
       ==
     ::
         %draw-dead
@@ -115,7 +115,7 @@
         :^  %draw
             lin
           (bloq:dejs:ff:fh (~(got by p.arz) %mib))
-        (addr:dejs:ff:fh (~(got by p.arz) %mih))
+        +:(xact:dejs:ff:fh (~(got by p.arz) %mih))
       ==
     ::
         ?(%mula-plej %mula-trib)
@@ -130,7 +130,7 @@
             %mula-trib
           ?+  arz=(parz:fh bod (sy ~[%mxa %mad]))  p.arz  [%| *]
             :*  %mula  %trib  who  sum
-                :-  [wen (addr:dejs:ff:fh (~(got by p.arz) %mxa))]
+                :-  [wen +:(xact:dejs:ff:fh (~(got by p.arz) %mxa))]
                   (addr:dejs:ff:fh (~(got by p.arz) %mad))
                 msg
             ==
@@ -581,14 +581,14 @@
                         :_  ~  (prod-butn:ui:fh %md %action %bump-sess "request review ~" ~ ~)
                       ::
                           ?.  &(cur ora ?=(%sess status.mil))  ~
-                        :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
+                        :~  ;a.fund-butn-de-md/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
                             (prod-butn:ui:fh %md %action %bump-work "changes required ~" ~ ~)
                             (prod-butn:ui:fh %md %true %bump-done "approve ✓" "approveMilestone" ~)
                         ==
                       ::
                       ::
                           ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
-                        :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
+                        :~  ;a.fund-butn-de-md/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
                             (prod-butn:ui:fh %md %true %wipe-casi "reapprove ✓" "approveMilestone" ~)
                         ==
                       ::
@@ -893,7 +893,7 @@
                 return this.safeGetBlock().then((block) => ({
                   mii: this.mile_idex,
                   mib: block,
-                  mih: "0x0",
+                  mih: "0x0000000000000000000000000000000000000000000000000000000000000000",
                 }));
               } else {
                 return this.safeExecClaim({
@@ -964,7 +964,7 @@
                   if (balance === 0) {
                     return this.safeGetBlock().then((block) => ({
                       mib: block,
-                      mih: "0x0",
+                      mih: "0x0000000000000000000000000000000000000000000000000000000000000000",
                     }));
                   } else {
                     return this.safeExecRefund({

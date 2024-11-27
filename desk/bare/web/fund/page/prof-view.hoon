@@ -35,8 +35,8 @@
       ==
       ;+  %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(~(ship-logo fa:fh bol) sip)
           :-  ^=  liz
-              :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip)]
-                  [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip)]
+              :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip) xin=~]
+                  [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip) xin=~]
               ==
           ^=  buz
           ;:  welp

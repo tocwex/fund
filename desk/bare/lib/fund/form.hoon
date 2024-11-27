@@ -164,19 +164,26 @@
     |=  boq=@t
     ^-  ^bloq
     (rash boq dem)
+  ++  hexa                                     ::  "0xabcdef…" => 0xabcd.ef…
+    |=  hex=@t
+    ^-  @ux
+    (rash hex ;~(pfix (jest '0x') ^hex))
   ++  addr                                     ::  "0xabcdef…" => 0xabcd.ef…
     |=  adr=@t
     ^-  ^addr
-    (rash adr ;~(pfix (jest '0x') hex))
+    ?>  =((add 40 2) (lent (trip adr)))
+    (hexa adr)
   ++  sign                                     ::  "0xabcdef…" => 0xabcd.ef…
     |=  sig=@t
     ^-  ^sign
-    (rash sig ;~(pfix (jest '0x') hex))
+    ?>  =((add 130 2) (lent (trip sig)))
+    (hexa sig)
   ++  xact                                     ::  "0xabcdef…" => 0xabcd.ef…
     |=  act=@t
     ^-  ^xact
+    ?>  =((add 64 2) (lent (trip act)))
     ::  FIXME: Is there any way to derive the block number?
-    [0 (rash act ;~(pfix (jest '0x') hex))]
+    [0 (hexa act)]
   ++  ship                                     ::  "~zod" => ~zod
     |=  sip=@t
     ^-  ^ship

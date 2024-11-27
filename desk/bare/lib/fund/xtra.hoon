@@ -104,6 +104,17 @@
   ?~  tap  tap
   [-:(cuss [i.tap]~) t.tap]
 ::
+::  +spon: spon(sor) of a given point (null for comets)
+::
+++  spon
+  |=  who=@p
+  ^-  (unit @p)
+  ?-  (clan:title who)
+    %pawn  ~
+    %earl  `(end 5 who)
+    *      `who
+  ==
+::
 ::  +star: is the given identity at least as privileged as a star?
 ::
 ++  star
@@ -124,11 +135,10 @@
   |=  lin=tape
   ^-  (unit bean)
   =,  de-purl:html
-  =-  (bind - head)
   %+  rust  lin
   ;~  pose
-      ;~(plug (easy %&) auri)       ::  absolute link
-      ;~(plug (easy %|) apat yque)  ::  relative link
+    (cold %& auri)                ::  absolute link
+    (cold %| ;~(plug apat yque))  ::  relative link
   ==
 ::
 ::  +dist: absolute distance between two values

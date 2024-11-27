@@ -412,7 +412,7 @@
           ::  which the 4th entry is the NFT ID
           =/  val=@
             ?+  topics.nex  !!
-              [* * * ~]  `@`(addr:dejs:ff:fh data.nex)
+              [* * * ~]  `@`(hexa:dejs:ff:fh data.nex)
             ::
                 [* * * * ~]
               ?.  ?=(%enft -.payment.pro)  !!

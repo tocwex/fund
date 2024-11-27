@@ -580,7 +580,7 @@
       ==
     ==
   ++  mold-card                                  ::  template for summary cards
-    |=  [syz=size pic=tape liz=(list [txt=tape lin=tape cop=tape]) buz=marl]
+    |=  [syz=size pic=tape liz=(list [txt=tape lin=tape cop=tape xin=tape]) buz=marl]
     ^-  manx
     ;div(class "flex flex-row justify-start gap-2 {cas}")
       ;+  %.  [%rect pic]
@@ -589,18 +589,19 @@
       ;div(class "flex flex-col justify-between")
         ;div(class "flex flex-col justify-start items-start")
           ;*  %+  turn  (enum:fx liz)
-              |=  [lid=@ud txt=tape lin=tape cop=tape]
+              |=  [lid=@ud txt=tape lin=tape cop=tape xin=tape]
               ^-  manx
               =/  siz=@sd  (sum:si (size:dejs:ff syz) ?.(=(0 lid) --0 --1))
-              =/  tab=?    ?=(?([%~ [%& *]]) (link:fx lin))
               ;div(class "inline-flex items-center gap-1")
-                ;+  %.  [wer=lin tab=tab txt=txt diz=~]
+                ;+  %.  ?~(xin ~ [%x-init xin]~)
+                    %~  riat  ma
+                    %.  [wer=lin tab=?=([%~ %&] (link:fx lin)) txt=txt diz=~]
                     %~  link-text  ..$
                     %+  welp  ?.(=(0 lid) ~ "font-serif ")
-                    ::  "text-{(syze:enjs:ff (sum:si -2 siz))} sm:text-{(syze:enjs:ff siz)}"
                     "font-normal text-{(syze:enjs:ff siz)} line-clamp-1"
                 ;*  ?~  cop  ~
-                    [?:(?=(^ (link:fx cop)) (sher-butn:ui cop) (copy-butn:ui cop))]~
+                    :_  ~
+                    ?:(?=(^ (link:fx cop)) (sher-butn:ui cop) (copy-butn:ui cop))
               ==
         ==
         ;*  ?~  buz  ~
@@ -674,21 +675,19 @@
           :~  :*  txt=(~(ship-tytl fa bol) sip)
                   lin=?.((auth bol) ~ (prot:enrl:ff sip))
                   cop=(ship:enjs:ff sip)
+                  xin=~
               ==
           ::
-              ::  FIXME: Missing ENS behavior here; fix w/ class?
-              ::  ;a/"{(esat:enrl:ff %addr adr cid)}"
-              ::      =target  "_blank"
-              ::      =class  "fund-addr hover:text-link"
-              ::      =x-init  "initENS($el, '{(addr:enjs:ff adr)}')";
               :*  txt=?:(=(0x0 adr) nun (sadr:enjs:ff adr))
-                  lin=(esat:enrl:ff %addr adr cid)
-                  cop=(addr:enjs:ff adr)
+                  lin=?:(=(0x0 adr) ~ (esat:enrl:ff %addr adr cid))
+                  cop=?:(=(0x0 adr) ~ (addr:enjs:ff adr))
+                  xin=?:(=(0x0 adr) ~ "initENS($el, '{(addr:enjs:ff adr)}')")
               ==
           ::
               :*  txt="AZP: {<`@`sip>}"
                   lin=(nurt:enrl:ff sip)
                   cop=(bloq:enjs:ff `@`sip)
+                  xin=~
               ==
           ==
     ==

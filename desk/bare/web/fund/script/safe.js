@@ -27,17 +27,32 @@ export const txnGetURL = (address) => {
 
 export const nftsGetURL = (wallet, chainId, token) => {
   const chainName = NETWORK.NAME[chainId];
-   const queryUrl = new URL(`https://eth${
-     (chainId === NETWORK.ID.ETHEREUM) ? "-mainnet"
-     : (chainId === NETWORK.ID.SEPOLIA) ? "-sepolia"
-     : ""
-   }.g.alchemy.com/nft/v3/${NETWORK.APIKEY[chainName]}/getNFTsForOwner`);
+  const queryUrl = new URL(`https://eth${
+    (chainId === NETWORK.ID.ETHEREUM) ? "-mainnet"
+    : (chainId === NETWORK.ID.SEPOLIA) ? "-sepolia"
+    : ""
+  }.g.alchemy.com/nft/v3/${NETWORK.APIKEY[chainName]}/getNFTsForOwner`);
 
-   queryUrl.searchParams.append("owner", wallet);
-   queryUrl.searchParams.append("contractAddresses[]",
-     CONTRACT[token.toUpperCase()].ADDRESS[chainName]);
-   queryUrl.searchParams.append("withMetadata", "true");
-   queryUrl.searchParams.append("pageSize", "100");
+  queryUrl.searchParams.append("owner", wallet);
+  queryUrl.searchParams.append("contractAddresses[]",
+    CONTRACT[token.toUpperCase()].ADDRESS[chainName]);
+  queryUrl.searchParams.append("withMetadata", "true");
+  queryUrl.searchParams.append("pageSize", "100");
+
+  return queryUrl;
+}
+
+export const ownersGetURL = (tokenId, chainId, token) => {
+  const chainName = NETWORK.NAME[chainId];
+  const queryUrl = new URL(`https://eth${
+    (chainId === NETWORK.ID.ETHEREUM) ? "-mainnet"
+    : (chainId === NETWORK.ID.SEPOLIA) ? "-sepolia"
+    : ""
+  }.g.alchemy.com/nft/v3/${NETWORK.APIKEY[chainName]}/getOwnersForNFT`);
+
+  queryUrl.searchParams.append("contractAddress",
+    CONTRACT[token.toUpperCase()].ADDRESS[chainName]);
+  queryUrl.searchParams.append("tokenId", String(tokenId));
 
   return queryUrl;
 }
@@ -80,10 +95,29 @@ export const nftsGetAll = async (wallet, chainId, token) => {
           .then(json => getNFTs(
             json.pageKey,
             results.concat(json?.ownedNfts ?? []),
-            json.ownedNfts.length < 100 || json.pageKey === undefined,
+            (json?.ownedNfts ?? []).length < 100 || json.pageKey === undefined,
           ));
   };
   return getNFTs();
+}
+
+export const ownersGetAll = async (tokenId, chainId, token) => {
+  const getOwners = (pageKey = undefined, results = [], isLastCall = false) => {
+    const queryUrl = ownersGetURL(tokenId, chainId, token);
+    if (pageKey !== undefined) {
+      queryUrl.searchParams.append("pageKey", pageKey);
+    }
+    return isLastCall
+      ? Promise.resolve(results)
+      : fetch(queryUrl)
+          .then(response => response.json())
+          .then(json => getOwners(
+            json.pageKey,
+            results.concat(json?.owners ?? []),
+            (json?.owners ?? []).length < 100 || json.pageKey === undefined,
+          ));
+  };
+  return getOwners();
 }
 
 export const safeGetBalance = async ({fundToken, safeAddress}) => {

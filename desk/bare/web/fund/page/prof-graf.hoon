@@ -132,9 +132,7 @@
                   %+  turn  `(list role:f)`~[%fund %work %orac]
                   |=  rol=role:f
                   =/  rot=@t  (crip "filter-{(trip rol)}")
-                  ::  TODO: This isn't the correct ship; need to use JS
-                  ::  probably for that
-                  ;a/"{(dest:enrl:ff:fh pat(sip (scot %p sip), rol rol))}"
+                  ;a/"{(dest:enrl:ff:fh pat(sip (scot %p +.foc), rol rol))}"
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh rot)}";
                   ==
             ==
@@ -190,10 +188,18 @@
                 :-  pic=(~(ship-logo fa:fh bol) sip)
                 :_  buz=~
                 ^=  liz
-                :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip)]
-                    [txt="Owner: {(sadr:enjs:ff:fh 0x0)}" lin=(esat:enrl:ff:fh %addr 0x0 1) cop=(addr:enjs:ff:fh 0x0)]
-                    [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip)]
-                    [txt="Score: {sco}" lin=~ cop=sco]
+                :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip) xin=~]
+                ::
+                    ::  TODO: Implement a better handler for the comet case
+                    =/  mom=(unit @p)  (spon:fx sip)
+                    :*  txt="{(sadr:enjs:ff:fh 0x0)}"
+                        lin=(esat:enrl:ff:fh %addr 0x0 1)
+                        cop=(addr:enjs:ff:fh 0x0)
+                        xin=?~(mom ~ "initAZP($el, '{(bloq:enjs:ff:fh `@`u.mom)}')")
+                    ==
+                ::
+                    [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip) xin=~]
+                    [txt="Score: {sco}" lin=~ cop=sco xin=~]
                 ==
               ::
                   %proj
@@ -207,9 +213,12 @@
                 ^=  liz
                 ;:  welp
                       :_  ~
+                    ::  FIXME: Maybe should use the worker's link here
+                    ::  instead of the host's link
                     :*  txt=(trip title.pre)
                         lin=(flat:enrl:ff:fh lag)
-                        cop=(flat:enrl:ff:fh lag)
+                        cop="{(trip ship-url.pro)}{(flat:enrl:ff:fh lag)}"
+                        xin=~
                     ==
                 ::
                       %+  turn  `(list [@t @p])`~[['Worker' p.lag] ['Oracle' p.assessment.pre]]
@@ -217,6 +226,7 @@
                     :*  txt="{(trip tyt)}: {(~(ship-tytl fa:fh bol) sip)}"
                         lin=(prot:enrl:ff:fh sip)
                         cop=(ship:enjs:ff:fh sip)
+                        xin=~
                     ==
                 ::
                       :_  ~
@@ -227,6 +237,7 @@
                         (esat:enrl:ff:fh %addr safe:(need contract.pre) chain.payment.pre)
                     ::
                         cop=sco
+                        xin=~
                     ==
                 ==
               ==

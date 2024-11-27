@@ -340,6 +340,7 @@ if (window.Alpine === undefined) {
     toggleUsage,
     // switchWallet,
     initENS,
+    initAZP,
     initTippy,
     initTomSelect,
     tsUpdateToken,
@@ -358,6 +359,29 @@ if (window.Alpine === undefined) {
 
   function delay(ms) {
     return new Promise(res => setTimeout(res, ms));
+  }
+
+  function limit(maxReqs, perSecs) {
+    let frameStart = 0;
+    let frameCount = 0;
+    let frameQueue = [];
+    let untilNext = 0;
+
+    // https://stackoverflow.com/a/33946793
+    return function limiter(func) {
+      func && frameQueue.push(func);
+      untilNext = perSecs * 1000 - (Date.now() - frameStart);
+      if (untilNext <= 0) {
+        frameStart = Date.now();
+        frameCount = 0;
+      }
+      if (++frameCount <= maxReqs) {
+        (frameQueue.shift() ?? (() => null))();
+      } else {
+        // console.log(`limiting function for ${untilNext/ 1000}s`);
+        setTimeout(limiter, untilNext);
+      }
+    };
   }
 
   // https://twind.run/junior-crazy-mummy?file=script
@@ -635,6 +659,43 @@ if (window.Alpine === undefined) {
       elem.innerHTML = ensName
         ? ensName
         : `${address.slice(0, 5)}…${address.slice(-4)}`;
+    });
+  }
+
+  function initAZP(elem, point) {
+    if (typeof initAZP.limiter === "undefined") {
+      initAZP.limiter = limit(1, 2); // 1 query / 2 seconds
+    }
+
+    const setUnavailable = () => {
+      elem.innerHTML = "(unavailable)";
+      elem.removeAttribute("href");
+      elem.setAttribute("disabled", undefined);
+      elem?.nextElementSibling?.remove();
+    };
+
+    elem.innerHTML = "…loading…";
+    return new Promise(resolve => initAZP.limiter(resolve)).then(() => (
+      SAFE.ownersGetAll(point, 1, "AZP")
+    )).then(owners => {
+      const owner = owners?.[0];
+      if (owner === undefined) {
+        setUnavailable();
+        return Promise.resolve(undefined);
+      } else {
+        const href = (elem?.getAttribute("href") ?? "").replace(/\/[^\/]+$/, "/" + owner);
+        elem.setAttribute("href", href);
+        // FIXME: This part in particular is really ugly; a better
+        // solution should be used if possible.
+        const sibling = elem?.nextElementSibling;
+        if (!!sibling) {
+          sibling.setAttribute("x-on:click", `copyText('${owner}'); swapHTML($el, '✔');`);
+        }
+        return initENS(elem, owner);
+      }
+    }).catch(error => {
+      setUnavailable();
+      return Promise.resolve(undefined);
     });
   }
 

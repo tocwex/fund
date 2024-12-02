@@ -20,9 +20,8 @@
   ?:  ?=(%clear aut)
     [%auth url.request.ord]
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
-  =+  .^(waz=(list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
-  =+  .^(vit=? %gx (en-beam [our.bol %fund da+now.bol] /vita/enabled/noun))
-  =/  was=(set addr:f)  (silt waz)
+  =+  .^(waz=(list addr:f) (beag:fx bol /prof/(scot %p sip)/adrz))
+  =+  .^(vit=? (beag:fx bol /vita/enabled))
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s profile"
@@ -113,16 +112,7 @@
             |=  [[lag=flag:f nex=prej:proj:f] acc=(list [flag:f prej:proj:f mula:f])]
             =-  (welp acc (turn muz |=(mul=mula:f [lag nex mul])))
             ^-  muz=(list mula:f)
-            %+  skim  ~(mula pj:fj -.nex)
-            |=  mul=mula:f
-            =/  who=(unit @p)  ?-(-.mul %trib ship.mul, %plej `ship.mul, %pruf ~)
-            =/  adr=(unit addr:f)  ?+(-.mul `from.when.mul %plej ~)
-            ?|  ?&(?=(^ who) =(sip u.who))
-                ?&  ?=(^ adr)
-                    (~(has in was) u.adr)
-                    ?!(&(?=(%pruf -.mul) ?=(%with note.mul)))
-                ==
-            ==
+            (~(mula pj:fj -.nex) (sy ~[%pruf-open %plej-open %plej-stif %plej-slyd %trib]) `[sip (silt waz)])
           ?~  txz  ;p.fund-warn: No transactions found.
           ?.  ?=(?(%mauth %admin) aut)  ;p.fund-warn: Unavailable to external users.
           ;div(class "w-full overflow-x-auto overflow-y-hidden")

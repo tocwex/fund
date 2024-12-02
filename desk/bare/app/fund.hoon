@@ -312,10 +312,11 @@
     =/  sip=@p    (slav %p sip.pat)
     ``noun+!>((bind (~(get by pf-our) sip) head))
   ::
-      [%x %prof sip=@ %adrz ~]
+      [%x %prof sip=@ res=?(%adrs %adrz) ~]
     =/  sip=@p    (slav %p sip.pat)
-    =+  waz=pf-pf-walz:(pf-abed:pf-core sip)
-    ``noun+!>(~(tap in ~(key by waz)))
+    =/  wam=(map addr:f sigm:f)  pf-pf-walz:(pf-abed:pf-core sip)
+    =/  was=(set addr:f)         ~(key by wam)
+    ``noun+?-(res.pat %adrs !>(was), %adrz !>(~(tap in was)))
   ::
       [%x %prof sip=@ %addr adr=@ ~]
     =/  sip=@p    (slav %p sip.pat)

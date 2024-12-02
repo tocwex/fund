@@ -209,7 +209,8 @@
   =+  [tym=|(wok ora) pyr=|(wok ora arb)]
   =/  pod=odit:f  ~(odit pj:f pro)
   =/  moz=(list odit:f)  ~(odim pj:f pro)
-  =/  muz=(list mula:f)  ~(mula pj:f pro)
+  =/  muz=(list mula:f)
+    (~(mula pj:f pro) (sy ~[%pruf-open %pruf-with %plej-open %plej-stif %plej-slyd %trib]) ~)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
   =/  ui
     |_  cas=tape

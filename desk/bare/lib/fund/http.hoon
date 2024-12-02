@@ -513,10 +513,7 @@
               ;div(class "flex flex-col gap-2")
                 ;h5.text-center.underline: Verified Wallets
                 ;div(class "flex flex-col items-end rounded-md bg-palette-background py-1 px-2")
-                  ;*  =+  .^  adz=(list addr)  %gx
-                              %+  en-beam  [our.bol dap.bol da+now.bol]
-                              /prof/(scot %p src.bol)/adrz/noun
-                          ==
+                  ;*  =+  .^(adz=(list addr) (beag:fx bol /prof/(scot %p src.bol)/adrz))
                       ?~  adz  :_  ~  ;span.text-gray-300: (none available)
                       %+  turn  (sort adz lth)
                       |=  adr=addr
@@ -1175,10 +1172,7 @@
       =-  ["{-}verified" "fund-pill-do"]
       ?~  ship.teb  ~
       =-  ?~(- ~ "✔ ")
-      .^  pro=(unit sigm)
-          %gx  (scot %p our.bol)  dap.bol  (scot %da now.bol)
-          /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)/noun
-      ==
+      .^((unit sigm) (beag:fx bol /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)))
     ::
         %pruf
       ?-  note.mul

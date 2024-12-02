@@ -1,7 +1,7 @@
 ::  /web/fund/page/config/hoon: render config page for %fund
 ::
 /-  fd=fund-data
-/+  fh=fund-http
+/+  fh=fund-http, fx=fund-xtra
 /+  rudder
 %-  mine:preface:fh
 ^-  page:fd
@@ -9,7 +9,7 @@
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
-  =+  .^(vit=? %gx (en-beam [our.bol %fund da+now.bol] /vita/enabled/noun))
+  =+  .^(vit=? (beag:fx bol /vita/enabled))
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")

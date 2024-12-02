@@ -16,6 +16,10 @@
 ::
 +$  sign  @ux
 ::
+::  $xash: blockchain transaction hash
+::
++$  xash  @ux
+::
 ::  $bloq: blockchain block height
 ::
 +$  bloq  @ud  ::  event-id:ethereum-types
@@ -26,7 +30,7 @@
 ::
 ::  $xact: blockchain transaction data
 ::
-+$  xact  (pair bloq addr)
++$  xact  (pair bloq xash)
 ::
 ::  $limz: blockchain metadata constraints/limitations
 ::
@@ -160,6 +164,26 @@
       %sess  ::  under assessment (on-chain, work reviewed)
       %done  ::  completed successfully
       %dead  ::  completed unsuccessfully
+  ==
+::
+::  $mype: m(ula) (t)ype; identifier for a %mula instance
+::
++$  mype
+  $~  %mula
+  $?  %mula       ::  any $mula instance
+      %pruf       ::  any $pruf instance
+      %pruf-open  ::  $pruf w/o a claim
+      %pruf-trib  ::  $pruf w/ a $trib claim
+      %pruf-with  ::  $pruf withdrawals
+      %plej       ::  any $plej instance
+      %plej-open  ::  $plej on live project w/o a fulfillment
+      %plej-trib  ::  $plej w/ a $trib fulfillment
+      %plej-stif  ::  welched $plej on finished project w/o fulfillment
+      %plej-slyd  ::  forgiven $plej on finished project w/o fulfillment
+      %trib       ::  any $trib instance
+      %trib-open  ::  raw $trib (no %pruf)
+      %trib-pruf  ::  $trib that are fulfilled $plej
+      %trib-plej  ::  $trib that are verified with $pruf
   ==
 ::
 ::  $over: o(ath) ver(sion) (based on content/formatting)

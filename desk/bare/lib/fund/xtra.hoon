@@ -190,4 +190,18 @@
     ?:  (lth vel min.u.dex)  (dif:si (sun:si min.u.dex) (sun:si vel))
     --0
   ==
+::
+::  +beam: `+en-beam` for the current desk
+::
+++  beam
+  |=  [bol=bowl:gall pat=path]
+  ^-  path
+  (en-beam [our.bol dap.bol da+now.bol] pat)
+::
+::  +beag: `en-beam` for the current desk, with %gall scry delimiters
+::
+++  beag
+  |=  [bol=bowl:gall pat=path]
+  ^-  path
+  :(welp [%gx]~ (beam bol pat) [%noun]~)
 --

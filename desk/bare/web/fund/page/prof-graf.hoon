@@ -1,7 +1,7 @@
 ::  /web/fund/page/prof-graf/hoon: 'subjective reputation graph' page for ship
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fh=fund-http, fx=fund-xtra
+/+  fj=fund-proj, fh=fund-http, fk=fund-core, fx=fund-xtra
 /+  rudder
 %-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh &))
 ^-  page:fd
@@ -22,8 +22,6 @@
       [%code 404 'invalid graph role']
     ?.  ?=(?(%ship %proj) foc.pat)
       [%code 404 'invalid graph focus']
-    =+  .^(waz=(list addr:f) %gx (en-beam [our.bol %fund da+now.bol] /prof/(scot %p sip)/adrz/noun))
-    =/  was=(set addr:f)  (silt waz)
     =/  ui
       |_  cas=tape
       +*  kas  "rounded-lg aspect-square border-white border-2"
@@ -141,49 +139,37 @@
               ?-    -.foc
                   %ship
                 =*  sip  +.foc
-                =/  poz=(list [flag:f prej:proj:f])
-                  %-  ~(rep by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat))
-                  |=  [[lag=flag:f pre=prej:proj:f] acc=(list [flag:f prej:proj:f])]
-                  ?.((~(has in (~(rols pj:fj -.pre) p.lag sip)) ros) acc [[lag pre] acc])
+                =/  sup=(unit [@p (set addr:f)])
+                  `[sip .^((set addr:f) (beag:fx bol /prof/(scot %p sip)/adrs))]
+                =/  poz
+                  %~  .  pz:fj
+                  %.  [ros sip]
+                  %~  skim-role  pz:fj
+                  (~(run by ~(ours conn:proj:fd bol [proj-subs proj-pubs]:dat)) head)
+                ::  TODO: Consider factoring this out into a more accessible module
+                =/  swan
+                  |=  [sam=(map swap:f cash:f) orm=@ud]
+                  ^-  @rs
+                  %-  ~(rep by sam)
+                  |=([[* c=cash:f] a=@rs] (add:rs a (div:rs (sun:rs c) (sun:rs orm))))
                 =/  sco=tape
                   %-  real:enjs:ff:fh
                   ?-    ros
-                      %fund
-                    ::  (amount for all contributions) / (amount for all open pledges)
-                    %-  rato:fx
-                    :_  %+  roll  poz
-                        |=  [[* pre=prej:proj:f] acc=@ud]
-                        %+  add  acc
-                        ?~(pej=(~(get by pledges.pre) sip) 0 cash.u.pej)
-                    %+  roll  poz
-                    |=  [[* pre=prej:proj:f] acc=@ud]
-                    %+  add  acc
-                    %+  roll  ~(fula pj:fj -.pre)
-                    |=  [mul=mula:f acc=@ud]
-                    ?.(&(?=(%trib -.mul) (~(has in was) from.when.mul)) 0 cash.mul)
+                      %fund  ::  (amount for all contributions) / (amount for all open pledges)
+                    =+  tiz=(roll-swap:poz |=(p=proj:proj:f (taly:fk (~(mula pj:fj p) [%trib ~ ~] sup))))
+                    =+  pez=(roll-swap:poz |=(p=proj:proj:f (taly:fk (~(mula pj:fj p) [%plej-open ~ ~] sup))))
+                    =/  orm=@ud  (max ~(wyt by tiz) ~(wyt by pez))
+                    (rato:fx (swan tiz orm) (swan pez orm))
                   ::
-                      %work
-                    ::  (amount of successfully withdrawn funds) / (cost of all open milestones)
-                    %-  rato:fx
-                    :-  (roll poz |=([[* p=prej:proj:f] a=@] (add a ~(take pj:fj -.p))))
-                    %+  roll  poz
-                    |=  [[* pre=prej:proj:f] acc=@]
-                    %+  add  acc
-                    %+  roll  `(list mile:proj:f)`milestones.pre
-                    |=  [mil=mile:proj:f acc=@]
-                    %+  add  acc
-                    ?:(?=(?(%done %dead) status.mil) 0 cost.mil)
+                      %work  ::  (amount of successfully withdrawn funds) / (cost of all open milestones)
+                    =+  taz=(roll-swap:poz |=(p=proj:proj:f ~(take pj:fj p)))
+                    =+  coz=(roll-swap:poz |=(p=proj:proj:f ~(cost pj:fj p)))
+                    =+  opz=((~(uno by taz) coz) |=([^ v=@ w=@] (dist:fx w v)))
+                    =/  orm=@ud  (max ~(wyt by opz) ~(wyt by taz))
+                    (rato:fx (swan taz orm) (swan opz orm))
                   ::
-                      %orac
-                    ::  (# approved milestones) / (# reviewed/pending milestones)
-                    %-  perc:fx
-                    :_  (roll poz |=([[* p=prej:proj:f] a=@] (add a (lent milestones.p))))
-                    %+  roll  poz
-                    |=  [[* pre=prej:proj:f] acc=@]
-                    %+  add  acc
-                    %-  lent
-                    %+  skim  `(list mile:proj:f)`milestones.pre
-                    |=(m=mile:proj:f =(%done status.m))
+                      %orac  ::  (# approved milestones) / (# reviewed/pending milestones)
+                    (perc:fx (lent (full-mile:poz [%done ~ ~])) (lent (full-mile:poz ~)))
                   ==
                 :-  pic=(~(ship-logo fa:fh bol) sip)
                 :_  buz=~

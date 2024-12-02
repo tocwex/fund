@@ -25,6 +25,13 @@
     %pruf  p.xact.when.mul
   ==
 ::
+::  +taly: tally up all the $mula cash values
+::
+++  taly
+  |=  muz=(list mula)
+  ^-  cash
+  (roll (turn muz |=(m=mula cash.m)) add)
+::
 ::  +daoq: @d(ate)a(bsolute) (for) $(bl)oq
 ::
 ++  daoq

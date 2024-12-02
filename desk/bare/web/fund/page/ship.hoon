@@ -1,7 +1,7 @@
 ::  /web/fund/page/ship/hoon: `src.bol` ship information page (used internally)
 ::
 /-  fd=fund-data
-/+  f=fund-core, fh=fund-http, fp=fund-prof
+/+  f=fund-core, fh=fund-http, fp=fund-prof, fx=fund-xtra
 /+  rudder
 ^-  page:fd
 |_  [bol=bowl:gall ord=order:rudder dat=data:fd]
@@ -32,10 +32,7 @@
       ;+  =-  ;data#wallets(value wap);
           ^-  wap=tape
           =-  (zing (join " " (turn waz addr:enjs:ff:fh)))
-          .^  waz=(list addr:f)
-              %gx
-              (en-beam [our.bol dap.bol da+now.bol] /prof/(scot %p src.bol)/adrz/noun)
-          ==
+          .^(waz=(list addr:f) (beag:fx bol /prof/(scot %p src.bol)/adrz))
     ==
   ==
 --

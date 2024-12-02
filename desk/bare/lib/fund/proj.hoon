@@ -21,7 +21,7 @@
     |=([[k=@p v=[^plej peta]] a=cash] (add a cash.v))
   ++  fill                                       ::  project-wide cost fill
     ^-  cash
-    (roll (turn fula |=(m=^mula cash.m)) add)
+    (roll (turn (mula (sy ~[%trib %pruf-open]) ~) |=(m=^mula cash.m)) add)
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
@@ -58,34 +58,74 @@
     =+  pej=?:(|(end =(-1 (cmp:si pre pos))) pre pos)
     [(filo:fc [cost.mil (abs:si fil) (abs:si pej) ~]) +(min) (dif:si fre fil) (dif:si pre pej)]
   ++  mula                                       ::  project-wide $mula list
+    |=  [mys=(set mype) who=(unit [sip=@p was=(set addr)])]
     ^-  (list ^mula)
-    =-  (sort - |=([m=^mula n=^mula] (gth (tula:fc m) (tula:fc n))))
-    ;:  welp
-        (turn ~(val by contribs) |=([t=treb *] `^mula`[%trib -.t]))
-        (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
-        (turn ~(val by proofs) |=(p=pruf `^mula`[%pruf p]))
-        (murn miz |=(m=mile `(unit ^mula)`?~(withdrawal.m ~ (bind pruf.u.withdrawal.m (lead %pruf)))))
-    ==
+    |^  %-  sort  %-  skim
+        %~  tap  in  %-  silt
+        `(list ^mula)`(mulz mys)
+    ++  sort
+      |=  muz=(list ^mula)
+      ^-  (list ^mula)
+      (^sort muz |=([a=^mula b=^mula] (gth (tula:fc a) (tula:fc b))))
+    ++  skim
+      |=  muz=(list ^mula)
+      ^-  (list ^mula)
+      ?~  who  muz
+      %+  ^skim  muz
+      |=  mul=^mula
+      =/  udr=(unit addr)  ?+(-.mul `from.when.mul %plej ~)
+      =/  sup=(unit @p)    ?-(-.mul %trib ship.mul, %plej `ship.mul, %pruf ~)
+      ?|  &(?=(^ sup) =(u.sup sip.u.who))
+          &(?=(^ udr) (~(has in was.u.who) u.udr))
+      ==
+    ++  mulz
+      |=  myz=(set mype)
+      ^-  (list ^mula)
+      ?+    myz  (zing (turn ~(tap in `(set mype)`myz) |=(m=mype (mulz m ~ ~))))
+          ~
+        ~
+      ::
+          [@ ~ ~]
+        ?-  -.myz
+          %mula  (mulz (sy ~[%pruf %plej %trib]))
+          %pruf  (mulz (sy ~[%pruf-open %pruf-trib %pruf-with]))
+          %plej  (welp (turn ~(val by pledges) |=([p=^plej *] [%plej p])) (mulz %plej-trib ~ ~))
+          ::  (mulz (sy ~[%plej-open %plej-trib %plej-stif %plej-slyd]))
+          %trib  (turn ~(val by contribs) |=([t=treb *] `^mula`[%trib -.t]))
+        ::
+        ::
+          %pruf-open  (turn ~(val by proofs) (lead %pruf))
+          %pruf-trib  (murn ~(val by contribs) |=([t=treb *] (bind pruf.t (lead %pruf))))
+          %pruf-with  (murn miz |=(m=mile ?~(withdrawal.m ~ (bind pruf.u.withdrawal.m (lead %pruf)))))
+        ::
+        ::
+          %plej-open  (murn ~(val by pledges) |=([p=^plej m=peta] ?.(?=(~ view.m) ~ `[%plej p])))
+          %plej-trib  (murn ~(val by contribs) |=([t=treb *] (bind plej.t (lead %plej))))
+        ::
+            %plej-stif
+          %+  murn  ~(val by pledges)
+          |=([p=^plej m=peta] ?.(&(?=(^ view.m) ?=(%stif u.view.m)) ~ `[%plej p]))
+        ::
+            %plej-slyd
+          %+  murn  ~(val by pledges)
+          |=([p=^plej m=peta] ?.(&(?=(^ view.m) ?=(%slyd u.view.m)) ~ `[%plej p]))
+        ::
+        ::
+          %trib-open  (murn ~(val by contribs) |=([t=treb *] ?^(pruf.t ~ `[%trib -.t])))
+          %trib-pruf  (murn ~(val by contribs) |=([t=treb *] ?~(pruf.t ~ `[%trib -.t])))
+          %trib-plej  (murn ~(val by contribs) |=([t=treb *] ?~(plej.t ~ `[%trib -.t])))
+        ==
+      ==
+    --
   ++  fula                                       ::  project-wide "filled" $mula list
     ^-  (list ^mula)
-    |^  (welp trib-fula pruf-fula)
-    ++  trib-fula
-      ^-  (list ^mula)
-      %-  turn  :_  |=([t=treb *] `^mula`[%trib -.t])
-      (skip ~(val by contribs) |=([t=treb *] ?=(~ pruf.t)))
-    ++  pruf-fula
-      ^-  (list ^mula)
-      %-  turn  :_  |=(p=pruf `^mula`[%pruf p])
-      (skim ~(val by proofs) |=(p=pruf ?=(%depo note.p)))
-    --
+    (mula (sy ~[%trib %pruf-open]) ~)
   ++  pula                                       ::  project-wide "pledged" $mula list
     ^-  (list ^mula)
-    %+  welp  (turn ~(val by pledges) |=([p=^plej *] `^mula`[%plej p]))
-    %+  murn  ~(val by contribs)
-    |=([t=treb *] ?~(plej.t ~ `(unit ^mula)`[~ %plej u.plej.t]))
+    (mula [%plej ~ ~] ~)
   ++  bloq                                       ::  project-wide latest block
     ^-  ^bloq
-    =/  mul=(list ^mula)  mula
+    =/  mul=(list ^mula)  (mula [%mula ~ ~] ~)
     =/  moq=^bloq  ?~(mul 0 (tula:fc i.mul))
     =/  loq=^bloq  p:xact:(fall contract *^oath)
     (max loq moq)
@@ -203,5 +243,79 @@
         saf=(addr:enjs:ff safe:(fall contract *^oath))
         end=?-(byp %done "completed", %dead "canceled")
     ==
+  --
+::
+::  +pz: p(rojects) (library); helper door for $proz data (statistics, filters)
+::
+++  pz
+  |_  poz=proz
+  ++  skim                                       ::  projects filtered by predicate
+    |=  ski=$-([flag proj] ?)
+    ^-  proz
+    %-  ~(rep by poz)
+    |=  [nex=[flag proj] acc=proz]
+    ?.((ski nex) acc (~(put by acc) nex))
+  ++  skim-role                                  ::  projects filtered by role for ship
+    |=  [rol=role sip=@p]
+    ^-  proz
+    (skim |=([f=flag p=proj] (~(has in (~(rols pj p) p.f sip)) rol)))
+  ++  roll                                       ::  reduce all projects by reduction
+    |*  rol=$-([flag proj] *)
+    ^-  _$:rol
+    (^roll ~(tap by poz) rol)
+  ++  roll-swap                                  ::  reduce all projects by swap
+    |=  p2c=$-(proj cash)
+    ^-  (map swap cash)
+    %-  ~(rep by poz)
+    |=  [[lag=flag pro=proj] acc=(map swap cash)]
+    =/  amo=cash  (p2c pro)
+    ?:  =(0 amo)  acc
+    %+  ~(put by acc)  payment.pro
+    (add amo (~(gut by acc) payment.pro 0))
+  ::
+  ++  uniq                                       ::  unique content for all projects
+    |*  piq=$-([flag proj] (list))
+    %-  silt
+    ^-  _$:piq
+    (zing (turn ~(tap by poz) piq))
+  ++  uniq-work                                  ::  unique workers for all projects
+    ^-  (set @p)
+    (~(uniq pz poz) |=([f=flag *] `(list @p)`[p.f]~))
+  ++  uniq-orac                                  ::  unique oracles for all projects
+    ^-  (set @p)
+    (~(uniq pz poz) |=([* p=proj] `(list @p)`[p.assessment.p]~))
+  ++  uniq-trib                                  ::  unique contributors for all projects
+    ^-  (set addr)
+    %-  ~(uniq pz poz)
+    |=  [* pro=proj]
+    ^-  (list addr)
+    %+  murn  (~(mula pj pro) (sy ~[%pruf %trib]) ~)
+    |=(m=mula ?.(?=(?(%trib %pruf) -.m) ~ `from.when.m))
+  ++  uniq-plej                                  ::  unique pledgers for all projects
+    ^-  (set @p)
+    %-  ~(uniq pz poz)
+    |=  [* pro=proj]
+    ^-  (list @p)
+    %+  murn  (~(mula pj pro) [%plej ~ ~] ~)
+    |=(m=mula ?.(?=(%plej -.m) ~ `ship.m))
+  ::
+  ++  full                                       ::  non-unique content for all projects
+    |*  piq=$-([flag proj] (list))
+    ^-  _$:piq
+    (zing (turn ~(tap by poz) piq))
+  ++  full-mile                                  ::  all milestones (maybe status)
+    |=  sut=(set stat)
+    ^-  (list mile)
+    %-  full
+    |=  [* pro=proj]
+    (^skim `(list mile)`milestones.pro |=(m=mile |(=(~ sut) (~(has in sut) status.m))))
+  ++  full-trib                                  ::  all contributions for all projects (maybe ship)
+    |=  sup=(unit [sip=@p was=(set addr)])
+    ^-  (list mula)
+    (full |=([* p=proj] (~(mula pj p) (sy ~[%trib %pruf-open]) sup)))
+  ++  full-plej                                  ::  all pledges for all projects (maybe ship)
+    |=  sup=(unit @p)
+    ^-  (list mula)
+    (full |=([* p=proj] (~(mula pj p) [%plej ~ ~] (bind sup (late *(set addr))))))
   --
 --

@@ -395,11 +395,12 @@
           ==
           ;body(class "fund-body {cas}", x-data "fund")
             ;*  ?.(hed ~ [(head bol ord ~)]~)
+            ;+  modl
             ;+  bod
             ;*  ?.(fut ~ [(foot bol ord ~)]~)
           ==
         ==
-    ++  meta
+    ++  meta                                   ::  docmument metadata (for embedding)
       ^-  marl
       ::  TODO: Remove these unused lines that could be used to check if
       ::  this is actually a %proj-view page
@@ -438,6 +439,27 @@
           ;meta(property "twitter:domain", content dom);
       ==
     --
+  ++  modl                                     ::  document generic modal
+    ^-  manx
+    ::  NOTE: Mobile-friendly UI modal taken from:
+    ::  https://tailwindui.com/components/application-ui/overlays/modal-dialogs
+    ;dialog#fund-modl(x-ref "fund_modl", class "backdrop:bg-black/50")
+      ;div(class "fixed inset-0 z-10 w-screen overflow-y-auto")
+        ;div(class "flex min-h-full items-end justify-center p-4 text-center sm:(items-center p-0)")
+          ;div(class "relative overflow-hidden rounded-lg text-left sm:(my-8 w-full max-w-lg)")
+            ;div(class "bg-palette-background px-4 pb-4 pt-5 sm:(p-6 pb-4)")
+              ;div(class "mt-3 text-center flex flex-col gap-3 sm:(mt-0 text-left)")
+                ;h2: Message
+                ;p: If you see this message, please send a bug report to ~tocwex.syndicate!
+              ==
+            ==
+            ;div(class "bg-palette-contrast flex gap-2 px-4 py-3 sm:(flex-row-reverse px-6)")
+              ;button.fund-butn-fa-md(type "button", x-on-click "$refs.fund_modl.close()"): Close
+            ==
+          ==
+        ==
+      ==
+    ==
   ++  head                                     ::  document top matter
     |=  [bol=bowl:gall ord=order:rudder hed=marl]
     ^-  manx
@@ -1258,7 +1280,7 @@
     ^-  manx
     ;button  =type  "button"
         =class  cas
-        =x-on-click  "copyText('{lin}'); alert('link copied to clipboard');"
+        =x-on-click  "copyText('{lin}'); showModal('copied', 'Link copied to clipboard!');"
       ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
     ==
   ++  copy-butn                                  ::  arbitrary text copy button

@@ -335,6 +335,7 @@ if (window.Alpine === undefined) {
     scrollTo,
     sendFormData,
     sendForm,
+    showModal,
     checkWallet,
     toggleWallet,
     toggleUsage,
@@ -515,9 +516,12 @@ if (window.Alpine === undefined) {
       }).then(action).then(formData => (
         sendFormData(formData, event)
       )).catch((error) => {
-        event.target.innerHTML = "error ✗";
         console.log(error);
-        alert(error.message);
+        showModal("⚠ error ⚠", error.message);
+      }).finally(() => {
+        event.target.querySelectorAll(".animate-ping").forEach((elem) => {
+          elem.remove();
+        });
       });
     }
   }
@@ -554,6 +558,13 @@ if (window.Alpine === undefined) {
 
     document.body.appendChild(form);
     form.requestSubmit(button);
+  }
+
+  function showModal(title, text) {
+    const dialog = document.querySelector('#fund-modl');
+    document.querySelector('#fund-modl h2').innerText = title;
+    document.querySelector('#fund-modl p').innerText = text;
+    dialog.showModal();
   }
 
   function checkWallet(expectedAddresses, roleTitle) {

@@ -211,7 +211,14 @@
       %-  zing  %+  join  "\0a"
       ^-  (list tape)
       :~  "document.addEventListener('alpine:init', () => Alpine.data('prof_view', () => (\{"
-          "})));"
+          ^-  tape  ^~
+          %+  rip  3
+          '''
+          init() {
+            // console.log('hello world');
+          },
+          })));
+          '''
       ==
     ==
   ==

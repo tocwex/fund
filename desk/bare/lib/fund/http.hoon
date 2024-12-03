@@ -443,18 +443,30 @@
     ^-  manx
     ::  NOTE: Mobile-friendly UI modal taken from:
     ::  https://tailwindui.com/components/application-ui/overlays/modal-dialogs
-    ;dialog#fund-modl(x-ref "fund_modl", class "backdrop:bg-black/50")
+    ;dialog#fund-modl(x-ref "fund_modl", class "bg-transparent backdrop:bg-black/50")
       ;div(class "fixed inset-0 z-10 w-screen overflow-y-auto")
         ;div(class "flex min-h-full items-end justify-center p-4 text-center sm:(items-center p-0)")
-          ;div(class "relative overflow-hidden rounded-lg text-left sm:(my-8 w-full max-w-lg)")
+          ;div  =x-on-click-outside  "$refs.fund_modl.close()"
+              =class  "relative overflow-hidden rounded-lg text-left sm:(my-8 w-full max-w-lg)"
             ;div(class "bg-palette-background px-4 pb-4 pt-5 sm:(p-6 pb-4)")
               ;div(class "mt-3 text-center flex flex-col gap-3 sm:(mt-0 text-left)")
-                ;h2: Message
-                ;p: If you see this message, please send a bug report to ~tocwex.syndicate!
+                ;h2(x-ref "fund_modl_tytl"): Message
+                ;p(x-ref "fund_modl_mesg")
+                  ; If you see this message, please send a bug report to ~tocwex.syndicate!
+                ==
               ==
             ==
             ;div(class "bg-palette-contrast flex gap-2 px-4 py-3 sm:(flex-row-reverse px-6)")
-              ;button.fund-butn-fa-md(type "button", x-on-click "$refs.fund_modl.close()"): Close
+              ;button  =type  "button"
+                  =class  "fund-butn-fa-md"
+                  =x-on-click  "$refs.fund_modl.close()"
+                ; Close
+              ==
+              ;button  =type  "button"
+                  =class  "fund-butn-tr-md"
+                  =x-on-click  "copyText($refs.fund_modl_mesg.innerText); swapHTML($el, '✔');"
+                ; Copy
+              ==
             ==
           ==
         ==

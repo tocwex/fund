@@ -21,7 +21,7 @@
     |=([[k=@p v=[^plej peta]] a=cash] (add a cash.v))
   ++  fill                                       ::  project-wide cost fill
     ^-  cash
-    (roll (turn (mula (sy ~[%trib %pruf-open]) ~) |=(m=^mula cash.m)) add)
+    (roll (turn (mula (sy ~[%trib-pruf %pruf-open]) ~) |=(m=^mula cash.m)) add)
   ++  take                                       ::  project-wide claimed funds
     ^-  cash
     %-  roll  :_  add
@@ -119,7 +119,7 @@
     --
   ++  fula                                       ::  project-wide "filled" $mula list
     ^-  (list ^mula)
-    (mula (sy ~[%trib %pruf-open]) ~)
+    (mula (sy ~[%trib-pruf %pruf-open]) ~)
   ++  pula                                       ::  project-wide "pledged" $mula list
     ^-  (list ^mula)
     (mula [%plej ~ ~] ~)

@@ -142,11 +142,11 @@
       ?+  arz=(parz:fh bod (sy ~[%mut %mui]))  p.arz  [%| *]
         =/  mut=@t  (~(got by p.arz) %mut)
         =/  mui=@t  (~(got by p.arz) %mui)
-        =/  med=@   ?+(mut (addr:dejs:ff:fh mui) %plej (ship:dejs:ff:fh mui))
+        =/  med=@   ?+(mut +:(xact:dejs:ff:fh mui) %plej (ship:dejs:ff:fh mui))
         =/  mid=@
           ?+    mut  0
             %plej  ?~(pej=(~(get by pledges.pro) `@p`med) 0 id.u.pej)
-            %trib  ?~(teb=(~(get by contribs.pro) `addr:f`med) 0 id.u.teb)
+            %trib  ?~(teb=(~(get by contribs.pro) `xash:f`med) 0 id.u.teb)
           ==
         ?-    dif
             %mula-blot
@@ -154,7 +154,7 @@
           ^-  sow=?
           ?+    mut  !!
             %plej  show:(~(got by pledges.pro) `@p`med)
-            %trib  show:(~(got by contribs.pro) `addr:f`med)
+            %trib  show:(~(got by contribs.pro) `xash:f`med)
           ==
         ::
             %mula-view
@@ -167,7 +167,7 @@
             %mula-mine
           ?.  ?=(%pruf mut)  !!
           =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
-          =/  puf=pruf:f  (~(got by proofs.pro) `addr:f`med)
+          =/  puf=pruf:f  (~(got by proofs.pro) `xash:f`med)
           [%mula %trib who cash.puf when.puf %$]
         ::
             %mula-redo
@@ -175,7 +175,7 @@
           =-  [%redo `(sub boq win) `(add boq win)]
           ^-  boq=bloq:f
           ?.  ?=(%trib mut)  !!
-          =+  tib=(~(got by contribs.pro) `addr:f`med)
+          =+  tib=(~(got by contribs.pro) `xash:f`med)
           p.xact.when.tib
         ==
       ==
@@ -326,11 +326,6 @@
                                 :~  [%readonly ~]
                                     [%value (comp:enjs:ff:fh cash.u.pej payment.pro)]
                                 ==
-                                ::  FIXME: Remove this after multi-send NFTs are supported
-                                  ?.  nft  ~
-                                :~  [%readonly ~]
-                                    [%value "1"]
-                                ==
                             ==
                         ;label(for "sum"): amount
                       ==
@@ -363,7 +358,7 @@
                                       } else {
                                         initTomSelect($el, {
                                           empty: isNFT,
-                                          maxItems: !isNFT ? undefined : 1, // maxItems,
+                                          maxItems: !isNFT ? undefined : maxItems,
                                           load: !isNFT ? undefined : tsLoadNFTs($el),
                                         });
                                       }
@@ -667,7 +662,7 @@
                 =/  myp=tape  (trip -.mul)
                 =/  mas=tape  ?:(&(?=(%pruf -.mul) ?=(%with note.mul)) "fund-card-back" "fund-card-fore")
                 =/  muf=tape  ?+(-.mul (addr:enjs:ff:fh from.when.mul) %plej ~)
-                =/  mid=tape  ?+(-.mul (addr:enjs:ff:fh q.xact.when.mul) %plej (ship:enjs:ff:fh ship.mul))
+                =/  mid=tape  ?+(-.mul (xact:enjs:ff:fh q.xact.when.mul) %plej (ship:enjs:ff:fh ship.mul))
                 =/  mow=bean
                   ?-  -.mul
                     %plej  =<(show (~(got by pledges.pro) ship.mul))

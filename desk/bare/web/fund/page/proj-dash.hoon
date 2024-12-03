@@ -81,7 +81,7 @@
     :-  |=  [lag=flag:f mex=mexa:ex]
         ^-  bean
         ?&  ?~(text.arg & ?=(^ (find (cass (trip u.text.arg)) (cass (trip title.mex)))))
-            ?~(swap.arg & =(payment.mex u.swap.arg))
+            ?~(swap.arg & =>([a=payment.mex b=u.swap.arg] &(=([chain addr]:a [chain addr]:b))))
             ?~(work.arg & =(worker.mex u.work.arg))
             ?~(orac.arg & =(oracle.mex u.orac.arg))
             ?~(stat.arg & =(status.mex u.stat.arg))

@@ -519,6 +519,7 @@ if (window.Alpine === undefined) {
         console.log(error);
         showModal("⚠ error ⚠", error.message);
       }).finally(() => {
+        // TODO: Consider moving this to the error case
         event.target.querySelectorAll(".animate-ping").forEach((elem) => {
           elem.remove();
         });

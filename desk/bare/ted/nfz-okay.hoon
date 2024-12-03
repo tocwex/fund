@@ -39,6 +39,10 @@
 %-  malt
 %-  fall  :_  *(list [@t @t])
 =,  dejs-soft:format
-=+  sy=|=(j=json `(unit @t)`?.(?=(?([%s *] [%n *]) j) ~ `p.j))
+::  NOTE: These helper gates enable parsing of 'attributes' maps with
+::  some non-conforming entries (e.g. {value: "..."}, which is allowed
+::  by the NFT metadata standard)
+=+  zu=|*(l=(list (unit)) (some |-(?~(l ~ ?~(i.l $(l t.l) [u.i.l $(l t.l)])))))
+=+  au=|*(w=$-(json (unit *)) |=(j=json ?.(?=([%a *] j) ~ (zu |-(?~(p.j ~ [(w i.p.j) $(p.j t.p.j)]))))))
 %.  jon
-(ot [attributes+(ar (ot ~[[%'trait_type' so] value+sy]))]~)
+(ot [attributes+(au (ot ~[[%'trait_type' so] value+so]))]~)

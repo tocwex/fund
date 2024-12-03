@@ -468,7 +468,9 @@
       =/  act=xact:f  [(slav %ud boq.pat) (slav %ux hax.pat)]
       =/  fom=addr:f  (slav %ux fom.pat)
       =+  !<(gud=(set @) q.p.p.syn)
-      (emit (pj-mk-pruf:(pj-abed:pj-core lag) act fom ~(wyt in gud) typ))
+      %-  emil
+      ?:  =(~ gud)  ~
+      [(pj-mk-pruf:(pj-abed:pj-core lag) act fom ~(wyt in gud) typ)]~
     ==
   ==
 ::
@@ -655,7 +657,8 @@
     %-  snoc  :_  `card`car(pat pat, act [%poke %fund-watcher-poke !>([%watch pat cfg])])
     ^-  (list card)
     ?^  tob  ~
-    %-  zing  %+  turn
+    %-  zing
+    %+  turn
       (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
     |=  old=path
     :-  car(pat old, act [%leave ~])                    ::  clear out:

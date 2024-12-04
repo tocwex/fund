@@ -166,9 +166,19 @@
       %dead  ::  completed unsuccessfully
   ==
 ::
-::  $mype: m(ula) (t)ype; identifier for a %mula instance
+::  $fity: fi(ll) (ty)pe; identifier for thermometer fill override
 ::
-+$  mype
++$  fity
+  $~  %none
+  $?  %none
+      %fill
+      %plej
+      %over
+  ==
+::
+::  $muty: mu(la) (ty)pe; identifier for a %mula instance
+::
++$  muty
   $~  %mula
   $?  %mula       ::  any $mula instance
       %pruf       ::  any $pruf instance

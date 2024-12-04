@@ -57,8 +57,20 @@
     =+  pos=?:(dun --0 (dif:si fos fil))
     =+  pej=?:(|(end =(-1 (cmp:si pre pos))) pre pos)
     [(filo:fc [cost.mil (abs:si fil) (abs:si pej) ~]) +(min) (dif:si fre fil) (dif:si pre pej)]
+  ++  odid                                       ::  per-milestone audit (w/ display overrides)
+    ^-  (list [^odit fity])
+    =-  (flop `(list [^odit fity])`-<)
+    %^  spin  (flop odim)  *fity
+    |=  [cur=^odit fit=fity]
+    =-  [[cur ?.(?=(%none cuf) %none fit)] ?.(?=(%none cuf) cuf fit)]
+    ^-  cuf=fity
+    ?:  &(=(0 cost.cur) |((lth 0 plej.cur) (lth 0 fill.cur)))  %over
+    ?:  (lth 0 fill.cur)  %fill
+    ?:  (lth 0 plej.cur)  %plej
+    ?:  &(?=(^ void.cur) !s.u.void.cur (lth 0 v.u.void.cur))  %over
+    %none
   ++  mula                                       ::  project-wide $mula list
-    |=  [mys=(set mype) who=(unit [sip=@p was=(set addr)])]
+    |=  [mys=(set muty) who=(unit [sip=@p was=(set addr)])]
     ^-  (list ^mula)
     |^  %-  sort  %-  skim
         %~  tap  in  %-  silt
@@ -79,9 +91,9 @@
           &(?=(^ udr) (~(has in was.u.who) u.udr))
       ==
     ++  mulz
-      |=  myz=(set mype)
+      |=  myz=(set muty)
       ^-  (list ^mula)
-      ?+    myz  (zing (turn ~(tap in `(set mype)`myz) |=(m=mype (mulz m ~ ~))))
+      ?+    myz  (zing (turn ~(tap in `(set muty)`myz) |=(m=muty (mulz m ~ ~))))
           ~
         ~
       ::

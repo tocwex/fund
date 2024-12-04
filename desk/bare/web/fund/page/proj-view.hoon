@@ -208,7 +208,7 @@
   =+  arb==(!<(@p (slot:config %point)) src.bol)
   =+  [tym=|(wok ora) pyr=|(wok ora arb)]
   =/  pod=odit:f  ~(odit pj:f pro)
-  =/  moz=(list odit:f)  ~(odim pj:f pro)
+  =/  moz=(list [odit:f fity:f])  ~(odid pj:f pro)
   =/  muz=(list mula:f)
     (~(mula pj:f pro) (sy ~[%pruf-open %pruf-with %plej-open %plej-stif %plej-slyd %trib]) ~)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
@@ -540,7 +540,7 @@
             ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
                 |=  [min=@ mil=mile:f]
                 ^-  manx
-                =/  oil=odit:f  (snag min moz)
+                =/  [oil=odit:f fit=fity:f]  (snag min moz)
                 =/  oas=tape  ?:(?=(?(%done %dead) status.mil) "fund-card-back" "fund-card-fore")
                 ;form  =id  "fund-mile-{<min>}"  =method  "post"
                     =x-data  "\{ mile_idex: {<min>} }"
@@ -552,7 +552,7 @@
                         =class  "w-full lg:w-min flex flex-col gap-2 p-1 rounded-md hover:cursor-pointer"
                       ;+  %+  ~(work-bump ui:fh "w-full justify-between lg:w-min")  status.mil
                           ;span: {(swam:enjs:ff:fh cost.mil payment.pro)}
-                      ;+  (mile-ther:ui:fh oil ~ big=|)
+                      ;+  (mile-ther:ui:fh oil fit ~ big=|)
                     ==
                     ;div(class "hidden")
                       ;span.font-bold: {(swam:enjs:ff:fh fill.oil payment.pro)}
@@ -781,7 +781,7 @@
           :(weld "swap_symbol: '" (trip symbol.payment.pro) "',")
           :(weld "swap_address: '" (trip addr.payment.pro) "',")
           :(weld "orac_cut: " (cash:enjs:ff:fh q.assessment.pro 6) ",")
-          :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (comp:enjs:ff:fh fill.n payment.pro) ","))) "],")
+          :(weld "mile_fill: [" (roll moz |=([[n=odit:f *] a=tape] :(weld a (comp:enjs:ff:fh fill.n payment.pro) ","))) "],")
           :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:ff:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")
           :(weld "mile_sign: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (sign:enjs:ff:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n)) "',"))) "],")
           :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (comp:enjs:ff:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n) payment.pro) ","))) "],")

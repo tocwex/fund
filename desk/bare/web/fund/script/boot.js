@@ -565,7 +565,9 @@ if (window.Alpine === undefined) {
     const dialog = document.querySelector('#fund-modl');
     document.querySelector('#fund-modl h2').innerText = title;
     document.querySelector('#fund-modl p').innerText = text;
-    dialog.showModal();
+    // FIXME: If a click event generates the modal, we wait for a bit so
+    // as not to overlap with a click outside closing event
+    delay(50).then(() => dialog.showModal());
   }
 
   function checkWallet(expectedAddresses, roleTitle) {

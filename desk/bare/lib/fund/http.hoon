@@ -387,10 +387,10 @@
             ;link  =as  "style"  =rel  "stylesheet preload"  =crossorigin  ~
               =href  "{ape}/f1719608058163x825753518615514200/Safiro%20Medium.css";
             ;link/"{(dest:enrl:ff /asset/[~.fund.css])}"(rel "stylesheet");
-            ;*  ?.  !<(bean (slot:config %debug))  ~
-                :~  ;script(src "/session.js");
-                    (inject:tonic q.byk.bol)
-                ==
+            ::  ;*  ?.  !<(bean (slot:config %debug))  ~
+            ::      :~  ;script(src "/session.js");
+            ::          (inject:tonic q.byk.bol)
+            ::      ==
             ;script(type "module", src "{(dest:enrl:ff /asset/[~.boot.js])}");
           ==
           ;body(class "fund-body {cas}", x-data "fund")
@@ -443,7 +443,7 @@
     ^-  manx
     ::  NOTE: Mobile-friendly UI modal taken from:
     ::  https://tailwindui.com/components/application-ui/overlays/modal-dialogs
-    ;dialog#fund-modl(x-ref "fund_modl", class "bg-transparent backdrop:bg-black/50")
+    ;dialog#fund-modl(x-ref "fund_modl", class "bg-transparent backdrop:bg-black/50", aria-hidden "true")
       ;div(class "fixed inset-0 z-10 w-screen overflow-y-auto")
         ;div(class "flex min-h-full items-end justify-center p-4 text-center sm:(items-center p-0)")
           ;div  =x-on-click-outside  "$refs.fund_modl.close()"
@@ -919,11 +919,11 @@
     ;div(class "w-full flex flex-row items-center gap-3")
       ;div(class "w-full min-w-0 flex-1 flex flex-col gap-1")
         ;div(class "w-full min-w-0 flex-1 flex flex-row gap-1")
-          ;*  %+  turn  (enum:fx ~(odim pj pro))
-              |=  [min=@ mod=odit]
+          ;*  %+  turn  (enum:fx ~(odid pj pro))
+              |=  [min=@ odi=odit fit=fity]
               ;div  =class  "w-full min-w-0 flex-1 hover:cursor-pointer"
                   =x-on-click  "scrollTo('fund-mile-{<min>}')"
-                ;+  (mile-ther mod ?.(big ~ "Milestone {<+(min)>}") big)
+                ;+  (mile-ther odi fit ?.(big ~ "Milestone {<+(min)>}") big)
               ==
         ==
         ;*  ?.  big  ~
@@ -1023,10 +1023,11 @@
       ==
     ==
   ++  mile-ther                                  ::  milestone funding thermometer
-    |=  [odi=odit tyt=tape big=bean]
+    |=  [odi=odit fit=fity tyt=tape big=bean]
     ^-  manx
     ::  TODO: Clean up the overage handling code in here.
     |^  =+  [udr ovr]=(need void:(filo:fk odi))
+        =+  ydr=&(udr ?=(%none fit))
         =+  tot=(add cost.odi ?:(udr 0 ovr))
         =/  caz=(list cash)
           ?:  udr  ~[fill.odi plej.odi ovr]
@@ -1036,23 +1037,26 @@
           =+  pos=(sub fos fil)
           =+  pej=?:((lte pre pos) pre pos)
           ~[fil pej ovr]
-        =+  naz=`(list tape)`~["funded" "pledged" ?:(udr "unfunded" "above goal")]
+        =+  naz=`(list tape)`~["funded" "pledged" ?:(ydr "unfunded" "above goal")]
         =/  kaz=(list tape)
           =+  qaz=[con="palette-primary" pej="palette-secondary" ovr=?:(udr "white" "palette-primary")]
           :~  "bg-{con.qaz} border-{con.qaz}"
               "bg-{pej.qaz} border-{ovr.qaz}"
-              "bg-{?:(udr ovr.qaz (trip 'gradient-mix-palette-primary_palette-system'))} border-{ovr.qaz}"
+              "bg-{?:(ydr ovr.qaz (trip 'gradient-mix-palette-primary_palette-system'))} border-{ovr.qaz}"
           ==
         ::  FIXME: Funding percentage calculations aren't right when there
         ::  are overages (since we renormalize to overage amount).
-        =/  cez=(list @rs)  ?:(=(0 tot) ~[.0 .0 .100] (turn caz (curr perc:fx tot)))
+        =/  cez=(list @rs)
+          ?.  ?=(%none fit)  ?-(fit %fill ~[.100 .0 .0], %plej ~[.0 .100 .0], %over ~[.0 .0 .100])
+          ?:  =(0 tot)  ~[.0 .0 .100]
+          (turn caz (curr perc:fx tot))
         =/  dez=(list @ud)
           =<  -  %^  spin  (iron (turn cez cend))  0
           |=([nex=@ud acc=@ud] =-([- -] (add nex acc)))
         ;div(class "fund-odit-ther relative {(trip ?:(big ~ 'sm:h-4'))} {cas}")
           ;div(class "h-full w-full flex relative")
-            ;*  %+  murn  (flop :(izip:fx caz naz kaz cez dez))
-                |=  [cas=cash nam=tape kas=tape cen=@rs den=@ud]
+            ;*  %+  murn  (flop :(izip:fx naz kaz cez dez))
+                |=  [nam=tape kas=tape cen=@rs den=@ud]
                 ^-  (unit manx)
                 =/  qas=tape  ?.(big "border-2" "border-0 sm:rounded-md")
                 ?:  =(0 den)  ~

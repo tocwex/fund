@@ -558,7 +558,8 @@
             ==
             ;*  ?.  (auth bol)  ~  ::  user action section
                 :~  ;hr;
-                    ;a/"{(prot:enrl:ff src.bol)}"(class bas): profile 👤
+                    ;a/"{(dest:enrl:ff /config)}"(class bas): settings ⚙︎
+                    ::  ;a/"{(prot:enrl:ff src.bol)}"(class bas): profile 👤
                 ==
             ;hr;  ::  login/logout section
             ;+  =-  ;a/"/~/{pre}redirect={(trip url)}"(class bas, target tgt): {txt}
@@ -704,7 +705,7 @@
       ;+  %^  ~(mold-card ..$ ~)  syz=%md  pic=(~(ship-logo fa bol) sip)
           :_  buz=~
           :~  :*  txt=(~(ship-tytl fa bol) sip)
-                  lin=?.((auth bol) ~ (prot:enrl:ff sip))
+                  lin=?.(&((auth bol) =(our src):bol) ~ (chat:enrl:ff sip))
                   cop=(ship:enjs:ff sip)
                   xin=~
               ==
@@ -1150,7 +1151,7 @@
         %.  [(~(ship-tytl ..$ ~) sip bol)]~
         %~  rech  ma
         %-  ~(link-text ..$ ?.(?=(?(%xs %sm) syz) ~ "fund-clip"))
-        [wer=?.((auth bol) ~ (prot:enrl:ff sip)) tab=| txt="~" diz=~]
+        [wer=?.(&((auth bol) =(our src):bol) ~ (chat:enrl:ff sip)) tab=| txt="~" diz=~]
     ==
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]

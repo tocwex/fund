@@ -17,7 +17,7 @@
   =*  sip  u.sup
   =/  aut=?(%clear %eauth %mauth %admin)
     ?.((auth:fh bol) %clear ?:(=(our src):bol %admin ?:(=(sip src.bol) %mauth %eauth)))
-  ?:  ?=(%clear aut)
+  ?.  ?=(%admin aut)
     [%auth url.request.ord]
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =+  .^(waz=(list addr:f) (beag:fx bol /prof/(scot %p sip)/adrz))
@@ -28,6 +28,12 @@
   :+  fut=&  hed=&
   ;div(x-data "prof_view")
     ;div(class "fund-main")
+      ;p(class "text-yellow-500 border-yellow-500 border rounded-md p-3")
+        ; Congratulations on finding our experimental profile pages!
+        ; Please feel free
+        ;a.text-link(target "_blank", href (chat:enrl:ff:fh ~tocwex)):  to DM ~tocwex
+        ;span:  if you have feedback.
+      ==
       ;div(class "flex flex-col")
         ;h1: {(ship:enjs:ff:fh sip)}'s Profile
         ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens
@@ -49,7 +55,7 @@
               :_  ~
               (sher-butn:ui:fh "{(trip ship-url.u.pru)}{(prot:enrl:ff:fh sip)}")
           ::
-                ?.  ?=(?(%mauth %admin) aut)  ~
+                ?.  =(%admin aut)  ~  ::  ?=(?(%mauth %admin) aut)  ~
               ::  FIXME: Replace these icons with final counterparts
               %+  turn  `(list [@tas @tas])`~[[%statistics %graph] [%graph %discover]]
               |=  [loc=@tas ast=@tas]
@@ -73,7 +79,7 @@
           ==
       ;h1-alt: Attested Wallets
       ;+  ?~  waz  ;p.fund-warn: No wallets found.
-          ?.  ?=(?(%mauth %admin) aut)  ;p.fund-warn: Unavailable to external users.
+          ?.  =(%admin aut)  ;p.fund-warn: Unavailable to external users.
           ;div(class "w-full overflow-x-auto overflow-y-hidden")
             ;table(class "w-full table-auto border-separate border-spacing-y-2 -mt-2")
               ;thead
@@ -114,7 +120,7 @@
             ^-  muz=(list mula:f)
             (~(mula pj:fj -.nex) (sy ~[%pruf-open %plej-open %plej-stif %plej-slyd %trib]) `[sip (silt waz)])
           ?~  txz  ;p.fund-warn: No transactions found.
-          ?.  ?=(?(%mauth %admin) aut)  ;p.fund-warn: Unavailable to external users.
+          ?.  =(%admin aut)  ;p.fund-warn: Unavailable to external users.
           ;div(class "w-full overflow-x-auto overflow-y-hidden")
             ;table(class "w-full table-auto border-separate border-spacing-y-2 -mt-2")
               ;thead
@@ -223,4 +229,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 5]
+::  VERSION: [1 5 0]

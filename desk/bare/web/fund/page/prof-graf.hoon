@@ -13,7 +13,7 @@
   ^-  reply:rudder
   =/  pat=(pole knot)  (slag:derl:ff:fh url.request.ord)
   =/  [sip=@p pro=pref:prof:f]  (greb:prof:preface:fh arz)
-  ?.  |(=(our src):bol =(sip src.bol))
+  ?.  =(our src):bol
     [%auth url.request.ord]
   ?+      pat
         [%code 404 'invalid graph url']
@@ -310,6 +310,12 @@
     ;div(x-data "prof_graf")
       ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=& fuz=[[%ship sip] fuz])]~)
       ;div(class "fund-main")
+        ;p(class "text-yellow-500 border-yellow-500 border rounded-md p-3")
+          ; Congratulations on finding our experimental profile pages!
+          ; Please feel free
+          ;a.text-link(target "_blank", href (chat:enrl:ff:fh ~tocwex)):  to DM ~tocwex
+          ;span:  if you have feedback.
+        ==
         ;div(class "flex flex-col")
           ;h1: {(ship:enjs:ff:fh sip)}'s Reputation Graph
           ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens
@@ -360,4 +366,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 5]
+::  VERSION: [1 5 0]

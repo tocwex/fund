@@ -72,7 +72,13 @@
       $(ars t.ars, typ [%cell [%face -.i.ars -:!>(+.i.ars)] typ])
     ?-  res=(mule |.(!<(tape (slap (slop vas !>(..hoon)) (ream rew)))))
       [%& *]  +.res
-      [%| *]  ~?(!<(? (slot:config %debug)) p.res (trip raw))
+    ::
+        [%| *]
+      ~?  !<(? (slot:config %debug))
+        ^-  tape  %-  zing  %+  join  "\0a"
+        :-  "error loading asset '{(trip fyl.pat)}':"
+        (turn p.res |=(=tank ~(ram re tank)))
+      (trip raw)
     ==
   =/  mym=mime  %.((crip txt) .^($-(@t mime) %cf (beak q.byk.bol /[ext]/mime)))
   :-  %full
@@ -81,4 +87,4 @@
   :+  200  [%content-type (joyn '/' p.mym)]  ::  1 week cache time
   ?:(!<(bean (slot:config %debug)) ~ ['cache-control' 'max-age=604800']~)
 --
-::  VERSION: [1 4 5]
+::  VERSION: [1 5 0]

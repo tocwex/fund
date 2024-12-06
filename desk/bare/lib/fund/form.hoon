@@ -14,6 +14,12 @@
     ::  `path`(rash '/a/b/' ;~(sfix stap fas))
     =?  pre  ?=([%'/' *] (flop pre))  (snip pre)
     (need (chip:fx /apps/fund (stab (crip pre))))
+  ++  ship                                       ::  (url path) (item) ship
+    |=  cor=cord  ~+
+    ^-  (unit @p)
+    ?+  pat=`(pole knot)`(slag cor)  ~
+      [@ sip=@ *]  (slaw %p sip.pat)
+    ==
   ++  flag                                       ::  (url path) (project) flag
     |=  cor=cord  ~+
     ^-  (unit ^flag)
@@ -39,6 +45,14 @@
     |=  sip=@p  ~+
     ^-  cord
     (spat /apps/groups/dm/(scot %p sip))
+  ++  prot                                       ::  pro(file) t(ape) (url path)
+    |=  sip=@p  ~+
+    ^-  tape
+    (dest /profile/(scot %p sip))
+  ++  proc                                       ::  pro(file) c(ord) (url path)
+    |=  sip=@p  ~+
+    ^-  cord
+    (desc /profile/(scot %p sip))
   ++  flat                                       ::  fla(g) t(ape) (url path)
     |=  lag=flag  ~+
     ^-  tape
@@ -47,6 +61,14 @@
     |=  lag=flag  ~+
     ^-  cord
     (desc /project/(scot %p p.lag)/[q.lag])
+  ++  next                                       ::  nex(t) t(ape) (url path)
+    |=  [lag=flag typ=?(%bump %exit %join %edit %trib %plej)]  ~+
+    ^-  tape
+    (dest /next/(scot %p p.lag)/[q.lag]/[typ])
+  ++  nexc                                       ::  nex(t) c(ord) (url path)
+    |=  [lag=flag typ=?(%bump %exit %join %edit %trib %plej)]  ~+
+    ^-  cord
+    (desc /next/(scot %p p.lag)/[q.lag]/[typ])
   ++  aset                                       ::  as(s)e(t) t(ape) (url path)
     |=  ast=@t  ~+
     ^-  tape
@@ -68,12 +90,26 @@
     |=  sip=@p  ~+
     ^-  cord
     (crip (surt +<))
+  ++  nurt                                       ::  n(etwork) ur(l) t(ape) (url path)
+    |=  sip=@p  ~+
+    ^-  tape
+    %+  welp  "https://network.urbit.org/"
+    ?-  (clan:title sip)
+      %pawn  ~
+      %earl  "{<`@p`(end 5 sip)>}"
+      *      "{<sip>}"
+    ==
+  ++  nurc                                       ::  n(etwork) ur(l) c(ord) (url path)
+    |=  sip=@p  ~+
+    ^-  cord
+    (crip (nurt +<))
   ++  esat                                       ::  e(ther)s(c)a(n) t(ape) (url path)
     |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  tape
     =/  tyt=@t  ?-(typ %xact %tx, %addr %address)
     =/  cit=@t  ?+(cid %$ %1 %$, %11.155.111 'sepolia.')
-    "https://{(trip cit)}etherscan.io/{(trip tyt)}/{(z-co:co hex)}"
+    =/  h2t     ?-(typ %xact xact:enjs, %addr addr:enjs)
+    "https://{(trip cit)}etherscan.io/{(trip tyt)}/{(h2t hex)}"
   ++  esac                                       ::  e(ther)s(c)a(n) c(ord) (url path)
     |=  [typ=?(%xact %addr) hex=@ux cid=@ud]  ~+
     ^-  cord
@@ -128,14 +164,26 @@
     |=  boq=@t
     ^-  ^bloq
     (rash boq dem)
+  ++  hexa                                     ::  "0xabcdef…" => 0xabcd.ef…
+    |=  hex=@t
+    ^-  @ux
+    (rash hex ;~(pfix (jest '0x') ^hex))
   ++  addr                                     ::  "0xabcdef…" => 0xabcd.ef…
     |=  adr=@t
     ^-  ^addr
-    (rash adr ;~(pfix (jest '0x') hex))
+    ?>  =((add 40 2) (lent (trip adr)))
+    (hexa adr)
   ++  sign                                     ::  "0xabcdef…" => 0xabcd.ef…
     |=  sig=@t
     ^-  ^sign
-    (rash sig ;~(pfix (jest '0x') hex))
+    ?>  =((add 130 2) (lent (trip sig)))
+    (hexa sig)
+  ++  xact                                     ::  "0xabcdef…" => 0xabcd.ef…
+    |=  act=@t
+    ^-  ^xact
+    ?>  =((add 64 2) (lent (trip act)))
+    ::  FIXME: Is there any way to derive the block number?
+    [0 (hexa act)]
   ++  ship                                     ::  "~zod" => ~zod
     |=  sip=@t
     ^-  ^ship
@@ -162,6 +210,20 @@
       ;~(pose (jest %fund) (jest %proj) (jest %prof) (jest %meta))
       ;~((glue fas) ;~(pfix sig fed:ag) ;~(pose sym (easy '')))
       sym
+    ==
+  ++  size                                     ::  "lg" => --1
+    |=  syz=@t
+    ^-  @sd
+    ?+  syz   --0
+      %'3xs'  -4
+      %'2xs'  -3
+      %xs     -2
+      %sm     -1
+      %md     --0
+      %lg     --1
+      %xl     --2
+      %'2xl'  %--3
+      %'3xl'  %--4
     ==
   --
 ++  enjs                                       ::  noun => js-tape
@@ -222,6 +284,21 @@
     |=  sig=^sign
     ^-  tape
     ['0' 'x' ((x-co:co 130) sig)]
+  ++  xact                                     ::  0xabcd.ef… => "0xabcdef…"
+    |=  act=$@(@ux ^xact)
+    ^-  tape
+    =/  raw=@ux  ?@(act act q.act)
+    ['0' 'x' ((x-co:co 64) raw)]
+  ++  date                                     ::  ~2024.4.28..4.9.0..abcd => "~2024.4.28"
+    |=  dat=@da
+    ^-  tape
+    =/  tar=tarp  (yell dat)
+    "{<`@da`(yule tar(h 0, m 0, s 0, f ~))>}"
+  ++  span                                     ::  ~h5.m30.s12..abcd => "~h5.m30.s12"
+    |=  lap=@dr
+    ^-  tape
+    =/  tar=tarp  (yell lap)
+    "{<`@dr`(yule tar(f ~))>}"
   ++  ship                                     ::  ~zod => "~zod"
     |=  sip=^ship
     ^-  tape
@@ -319,7 +396,7 @@
       %done  "completed"
       %dead  "canceled"
     ==
-  ++  size                                     ::  --1 => "lg"
+  ++  size                                     ::  --0 => "md"
     |=  syz=@sd
     ^-  tape
     ?+  syz   "md"
@@ -333,5 +410,10 @@
       %--3    "2xl"
       %--4    "3xl"
     ==
+  ++  syze                                     ::  --0 => "base"
+    |=  syz=@sd
+    ^-  tape
+    =/  siz=tape  (size syz)
+    ?.(=("md" siz) siz "base")
   --
 --

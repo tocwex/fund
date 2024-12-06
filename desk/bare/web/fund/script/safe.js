@@ -27,17 +27,32 @@ export const txnGetURL = (address) => {
 
 export const nftsGetURL = (wallet, chainId, token) => {
   const chainName = NETWORK.NAME[chainId];
-   const queryUrl = new URL(`https://eth${
-     (chainId === NETWORK.ID.ETHEREUM) ? "-mainnet"
-     : (chainId === NETWORK.ID.SEPOLIA) ? "-sepolia"
-     : ""
-   }.g.alchemy.com/nft/v3/${NETWORK.APIKEY[chainName]}/getNFTsForOwner`);
+  const queryUrl = new URL(`https://eth${
+    (chainId === NETWORK.ID.ETHEREUM) ? "-mainnet"
+    : (chainId === NETWORK.ID.SEPOLIA) ? "-sepolia"
+    : ""
+  }.g.alchemy.com/nft/v3/${NETWORK.APIKEY[chainName]}/getNFTsForOwner`);
 
-   queryUrl.searchParams.append("owner", wallet);
-   queryUrl.searchParams.append("contractAddresses[]",
-     CONTRACT[token.toUpperCase()].ADDRESS[chainName]);
-   queryUrl.searchParams.append("withMetadata", "true");
-   queryUrl.searchParams.append("pageSize", "100");
+  queryUrl.searchParams.append("owner", wallet);
+  queryUrl.searchParams.append("contractAddresses[]",
+    CONTRACT[token.toUpperCase()].ADDRESS[chainName]);
+  queryUrl.searchParams.append("withMetadata", "true");
+  queryUrl.searchParams.append("pageSize", "100");
+
+  return queryUrl;
+}
+
+export const ownersGetURL = (tokenId, chainId, token) => {
+  const chainName = NETWORK.NAME[chainId];
+  const queryUrl = new URL(`https://eth${
+    (chainId === NETWORK.ID.ETHEREUM) ? "-mainnet"
+    : (chainId === NETWORK.ID.SEPOLIA) ? "-sepolia"
+    : ""
+  }.g.alchemy.com/nft/v3/${NETWORK.APIKEY[chainName]}/getOwnersForNFT`);
+
+  queryUrl.searchParams.append("contractAddress",
+    CONTRACT[token.toUpperCase()].ADDRESS[chainName]);
+  queryUrl.searchParams.append("tokenId", String(tokenId));
 
   return queryUrl;
 }
@@ -80,10 +95,29 @@ export const nftsGetAll = async (wallet, chainId, token) => {
           .then(json => getNFTs(
             json.pageKey,
             results.concat(json?.ownedNfts ?? []),
-            json.ownedNfts.length < 100 || json.pageKey === undefined,
+            (json?.ownedNfts ?? []).length < 100 || json.pageKey === undefined,
           ));
   };
   return getNFTs();
+}
+
+export const ownersGetAll = async (tokenId, chainId, token) => {
+  const getOwners = (pageKey = undefined, results = [], isLastCall = false) => {
+    const queryUrl = ownersGetURL(tokenId, chainId, token);
+    if (pageKey !== undefined) {
+      queryUrl.searchParams.append("pageKey", pageKey);
+    }
+    return isLastCall
+      ? Promise.resolve(results)
+      : fetch(queryUrl)
+          .then(response => response.json())
+          .then(json => getOwners(
+            json.pageKey,
+            results.concat(json?.owners ?? []),
+            (json?.owners ?? []).length < 100 || json.pageKey === undefined,
+          ));
+  };
+  return getOwners();
 }
 
 export const safeGetBalance = async ({fundToken, safeAddress}) => {
@@ -177,14 +211,31 @@ export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, fund
     throw new SafeError(`pledge mismatch; pledged ${fundAmount} NFTs but selected ${fundTransfers.length}`);
 
   const { address: funderAddress } = safeGetAccount(projectChain);
-  const wrappedTransaction = safeWrapTransactions(
-    fundTransfers.map(tokenId => ({
-      tok: fundToken,
-      val: (TOKEN.ABI === ABI.ERC721) ? tokenId : parseUnits(fundAmount, TOKEN.DECIMALS),
-      from: getAccount(window.Wagmi)?.address,
-      to: safeAddress,
-    }))
-  );
+  const transactions = fundTransfers.map(tokenId => ({
+    tok: fundToken,
+    val: (TOKEN.ABI === ABI.ERC721) ? tokenId : parseUnits(fundAmount, TOKEN.DECIMALS),
+    from: getAccount(window.Wagmi)?.address,
+    to: safeAddress,
+  }));
+  const wrappedTransaction = safeWrapTransactions(transactions, "depo");
+
+  // if ((TOKEN.ABI === ABI.ERC721) && fundTransfers.length > 1) {
+  //   const isMultiTransferApproved = await readContract(window.Wagmi, {
+  //     abi: TOKEN.ABI,
+  //     address: TOKEN.ADDRESS[ethGetChain()],
+  //     functionName: "isApprovedForAll",
+  //     args: [funderAddress, CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()]],
+  //   });
+  //   if (!isMultiTransferApproved) {
+  //     const approveTransaction = await writeContract(window.Wagmi, {
+  //       abi: TOKEN.ABI,
+  //       address: TOKEN.ADDRESS[ethGetChain()],
+  //       functionName: "setApprovalForAll",
+  //       args: [CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()], true],
+  //     });
+  //     const approveReceipt = await safeAwaitTransaction({hash: approveTransaction});
+  //   }
+  // }
 
   const sendTransaction = await writeContract(window.Wagmi, wrappedTransaction);
   const sendReceipt = await safeAwaitTransaction({hash: sendTransaction});
@@ -424,18 +475,33 @@ const safeDistribTransactions = ({token, safe, amount, cuts}) => {
   return transactions;
 };
 
-const safeWrapTransactions = (transactions) => {
+const safeWrapTransactions = (transactions, transferDir) => {
+  const TOKEN_SET = new Set(transactions.map(safeTransactionToken));
+  if (TOKEN_SET.size > 1)
+    throw new SafeError(`cannot multisend heterogeneous token set '${TOKEN_SET}'`);
+
   console.log(`constructing wrapped transaction with arguments:`);
   console.log(transactions);
+  const TOKEN = [...TOKEN_SET][0];
   return (transactions.length === 1)
     ? safeWrapTransaction(transactions[0])
+    // : ((transferDir === "depo") && (TOKEN.ABI === ABI.ERC721))
+    // ? { // NOTE: 'multisend' for ERC721s requires special approvals
+    //   abi: CONTRACT.ERC721_MULTISEND.ABI,
+    //   address: CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()],
+    //   functionName: "batchSafeTransfer",
+    //   args: [
+    //     TOKEN.ADDRESS[ethGetChain()],
+    //     transactions.map(({to}) => to),
+    //     transactions.map(({val}) => val),
+    //   ],
+    // }
     : {
       abi: CONTRACT.SAFE_MULTISEND.ABI,
       address: CONTRACT.SAFE_MULTISEND.ADDRESS[ethGetChain()],
       functionName: "multiSend",
       args: [encodePacked(["bytes[]"], [
         transactions.map(transaction => {
-          const TOKEN = safeTransactionToken(transaction);
           const encodedTransaction = encodeFunctionData(safeWrapTransaction(transaction));
           const encodedByteCount = (encodedTransaction.length - 2) / 2;
           return encodePacked(
@@ -452,7 +518,7 @@ const safeWrapTransactions = (transactions) => {
 const safeGetWithdrawalArgs = async ({safe, transactions}) => {
   if (transactions.length === 0)
     throw new SafeError(`unable to construct withdrawal for safe; no transactions provided (probably no funds available)`);
-  const wrappedTransaction = safeWrapTransactions(transactions);
+  const wrappedTransaction = safeWrapTransactions(transactions, "with");
   const safeNonce = await readContract(window.Wagmi, {
     abi: CONTRACT.SAFE_TEMPLATE.ABI,
     address: safe,

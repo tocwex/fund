@@ -1,5 +1,5 @@
 /-  *fund-meta
-/-  mold=sss-meta-1
+/-  mold=sss-meta-0
 /+  sss
 |%
 +|  %misc
@@ -30,7 +30,7 @@
   --
 
 +|  %core
-+$  vers  [_%1 _%2]
++$  vers  [_%1 _%1]
 +$  path  [%fund %meta sip=@ nam=@ ~]
 ++  lake
   =/  up
@@ -40,20 +40,7 @@
       :*  title=title.met
           image=image.met
           cost=cost.met
-      ::
-            ^=  payment
-          ?.  ?=(%enft -.payment.met)  payment.met
-          :*  %enft
-              chain=chain.payment.met
-              addr=addr.payment.met
-              name=name.payment.met
-              symbol=symbol.payment.met
-              ::  NOTE: Hardcoded so as not to create a dependency on the
-              ::  /lib/fund/chain/hoon file
-              uri=|=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
-              limits=(malt ~[[%size |=(=@t =(%star t))]])
-          ==
-      ::
+          payment=[%coin currency.met]
           launch=launch.met
           worker=worker.met
           oracle=oracle.met
@@ -68,14 +55,14 @@
   ++  urck
     |=  voc=vock
     ^-  rock
-    ?+  -.voc     $(voc (urck:lake:mold voc))
+    ?-  -.voc
       vers        voc
       vers:mold   $(voc [*vers ~(meta up +.voc)])
     ==
   ++  uwve
     |=  vav=vave
     ^-  wave
-    ?+  -.vav     $(vav (uwve:lake:mold vav))
+    ?-  -.vav
       vers        vav
     ::
         vers:mold

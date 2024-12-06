@@ -1,8 +1,7 @@
-::  /ted/nfz-okay.hoon: checks if the metadata attributes for a list of
+::  /ted/nfz-okay/hoon: checks if the metadata attributes for a list of
 ::  NFTs satisfies a given set of predicates
 ::
 ::    -fund!nfz-okay ~[[0 "https://erc721-uri.com/id.json"]] ~ ~
-::
 ::    -fund!nfz-okay ~[[0 "https://azimuth.network/erc721/0.json"] [256 "https://azimuth.network/erc721/256.json"]] (malt ~[[%size |=(=@t =(%star t))]]) ~
 ::
 /-  spider, fund-watcher
@@ -32,23 +31,18 @@
 =-  (pure:m !>(gud))
 ^-  gud=(set @)
 %+  roll  (izip:fx nfz joz)
-::  TODO: NFTs with ill-formatted JSON are just ignored; should they
-::  cause thread errors instead?
 |=  [[[nid=@ url=tape] jon=json] acc=(set @)]
-?.  ?=(%o -.jon)  acc
-?~  aon=(~(get by p.jon) 'attributes')  acc
-?.  ?=(%a -.u.aon)  acc
 =-  ?.(gud acc (~(put in acc) nid))
 ^-  gud=?
 =-  (~(rep by fil) |=([[k=@t v=$-(@t ?)] a=?] &(a ?~(t=(~(get by nat) k) | (v u.t)))))
 ^-  nat=(map @t @t)
 %-  malt
-%+  murn  p.u.aon
-|=  eon=json
-^-  (unit [@t @t])
-?.  ?=(%o -.eon)  ~
-?~  ton=(~(get by p.eon) 'trait_type')  ~
-?.  ?=(%s -.u.ton)  ~
-?~  von=(~(get by p.eon) 'value')  ~
-?.  ?=(%s -.u.von)  ~
-`[p.u.ton p.u.von]
+%-  fall  :_  *(list [@t @t])
+=,  dejs-soft:format
+::  NOTE: These helper gates enable parsing of 'attributes' maps with
+::  some non-conforming entries (e.g. {value: "..."}, which is allowed
+::  by the NFT metadata standard)
+=+  zu=|*(l=(list (unit)) (some |-(?~(l ~ ?~(i.l $(l t.l) [u.i.l $(l t.l)])))))
+=+  au=|*(w=$-(json (unit *)) |=(j=json ?.(?=([%a *] j) ~ (zu |-(?~(p.j ~ [(w i.p.j) $(p.j t.p.j)]))))))
+%.  jon
+(ot [attributes+(au (ot ~[[%'trait_type' so] value+so]))]~)

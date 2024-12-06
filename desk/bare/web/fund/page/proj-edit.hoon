@@ -93,10 +93,7 @@
   %-  page:ui:fh
   :^  bol  ord  "project edit"
   :+  fut=&  hed=&
-  ;form  =x-data  "proj_edit"
-      =method  "post"
-      =autocomplete  "off"
-      =class  "flex flex-col gap-2 px-2 py-2 sm:px-5"
+  ;form(x-data "proj_edit", method "post", autocomplete "off", class "fund-main")
     ;+  :-  [%fieldset [%class "flex flex-col gap-2"] ?:(=(%born sat) ~ [%disabled ~]~)]
         :~  ;div(class "flex flex-col gap-2")
               ;*  ?~  lau  ~
@@ -155,7 +152,7 @@
                               ::  FIXME: Using the X SVG causes a weird pop-in effect
                               ::  for new milestones, so we just use raw text for now
                               ;button(class "font-light", type "button", x-on-click "deleteMile"): ✖
-                            (stat-pill:ui:fh %medi status.mil)
+                            (stat-pill:ui:fh %md status.mil)
                       ==
                       ;div(class "grid grid-cols-1 sm:grid-cols-2")
                         ;div(class "fund-form-group col-span-1")
@@ -191,7 +188,7 @@
                     ==
               ==
               ;div.flex.justify-center.mx-auto
-                ;button.fund-butn-ac-m(type "button", x-on-click "appendMile"): add milestone +
+                ;button.fund-butn-ac-md(type "button", x-on-click "appendMile"): add milestone +
               ==
             ==
             ;div(class "flex flex-col gap-2")
@@ -251,14 +248,14 @@
                   %born  ~[init-butn drop-butn]
                   %prop  ~[croc-butn drop-butn]
                 ==
-            ++  init-butn  (prod-butn:ui:fh %medi %action %init "save draft ~" ~ ~)
-            ++  croc-butn  (prod-butn:ui:fh %medi %action %bump-born "retract proposal ~" ~ ~)
+            ++  init-butn  (prod-butn:ui:fh %md %action %init "save draft ~" ~ ~)
+            ++  croc-butn  (prod-butn:ui:fh %md %action %bump-born "retract proposal ~" ~ ~)
             ++  drop-butn
               =+  obj=?:(?=(?(%born %prop) sat) "draft" "project")
-              (prod-butn:ui:fh %medi %false %drop "delete {obj} ✗" ~ ~)
+              (prod-butn:ui:fh %md %false %drop "delete {obj} ✗" ~ ~)
             ::  ++  dead-butn
             ::    %:  prod-butn:ui:fh
-            ::        %medi  %false  %dead  "discontinue project ✗"  ~
+            ::        %md  %false  %dead  "discontinue project ✗"  ~
             ::        ?.(?=(%dead sat) ~ "Project has already been discontinued.")
             ::    ==
             --
@@ -347,4 +344,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 5]
+::  VERSION: [1 5 0]

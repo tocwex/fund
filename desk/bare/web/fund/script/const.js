@@ -72,12 +72,20 @@ export const CONTRACT = Object.freeze({
   // https://docs.urbit.org/system/identity/reference/ecliptic
   ...(["AZP", "AZP-TEST"].reduce((a, v) => ({...a, [v]: Object.freeze({
     ADDRESS: Object.freeze({
-      ETHEREUM: "0x3066F428D935a44bE7AA845B6C6b812519CE1e17",
+      ETHEREUM: "0x33EeCbf908478C10614626A9D304bfe18B78DD73",
       SEPOLIA: "0xabe28C76e1c9750EB78f32A07c295Afa99B557fd",
     }),
     DECIMALS: 0,
     ABI: ABI.ERC721,
   })}), {})),
+  // https://etherscan.io/address/0x7Ee128B2DacA0D2f4e61bE49d668AE82964E65F8#code
+  ERC721_MULTISEND: Object.freeze({
+    ADDRESS: Object.freeze({
+      ETHEREUM: "0x7Ee128B2DacA0D2f4e61bE49d668AE82964E65F8",
+      SEPOLIA: "0xEBB44a6c1B9fDE8fA490A85fb18F729C4677a584",
+    }),
+    ABI: [{"inputs":[{"internalType":"contract ERC721Partial","name":"tokenContract","type":"address"},{"internalType":"address[]","name":"recipients","type":"address[]"},{"internalType":"uint256[]","name":"tokenIds","type":"uint256[]"}],"name":"batchSafeTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract ERC721Partial","name":"tokenContract","type":"address"},{"internalType":"address[]","name":"recipients","type":"address[]"},{"internalType":"uint256[]","name":"tokenIds","type":"uint256[]"}],"name":"batchTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"}],
+  }),
   // https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/multi_send_call_only.json
   SAFE_MULTISEND: Object.freeze({
     ADDRESS: Object.freeze({

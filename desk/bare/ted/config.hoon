@@ -1,4 +1,4 @@
-::  /ted/config.hoon: add or remove an app configuration file
+::  /ted/config/hoon: add or remove an app configuration file
 ::
 ::    -fund!config & /xtra/verb/hoon
 ::    -fund!config | /verb/hoon

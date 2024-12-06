@@ -21,6 +21,15 @@
   ?~  b  ~
   [[i.a i.b] $(a t.a, b t.b)]
 ::
+::  +ozip: given lists [l1, …, lN] and [m1, …, mM], return an
+::  outer-zipped list of units [[`l1, `m1], …, [`l(max N M) `m(max N M)]]
+::
+++  ozip
+  |*  [a=(list *) b=(list *)]
+  ?~  a  (turn b (cork (lead ~) (lead ~)))
+  ?~  b  (turn a (cork (lead ~) (late ~)))
+  [[`i.a `i.b] $(a t.a, b t.b)]
+::
 ::  +find: given list [l1, …, lN] and gate of g: li -> ?, return the
 ::  first item where g(li) is true
 ::
@@ -57,7 +66,7 @@
   ++  trix  ::  "-ab---3" => "xab---3"
     |=  tap=tape  ^-  tape
     ?~  tap  tap
-    [?~((rush i.tap hep) i.tap 'x') t.tap]
+    [?~((rush i.tap ;~(pose hep nud)) i.tap 'x') t.tap]
   ++  weed  ::  "-ab^-#3" => "-ab---3"
     |=  tap=tape  ^-  tape
     %+  turn  (tuba tap)
@@ -95,6 +104,17 @@
   ?~  tap  tap
   [-:(cuss [i.tap]~) t.tap]
 ::
+::  +spon: spon(sor) of a given point (null for comets)
+::
+++  spon
+  |=  who=@p
+  ^-  (unit @p)
+  ?-  (clan:title who)
+    %pawn  ~
+    %earl  `(end 5 who)
+    *      `who
+  ==
+::
 ::  +star: is the given identity at least as privileged as a star?
 ::
 ++  star
@@ -109,14 +129,40 @@
   ^-  bean
   (gte 4 (met 3 who))
 ::
+::  +link: is the given string a link (and is it relative or absolute)?
+::
+++  link
+  |=  lin=tape
+  ^-  (unit bean)
+  =,  de-purl:html
+  %+  rust  lin
+  ;~  pose
+    (cold %& auri)                ::  absolute link
+    (cold %| ;~(plug apat yque))  ::  relative link
+  ==
+::
+::  +dist: absolute distance between two values
+::
+++  dist
+  |=  [a=@ b=@]
+  ^-  @
+  (sub (max a b) (min a b))
+::
+::  +rato: rat(i)o of value relative to given total
+::
+++  rato
+  |=  [val=@ tot=@]
+  ^-  @rs
+  ?:  =(0 tot)
+    ?:(=(0 val) .0 .1)  ::  FIXME: Probably should be NaN instead
+  (div:rs (sun:rs val) (sun:rs tot))
+::
 ::  +perc: perc(entage) of value relative to given total
 ::
 ++  perc
   |=  [val=@ tot=@]
   ^-  @rs
-  ?:  =(0 tot)
-    ?:(=(0 val) .0 .100)  ::  FIXME: Probably should be NaN instead
-  (mul:rs .100 (div:rs (sun:rs val) (sun:rs tot)))
+  (mul:rs .100 (rato val tot))
 ::
 ::  +flot: render decimal float as tape (optionally decimal-truncated
 ::  and/or padded)
@@ -144,4 +190,18 @@
     ?:  (lth vel min.u.dex)  (dif:si (sun:si min.u.dex) (sun:si vel))
     --0
   ==
+::
+::  +beam: `+en-beam` for the current desk
+::
+++  beam
+  |=  [bol=bowl:gall pat=path]
+  ^-  path
+  (en-beam [our.bol dap.bol da+now.bol] pat)
+::
+::  +beag: `en-beam` for the current desk, with %gall scry delimiters
+::
+++  beag
+  |=  [bol=bowl:gall pat=path]
+  ^-  path
+  :(welp [%gx]~ (beam bol pat) [%noun]~)
 --

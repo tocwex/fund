@@ -23,9 +23,8 @@
   ^-  reply:rudder
   =/  [dyp=@tas lag=flag:f pyp=@tas]  (gref:proj:preface:fh txt)
   :-  %next  :_  ~
-  ?+    pyp  (flac:enrl:ff:fh lag)
-      %join
-    (desc:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/join)
+  ?+  pyp  (flac:enrl:ff:fh lag)
+    %join  (nexc:enrl:ff:fh lag %join)
   ==
 ++  build
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
@@ -35,11 +34,17 @@
   =/  lag=flag:f  (fall lau *flag:f)
   =/  aut=?(%clear %eauth %admin)
     ?.((auth:fh bol) %clear ?:(=(our src):bol %admin %eauth))
-  :-  %page
-  %-  page:ui:fh
-  :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))
-  :+  fut=&  hed=&
-  ?+  pat  !!  [%next sip=@ nam=@ typ=@ ~]
+  ?:  &(?=([%next @ @ %join ~] pat) ?=(^ pru))
+    [%next (flac:enrl:ff:fh lag) 'redirecting to existing project page']
+  ?+      pat
+        [%code 404 'invalid project interstitial url']
+      [%next sip=@ nam=@ typ=@ ~]
+    ?.  ?=(?(%bump %exit %join %edit %trib %plej) typ.pat)
+      [%code 404 'invalid project interstitial type']
+    :-  %page
+    %-  page:ui:fh
+    :^  bol  ord  ?~(pru (flag:enjs:ff:fh lag) (trip title.u.pru))
+    :+  fut=&  hed=&
     =/  syt
       :*  hep=(trip !<(@t (slot:config %meta-help)))
           hos=(trip !<(@t (slot:config %meta-site)))
@@ -53,7 +58,7 @@
           joi=(link-butn:ui:fh hos.syt %& "get urbit ~" ~)
           das=(link-butn:ui:fh (dest:enrl:ff:fh /) %| "back to dashboard" ~)
       ==
-    ?+    typ.pat  !!
+    ?-    typ.pat
         %bump
       %^    hero-plaq:ui:fh
           "Your project action has been submitted."
@@ -66,8 +71,8 @@
         ~
       :_  ~
       %.  [%x-init "delay(2000).then(() => $el.form.requestSubmit($el))"]~
-      %~  joat  ma:fh
-      (~(prod-butn ui:fh "hidden") %medi %true %join-proj "join project ✓" ~ ~)
+      %~  riat  ma:fh
+      (~(prod-butn ui:fh "hidden") %md %true %join-proj "join project ✓" ~ ~)
     ::
         %join
       %^    hero-plaq:ui:fh
@@ -76,12 +81,12 @@
       :_  ~
       ;div  =x-data  "\{ status: undefined }"
           =x-init  "queryPage('{pro.syt}', \{maxAttempts: 5}).then(p => \{status = !!p;})"
-        ;+  (~(joat ma:fh pro.btn) [%x-show "status == true"]~)
+        ;+  (~(riat ma:fh pro.btn) [%x-show "status == true"]~)
         ;+  %.  [%x-show "status == undefined"]~
-            %~  joat  ma:fh
+            %~  riat  ma:fh
             (link-butn:ui:fh pro.syt %| "back to project" "Loading data from host…")
         ;+  %.  [%x-show "status == false"]~
-            %~  joat  ma:fh
+            %~  riat  ma:fh
             (link-butn:ui:fh pro.syt %| "error ✗" "Failed to reach host.")
       ==
     ::
@@ -97,7 +102,7 @@
         send them a direct message via the Tlon application to let them
         know they have a pending service request!
         '''
-      :~  (prod-butn:ui:fh %medi %true %bump-prop "request oracle ✓" ~ ~)
+      :~  (prod-butn:ui:fh %md %true %bump-prop "request oracle ✓" ~ ~)
           (link-butn:ui:fh (dest:enrl:ff:fh pat(- %project)) %| "continue editing" ~)
           pro.btn
       ==
@@ -112,7 +117,7 @@
               ;+  but
               ;*  ?~  pow=(~(get by ~(ours conn:prof:fd bol [prof-subs prof-pubs]:dat)) p.lag)  ~
                   :_  ~
-                  (pink-butn:ui:fh lag (trip ship-url.u.pow))
+                  (sher-butn:ui:fh "{(trip ship-url.u.pow)}{(flat:enrl:ff:fh lag)}")
             ==
             ;+  bod
             ;p
@@ -345,4 +350,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 5]
+::  VERSION: [1 5 0]

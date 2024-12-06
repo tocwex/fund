@@ -12,7 +12,9 @@ import {
   getAccount, getBalance, getEnsName, signMessage,
   getConnections, watchAccount, watchChainId, switchAccount,
 } from 'https://esm.sh/@wagmi/core@2.10.0';
-import { fromHex } from 'https://esm.sh/viem@2.16.0';
+import {
+  fromHex, ContractFunctionExecutionError, UserRejectedRequestError,
+} from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
@@ -44,11 +46,11 @@ if (window.Alpine === undefined) {
     return cssLines.join("\n");
   }
   function twindSizeRules(base, types) {
-    const sizes = ['smol', 'medi', 'lorj'];
+    const sizes = ['sm', 'md', 'lg'];
     //  NOTE: https://stackoverflow.com/a/43053803
     const cartesian = (...a) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
     return cartesian(sizes, types).map(([size, type]) => ([
-      `${base}-${type.substring(0, 2)}-${size.substring(0, 1)}`,
+      `${base}-${type.substring(0, 2)}-${size}`,
       `${base}-${size} ${base}-${type}`,
     ]));
   }
@@ -121,7 +123,10 @@ if (window.Alpine === undefined) {
         ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-palette-contrast disabled:bg-palette-system'],
         ['fund-head', 'sticky z-40 top-0'],
         ['fund-foot', 'sticky z-40 bottom-0'],
-        ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label px-1 lg:px-4'],
+        // NOTE: Using a trick to always push footer to the bottom:
+        // https://stackoverflow.com/a/59865099
+        ['fund-main', 'flex flex-col gap-2 min-h-[100vh] py-2 px-3 sm:px-6'],
+        ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label'],
         ['fund-card-base', 'rounded-md px-3 py-2 border-[3px] border-palette-contrast'],
         ['fund-card-back', 'fund-card-base bg-palette-background'],
         ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
@@ -132,19 +137,19 @@ if (window.Alpine === undefined) {
         ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
         ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
         ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary'], /*hover:bg-palette-background*/
-        ['fund-pill-base', 'text-nowrap font-medium rounded-full border-[3px]'],
-        ['fund-pill-smol', 'fund-pill-base px-2 py-0.5'],
-        ['fund-pill-medi', 'fund-pill-base px-3 py-1'],
-        ['fund-pill-lorj', 'fund-pill-base px-4 py-2'],
+        ['fund-pill', 'text-nowrap text-center font-medium rounded-full border-[3px]'],
+        ['fund-pill-sm', 'fund-pill px-2 py-0.5'],
+        ['fund-pill-md', 'fund-pill px-3 py-1'],
+        ['fund-pill-lg', 'fund-pill px-4 py-2'],
         ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
         ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
         ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
         ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
         ...twindSizeRules('fund-pill', ['born', 'lock', 'done', 'dead']),
-        ['fund-butn-base', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
-        ['fund-butn-smol', 'fund-butn-base text-xs px-1.5 py-0.5'],
-        ['fund-butn-medi', 'fund-butn-base text-sm px-3 py-1.5'],
-        ['fund-butn-lorj', 'fund-butn-base text-base px-4 py-2'],
+        ['fund-butn', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
+        ['fund-butn-sm', 'fund-butn text-xs px-1.5 py-0.5'],
+        ['fund-butn-md', 'fund-butn text-sm px-3 py-1.5'],
+        ['fund-butn-lg', 'fund-butn text-base px-4 py-2'],
         //  FIXME: These classes should use 'hover:enabled' to stop
         //  disabled buttons from changing colors, but this causes hover
         //  styling for links not to work.
@@ -154,8 +159,9 @@ if (window.Alpine === undefined) {
         ['fund-butn-true', '~(fund-butn-default)'],
         ['fund-butn-false', '~(fund-butn-action)'],
         ...twindSizeRules('fund-butn', ['disabled', 'default', 'action', 'true', 'false']),
-        ['fund-aset-circ', 'h-6 aspect-square bg-white rounded-full'],
-        ['fund-aset-rect', 'h-6 aspect-square bg-white rounded'],
+        ['fund-aset', 'h-6 aspect-square'],
+        ['fund-aset-circ', 'fund-aset bg-white rounded-full'],
+        ['fund-aset-rect', 'fund-aset bg-white rounded'],
         ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
         ['fund-odit-sect', 'h-full flex rounded-lg'],
       ],
@@ -168,11 +174,19 @@ if (window.Alpine === undefined) {
   // FIXME: For some reason, twind's style refresher doesn't fire when a
   // submission fails, so we replicate its "reveal content" behavior manually
   // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
-  document.addEventListener('turbo:submit-end', (event) => {
+  document.documentElement.addEventListener('turbo:submit-end', (event) => {
     if (!event.detail.success) {
       document.documentElement.setAttribute("class", "");
       document.documentElement.setAttribute("style", "");
     }
+  });
+
+  // NOTE: In order to get TomSelect elements to work when using Turbo navigation,
+  // we need to clean up the page listeners on old instances
+  document.documentElement.addEventListener('turbo:visit', (event) => {
+    document.querySelectorAll('.fund-tsel').forEach((tselElem) => {
+      tselElem?.tomselect?.destroy();
+    });
   });
 
   /////////////////////////////////////////////////////////////////////////////
@@ -323,10 +337,13 @@ if (window.Alpine === undefined) {
     scrollTo,
     sendFormData,
     sendForm,
+    showModal,
     checkWallet,
     toggleWallet,
+    toggleUsage,
     // switchWallet,
     initENS,
+    initAZP,
     initTippy,
     initTomSelect,
     tsUpdateToken,
@@ -345,6 +362,29 @@ if (window.Alpine === undefined) {
 
   function delay(ms) {
     return new Promise(res => setTimeout(res, ms));
+  }
+
+  function limit(maxReqs, perSecs) {
+    let frameStart = 0;
+    let frameCount = 0;
+    let frameQueue = [];
+    let untilNext = 0;
+
+    // https://stackoverflow.com/a/33946793
+    return function limiter(func) {
+      func && frameQueue.push(func);
+      untilNext = perSecs * 1000 - (Date.now() - frameStart);
+      if (untilNext <= 0) {
+        frameStart = Date.now();
+        frameCount = 0;
+      }
+      if (++frameCount <= maxReqs) {
+        (frameQueue.shift() ?? (() => null))();
+      } else {
+        // console.log(`limiting function for ${untilNext/ 1000}s`);
+        setTimeout(limiter, untilNext);
+      }
+    };
   }
 
   // https://twind.run/junior-crazy-mummy?file=script
@@ -368,9 +408,12 @@ if (window.Alpine === undefined) {
     maxAttempts=1, // Number
     timeout=5000, // Number (ms)
   } = {}) {
-    var queryUrl = !(window.location.protocol === "https:" && new URL(url).protocol === "http:")
+    const baseUrl = !url.startsWith("/")
       ? url
-      : url.replace(/^http:/, 'https:');
+      : `${window.location.origin}${url}`;
+    var queryUrl = !(window.location.protocol === "https:" && new URL(baseUrl).protocol === "http:")
+      ? baseUrl
+      : baseUrl.replace(/^http:/, 'https:');
 
     const getPage = async (attempts = 0) => (
       attempts++ >= maxAttempts
@@ -478,9 +521,19 @@ if (window.Alpine === undefined) {
       }).then(action).then(formData => (
         sendFormData(formData, event)
       )).catch((error) => {
-        event.target.innerHTML = "error ✗";
-        console.log(error);
-        alert(error.message);
+        if (
+          (error instanceof UserRejectedRequestError) ||
+          error.message.startsWith("User rejected the request.")
+        ) {
+          showModal("⚠ warning ⚠", "User rejected the blockchain wallet request.");
+        } else {
+          showModal("⚠ error ⚠", error.message);
+        }
+      }).finally(() => {
+        // TODO: Consider moving this to the error case
+        event.target.querySelectorAll(".animate-ping").forEach((elem) => {
+          elem.remove();
+        });
       });
     }
   }
@@ -517,6 +570,25 @@ if (window.Alpine === undefined) {
 
     document.body.appendChild(form);
     form.requestSubmit(button);
+  }
+
+  function showModal(title, text) {
+    const dialog = document.querySelector('#fund-modl');
+
+    document.querySelector('#fund-modl-tytl').innerText = title;
+    if (!text.includes("\n")) {
+      document.querySelector('#fund-modl-xtra').classList.add('hidden');
+      document.querySelector('#fund-modl-mesg').innerText = text;
+    } else {
+      document.querySelector('#fund-modl-xtra').classList.remove('hidden');
+      document.querySelector('#fund-modl-mesg').innerText =
+        "There was an error processing your request. Please contact ~tocwex for support.";
+      document.querySelector('#fund-modl-xesg').innerText = text;
+    }
+
+    // FIXME: If a click event generates the modal, we wait for a bit so
+    // as not to overlap with a click outside closing event
+    delay(50).then(() => dialog.showModal());
   }
 
   function checkWallet(expectedAddresses, roleTitle) {
@@ -596,6 +668,16 @@ if (window.Alpine === undefined) {
     }
   }
 
+  function toggleUsage(event) {
+    const appUrl = window.location.toString().match(/.*\/apps\/fund/)[0];
+    const configData = new URLSearchParams({dif: "vita-toggle"});
+    return fetch(`${appUrl}/config`, {
+      method: "POST",
+      headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+      body: configData,
+    });
+  }
+
   // FIXME: This doesn't work... may need to upgrade `wagmi.sh` to
   // latest version to fix
   //
@@ -615,41 +697,86 @@ if (window.Alpine === undefined) {
     });
   }
 
+  function initAZP(elem, point) {
+    if (typeof initAZP.limiter === "undefined") {
+      initAZP.limiter = limit(1, 2); // 1 query / 2 seconds
+    }
+
+    const setUnavailable = () => {
+      elem.innerHTML = "(unavailable)";
+      elem.removeAttribute("href");
+      elem.setAttribute("disabled", undefined);
+      elem?.nextElementSibling?.remove();
+    };
+
+    elem.innerHTML = "…loading…";
+    return new Promise(resolve => initAZP.limiter(resolve)).then(() => (
+      SAFE.ownersGetAll(point, 1, "AZP")
+    )).then(owners => {
+      const owner = owners?.[0];
+      if (owner === undefined) {
+        setUnavailable();
+        return Promise.resolve(undefined);
+      } else {
+        const href = (elem?.getAttribute("href") ?? "").replace(/\/[^\/]+$/, "/" + owner);
+        elem.setAttribute("href", href);
+        // FIXME: This part in particular is really ugly; a better
+        // solution should be used if possible.
+        const sibling = elem?.nextElementSibling;
+        if (!!sibling) {
+          sibling.setAttribute("x-on:click", `copyText('${owner}'); swapHTML($el, '✔');`);
+        }
+        return initENS(elem, owner);
+      }
+    }).catch(error => {
+      setUnavailable();
+      return Promise.resolve(undefined);
+    });
+  }
+
   function initTippy(elem, {
     text=undefined, // String?
     dir=undefined, // String?
     hover=false, // Bool
   } = {}) {
-    var content = text;
-    if (!text) {
-      const optElem = elem.nextSibling;
-      optElem.style.display = 'block';
-      content = optElem;
-    }
+    if (elem?._tippy === undefined) {
+      var content = text;
+      if (!text) {
+        // NOTE: Need to keep original 'optElem' because of conflict
+        // between Tippy.js (which deletes the original) and Turbo.js
+        // (which keeps elements and not JS objects when going forward/back)
+        const optElem = elem.nextSibling;
+        const tipElem = optElem.cloneNode(true);
+        tipElem.style.display = 'block';
+        content = tipElem;
+      }
 
-    TippyJs(elem, {
-      content: content,
-      allowHTML: true,
-      interactive: true,
-      arrow: false,
-      trigger: ["click", ...(!hover ? [] : ["mouseenter"])].join(" "),
-      theme: "fund",
-      offset: [0, 5],
-      ...(!dir ? {} : {placement: dir}),
-    });
+      TippyJs(elem, {
+        content: content,
+        allowHTML: true,
+        interactive: true,
+        arrow: false,
+        trigger: ["click", ...(!hover ? [] : ["mouseenter"])].join(" "),
+        theme: "fund",
+        offset: [0, 5],
+        ...(!dir ? {} : {placement: dir}),
+      });
+    }
   }
 
   function initTomSelect(elem, {
     empty=false, // Bool
     forceUp=false, // Bool
+    asButton=true, // Bool
     maxItems=undefined, // Number?
     create=undefined, // ((value, data) => void)?
     load=undefined, // ((query, callback) => void)?
   } = {}) {
+    const renderClass = !asButton ? "fund-aset" : "fund-aset-circ";
     function renderSelector(data, escape) {
       return `
         <div class='flex flex-row items-center gap-x-2'>
-          <img class='fund-aset-circ' src='${data.image ??
+          <img class='${renderClass}' src='${data.image ??
             "https://placehold.co/24x24/white/black?font=roboto&text=~"
           }' />
           <span>${data.text}</span>
@@ -657,7 +784,7 @@ if (window.Alpine === undefined) {
       `;
     };
 
-    if (elem.tomselect === undefined) {
+    if (elem?.tomselect === undefined) {
       const tselElem = new TomSelect(elem, {
         allowEmptyOption: empty,
         render: {

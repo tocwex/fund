@@ -1,6 +1,6 @@
 /-  f=fund, p=pals
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
-/+  fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fx=fund-xtra
+/+  fy=fund, fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fx=fund-xtra
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -13,7 +13,9 @@
 =|  state-now
 =*  state  -
 =<  =-  ?.  !<(? (slot:config %debug))  -
-        (verb | (agent:dbug (agent:tonic -)))
+        (verb | (agent:dbug -))
+        ::  FIXME: Why is the tonic auto-loading version so slow?
+        ::  (verb | (agent:dbug (agent:tonic -)))
     %-  (agent:vita-client | !<(@p (slot:config %point)))
     |_  bol=bowl:gall
     +*  tis  .
@@ -312,10 +314,11 @@
     =/  sip=@p    (slav %p sip.pat)
     ``noun+!>((bind (~(get by pf-our) sip) head))
   ::
-      [%x %prof sip=@ %adrz ~]
+      [%x %prof sip=@ res=?(%adrs %adrz) ~]
     =/  sip=@p    (slav %p sip.pat)
-    =+  waz=pf-pf-walz:(pf-abed:pf-core sip)
-    ``noun+!>(~(tap in ~(key by waz)))
+    =/  wam=(map addr:f sigm:f)  pf-pf-walz:(pf-abed:pf-core sip)
+    =/  was=(set addr:f)         ~(key by wam)
+    ``noun+?-(res.pat %adrs !>(was), %adrz !>(~(tap in was)))
   ::
       [%x %prof sip=@ %addr adr=@ ~]
     =/  sip=@p    (slav %p sip.pat)
@@ -412,7 +415,7 @@
           ::  which the 4th entry is the NFT ID
           =/  val=@
             ?+  topics.nex  !!
-              [* * * ~]  `@`(addr:dejs:ff:fh data.nex)
+              [* * * ~]  `@`(hexa:dejs:ff:fh data.nex)
             ::
                 [* * * * ~]
               ?.  ?=(%enft -.payment.pro)  !!
@@ -467,7 +470,9 @@
       =/  act=xact:f  [(slav %ud boq.pat) (slav %ux hax.pat)]
       =/  fom=addr:f  (slav %ux fom.pat)
       =+  !<(gud=(set @) q.p.p.syn)
-      (emit (pj-mk-pruf:(pj-abed:pj-core lag) act fom ~(wyt in gud) typ))
+      %-  emil
+      ?:  =(~ gud)  ~
+      [(pj-mk-pruf:(pj-abed:pj-core lag) act fom ~(wyt in gud) typ)]~
     ==
   ==
 ::
@@ -606,16 +611,7 @@
   ++  pj-is-new  !(~(has by pj-our) lag)
   ++  pj-pa-pub  [%fund %proj (scot %p p.lag) q.lag ~]
   ++  pj-pa-sub  [p.lag dap.bol %fund %proj (scot %p p.lag) q.lag ~]
-  ++  pj-me-met
-    ^-  meta:meta:f
-    :*  title=title.pro
-        image=image.pro
-        cost=~(cost pj:fj pro)
-        payment=payment.pro
-        launch=p:xact:(fall contract.pro *oath:f)
-        worker=p.lag
-        oracle=p.assessment.pro
-    ==
+  ++  pj-me-met  (proj-meta:fy lag pro)
   ::
   ++  pj-pj-bloq
     ^-  @
@@ -663,7 +659,8 @@
     %-  snoc  :_  `card`car(pat pat, act [%poke %fund-watcher-poke !>([%watch pat cfg])])
     ^-  (list card)
     ?^  tob  ~
-    %-  zing  %+  turn
+    %-  zing
+    %+  turn
       (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
     |=  old=path
     :-  car(pat old, act [%leave ~])                    ::  clear out:

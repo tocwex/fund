@@ -37,8 +37,8 @@
       milestones=(lest mile)
       contract=(unit oath)
       pledges=(map ship [plej peta])
-      contribs=(map addr [treb deta])
-      proofs=(map addr pruf)
+      contribs=(map xash [treb deta])
+      proofs=(map xash pruf)
   ==
 ::
 ::  $prej: project with peer information

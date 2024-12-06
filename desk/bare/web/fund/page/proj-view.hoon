@@ -1,7 +1,7 @@
 ::  /web/fund/page/proj-view/hoon: render base project page for %fund
 ::
 /-  fd=fund-data
-/+  f=fund-proj, fh=fund-http, fc=fund-chain, fa=fund-alien, fx=fund-xtra
+/+  f=fund-proj, fh=fund-http, fc=fund-chain, fx=fund-xtra
 /+  rudder, config
 %-  :(corl dump:preface:fh init:preface:fh (proj:preface:fh &))
 ^-  page:fd
@@ -36,7 +36,7 @@
             (sign:dejs:ff:fh (~(got by p.arz) %mis))
           (addr:dejs:ff:fh (~(got by p.arz) %mia))
         ?:  emt  [%& (~(got by p.arz) %mit)]
-        [%| (addr:dejs:ff:fh (~(got by p.arz) %mit))]
+        [%| (hexa:dejs:ff:fh (~(got by p.arz) %mit))]
       ==
     ::
         %wipe-resi
@@ -47,7 +47,7 @@
             (sign:dejs:ff:fh (~(got by p.arz) %des))
           (addr:dejs:ff:fh (~(got by p.arz) %dea))
         ?:  emt  [%& (~(got by p.arz) %det)]
-        [%| (addr:dejs:ff:fh (~(got by p.arz) %det))]
+        [%| (hexa:dejs:ff:fh (~(got by p.arz) %det))]
       ==
     ::
         %bump-prop
@@ -66,7 +66,7 @@
       ?+  arz=(parz:fh bod (sy ~[%sxb %sxa %swa %soa %ssa]))  p.arz  [%| *]
         :+  %bump  %lock  :-  ~
         :*  :-  (bloq:dejs:ff:fh (~(got by p.arz) %sxb))
-              (addr:dejs:ff:fh (~(got by p.arz) %sxa))
+              +:(xact:dejs:ff:fh (~(got by p.arz) %sxa))
             sigm:(need contract.pro)
             (addr:dejs:ff:fh (~(got by p.arz) %swa))
             (addr:dejs:ff:fh (~(got by p.arz) %soa))
@@ -83,7 +83,7 @@
           :*  (sign:dejs:ff:fh (~(got by p.arz) %mis))
               (addr:dejs:ff:fh (~(got by p.arz) %mia))
               ?:  emt  [%& (~(got by p.arz) %mit)]
-              [%| (addr:dejs:ff:fh (~(got by p.arz) %mit))]
+              [%| (hexa:dejs:ff:fh (~(got by p.arz) %mit))]
           ==
         ==
       ==
@@ -97,7 +97,7 @@
           :*  (sign:dejs:ff:fh (~(got by p.arz) %des))
               (addr:dejs:ff:fh (~(got by p.arz) %dea))
               ?:  emt  [%& (~(got by p.arz) %det)]
-              [%| (addr:dejs:ff:fh (~(got by p.arz) %det))]
+              [%| (hexa:dejs:ff:fh (~(got by p.arz) %det))]
           ==
         ==
       ==
@@ -107,7 +107,7 @@
         :^  %draw
             (bloq:dejs:ff:fh (~(got by p.arz) %mii))
           (bloq:dejs:ff:fh (~(got by p.arz) %mib))
-        (addr:dejs:ff:fh (~(got by p.arz) %mih))
+        +:(xact:dejs:ff:fh (~(got by p.arz) %mih))
       ==
     ::
         %draw-dead
@@ -115,7 +115,7 @@
         :^  %draw
             lin
           (bloq:dejs:ff:fh (~(got by p.arz) %mib))
-        (addr:dejs:ff:fh (~(got by p.arz) %mih))
+        +:(xact:dejs:ff:fh (~(got by p.arz) %mih))
       ==
     ::
         ?(%mula-plej %mula-trib)
@@ -130,7 +130,7 @@
             %mula-trib
           ?+  arz=(parz:fh bod (sy ~[%mxa %mad]))  p.arz  [%| *]
             :*  %mula  %trib  who  sum
-                :-  [wen (addr:dejs:ff:fh (~(got by p.arz) %mxa))]
+                :-  [wen +:(xact:dejs:ff:fh (~(got by p.arz) %mxa))]
                   (addr:dejs:ff:fh (~(got by p.arz) %mad))
                 msg
             ==
@@ -142,11 +142,11 @@
       ?+  arz=(parz:fh bod (sy ~[%mut %mui]))  p.arz  [%| *]
         =/  mut=@t  (~(got by p.arz) %mut)
         =/  mui=@t  (~(got by p.arz) %mui)
-        =/  med=@   ?+(mut (addr:dejs:ff:fh mui) %plej (ship:dejs:ff:fh mui))
+        =/  med=@   ?+(mut +:(xact:dejs:ff:fh mui) %plej (ship:dejs:ff:fh mui))
         =/  mid=@
           ?+    mut  0
             %plej  ?~(pej=(~(get by pledges.pro) `@p`med) 0 id.u.pej)
-            %trib  ?~(teb=(~(get by contribs.pro) `addr:f`med) 0 id.u.teb)
+            %trib  ?~(teb=(~(get by contribs.pro) `xash:f`med) 0 id.u.teb)
           ==
         ?-    dif
             %mula-blot
@@ -154,7 +154,7 @@
           ^-  sow=?
           ?+    mut  !!
             %plej  show:(~(got by pledges.pro) `@p`med)
-            %trib  show:(~(got by contribs.pro) `addr:f`med)
+            %trib  show:(~(got by contribs.pro) `xash:f`med)
           ==
         ::
             %mula-view
@@ -167,7 +167,7 @@
             %mula-mine
           ?.  ?=(%pruf mut)  !!
           =/  who=(unit @p)  ?.((auth:fh bol) ~ `src.bol)
-          =/  puf=pruf:f  (~(got by proofs.pro) `addr:f`med)
+          =/  puf=pruf:f  (~(got by proofs.pro) `xash:f`med)
           [%mula %trib who cash.puf when.puf %$]
         ::
             %mula-redo
@@ -175,7 +175,7 @@
           =-  [%redo `(sub boq win) `(add boq win)]
           ^-  boq=bloq:f
           ?.  ?=(%trib mut)  !!
-          =+  tib=(~(got by contribs.pro) `addr:f`med)
+          =+  tib=(~(got by contribs.pro) `xash:f`med)
           p.xact.when.tib
         ==
       ==
@@ -189,8 +189,8 @@
   ::  action and profiles do not have an associted project
   =?  lag  ?=(%fave pyp)  (need (flag:derl:ff:fh url.request.ord))
   :-  %next  :_  ~
-  %-  desc:enrl:ff:fh
-  /next/(scot %p p.lag)/[q.lag]/[?+(pyp %bump %mula-trib %trib, %mula-plej %plej)]
+  %+  nexc:enrl:ff:fh  lag
+  ?+(pyp %bump %mula-trib %trib, %mula-plej %plej)
 ++  build  ::  GET
   |=  [arz=(list [k=@t v=@t]) msg=(unit [gud=? txt=@t])]
   ^-  reply:rudder
@@ -208,10 +208,10 @@
   =+  arb==(!<(@p (slot:config %point)) src.bol)
   =+  [tym=|(wok ora) pyr=|(wok ora arb)]
   =/  pod=odit:f  ~(odit pj:f pro)
-  =/  moz=(list odit:f)  ~(odim pj:f pro)
-  =/  muz=(list mula:f)  ~(mula pj:f pro)
+  =/  moz=(list [odit:f fity:f])  ~(odid pj:f pro)
+  =/  muz=(list mula:f)
+    (~(mula pj:f pro) (sy ~[%pruf-open %pruf-with %plej-open %plej-stif %plej-slyd %trib]) ~)
   =/  [nin=@ mile:f]  ~(next pj:f pro)
-  =/  sos=@t  'adadad'
   =/  ui
     |_  cas=tape
     ++  bare-form
@@ -224,7 +224,7 @@
       |=  [tyt=tape fom=marl]
       ^-  manx
       ;div
-        ;button(class "fund-butn-de-m {cas}", x-init "initTippy($el)"): {tyt}
+        ;button(class "fund-butn-de-md {cas}", x-init "initTippy($el)"): {tyt}
         ;div(class "hidden")
           ;form(method "post", autocomplete "off", class "flex flex-col gap-y-2 p-2")
             ;*  fom
@@ -254,18 +254,18 @@
             :-  ?.  live.pre
                   :-  ~
                   =/  pur=tape  :(welp ?~(pow ~ (trip ship-url.u.pow)) (flat:enrl:ff:fh lag) "/okay")
-                  =/  nur=tape  (dest:enrl:ff:fh /next/(scot %p p.lag)/[q.lag]/exit)
+                  =/  nur=tape  (next:enrl:ff:fh lag %exit)
                   ;div  =class  "flex flex-row items-center"
                       =x-data  "\{ status: undefined }"
                       =x-init  "queryPage('{pur}').then(p => \{status = !!p;})"
                     ;+  %.  [%x-show "status == true"]~
-                        %~  joat  ma:fh
+                        %~  riat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" ~)
                     ;+  %.  [%x-show "status == undefined"]~
-                        %~  joat  ma:fh
+                        %~  riat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "reconnect 🔌" "Checking host for project…")
                     ;+  %.  [%x-show "status == false"]~
-                        %~  joat  ma:fh
+                        %~  riat  ma:fh
                         (~(link-butn ui:fh bas) nur %| "error ✗" "Failed to reach host.")
                   ==
                 ?:  &(ora ?=(%prop sat) ?=(~ contract.pro))
@@ -294,18 +294,18 @@
                         ; below to confirm your particpation.
                       ==
                       ;div(class "flex justify-end gap-x-2")
-                        ;+  (prod-butn:ui:fh %medi %action %bump-born "decline ~" ~ ~)
-                        ;+  (prod-butn:ui:fh %medi %true %bump-prop "accept ✓" "acceptContract" ~)
+                        ;+  (prod-butn:ui:fh %md %action %bump-born "decline ~" ~ ~)
+                        ;+  (prod-butn:ui:fh %md %true %bump-prop "accept ✓" "acceptContract" ~)
                       ==
                   ==
                 ?:  &(wok ?=(%prop sat))
                   :-  ~
                   %-  ~(bare-form ..$ ~)
                   %:  ~(prod-butn ui:fh bas)
-                      %medi  %true  %bump-lock  "launch ✔️"  "finalizeContract"
+                      %md  %true  %bump-lock  "launch ✔️"  "finalizeContract"
                       ?:(?=(^ contract.pro) ~ "Awaiting response from trusted oracle.")
                   ==
-                ?.  ?=(?(%born %done %dead) sat)
+                ?.  ?=(?(%born %prop %done %dead) sat)
                   =/  nft=?  ?=(%enft -.payment.pro)
                   =+  pej=(~(get by pledges.pro) src.bol)
                   :-  ~
@@ -379,20 +379,19 @@
                       ==
                       ;div(class "flex justify-end pt-2 gap-x-2")
                         ;+  %:  prod-butn:ui:fh
-                                %medi  %action  %mula-plej  "pledge only ~"  "plejFunds"
+                                %md  %action  %mula-plej  "pledge only ~"  "plejFunds"
                                 ?.  &((auth:fh bol) (plan:fx src.bol))
                                   "Pledges only available to authenticated planets."
                                 ?:  (~(has by pledges.pro) src.bol)
                                   "You must fulfill your outstanding pledge."
                                 ~
                             ==
-                        ;+  (prod-butn:ui:fh %medi %true %mula-trib "send funds ✓" "sendFunds" ~)
+                        ;+  (prod-butn:ui:fh %md %true %mula-trib "send funds ✓" "sendFunds" ~)
                   ==  ==
                 ~
             ;:    welp
             ::  explain button  ::
-              :~  %.  sos
-                  %~  hoal  ma:fh
+              :~  %-  hink:fh
                   ;button(type "button", x-init "initTippy($el, \{hover: true})")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %help)}";
                   ==
@@ -437,13 +436,14 @@
                 ?.  &(tym ?=(?(%lock %work %sess) sat))  ~
               :_  ~
               %-  ~(bare-form ..$ ~)
-              (prod-butn:ui:fh %medi %false %bump-dead "cancel ❌" "cancelContract" ~)
+              (prod-butn:ui:fh %md %false %bump-dead "cancel ❌" "cancelContract" ~)
             ::  edit button  ::
                 ?.  &(wok ?=(?(%born %prop) sat))  ~
               :_  ~
-              %.  sos
-              %~  hoal  ma:fh
-              (edit-butn:ui:fh lag)
+              %-  hink:fh
+              ;a/"{(flat:enrl:ff:fh lag)}/edit"
+                ;img.fund-butn-icon@"{(aset:enrl:ff:fh %edit)}";
+              ==
             ::  bookmark button  ::
               ?:  ?|  ?=(?(%born %prop) sat)
                       !(auth:fh bol)
@@ -453,8 +453,7 @@
                 ~
               :_  ~
               %-  ~(bare-form ..$ "flex flex-row items-center")
-              %.  sos
-              %~  hoal  ma:fh
+              %-  hink:fh
               ;button#prod-butn-folo-proj(type "submit", name "dif", value "folo-proj")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %bookmark)}";
               ==
@@ -467,8 +466,7 @@
                         (~(has in favorites.u.pou) lag)
                     ==
                 ~
-              :~  %.  sos
-                  %~  hoal  ma:fh
+              :~  %-  hink:fh
                   ;button(type "button", x-init "initTippy($el)")
                     ;img.fund-butn-icon@"{(aset:enrl:ff:fh %publicize)}";
                   ==
@@ -485,7 +483,7 @@
                         ;span.font-bold: This action is irreversible, choose wisely.
                       ==
                       ;div(class "flex justify-end pt-2 gap-x-2")
-                        ;+  (prod-butn:ui:fh %medi %true %fave-proj "publicize ✓" ~ ~)
+                        ;+  (prod-butn:ui:fh %md %true %fave-proj "publicize ✓" ~ ~)
                       ==
                     ==
                   ==
@@ -493,14 +491,12 @@
             ::  share button  ::
                 ?:  |(?=(%born sat) ?=(~ pow))  ~
               :_  ~
-              %.  sos
-              %~  hoal  ma:fh
-              (pink-butn:ui:fh lag (trip ship-url.u.pow))
+              %-  hink:fh
+              (sher-butn:ui:fh "{(trip ship-url.u.pow)}{(flat:enrl:ff:fh lag)}")
             ::  contract link button  ::
                 ?:  ?=(?(%born %prop) sat)  ~
               :_  ~
-              %.  sos
-              %~  hoal  ma:fh
+              %-  hink:fh
               ;a/"{(esat:enrl:ff:fh %addr safe:(need contract.pro) chain.payment.pro)}"(target "_blank")
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh %etherscan)}";
               ==
@@ -513,12 +509,10 @@
   :+  fut=&  hed=|
   ;div(x-data "proj_view")
     ;+  (head:ui:fh bol ord [(~(dash-navi ui ~) top=&)]~)
-    ::  NOTE: Using another trick to always push footer to the bottom
-    ::  https://stackoverflow.com/a/59865099
-    ;div(class "flex flex-col gap-3 px-2 py-2 sm:px-5 min-h-[100vh]")
+    ;div(class "fund-main")
       ;h1(class "fund-title"): {(trip title.pro)}
       ;div.relative.w-full
-        ;img.w-full@"{(trip ?^(image.pro u.image.pro (crip (~(ship-logo fa bol) p.lag))))}";
+        ;img.w-full@"{(pogo:fh lag pro bol)}";
         ;div.absolute.top-4.right-4
           ;+  %+  ~(work-bump ui:fh "p-2 fund-card-fore")  sat
               ;span: {(swam:enjs:ff:fh cost.pod payment.pro)}
@@ -544,14 +538,14 @@
         ;div(class "sm:col-span-1 lg:col-span-2 flex flex-col gap-3")
           ;div(class "flex flex-col gap-2")
             ;h1-alt: Project Overview
-            ;+  (mark-well:ui:fh (trip summary.pro) %togl)
+            ;+  (mark-well:ui:fh %togl (trip summary.pro))
           ==
           ;div(class "flex flex-col gap-2")
             ;h1-alt: Milestone Details
             ;*  %+  turn  (enum:fx `(list mile:f)`milestones.pro)
                 |=  [min=@ mil=mile:f]
                 ^-  manx
-                =/  oil=odit:f  (snag min moz)
+                =/  [oil=odit:f fit=fity:f]  (snag min moz)
                 =/  oas=tape  ?:(?=(?(%done %dead) status.mil) "fund-card-back" "fund-card-fore")
                 ;form  =id  "fund-mile-{<min>}"  =method  "post"
                     =x-data  "\{ mile_idex: {<min>} }"
@@ -563,7 +557,7 @@
                         =class  "w-full lg:w-min flex flex-col gap-2 p-1 rounded-md hover:cursor-pointer"
                       ;+  %+  ~(work-bump ui:fh "w-full justify-between lg:w-min")  status.mil
                           ;span: {(swam:enjs:ff:fh cost.mil payment.pro)}
-                      ;+  (mile-ther:ui:fh oil ~ big=|)
+                      ;+  (mile-ther:ui:fh oil fit ~ big=|)
                     ==
                     ;div(class "hidden")
                       ;span.font-bold: {(swam:enjs:ff:fh fill.oil payment.pro)}
@@ -572,7 +566,7 @@
                       ;span:  pledged
                     ==
                   ==
-                  ;+  (mark-well:ui:fh (trip summary.mil) %togl)
+                  ;+  (mark-well:ui:fh %togl (trip summary.mil))
                   ;*  =-  ?~  buz  ~
                           :_  ~
                           ;div(class "flex flex-wrap items-center justify-end gap-2")
@@ -582,30 +576,30 @@
                       =+  [cur==(min nin) las==(+(min) nin) dun=(lth min nin)]
                       ;:    welp
                           ?.  &(cur wok ?=(%lock status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %action %bump-work "mark in-progress ~" ~ ~)
+                        :_  ~  (prod-butn:ui:fh %md %action %bump-work "mark in-progress ~" ~ ~)
                       ::
                           ?.  &(cur wok ?=(%work status.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %action %bump-sess "request review ~" ~ ~)
+                        :_  ~  (prod-butn:ui:fh %md %action %bump-sess "request review ~" ~ ~)
                       ::
                           ?.  &(cur ora ?=(%sess status.mil))  ~
-                        :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %medi %action %bump-work "changes required ~" ~ ~)
-                            (prod-butn:ui:fh %medi %true %bump-done "approve ✓" "approveMilestone" ~)
+                        :~  ;a.fund-butn-de-md/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
+                            (prod-butn:ui:fh %md %action %bump-work "changes required ~" ~ ~)
+                            (prod-butn:ui:fh %md %true %bump-done "approve ✓" "approveMilestone" ~)
                         ==
                       ::
                       ::
                           ?.  &(dun ora ?=(%done status.mil) ?=(~ withdrawal.mil))  ~
-                        :~  ;a.fund-butn-de-m/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
-                            (prod-butn:ui:fh %medi %true %wipe-casi "reapprove ✓" "approveMilestone" ~)
+                        :~  ;a.fund-butn-de-md/"{(chat:enrl:ff:fh p.lag)}"(target "_blank"): message worker →
+                            (prod-butn:ui:fh %md %true %wipe-casi "reapprove ✓" "approveMilestone" ~)
                         ==
                       ::
                           ?.  &(dun tym ?=(%done status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %false %wipe-cade "clear approval ✗" "clearMilestone" ~)
+                        :_  ~  (prod-butn:ui:fh %md %false %wipe-cade "clear approval ✗" "clearMilestone" ~)
                       ::
                           ?.  &(dun wok ?=(%done status.mil) ?=(^ withdrawal.mil))  ~
                         :_  ~
                         %:  prod-butn:ui:fh
-                            %medi  %true  %draw-done  "claim funds ✓"  "claimMilestone"
+                            %md  %true  %draw-done  "claim funds ✓"  "claimMilestone"
                             ?^  xact.u.withdrawal.mil
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
@@ -618,15 +612,15 @@
                       ::
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(~ withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %true %wipe-resi "sign refund ~" "cancelContract" ~)
+                        :_  ~  (prod-butn:ui:fh %md %true %wipe-resi "sign refund ~" "cancelContract" ~)
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))  ~
-                        :_  ~  (prod-butn:ui:fh %medi %false %wipe-rede "clear approval ✗" "clearMilestone" ~)
+                        :_  ~  (prod-butn:ui:fh %md %false %wipe-rede "clear approval ✗" "clearMilestone" ~)
                       ::
                           ?.  &(las pyr ?=(%dead status.mil) ?=(^ withdrawal.mil))  ~
                         :_  ~
                         %:  prod-butn:ui:fh
-                            %medi  %true  %draw-dead  "refund funds ✓"  "refundContract"
+                            %md  %true  %draw-dead  "refund funds ✓"  "refundContract"
                             ?^  xact.u.withdrawal.mil
                               ?:  ?&  !=(0x0 q.u.xact.u.withdrawal.mil)
                                       ?=(~ pruf.u.withdrawal.mil)
@@ -673,7 +667,7 @@
                 =/  myp=tape  (trip -.mul)
                 =/  mas=tape  ?:(&(?=(%pruf -.mul) ?=(%with note.mul)) "fund-card-back" "fund-card-fore")
                 =/  muf=tape  ?+(-.mul (addr:enjs:ff:fh from.when.mul) %plej ~)
-                =/  mid=tape  ?+(-.mul (addr:enjs:ff:fh q.xact.when.mul) %plej (ship:enjs:ff:fh ship.mul))
+                =/  mid=tape  ?+(-.mul (xact:enjs:ff:fh q.xact.when.mul) %plej (ship:enjs:ff:fh ship.mul))
                 =/  mow=bean
                   ?-  -.mul
                     %plej  =<(show (~(got by pledges.pro) ship.mul))
@@ -684,72 +678,13 @@
                     =x-data  "\{ mula_type: '{myp}', mula_idex: '{mid}', mula_from: '{muf}' }"
                     =class   "flex flex-col gap-y-2 {mas}"
                   ;div(class "flex items-center justify-between")
-                    ;div(class "shrink flex inline-flex items-center gap-2 overflow-hidden")
-                      ;*  |^  ?-  -.mul
-                                %plej  (ship-bump ship.mul)
-                              ::
-                                  ?(%trib %pruf)
-                                ?^  ship.mul  (ship-bump u.ship.mul)
-                                %+  addr-bump  from.when.mul
-                                ?-(-.mul %trib (colt:enrl:ff:fh %black), %pruf (aset:enrl:ff:fh %link))
-                              ==
-                          ++  ship-bump
-                            |=  sip=ship
-                            ^-  marl
-                            :-  (ship-logo:ui:fh sip bol)
-                            :_  ~
-                            %.  [(ship-tytl:ui:fh sip bol)]~
-                            %~  rech  ma:fh
-                            %-  ~(link-text ui:fh "fund-clip")
-                            [wer=(chat:enrl:ff:fh sip) tab=& txt="~" diz=~]
-                          ++  addr-bump
-                            |=  [adr=addr:f lur=tape]
-                            ^-  marl
-                            :-  (icon-logo:ui:fh %rect lur)
-                            :_  ~
-                            %.  [%x-init "initENS($el, '{(addr:enjs:ff:fh adr)}')"]~
-                            %~  joat  ma:fh
-                            %:  ~(link-text ui:fh "fund-addr fund-clip")
-                                wer=(esat:enrl:ff:fh %addr adr chain.payment.pro)
-                                tab=&
-                                txt=(sadr:enjs:ff:fh adr)
-                                diz=~
-                            ==
-                          --
-                    ==
+                    ;+  (mula-agis:ui:fh %sm mul payment.pro bol)
                     ;div(class "flex inline-flex items-center gap-2")
                       ;+  =/  tur=tape
                             ?+(-.mul (esat:enrl:ff:fh %xact q.xact.when.mul chain.payment.pro) %plej ~)
                           =/  txt=tape  (swam:enjs:ff:fh cash.mul payment.pro)
                           (~(link-text ui:fh "font-serif") tur & txt ~)
-                      ;+  =-  ;div(class kas): {tyt}
-                          ^-  [tyt=tape kas=tape]
-                          ?-    -.mul
-                              %plej
-                            =+  pej=(~(got by pledges.pro) ship.mul)
-                            ?-  view.pej
-                              ~          ["pledged" "fund-pill-bo-m"]
-                              [~ %stif]  ["welched" "fund-pill-de-m"]
-                              [~ %slyd]  ["forgiven" "fund-pill-de-m"]
-                            ==
-                          ::
-                              %trib
-                            =+  teb=-:(~(got by contribs.pro) q.xact.when.mul)
-                            ?~  pruf.teb  ["attested" "fund-pill-lo-m"]
-                            =-  ["{-}verified" "fund-pill-do-m"]
-                            ?~  ship.teb  ~
-                            =-  ?~(- ~ "✔ ")
-                            .^  pro=(unit sigm:f)
-                                %gx  (scot %p our.bol)  dap.bol  (scot %da now.bol)
-                                /prof/(scot %p u.ship.teb)/addr/(scot %ux from.when.teb)/noun
-                            ==
-                          ::
-                              %pruf
-                            ?-  note.mul
-                              %depo  ["deposited" "fund-pill-lo-m"]
-                              %with  ["withdrawn" "fund-pill-de-m"]
-                            ==
-                          ==
+                      ;+  (mula-pill:ui:fh %md mul pre bol)
                     ==
                   ==
                   ;div(class "flex flex-col gap-2")
@@ -785,7 +720,7 @@
                         :_  ~
                         ;form  =method  "post"
                             =x-show  "($store.wallet.address ?? '').toLowerCase() == mula_from"
-                          ;+  (prod-butn:ui:fh %medi %action %mula-mine "claim transaction ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-mine "claim transaction ~" "editMula" ~)
                         ==
                       ::  pledge edit view button  ::
                           ?.  ?&  pyr
@@ -796,7 +731,7 @@
                           ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %medi %action %mula-view "toggle status ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-view "toggle status ~" "editMula" ~)
                         ==
                       ::  attested redo button  ::
                           ?.  ?&  pyr
@@ -807,13 +742,13 @@
                             ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %medi %action %mula-redo "query chain ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-redo "query chain ~" "editMula" ~)
                         ==
                       ::  mula blot button  ::
                           ?.  &(pyr !?=(%pruf -.mul))  ~
                         :_  ~
                         ;form(method "post")
-                          ;+  (prod-butn:ui:fh %medi %action %mula-blot "toggle shown ~" "editMula" ~)
+                          ;+  (prod-butn:ui:fh %md %action %mula-blot "toggle shown ~" "editMula" ~)
                         ==
                       ==
                 ==
@@ -851,7 +786,7 @@
           :(weld "swap_symbol: '" (trip symbol.payment.pro) "',")
           :(weld "swap_address: '" (trip addr.payment.pro) "',")
           :(weld "orac_cut: " (cash:enjs:ff:fh q.assessment.pro 6) ",")
-          :(weld "mile_fill: [" (roll moz |=([n=odit:f a=tape] :(weld a (comp:enjs:ff:fh fill.n payment.pro) ","))) "],")
+          :(weld "mile_fill: [" (roll moz |=([[n=odit:f *] a=tape] :(weld a (comp:enjs:ff:fh fill.n payment.pro) ","))) "],")
           :(weld "mile_whom: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (addr:enjs:ff:fh ?~(withdrawal.n *@ux from.sigm.u.withdrawal.n)) "',"))) "],")
           :(weld "mile_sign: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a "'" (sign:enjs:ff:fh ?~(withdrawal.n *@ux sign.sigm.u.withdrawal.n)) "',"))) "],")
           :(weld "mile_take: [" (roll `(list mile:f)`milestones.pro |=([n=mile:f a=tape] :(weld a (comp:enjs:ff:fh ?~(withdrawal.n *cash:f cash.u.withdrawal.n) payment.pro) ","))) "],")
@@ -959,7 +894,7 @@
                 return this.safeGetBlock().then((block) => ({
                   mii: this.mile_idex,
                   mib: block,
-                  mih: "0x0",
+                  mih: "0x0000000000000000000000000000000000000000000000000000000000000000",
                 }));
               } else {
                 return this.safeExecClaim({
@@ -1030,7 +965,7 @@
                   if (balance === 0) {
                     return this.safeGetBlock().then((block) => ({
                       mib: block,
-                      mih: "0x0",
+                      mih: "0x0000000000000000000000000000000000000000000000000000000000000000",
                     }));
                   } else {
                     return this.safeExecRefund({
@@ -1063,4 +998,4 @@
     ==
   ==
 --
-::  VERSION: [1 4 5]
+::  VERSION: [1 5 0]

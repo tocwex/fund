@@ -219,23 +219,23 @@ export const safeExecDeposit = async ({projectChain, fundAmount, fundToken, fund
   }));
   const wrappedTransaction = safeWrapTransactions(transactions, "depo");
 
-  if ((TOKEN.ABI === ABI.ERC721) && fundTransfers.length > 1) {
-    const isMultiTransferApproved = await readContract(window.Wagmi, {
-      abi: TOKEN.ABI,
-      address: TOKEN.ADDRESS[ethGetChain()],
-      functionName: "isApprovedForAll",
-      args: [funderAddress, CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()]],
-    });
-    if (!isMultiTransferApproved) {
-      const approveTransaction = await writeContract(window.Wagmi, {
-        abi: TOKEN.ABI,
-        address: TOKEN.ADDRESS[ethGetChain()],
-        functionName: "setApprovalForAll",
-        args: [CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()], true],
-      });
-      const approveReceipt = await safeAwaitTransaction({hash: approveTransaction});
-    }
-  }
+  // if ((TOKEN.ABI === ABI.ERC721) && fundTransfers.length > 1) {
+  //   const isMultiTransferApproved = await readContract(window.Wagmi, {
+  //     abi: TOKEN.ABI,
+  //     address: TOKEN.ADDRESS[ethGetChain()],
+  //     functionName: "isApprovedForAll",
+  //     args: [funderAddress, CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()]],
+  //   });
+  //   if (!isMultiTransferApproved) {
+  //     const approveTransaction = await writeContract(window.Wagmi, {
+  //       abi: TOKEN.ABI,
+  //       address: TOKEN.ADDRESS[ethGetChain()],
+  //       functionName: "setApprovalForAll",
+  //       args: [CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()], true],
+  //     });
+  //     const approveReceipt = await safeAwaitTransaction({hash: approveTransaction});
+  //   }
+  // }
 
   const sendTransaction = await writeContract(window.Wagmi, wrappedTransaction);
   const sendReceipt = await safeAwaitTransaction({hash: sendTransaction});
@@ -485,17 +485,18 @@ const safeWrapTransactions = (transactions, transferDir) => {
   const TOKEN = [...TOKEN_SET][0];
   return (transactions.length === 1)
     ? safeWrapTransaction(transactions[0])
-    : ((transferDir === "depo") && (TOKEN.ABI === ABI.ERC721))
-    ? { // NOTE: 'multisend' for ERC721s requires special approvals
-      abi: CONTRACT.ERC721_MULTISEND.ABI,
-      address: CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()],
-      functionName: "batchSafeTransfer",
-      args: [
-        TOKEN.ADDRESS[ethGetChain()],
-        transactions.map(({to}) => to),
-        transactions.map(({val}) => val),
-      ],
-    } : {
+    // : ((transferDir === "depo") && (TOKEN.ABI === ABI.ERC721))
+    // ? { // NOTE: 'multisend' for ERC721s requires special approvals
+    //   abi: CONTRACT.ERC721_MULTISEND.ABI,
+    //   address: CONTRACT.ERC721_MULTISEND.ADDRESS[ethGetChain()],
+    //   functionName: "batchSafeTransfer",
+    //   args: [
+    //     TOKEN.ADDRESS[ethGetChain()],
+    //     transactions.map(({to}) => to),
+    //     transactions.map(({val}) => val),
+    //   ],
+    // }
+    : {
       abi: CONTRACT.SAFE_MULTISEND.ABI,
       address: CONTRACT.SAFE_MULTISEND.ADDRESS[ethGetChain()],
       functionName: "multiSend",

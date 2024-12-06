@@ -448,12 +448,32 @@
         ;div(class "flex min-h-full items-end justify-center p-4 text-center sm:(items-center p-0)")
           ;div  =x-on-click-outside  "$refs.fund_modl.close()"
               =class  "relative overflow-hidden rounded-lg text-left sm:(my-8 w-full max-w-lg)"
-            ;div(class "bg-palette-background px-4 pb-4 pt-5 sm:(p-6 pb-4)")
+            ;div(class "relative bg-palette-background px-4 pb-4 pt-5 sm:(p-6 pb-4)")
               ;div(class "mt-3 text-center flex flex-col gap-3 sm:(mt-0 text-left)")
-                ;h2(x-ref "fund_modl_tytl"): Message
-                ;p(x-ref "fund_modl_mesg")
+                ;h2#fund-modl-tytl(x-ref "fund_modl_tytl"): Modal
+                ;p#fund-modl-mesg(x-ref "fund_modl_mesg")
                   ; If you see this message, please send a bug report to ~tocwex.syndicate!
                 ==
+                ;div#fund-modl-xtra(class "text-left hidden", x-data "\{open: false}")
+                  ;button  =type  "button"
+                    =class  "fund-butn-ac-sm"
+                    =x-on-click  "open = ! open"
+                    =x-text  "open ? 'hide details -' : 'show details +'";
+                  ;p#fund-modl-xesg(x-ref "fund_modl_xesg", x-show "open");
+                  ;button  =type  "button"
+                      =class  "fund-butn-tr-md"
+                      =x-on-click  "copyText($refs.fund_modl_xesg.innerText); swapHTML($el, '✔');"
+                      =x-show  "open"
+                    ; Copy
+                  ==
+                ==
+              ==
+            ==
+            ;div(class "absolute top-3 right-4")
+              ;button  =type  "button"
+                  =class  "font-light"
+                  =x-on-click  "$refs.fund_modl.close()"
+                ✖
               ==
             ==
             ;div(class "bg-palette-contrast flex gap-2 px-4 py-3 sm:(flex-row-reverse px-6)")
@@ -461,11 +481,6 @@
                   =class  "fund-butn-fa-md"
                   =x-on-click  "$refs.fund_modl.close()"
                 ; Close
-              ==
-              ;button  =type  "button"
-                  =class  "fund-butn-tr-md"
-                  =x-on-click  "copyText($refs.fund_modl_mesg.innerText); swapHTML($el, '✔');"
-                ; Copy
               ==
             ==
           ==
@@ -1297,7 +1312,7 @@
     ^-  manx
     ;button  =type  "button"
         =class  cas
-        =x-on-click  "copyText('{lin}'); showModal('copied', 'Link copied to clipboard!');"
+        =x-on-click  "copyText('{lin}'); showModal('copied ✔', 'Link copied to clipboard!');"
       ;img.fund-butn-icon@"{(aset:enrl:ff %share)}";
     ==
   ++  copy-butn                                  ::  arbitrary text copy button

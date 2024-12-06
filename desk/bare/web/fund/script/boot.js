@@ -12,7 +12,9 @@ import {
   getAccount, getBalance, getEnsName, signMessage,
   getConnections, watchAccount, watchChainId, switchAccount,
 } from 'https://esm.sh/@wagmi/core@2.10.0';
-import { fromHex } from 'https://esm.sh/viem@2.16.0';
+import {
+  fromHex, ContractFunctionExecutionError, UserRejectedRequestError,
+} from 'https://esm.sh/viem@2.16.0';
 import { mainnet, sepolia } from 'https://esm.sh/@wagmi/core@2.10.0/chains';
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.3/+esm';
@@ -406,9 +408,12 @@ if (window.Alpine === undefined) {
     maxAttempts=1, // Number
     timeout=5000, // Number (ms)
   } = {}) {
-    var queryUrl = !(window.location.protocol === "https:" && new URL(url).protocol === "http:")
+    const baseUrl = !url.startsWith("/")
       ? url
-      : url.replace(/^http:/, 'https:');
+      : `${window.location.origin}${url}`;
+    var queryUrl = !(window.location.protocol === "https:" && new URL(baseUrl).protocol === "http:")
+      ? baseUrl
+      : baseUrl.replace(/^http:/, 'https:');
 
     const getPage = async (attempts = 0) => (
       attempts++ >= maxAttempts
@@ -516,8 +521,14 @@ if (window.Alpine === undefined) {
       }).then(action).then(formData => (
         sendFormData(formData, event)
       )).catch((error) => {
-        console.log(error);
-        showModal("⚠ error ⚠", error.message);
+        if (
+          (error instanceof UserRejectedRequestError) ||
+          error.message.startsWith("User rejected the request.")
+        ) {
+          showModal("⚠ warning ⚠", "User rejected the blockchain wallet request.");
+        } else {
+          showModal("⚠ error ⚠", error.message);
+        }
       }).finally(() => {
         // TODO: Consider moving this to the error case
         event.target.querySelectorAll(".animate-ping").forEach((elem) => {
@@ -563,8 +574,18 @@ if (window.Alpine === undefined) {
 
   function showModal(title, text) {
     const dialog = document.querySelector('#fund-modl');
-    document.querySelector('#fund-modl h2').innerText = title;
-    document.querySelector('#fund-modl p').innerText = text;
+
+    document.querySelector('#fund-modl-tytl').innerText = title;
+    if (!text.includes("\n")) {
+      document.querySelector('#fund-modl-xtra').classList.add('hidden');
+      document.querySelector('#fund-modl-mesg').innerText = text;
+    } else {
+      document.querySelector('#fund-modl-xtra').classList.remove('hidden');
+      document.querySelector('#fund-modl-mesg').innerText =
+        "There was an error processing your request. Please contact ~tocwex for support.";
+      document.querySelector('#fund-modl-xesg').innerText = text;
+    }
+
     // FIXME: If a click event generates the modal, we wait for a bit so
     // as not to overlap with a click outside closing event
     delay(50).then(() => dialog.showModal());

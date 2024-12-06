@@ -326,6 +326,11 @@
                                 :~  [%readonly ~]
                                     [%value (comp:enjs:ff:fh cash.u.pej payment.pro)]
                                 ==
+                                ::  FIXME: Remove this after multi-send NFTs are supported
+                                  ?.  nft  ~
+                                :~  [%readonly ~]
+                                    [%value "1"]
+                                ==
                             ==
                         ;label(for "sum"): amount
                       ==
@@ -358,7 +363,7 @@
                                       } else {
                                         initTomSelect($el, {
                                           empty: isNFT,
-                                          maxItems: !isNFT ? undefined : maxItems,
+                                          maxItems: !isNFT ? undefined : 1, // maxItems,
                                           load: !isNFT ? undefined : tsLoadNFTs($el),
                                         });
                                       }

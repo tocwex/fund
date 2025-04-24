@@ -505,7 +505,9 @@
     ==
   ++  renew-surl                                 ::  update ship url
     ^+  cor
-    =.  cor  pf-abet:(pf-push:(pf-abed:pf-core our.bol) [%surl (crip (burl:fh bol))])
+    ::  NOTE: We don't `+pf-abet` here because it isn't necessary; we're
+    ::  just updating our own ship URL and not messing with favorites lists
+    =.  cor  cor:(pf-push:(pf-abed:pf-core our.bol) [%surl (crip (burl:fh bol))])
     =/  wyr=path  /fund/prof/update
     =-  %-  emil
         ;:  welp

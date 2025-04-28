@@ -1,7 +1,7 @@
-import alpineTurboDriveAdapter from 'https://cdn.skypack.dev/alpine-turbo-drive-adapter';
-import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1';
-import Alpine from 'https://cdn.skypack.dev/alpinejs@v3.13.9';
-// import AlpineFocus from 'https://cdn.skypack.dev/@alpinejs/focus@v3.13.9';
+import * as alpineTurboDriveAdapter from 'https://cdn.jsdelivr.net/npm/alpine-turbo-drive-adapter@2.1.0/+esm';
+import hotwiredTurbo from 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.1.0/+esm';
+import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@v3.13.9/+esm';
+// import AlpineFocus from 'https://cdn.jsdelivr.net/npm/@alpinejs/focus@v3.13.9/+esm';
 import * as twind from 'https://cdn.jsdelivr.net/npm/@twind/core@1.1.3/+esm';
 import presetTwind from 'https://cdn.jsdelivr.net/npm/@twind/preset-tailwind@1.1.4/+esm';
 import presetLineClamp from 'https://cdn.jsdelivr.net/npm/@twind/preset-line-clamp@1.0.7/+esm';

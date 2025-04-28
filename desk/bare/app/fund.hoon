@@ -482,9 +482,18 @@
     ?|  !(~(has by pf-myn) our.bol)        ::  pre-v1.1 need any watch paths
         =>(scan-vold:watch:audit ?=(^ .))  ::  pre-%6 %proj need new-style watch paths
     ==
+  =/  kup=?                                ::  in kernel upgrade mode?
+    =+  .^(dex=rock:tire:clay %cx (en-beam [our.bol %$ da+now.bol] /tire))
+    =+  .^(duz=(set [dude:gall ?]) %ge (en-beam [our.bol %base da+now.bol] [%$ ~]))
+    ?&  ?=([~ [%live *]] (~(get by dex) %base))
+        (~(has in duz) %dojo %.n)
+    ==
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  =.  cor  (renew-projs:action kiq)
+  ::  NOTE: Don't refresh project state during kernel upgrades! This can
+  ::  cause bad level triggers as %pals can be unduly suspended.
+  ~&  >>  "%fund: renewing projs? {<!kup>}"
+  =?  cor  !kup  (renew-projs:action kiq)
   cor
 ++  action
   |%
@@ -903,9 +912,8 @@
     pf-core(cor me-abet:(me-push:(me-abed:me-core lag) pod))
   ++  pf-is-pals
     ^-  bean
-    =+  .^(dex=rock:tire:clay %cx (en-beam [our.bol %$ da+now.bol] /tire))
-    ?~  dek=(~(get by dex) %pals)  |
-    ?.  ?=(%live zest.u.dek)  |
+    =+  .^(duz=(set [=dude:gall live=?]) %ge (en-beam [our.bol %pals da+now.bol] [%$ ~]))
+    ?.  (~(has in duz) %pals %.y)  |
     =+  .^(taz=(set ship) %gx (en-beam [our.bol %pals da+now.bol] /targets/noun))
     (~(has in taz) sip)
   ::

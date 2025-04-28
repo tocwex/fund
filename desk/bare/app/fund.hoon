@@ -492,7 +492,6 @@
   =.  cor  watch-pals:action
   ::  NOTE: Don't refresh project state during kernel upgrades! This can
   ::  cause bad level triggers as %pals can be unduly suspended.
-  ~&  >>  "%fund: renewing projs? {<!kup>}"
   =?  cor  !kup  (renew-projs:action kiq)
   cor
 ++  action

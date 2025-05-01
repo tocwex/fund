@@ -1,1 +1,0 @@
-../../bare/ted/watch.hoon

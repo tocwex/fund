@@ -1,1 +1,0 @@
-../../../../bare/web/fund/page/prof-graf.hoon

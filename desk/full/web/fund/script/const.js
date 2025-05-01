@@ -1,1 +1,0 @@
-../../../../bare/web/fund/script/const.js

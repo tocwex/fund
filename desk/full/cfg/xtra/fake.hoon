@@ -1,1 +1,0 @@
-../../../bare/cfg/xtra/fake.hoon

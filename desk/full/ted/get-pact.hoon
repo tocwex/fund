@@ -1,1 +1,0 @@
-../../bare/ted/get-pact.hoon

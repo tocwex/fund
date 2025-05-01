@@ -1,23 +1,23 @@
-# `%fund` #
+# `%fund`
 
 A sovereign platform for peer-to-peer economic activity with on-chain
 settlement and trusted identity assessment of work completion.
 
-## Demos ##
+## Demos
 
-### Project Setup ###
+### Project Setup
 
-![%fund setup demo](https://github.com/tocwex/fund/raw/release/meta/demo/fund-demo-setup.gif)
+![%fund setup demo](https://github.com/tocwex/fund/raw/release/dat/demo/fund-demo-setup.gif)
 
-### Contribute Funds ###
+### Contribute Funds
 
-![%fund contribute demo](https://github.com/tocwex/fund/raw/release/meta/demo/fund-demo-donate.gif)
+![%fund contribute demo](https://github.com/tocwex/fund/raw/release/dat/demo/fund-demo-donate.gif)
 
-### Get Paid ###
+### Get Paid
 
-![%fund cash out demo](https://github.com/tocwex/fund/raw/release/meta/demo/fund-demo-cashout.gif)
+![%fund cash out demo](https://github.com/tocwex/fund/raw/release/dat/demo/fund-demo-cashout.gif)
 
-## Install ##
+## Install
 
 Within your Urbit ship's command-line interface, enter the following command(s):
 
@@ -25,71 +25,28 @@ Within your Urbit ship's command-line interface, enter the following command(s):
 |install ~tocwex %fund
 ```
 
-## Build/Develop ##
+## Build/Develop
 
-All commands assume that the current working directory is this repository's
-base directory and optionally use [durploy] to streamline various Urbit
-development workflows.
+Make sure the following dependencies are installed on your development machine:
 
-### First-time Setup ###
+- [`GNU Make`](https://www.gnu.org/software/make/)
+- [`durploy`](https://github.com/sidnym-ladrut/durploy)
+- [`peru`](https://github.com/buildinspace/peru?tab=readme-ov-file#installation)
 
-Run the following commands to create a new [fake `~zod`][fakezod] with the
-`%fund` desk installed:
-
-##### With `durploy` #####
-
-```bash
-curl -LO https://raw.githubusercontent.com/sidnym-ladrut/durploy/release/durploy
-chmod u+x ./durploy
-./durploy ship zod
-# in a different terminal
-./durploy desk zod fund ./desk/full/
-```
-
-##### Without `durploy` #####
+All of the following commands assume that the current working directory is this
+repository's base directory. Also, before running any development commands, you
+first need a running Urbit ship. Deploy one on your local machine with:
 
 ```bash
-urbit -F zod
-|new-desk %fund
-|mount %fund
-|exit
-rm -rI ./zod/fund/*
-cp -RL ./desk/full/* ./zod/fund/
-urbit ./zod
-|commit %fund
-|install our %fund
+durploy ship zod
 ```
 
-### Development Workflows ###
+### Development Workflows
 
-#### Back-end Workflows ####
-
-In order to continuously test back-end code changes as they're made, make sure
-you have your [fake `~zod`][fakezod] running in the background and execute the
-following commands:
-
-##### With `durploy` #####
+In order to continuously test back-end code changes as they're made, run:
 
 ```bash
-./durploy desk -w zod fund ./desk/full/
-```
-
-##### Without `durploy` #####
-
-```bash
-cp -fRL ./desk/full/ ./zod/fund/
-# in the fakezod terminal
-|commit %fund
-```
-
-#### Front-end Workflows ####
-
-To view the front-end, simply open your development ship's web interface
-at the path `/apps/fund`; for a default [fake `~zod`][fakezod], this
-will be:
-
-```
-http://127.0.0.1:8080/apps/fund
+durploy desk -w zod fund ./out/desk/
 ```
 
 In order to continuously test front-end code changes as they're made, set up
@@ -101,31 +58,38 @@ password. Then, you should be able to edit the web files in
 Note that changes to library files (i.e. files outside the
 `./desk/bare/web/fund/page` tree) will require prompting your fake ship to
 reload the dependent page files separately. The following commands can be run
-after library files are changed to achieve this aim, and also to revert the
-associated changes prior to commit:
+after library files are changed for this purpose, and also to revert these
+temporary edits prior to commit:
 
 ```bash
-find ./desk/bare/web/fund/page/ -type f -exec sh -c "echo '::  RELOAD' >> {}" \;
+find ./src/web/fund/page/ -type f -exec sh -c "echo '::  RELOAD' >> {}" \;
 ```
 
 ```bash
-find ./desk/bare/web/fund/page/ -type f -exec sh -c "sed -i '/^::  RELOAD$/d' {}" \;
+find ./src/web/fund/page/ -type f -exec sh -c "sed -i '/^::  RELOAD$/d' {}" \;
 ```
 
-### Deployment Workflow ###
+### Deployment Workflows
 
-#### Back-end Workflows ####
+#### Back-end Workflows
 
-To generate a new full desk from the existing base desk:
+To generate a new full desk from the existing base desk, run the following
+command:
 
 ```bash
-./meta/exec/regen
+make desk
+```
+
+To deploy a new desk onto your development ship, run:
+
+```bash
+make ship-desk IN_SHIP=zod
 ```
 
 To perform a versioned release:
 
 ```bash
-./meta/exec/release X.Y.Z
+make release IN_SHIP=zod IN_RVER=X.Y.Z
 ```
 
 

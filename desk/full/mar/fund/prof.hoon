@@ -1,1 +1,0 @@
-../../../bare/mar/fund/prof.hoon

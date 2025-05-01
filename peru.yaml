@@ -1,0 +1,139 @@
+imports:
+  geur: ./out/exec
+  base: ./out/desk
+  arvo: ./out/desk
+  yard: ./out/desk
+  schooner: ./out/desk
+  vita: ./out/desk
+  vsss: ./out/desk
+  gin-tonic: ./out/desk
+  make: ./out/desk
+  pals: ./out/desk
+  landscape: ./out/desk
+
+git module geur:
+  url: https://github.com/sidnym-ladrut/geur
+  pick:
+    - slup
+  reup: develop
+  rev: 3de14f5f9efda2755421530d2efadaca2d96e32e
+
+
+git module base:
+  url: https://github.com/urbit/urbit
+  export: pkg/base-dev
+  pick:
+    - pkg/base-dev/lib/ethereum.hoon
+    - pkg/base-dev/lib/ethio.hoon
+    - pkg/base-dev/lib/strand.hoon
+    - pkg/base-dev/lib/strandio.hoon
+    - pkg/base-dev/lib/verb.hoon
+    - pkg/base-dev/mar/thread-done.hoon
+    - pkg/base-dev/mar/thread-fail.hoon
+    - pkg/base-dev/sur/json
+    - pkg/base-dev/sur/spider.hoon
+    - pkg/base-dev/sur/verb.hoon
+  reup: master
+  rev: 410k
+git module arvo:
+  url: https://github.com/urbit/urbit
+  export: pkg/arvo
+  pick:
+    - pkg/arvo/lib/naive.hoon
+    - pkg/arvo/lib/naive-transactions.hoon
+    - pkg/arvo/lib/tiny.hoon
+  reup: master
+  rev: 410k
+
+git module yard:
+  url: https://github.com/urbit/yard
+  export: desk
+  pick:
+    - desk/lib/dbug.hoon
+    - desk/lib/docket.hoon
+    - desk/lib/default-agent.hoon
+    - desk/lib/manx-utils.hoon
+    - desk/lib/skeleton.hoon
+    - desk/mar/atom.hoon
+    - desk/mar/noun.hoon
+    - desk/mar/loob.hoon
+    - desk/mar/bill.hoon
+    - desk/mar/txt.hoon
+    - desk/mar/docket-0.hoon
+    - desk/mar/kelvin.hoon
+    - desk/mar/hoon.hoon
+    - desk/mar/ship.hoon
+    - desk/mar/mime.hoon
+    - desk/mar/json.hoon
+    - desk/mar/css.hoon
+    - desk/mar/png.hoon
+    - desk/mar/svg.hoon
+    - desk/mar/js.hoon
+    - desk/mar/json.hoon
+    - desk/sur/docket.hoon
+  reup: main
+  rev: 500a46840eb891539a3b69aea9fb8d7c7b6797f2
+git module schooner:
+  url: https://github.com/sidnym-ladrut/yard
+  export: desk
+  pick:
+    - desk/lib/rudder.hoon
+    - desk/lib/server.hoon
+    - desk/lib/mip.hoon
+  reup: sl/schooner-quirks-patch
+  rev: 460152fb2d7f5c029a0324ba9ea70e0dce53ab03
+
+
+git module vita:
+  url: https://github.com/sidnym-ladrut/vita
+  export: vita-client
+  pick:
+    - vita-client/lib/vita-client.hoon
+  reup: sl/improve-install-data-reliability
+  rev: fb5881d0197025c9e80e6602eee354adf7589a8a
+
+git module vsss:
+  url: https://github.com/sidnym-ladrut/sss
+  export: urbit
+  pick:
+    - urbit/lib/sss.hoon
+    - urbit/sur/sss.hoon
+  reup: sl/demo-vsss
+  rev: 707b66ad062f30bb503a9bf8e3e15c9b11ac832a
+
+git module gin-tonic:
+  url: https://github.com/arthyn/gin-tonic
+  export: tonic
+  pick:
+    - tonic/lib/tonic.hoon
+    - tonic/mar/cass.hoon
+  reup: main
+  rev: a537b355c1bdf1f57739943cfba5b1a67fe06ac6
+
+# TODO: Replace w/ %chain-watcher
+git module make:
+  recursive: false
+  url: https://github.com/tocwex/make
+  export: desk
+  pick:
+    - desk/app/fund-watcher.hoon
+    - desk/mar/fund-watcher-diff.hoon
+    - desk/sur/fund-watcher.hoon
+    - desk/ted/fund-watcher.hoon
+  reup: main
+  rev: 7a77733223f3c0218d52c740f6d63adfa77a2986
+
+git module pals:
+  url: https://github.com/Fang-/suite
+  pick:
+    - mar/pals
+    - sur/pals.hoon
+  reup: master
+  rev: cf418c26a1b91c61b0dc1813b26f68c06757e5ff
+
+git module landscape:
+  url: https://github.com/tloncorp/landscape
+  export: desk-dev
+  pick:
+    - desk-dev/sur/settings.hoon
+  rev: 74650063fef22bd30d5560b59a2bc7e3b10a404d

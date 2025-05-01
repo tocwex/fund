@@ -1,1 +1,0 @@
-../../bare/ted/nfz-okay.hoon

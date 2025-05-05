@@ -297,4 +297,10 @@
 ++  mess
   |$  [diff]
   [who=@p wer=path wut=diff]
+::
+::  $muss: (error) mes(sage) (with reason) (used internally)
+::
+++  muss
+  |$  [diff]
+  [why=path (mess diff)]
 --

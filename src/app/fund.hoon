@@ -721,12 +721,15 @@
   ++  pj-push
     |=  pod=prod:proj:f
     ^+  pj-core
+    ::  NOTE: These `avow` statements are all inlined because using a
+    ::  wet gate fails to the preserve the type when printing the `mess`
     =*  mes  `(mess:f prod:proj:f)`[src.bol pj-pa-pub pod]
+    =+  avow=|=([y=@t w=?] ~|([why=/bad-pj-push/[`@tas`(cat 3 %not- y)] mes] ?>(w %.y)))
     ?+    -.pod
     ::  proj prods  ::
       ?.  pj-is-myn  pj-core(cor (emit (pj-mk-card p.lag pod)))
-      ?>  ~|(bad-pj-push+mes (pj-do-writ pod))
-      ?>  ~|(bad-pj-push+mes |(?=(?(%init %drop) -.pod) !pj-is-new))
+      ?>  (avow %has-permit (pj-do-writ pod))
+      ?>  (avow %proj-exists |(?=(?(%init %drop) -.pod) !pj-is-new))
       ?+    -.pod  (pj-pj-push pod)
           %init
         =?  cor  pj-is-new  (proj-push (public:pj-puz [pj-pa-pub]~))
@@ -783,15 +786,15 @@
       ::  FIXME: For a more complete version, maintain a per-ship lure
       ::  list (like group invites from %tlon)
       ?:  =(our.bol who.pod)  $(pod [%join ~])
-      ?<  ~|(bad-pj-push+mes pj-is-new)
+      ?>  (avow %proj-exists !pj-is-new)
       pj-core(cor (emit (pj-mk-card ?:(pj-is-myn who.pod p.lag) pod)))
     ::
         %copy
       =/  pag=flag:f  [our.bol wer.pod]
       =+  wat=[%fund %proj (scot %p our.bol) wer.pod ~]
-      ?>  ~|(bad-pj-push+mes =(our src):bol)
-      ?<  ~|(bad-pj-push+mes pj-is-new)
-      ?<  ~|(bad-pj-push+mes (~(has by pj-our) pag))
+      ?>  (avow %has-permit =(our src):bol)
+      ?>  (avow %proj-exists !pj-is-new)
+      ?>  (avow %dest-vacant !(~(has by pj-our) pag))
       ?:  pj-is-myn  pj-core
       =.  cor  (proj-push ~ (copy:pj-puz proj-subs pj-pa-sub wat))
       =.  cor  (emit [%pass wat %agent [our dap]:bol %poke fund-poke+!>([%proj pag %redo ~ ~])])
@@ -800,7 +803,7 @@
         ?(%join %exit)
       ::  FIXME: Re-add this contraint once an invite mechanism is
       ::  in place (see %lure clause above).
-      ::  ?>  ~|(bad-meta+mes pj-is-src)
+      ::  ?>  (avow %has-permit =(our src):bol)
       ?:  pj-is-myn  pj-core
       ?-  -.pod
         %join  ?.(pj-is-new pj-core pj-core(cor (proj-pull (surf:pj-suz pj-pa-sub))))
@@ -838,9 +841,10 @@
     |=  pod=prod:meta:f
     ^+  me-core
     =*  mes  `(mess:f prod:meta:f)`[src.bol me-pa-pub pod]
+    =+  avow=|=([y=@t w=?] ~|([why=/bad-me-push/[`@tas`(cat 3 %not- y)] mes] ?>(w %.y)))
     ?+    -.pod
     ::  meta prods  ::
-      ?>  ~|(bad-me-push+mes me-is-myn)
+      ?>  (avow %meta-local me-is-myn)
       ?-    -.pod
           %init
         =?  cor  me-is-new  (meta-push (public:me-puz [me-pa-pub]~))
@@ -855,7 +859,7 @@
       ==
     ::  meta prods ::
         ?(%join %exit)
-      ::  ?>  ~|(bad-meta+mes me-is-src)
+      ::  ?>  (avow %has-permit =(our src):bol)
       ?:  me-is-myn  me-core
       ?-  -.pod
         %join  ?.(me-is-new me-core me-core(cor (meta-pull (surf:me-suz me-pa-sub))))
@@ -929,14 +933,15 @@
     |=  pod=prod:prof:f
     ^+  pf-core
     =*  mes  `(mess:f prod:prof:f)`[src.bol pf-pa-pub pod]
+    =+  avow=|=([y=@t w=?] ~|([why=/bad-pf-push/[`@tas`(cat 3 %not- y)] mes] ?>(w %.y)))
     ?+    -.pod
     ::  prof prods  ::
       ::  NOTE: Signs directed at a foreign ship are handled specially; we allow
       ::  these to be placed in a local cache
       ?:  &(?=(%sign -.pod) !pf-is-myn)
-        ?>  (csig:pf:fp sip sig.pod)
+        ?>  (avow %from-signer (csig:pf:fp sip sig.pod))
         pf-core(lad (~(put by lad) from.sig.pod sig.pod))
-      ?>  ~|(bad-pf-push+mes pf-is-myn)
+      ?>  (avow %prof-local pf-is-myn)
       =?  cor  pf-is-new  (prof-push (public:pf-puz [pf-pa-pub]~))
       ::  NOTE: Only prompt a push if new information is being provided
       =-  =?  cor  new  (prof-push (give:pf-puz pf-pa-pub *vers:lake:prof:fd bol sip pod))
@@ -950,9 +955,7 @@
       ==
     ::  meta prods  ::
         ?(%join %exit)
-      ::  FIXME: Re-add this contraint once an invite mechanism is
-      ::  in place (see %lure clause above).
-      ::  ?>  ~|(bad-meta+mes pf-is-src)
+      ::  ?>  (avow %has-permit =(our src):bol)
       ?:  pf-is-myn  pf-core
       ?-  -.pod
         %join  ?.(pf-is-new pf-core pf-core(cor (prof-pull (surf:pf-suz pf-pa-sub))))

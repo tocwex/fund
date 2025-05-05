@@ -1,4 +1,4 @@
-/-  pold=sss-proj-6
+/-  pold=sss-proj-5
 /+  *fund-proj, fc=fund-core, config, sss
 |%
 +|  %misc
@@ -29,38 +29,9 @@
   --
 
 +|  %core
-+$  vers  _%7
++$  vers  _%6
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
-  =/  up
-    |_  pro=proj:pold
-    ++  proj
-      ^-  ^proj
-      :*  title=title.pro
-          summary=summary.pro
-          image=image.pro
-          assessment=assessment.pro
-      ::
-            ^=  payment
-          ?.  ?=(%enft -.payment.pro)  payment.pro
-          :*  %enft
-              chain=chain.payment.pro
-              addr=addr.payment.pro
-              name=name.payment.pro
-              symbol=symbol.payment.pro
-              ::  NOTE: Hardcoded so as not to create a dependency on the
-              ::  /lib/fund/chain/hoon file
-              uri=|=(i=@ud "https://azimuth.network/erc721/{(a-co:co i)}.json")
-              limits=limits.payment.pro
-          ==
-      ::
-          milestones=milestones.pro
-          contract=contract.pro
-          pledges=pledges.pro
-          contribs=contribs.pro
-          proofs=proofs.pro
-      ==
-    --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
@@ -72,7 +43,7 @@
     ^-  rock
     ?+  -.voc     $(voc (urck:lake:pold voc))
       vers        voc
-      vers:pold   $(voc [*vers ~(proj up +.voc)])
+      vers:pold   $(voc [*vers +.voc])
     ==
   ++  uwve
     |=  vav=vave
@@ -83,7 +54,7 @@
         vers:pold
       =-  $(vav [*vers -])
       ?+    +.vav      +.vav
-        [* * %init *]  [bol.vav p.pok.vav %init ~(proj up pro.q.pok.vav)]
+        [* * %redo *]  [bol.vav p.pok.vav %redo ~ ~]
       ==
     ==
   ++  wash

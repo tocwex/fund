@@ -58,7 +58,7 @@
           0x33ee.cbf9.0847.8c10.6146.26a9.d304.bfe1.8b78.dd73
           'Azimuth Points'
           'AZP'
-          |=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
+          |=(i=@ud "https://azimuth.network/erc721/{(a-co:co i)}.json")
           (malt ~[[%size |=(=@t =(%star t))]])
       ==
       :*  %coin  ::  sepolia-usdc
@@ -80,7 +80,7 @@
           0xabe2.8c76.e1c9.750e.b78f.32a0.7c29.5afa.99b5.57fd
           'Urbit Azimuth NFT (TEST)'
           'AZP-TEST'
-          |=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
+          |=(i=@ud "https://azimuth.network/erc721/{(a-co:co i)}.json")
           (malt ~[[%size |=(=@t =(%star t))]])
       ==
       ::  [%chip %0 %0x0 'Fiat USD' 'USD' 2]  ::  none-fusd

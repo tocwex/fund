@@ -7,6 +7,7 @@
 These tests must be run on `~zod` in order to work!
 
 ```
+-fund!config & /xtra/fake/hoon
 =f -build-file /=fund=/lib/fund/proj/hoon
 =x -build-file /=fund=/lib/fund/chain/hoon
 =p *proj:f
@@ -15,30 +16,28 @@ These tests must be run on `~zod` in order to work!
 =o *oath:f
 =ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
 =ad2 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf
-=miz ~[m(title '1', summary '!', cost 10.000.000) m(title '2', summary '@', cost 20.000.000) m(title '3', summary '#', cost 30.000.000) m(title '4', summary '$', cost 40.000.000)]
-=po1 p(title 't', summary 'd', assessment [our 0], milestones miz, currency sepolia-usdc:coin:x)
-=sig 0xd0.c895.66e4.8bc9.0bd0.e92f.f9f2.85c5.6458.d91f.ee51.0290.2d09.eae6.6908.f0b4.6443.3d19.3121.987b.842e.8ba5.d8a5.c047.c587.d6f8.8ae2.3f23.df9e.b971.6e3d.f741.921b
-=si1 `sigm:f`[sig ad1 [%& (crip (~(oath pj:f po1) our))]]
-:fund &fund-poke [%proj [our %test] %init po1]
-:fund &fund-poke [%proj [our %test] %bump %prop ~]
-:fund &fund-poke [%proj [our %test] %bump %born ~]
-:fund &fund-poke [%proj [our %test] %bump %prop ~]
-:fund &fund-poke [%proj [our %test] %bump %prop `o(sigm si1)]
-:fund &fund-poke [%proj [our %test] %bump %lock `o(sigm si1, xact [0 0x0], work ad2, orac ad1, safe 0x0)]
-:fund &fund-poke [%proj [our %test] %mula %plej our 9.000.000 0 (crip "{<our>} plej")]
-:fund &fund-poke [%proj [our %test] %mula %trib `our 9.000.000 s(xact [1 0x0]) (crip "{<our>} fill")]
-:fund &fund-poke [%proj [our %test] %bump %work ~]
-:fund &fund-poke [%proj [our %test] %bump %sess ~]
-:fund &fund-poke [%proj [our %test] %bump %done `o(sigm si1)]
-:fund &fund-poke [%proj [our %test] %bump %work ~]
-:fund &fund-poke [%proj [our %test] %mula %trib `our 2.000.000 s(xact [2 0x0]) (crip "{<our>} trib")]
-:fund &fund-poke [%proj [our %test] %mula %trib ~ 20.000.000 s(xact [3 0x0]) (crip "anon trib")]
-:fund &fund-poke [%proj [our %test] %mula %plej our 1.000.000 4 (crip "{<our>} pass")]
-:fund &fund-poke [%proj [our %test] %mula %trib `our 1.000.000 s(xact [5 0x0]) '']
-:fund &fund-poke [%proj [our %test] %mula %plej our 50.000.000 6 (crip "{<our>} plej")]
-:fund &fund-poke [%proj [our %test] %draw 0 [7 0x0]]
-:fund &fund-poke [%proj [our %test] %redo ~ ~]
-:fund &fund-poke [%proj [our %tes2] %init p(title '5', summary '%', assessment [~nec 1.000.000], currency sepolia-usdc:coin:x, milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
+=po-tes1 p(title '1', summary 'd', assessment [our 0], milestones ~[m(title '1', summary '!', cost 10.000.000) m(title '2', summary '@', cost 20.000.000) m(title '3', summary '#', cost 30.000.000) m(title '4', summary '$', cost 40.000.000)], payment (~(got by smap:x) 11.155.111 'fundUSDC'))
+=si-tes1 `sigm:f`[0xa3.56fd.ca10.f4f3.62e8.814b.9283.f728.2d54.e144.5e04.d5bf.ff7b.db8a.13d6.82b7.eb1d.08d5.f7bc.b180.526b.3fad.fdca.283e.9daa.65a0.ca06.a39b.9b1d.58a7.058a.1099.981b ad1 [%& (crip (~(oath pj:f po-tes1) our))]]
+:fund &fund-poke [%proj [our %tes1] %init po-tes1]
+:fund &fund-poke [%proj [our %tes1] %bump %prop ~]
+:fund &fund-poke [%proj [our %tes1] %bump %born ~]
+:fund &fund-poke [%proj [our %tes1] %bump %prop ~]
+:fund &fund-poke [%proj [our %tes1] %bump %prop `o(sigm si-tes1)]
+:fund &fund-poke [%proj [our %tes1] %bump %lock `o(sigm si-tes1, xact [0 0x0], work ad2, orac ad1, safe 0x0)]
+:fund &fund-poke [%proj [our %tes1] %mula %plej our 9.000.000 0 (crip "{<our>} plej")]
+:fund &fund-poke [%proj [our %tes1] %mula %trib `our 9.000.000 s(xact [1 0x0]) (crip "{<our>} fill")]
+:fund &fund-poke [%proj [our %tes1] %bump %work ~]
+:fund &fund-poke [%proj [our %tes1] %bump %sess ~]
+:fund &fund-poke [%proj [our %tes1] %bump %done `o(sigm si-tes1)]
+:fund &fund-poke [%proj [our %tes1] %bump %work ~]
+:fund &fund-poke [%proj [our %tes1] %mula %trib `our 2.000.000 s(xact [2 0x0]) (crip "{<our>} trib")]
+:fund &fund-poke [%proj [our %tes1] %mula %trib ~ 20.000.000 s(xact [3 0x0]) (crip "anon trib")]
+:fund &fund-poke [%proj [our %tes1] %mula %plej our 1.000.000 4 (crip "{<our>} pass")]
+:fund &fund-poke [%proj [our %tes1] %mula %trib `our 1.000.000 s(xact [5 0x0]) '']
+:fund &fund-poke [%proj [our %tes1] %mula %plej our 50.000.000 6 (crip "{<our>} plej")]
+:fund &fund-poke [%proj [our %tes1] %draw 0 [7 0x0]]
+:fund &fund-poke [%proj [our %tes1] %redo ~ ~]
+:fund &fund-poke [%proj [our %tes2] %init p(title '5', summary '%', assessment [~nec 1.000.000], payment (~(got by smap:x) 11.155.111 'fundUSDC'), milestones ~[m(title '6', summary '^', cost 1.000.000.000.000)])]
 :fund &fund-poke [%proj [our %tes2] %bump %prop ~]
 :fund &fund-poke [%prof ~nec %join ~]
 ```
@@ -49,6 +48,48 @@ After running the above, run the following to test overage behavior:
 =s *stub:f
 :fund &fund-poke [%proj [our %test] %mula %trib `our 50.000.000 s(xact [8 0x0]) '']
 :fund &fund-poke [%proj [our %test] %mula %trib ~ 100.000.000 s(xact [9 0x0]) '']
+```
+
+Here are some additional tests for `%fund-watcher` behavior:
+
+```
+-fund!config & /xtra/fake/hoon
+=f -build-file /=fund=/lib/fund/proj/hoon
+=x -build-file /=fund=/lib/fund/chain/hoon
+=p *proj:f
+=m *mile:f
+=s *stub:f
+=o *oath:f
+=ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
+=ad2 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf
+=po-wat1 p(title 'a', summary 'd', assessment [our 0], milestones ~[m(title '1', summary '!', cost 10.000.000) m(title '2', summary '@', cost 20.000.000) m(title '3', summary '#', cost 30.000.000) m(title '4', summary '$', cost 40.000.000)], payment (~(got by smap:x) 11.155.111 'fundUSDC'))
+=si-wat1 `sigm:f`[0xd0.e5fc.ba25.4858.873a.4be4.9bbc.95a2.afa4.7037.64ea.3af3.ff74.b4bd.33b4.c225.ca4f.b488.4083.d275.3e00.bd09.78a3.e725.d005.7e02.8d59.bb17.bf0f.7aac.e311.aeae.6e1b ad1 [%& (crip (~(oath pj:f po-wat1) our))]]
+:fund &fund-poke [%proj [our %wat1] %init po-wat1]
+:fund &fund-poke [%proj [our %wat1] %bump %prop ~]
+:fund &fund-poke [%proj [our %wat1] %bump %prop `o(sigm si-wat1)]
+:fund &fund-poke [%proj [our %wat1] %bump %lock `o(sigm si-wat1, xact [6.206.639 0x74.867c.d53e.46c3.1f3f.6689.c1a0.fc0b.56f0.1415.945a.aac2.ccb4.17cf.da88.b77a], work ad2, orac ad1, safe 0x980.3f08.51d4.69c1.320d.7ff0.6661.b439.f34f.463a)]
+=po-wat2 p(title 't', summary 'd', assessment [our 0], milestones ~[m(title '1', summary '!', cost 1) m(title '2', summary '@', cost 2) m(title '3', summary '#', cost 3) m(title '4', summary '$', cost 4)], payment (~(got by smap:x) 11.155.111 'AZP-TEST'))
+=si-wat2 `sigm:f`[0x15.cc02.0821.0c71.a304.456a.390b.a625.74cb.d1a9.9362.dd43.524c.b7f3.62b6.3267.0032.999d.471f.a520.88ed.8fe6.fb25.910f.f1bd.ac74.3b14.1d16.8ad3.097f.b37f.b554.ab1b ad1 [%& (crip (~(oath pj:f po-wat2) our))]]
+:fund &fund-poke [%proj [our %wat2] %init po-wat2]
+:fund &fund-poke [%proj [our %wat2] %bump %prop ~]
+:fund &fund-poke [%proj [our %wat2] %bump %prop `o(sigm si-wat2)]
+:fund &fund-poke [%proj [our %wat2] %bump %lock `o(sigm si-wat2, xact [6.718.436 0x574.c9b3.03a7.3b5e.443c.5080.e021.8505.58ee.bc9c.9df9.2301.7007.6552.ac77.6a3d], work ad2, orac ad1, safe 0x35bf.487f.082d.b9ea.1da0.c886.56d9.ae6e.3e82.b68e)]
+```
+
+```
+=f -build-file /=fund=/lib/fund/proj/hoon
+=x -build-file /=fund=/lib/fund/chain/hoon
+=p *proj:f
+=m *mile:f
+=s *stub:f
+=ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
+=ad2 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf
+=po-wat3 p(title 't', summary 'd', assessment [our 0], milestones ~[m(title '1', summary '!', cost 1) m(title '2', summary '@', cost 1)], payment (~(got by smap:x) 1 'AZP'))
+:fund &fund-poke [%proj [our %wat3] %init po-wat3]
+:fund &fund-poke [%proj [our %wat3] %bump %prop ~]
+:: sign manually, from ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
+=o (need contract:(need .^((unit proj:proj:f) %gx /=fund=/proj/(scot %p our)/wat3/noun)))
+:fund &fund-poke [%proj [our %wat3] %bump %lock `o(xact [20.744.577 0xa7f9.94c6.38ec.06ed.b3b6.ef9a.b643.eec3.7e39.e297.b233.134f.d8bf.7d5f.2138.1de1], work ad2, orac ad1, safe 0xb955.eab8.6a84.75b0.de09.6140.4d68.7dcb.828d.42e3)]
 ```
 
 ### Deletion Tests

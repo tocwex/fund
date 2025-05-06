@@ -99,16 +99,20 @@
       [`@`chain.swa `@`symbol.swa]
       [`@`tag:(~(got by xmap) chain.swa) `@`symbol.swa]
   ==
+++  scan-path
+  |=  [act=xfer sob=(unit bloq) tob=(unit bloq)]
+  ^-  path
+  /scan/[act]/[?~(sob %$ (scot %ud u.sob))]/[?~(tob %$ (scot %ud u.tob))]
 ++  scan-cfgz
   |=  [oat=oath sob=(unit bloq) tob=(unit bloq) swa=swap]
   ^-  (list [path config])
   ?:  |(=(0x0 safe.oat) ?=(%chip -.swa))  ~
   ?~  con=(~(get by smap) [chain addr]:swa)  ~
   ?~  can=(~(get by xmap) chain.u.con)  ~
-  %+  turn  `(list @tas)`~[%depo %with]
-  |=  act=term
+  %+  turn  `(list xfer)`~[%depo %with]
+  |=  act=xfer
   =/  [src=@ux dst=@ux]  ?:(?=(%depo act) [0x0 safe.oat] [safe.oat 0x0])
-  :-  /scan/[act]/[?~(sob %$ (scot %ud u.sob))]/[?~(tob %$ (scot %ud u.tob))]
+  :-  (scan-path act sob tob)
   :*  url=rpc.u.can
       eager=|
       refresh-rate=!<(@dr (slot:fund-config %scan-herz))

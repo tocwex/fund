@@ -418,11 +418,21 @@
               [* * * ~]  `@`(hexa:dejs:ff:fh data.nex)
             ::
                 [* * * * ~]
-              ?.  ?=(%enft -.payment.pro)  !!
+              ?>  ?=(%enft -.payment.pro)
               ?~(limits.payment.pro 1 `@`+>+<.topics.nex)
             ==
           (~(put by acc) act [[who val] (~(gut by acc) act ~)])
         %-  emil
+        ::  TODO: The idea here is to close a terminating watchdog when
+        ::  it's finished, but it only works if there are valid values
+        ::  in the requested range. An %eth-watcher solution would be better.
+        ::  %+  welp
+        ::    ^-  (list card)
+        ::    ?:  |(?=(~ tob) (lth (pj-pj-bloq:por sob tob) u.tob))  ~
+        ::    =+  car=[%pass pat=pat %agent [our.bol %fund-watcher] act=~]
+        ::    :~  car(act [%leave ~])
+        ::        car(act [%poke %fund-watcher-poke !>([%clear pat])])
+        ::    ==
         ?:  &(?=(%enft -.payment.pro) ?=(^ limits.payment.pro))
           %-  ~(rep by xap)
           |=  [[act=xact:f fez=(list [addr:f @])] acc=(list card)]
@@ -585,7 +595,6 @@
           ?=([%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ ~] wyr)
           ?=(^ (slaw %p sip.wyr))
           ?=(xfer:f typ.wyr)
-          ?=(%$ tob.wyr)  ::  NOTE: empty end indicates ongoing watch path
       ==
     ++  scan-vany                                ::  %fund-watcher any-style watch paths
       ~+
@@ -624,15 +633,11 @@
   ++  pj-me-met  (proj-meta:fy lag pro)
   ::
   ++  pj-pj-bloq
-    ^-  @
+    ^-  bloq
     =/  pre=path  (en-beam [our.bol %fund-watcher da+now.bol] /)
-    =-  ?~(pat 0 .^(@ %gx :(welp pre /block u.pat /atom)))
-    ^-  pat=(unit path)
-    =+  .^(pap=(map path *) %gx (welp pre /dogs/configs/noun))
-    %+  find:fx  ~(tap in ~(key by pap))
-    =/  pre=path  (welp pj-pa-pub /scan/depo)
-    =/  pen=@ud   (lent pre)
-    |=(n=path &(=(pre (scag pen n)) =(%$ (rear n))))
+    =+  .^(pam=(map path *) %gx (welp pre /dogs/configs/noun))
+    =/  pat=path  (welp pj-pa-pub (scan-path:fc %depo ~ ~))
+    ?.((~(has by pam) pat) 0 .^(@ %gx :(welp pre /block pat /atom)))
   ++  pj-pj-push
     |=  pod=prod:proj:f
     ^+  pj-core
@@ -670,14 +675,10 @@
     ^-  (list card)
     ?^  tob  ~
     %-  zing
-    %+  turn
-      (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
+    %+  turn  (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
     |=  old=path
-    :-  car(pat old, act [%leave ~])                    ::  clear out:
-    ?.  ?|  (~(has in scan-vold:watch:audit) old)       ::  - all old watch paths
-            &(!=(old pat) =(~ tob) =(%$ (rear old)))    ::  - all new indefinite paths
-        ==
-      ~
+    :-  car(pat old, act [%leave ~])  ::  leave all overlapping paths
+    ?:  =(old pat)  ~                 ::  but only clear non-identical paths (restarts 'pat')
     [car(pat old, act [%poke %fund-watcher-poke !>([%clear old])])]~
   ::
   ++  pj-do-read

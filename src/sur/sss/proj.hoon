@@ -343,13 +343,14 @@
       =/  sob=bloq  (fall sob.pod ?~(contract.pro 0 p.xact.u.contract.pro))
       =/  tob=bloq  (fall tob.pod 1.000.000.000.000.000)  ::  NOTE: Basically 'Number.MAX'
       ?>  (avow %sane-range (lte sob tob))
-      =+  gud=|=(p=pruf &((lte sob p.xact.when.p) (lte p.xact.when.p tob)))
+      ::  NOTE: We omit everything in the [sob-tob] range so it can be requeried
+      =+  redo=|=(p=pruf `?`&((lte sob p.xact.when.p) (lte p.xact.when.p tob)))
       %_    pro
           proofs
         %-  ~(rep by proofs.pro)
         |=  [[key=addr val=pruf] acc=(map addr pruf)]
         ^-  (map addr pruf)
-        ?.((gud val) acc (~(put by acc) key val))
+        ?:((redo val) acc (~(put by acc) key val))
       ::
           contribs
         %-  ~(run by contribs.pro)
@@ -358,7 +359,7 @@
         %_    teb
             pruf
           ?~  pruf.teb  ~
-          ?.  (gud u.pruf.teb)  ~
+          ?:  (redo u.pruf.teb)  ~
           pruf.teb
         ==
       ::
@@ -373,7 +374,7 @@
           %_    wit
               pruf
             ?~  pruf.wit  ~
-            ?.  (gud u.pruf.wit)  ~
+            ?:  (redo u.pruf.wit)  ~
             pruf.wit
           ==
         ==

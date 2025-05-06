@@ -75,11 +75,11 @@ Here are some additional tests for `%fund-watcher` behavior:
 :fund &fund-poke [%proj [our %wat2] %bump %prop `o(sigm si-wat2)]
 :fund &fund-poke [%proj [our %wat2] %bump %lock `o(sigm si-wat2, xact [6.718.436 0x574.c9b3.03a7.3b5e.443c.5080.e021.8505.58ee.bc9c.9df9.2301.7007.6552.ac77.6a3d], work ad2, orac ad1, safe 0x35bf.487f.082d.b9ea.1da0.c886.56d9.ae6e.3e82.b68e)]
 =po-wat3 p(title 't', summary 'd', assessment [our 0], milestones ~[m(title '1', summary '!', cost 1) m(title '2', summary '@', cost 1)], payment (~(got by smap:x) 1 'AZP'))
+=si-wat3 `sigm:f`[0xf3.f90b.c86e.e71e.cd7f.9b6f.b35b.c8b4.070a.184b.d0a5.e3bc.05aa.7a9b.ef00.93dd.8e0c.aea8.a356.a90d.14b9.0dfa.d200.05c5.fbf8.d3d1.7825.45ab.1592.6c73.0144.5b2a.611c ad1 [%& (crip (~(oath pj:f po-wat3) our))]]
 :fund &fund-poke [%proj [our %wat3] %init po-wat3]
 :fund &fund-poke [%proj [our %wat3] %bump %prop ~]
-:: sign manually, from ad1 0x1be6.260e.5eb9.50d5.80a7.0019.6a5b.c7f1.2f4c.e3b9
-=o (need contract:(need .^((unit proj:proj:f) %gx /=fund=/proj/(scot %p our)/wat3/noun)))
-:fund &fund-poke [%proj [our %wat3] %bump %lock `o(xact [20.744.577 0xa7f9.94c6.38ec.06ed.b3b6.ef9a.b643.eec3.7e39.e297.b233.134f.d8bf.7d5f.2138.1de1], work ad2, orac ad1, safe 0xb955.eab8.6a84.75b0.de09.6140.4d68.7dcb.828d.42e3)]
+:fund &fund-poke [%proj [our %wat3] %bump %prop `o(sigm si-wat3)]
+:fund &fund-poke [%proj [our %wat3] %bump %lock `o(sigm si-wat3, xact [20.744.577 0xa7f9.94c6.38ec.06ed.b3b6.ef9a.b643.eec3.7e39.e297.b233.134f.d8bf.7d5f.2138.1de1], work ad2, orac ad1, safe 0xb955.eab8.6a84.75b0.de09.6140.4d68.7dcb.828d.42e3)]
 ```
 
 And run this to test `%redo` and watch path updating behavior:

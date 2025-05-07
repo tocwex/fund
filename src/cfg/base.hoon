@@ -8,7 +8,7 @@
 :~  [%debug !>(%|)]
     [%point !>(~tocwex)]
     [%sign-addr !>(0x78e6.603f.0393.3e0f.ebc6.88a7.734e.a8b4.b63f.42d0)]
-    [%safe-addr !>(0x70f7.cfa4.b484.0ac9.7723.a3fb.b516.3f88.386c.2306)]
+    [%safe-addr !>(0x8a00.b1d0.8e0f.efad.85c9.fb69.e318.16e2.4002.d6b1)]
     [%uprl-herz !>(~h1)]
     [%scan-herz !>(~m2)]
     [%scan-tout !>(~m1)]

@@ -7,7 +7,6 @@ imports:
   vita: ./out/desk
   vsss: ./out/desk
   gin-tonic: ./out/desk
-  make: ./out/desk
   pals: ./out/desk
   landscape: ./out/desk
 
@@ -109,19 +108,6 @@ git module gin-tonic:
     - tonic/mar/cass.hoon
   reup: main
   rev: a537b355c1bdf1f57739943cfba5b1a67fe06ac6
-
-# TODO: Replace w/ %chain-watcher
-git module make:
-  recursive: false
-  url: https://github.com/tocwex/make
-  export: desk
-  pick:
-    - desk/app/fund-watcher.hoon
-    - desk/mar/fund-watcher-diff.hoon
-    - desk/sur/fund-watcher.hoon
-    - desk/ted/fund-watcher.hoon
-  reup: main
-  rev: 7a77733223f3c0218d52c740f6d63adfa77a2986
 
 
 git module pals:

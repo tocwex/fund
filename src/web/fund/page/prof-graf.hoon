@@ -1,7 +1,7 @@
 ::  /web/fund/page/prof-graf/hoon: 'subjective reputation graph' page for ship
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fh=fund-http, fk=fund-core, fx=fund-xtra
+/+  fj=fund-proj, fh=fund-http, fk=fund-core, fz=fund-alien, fx=fund-xtra
 /+  rudder
 %-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh &))
 ^-  page:fd
@@ -171,10 +171,10 @@
                       %orac  ::  (# approved milestones) / (# reviewed/pending milestones)
                     (perc:fx (lent (full-mile:poz [%done ~ ~])) (lent (full-mile:poz ~)))
                   ==
-                :-  pic=(~(ship-logo fa:fh bol) sip)
+                :-  pic=(~(ship-logo fz bol) sip)
                 :_  buz=~
                 ^=  liz
-                :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip) xin=~]
+                :~  [txt=(~(ship-tytl fz bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip) xin=~]
                 ::
                     ::  TODO: Implement a better handler for the comet case
                     =/  mom=(unit @p)  (spon:fx sip)
@@ -209,7 +209,7 @@
                 ::
                       %+  turn  `(list [@t @p])`~[['Worker' p.lag] ['Oracle' p.assessment.pre]]
                     |=  [tyt=@t sip=@p]
-                    :*  txt="{(trip tyt)}: {(~(ship-tytl fa:fh bol) sip)}"
+                    :*  txt="{(trip tyt)}: {(~(ship-tytl fz bol) sip)}"
                         lin=(prot:enrl:ff:fh sip)
                         cop=(ship:enjs:ff:fh sip)
                         xin=~
@@ -366,4 +366,4 @@
     ==
   ==
 --
-::  VERSION: [1 5 5]
+::  VERSION: [1 6 0]

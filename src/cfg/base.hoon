@@ -6,7 +6,8 @@
 ^-  (list [@tas vase])
 =/  alc=tape  (flop ~['2' '2' 'B' 'W' '4' '-' 'c' 'W' 'F' 'F' 'B' 'J' 'n' 'b' 'b' '3' '1' 'r' 'L' 'n' 'V' 'W' 'F' 'i' 'j' 'C' 'l' 'G' 'u' '1' 'E' '3'])
 :~  [%debug !>(%|)]
-    [%point !>(~tocwex)]
+    ::  [%point !>(~tocwex)]
+    [%point !>(~zod)]
     [%sign-addr !>(0x78e6.603f.0393.3e0f.ebc6.88a7.734e.a8b4.b63f.42d0)]
     [%safe-addr !>(0x8a00.b1d0.8e0f.efad.85c9.fb69.e318.16e2.4002.d6b1)]
     [%uprl-herz !>(~h1)]

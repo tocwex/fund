@@ -2,7 +2,7 @@
 ::
 /-  fd=fund-data
 /+  *fund-proj, fp=fund-prof, fm=fund-meta, fk=fund-core
-/+  ff=fund-form, fc=fund-chain, fa=fund-alien, fx=fund-xtra
+/+  ff=fund-form, fc=fund-chain, fz=fund-alien, fx=fund-xtra
 /+  config, mu=manx-utils, rudder, tonic
 |%
 ::
@@ -132,7 +132,7 @@
   |=  [lag=flag pro=proj bol=bowl:gall]
   ^-  tape
   ?^  image.pro  (trip u.image.pro)
-  (~(ship-logo fa bol) p.lag)
+  (~(ship-logo fz bol) p.lag)
 ::
 ::  +hink: h(over) (l)ink (make an icon into a hoverable link)
 ::
@@ -717,9 +717,9 @@
               ;img.fund-butn-icon@"{(aset:enrl:ff %chat)}";
             ==
       ==
-      ;+  %^  ~(mold-card ..$ ~)  syz=%md  pic=(~(ship-logo fa bol) sip)
+      ;+  %^  ~(mold-card ..$ ~)  syz=%md  pic=(~(ship-logo fz bol) sip)
           :_  buz=~
-          :~  :*  txt=(~(ship-tytl fa bol) sip)
+          :~  :*  txt=(~(ship-tytl fz bol) sip)
                   lin=?.(&((auth bol) =(our src):bol) ~ (chat:enrl:ff sip))
                   cop=(ship:enjs:ff sip)
                   xin=~
@@ -771,7 +771,7 @@
     =/  asp=tape  ?:(big "aspect-video" "aspect-square")
     =/  url=tape
       ?^  pic  (trip u.pic)
-      ?^  pro  (~(ship-logo fa bol) wok.u.pro)  ::  TODO: implement wok/ora double logo
+      ?^  pro  (~(ship-logo fz bol) wok.u.pro)  ::  TODO: implement wok/ora double logo
       "https://placehold.co/24x24/lightgray/gray?text=?"
     ;a(href lin, class "flex flex-col gap-2 hover:cursor-pointer {cas}")
       ;div(class "bg-cover bg-center rounded-md bg-[url('{url}')] {asp}")
@@ -817,7 +817,7 @@
             :_  ~
             ;div(class "bg-white rounded-lg p-0.5")
               ;+  %+  ~(icon-stax ..$ ~)  %rect
-                      (turn ~[wok.u.pro ora.u.pro] ~(ship-logo fa bol))
+                      (turn ~[wok.u.pro ora.u.pro] ~(ship-logo fz bol))
             ==
       ==
     ==
@@ -1171,7 +1171,7 @@
   ++  ship-logo                                  ::  icon for a user ship
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
-    (icon-logo %rect (~(ship-logo fa bol) sip))
+    (icon-logo %rect (~(ship-logo fz bol) sip))
   ++  proj-logo                                  ::  icon for a project
     |=  [lag=flag pro=proj bol=bowl:gall]
     ^-  manx
@@ -1179,9 +1179,10 @@
   ++  ship-tytl                                  ::  title for a user ship
     |=  [sip=@p bol=bowl:gall]
     ^-  manx
-    ;span(class "line-clamp-1 {cas}"): {(~(ship-tytl fa bol) sip)}
+    ;span(class "line-clamp-1 {cas}"): {(~(ship-tytl fz bol) sip)}
   ++  work-bump                                  ::  bumper for work unit
     |=  [sat=stat man=manx]
+    ^-  manx
     ;div(class "flex items-center gap-x-2 {cas}")
       ;+  (~(stat-pill ..$ ~) %md sat)
       ;+  %-  ~(cash-bump ..$ ~)

@@ -5,7 +5,7 @@
 ::    -fund!get-pact %ethereum ~ ~ ~
 ::    -fund!get-pact %sepolia `'0xabcd…1234' `6.000.000 `6.001.000
 ::
-/-  spider, fund-watcher, f=fund
+/-  spider, chain-watcher, f=fund
 /+  ethereum, io=strandio, fc=fund-chain
 =,  strand=strand:spider
 ^-  thread:spider
@@ -21,8 +21,8 @@
 =/  pat=path  /fund/get-pact/(scot %ux pad)/(scot %da now.bol)
 ;<    ~
     bind:m
-  %+  poke:io  [our.bol %fund-watcher]
-  :-  %fund-watcher-poke  !>
+  %+  poke:io  [our.bol %chain-watcher]
+  :-  %chain-watcher-poke  !>
   :+  %watch  pat
   :*  url=rpc.xet
       eager=|  refresh-rate=~m1  timeout-time=~s30
@@ -30,11 +30,11 @@
       contracts=[pad]~  confirms=~  topics=~
   ==
 ;<  ~  bind:m  (sleep:io ~s30)
-;<  ~  bind:m  (watch-our:io [%watch pat] %fund-watcher [%logs pat])
+;<  ~  bind:m  (watch-our:io [%watch pat] %chain-watcher [%logs pat])
 ;<  caj=cage  bind:m  (take-fact:io [%watch pat])
-=+  !<(dif=diff:fund-watcher q.caj)
-=/  loz=loglist:fund-watcher  ?+(-.dif loglist.dif %disavow *loglist:fund-watcher)
+=+  !<(dif=diff:chain-watcher q.caj)
+=/  loz=loglist:chain-watcher  ?+(-.dif loglist.dif %disavow *loglist:chain-watcher)
 ;<    ~
     bind:m
-  (poke:io [our.bol %fund-watcher] fund-watcher-poke+!>([%clear pat]))
+  (poke:io [our.bol %chain-watcher] chain-watcher-poke+!>([%clear pat]))
 (pure:m !>(loz))

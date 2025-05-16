@@ -4,7 +4,7 @@
 ::    -fund!nfz-okay ~[[0 "https://erc721-uri.com/id.json"]] ~ ~
 ::    -fund!nfz-okay ~[[0 "https://azimuth.network/erc721/0.json"] [256 "https://azimuth.network/erc721/256.json"]] (malt ~[[%size |=(=@t =(%star t))]]) ~
 ::
-/-  spider, fund-watcher
+/-  spider
 /+  io=strandio, fx=fund-xtra
 =,  strand=strand:spider
 ^-  thread:spider

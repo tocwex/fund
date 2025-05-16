@@ -6,7 +6,7 @@
 ::  this thread takes a while to run (~60 seconds) and can be a bit
 ::  fickle; try running it 3 times if it comes back with errors
 ::
-/-  spider, fund-watcher, f=fund
+/-  spider, chain-watcher, f=fund
 /+  ethereum, io=strandio, fc=fund-chain
 =,  strand=strand:spider
 ^-  thread:spider
@@ -61,8 +61,8 @@
   ::
       %thread-done
     =+  !<(res=* q.caj)
-    =/  loz=loglist:fund-watcher
-      %+  skim  ;;(loglist:fund-watcher res)
+    =/  loz=loglist:chain-watcher
+      %+  skim  ;;(loglist:chain-watcher res)
       |=  log=event-log:rpc:ethereum
       &(?=(^ mined.log) =(txn transaction-hash.u.mined.log))
     ?.  &(?=(^ loz) ?=(^ mined.i.loz))  (pure:m ~)

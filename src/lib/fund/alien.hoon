@@ -24,7 +24,7 @@
 ++  chain-bloq
   |=  pat=path  ~+
   ^-  @
-  =/  pre=path  (en-beam [our.bol %fund-watcher da+now.bol] /)
+  =/  pre=path  (en-beam [our.bol %chain-watcher da+now.bol] /)
   ?.  .^(? %gu (snoc pre %$))  0
   =+  .^(pam=(map path *) %gx (welp pre /dogs/configs/noun))
   ?.  (~(has by pam) pat)  0

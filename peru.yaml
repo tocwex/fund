@@ -7,6 +7,7 @@ imports:
   vita: ./out/desk
   vsss: ./out/desk
   gin-tonic: ./out/desk
+  chain-watcher: ./out/desk
   pals: ./out/desk
   landscape: ./out/desk
 
@@ -108,6 +109,15 @@ git module gin-tonic:
     - tonic/mar/cass.hoon
   reup: main
   rev: a537b355c1bdf1f57739943cfba5b1a67fe06ac6
+
+git module chain-watcher:
+  url: https://github.com/tocwex/chain-watcher
+  export: src
+  pick:
+    - src/mar/
+    - src/sur/chain-watcher.hoon
+  reup: release
+  rev: 1906a8d25cd32be8acbd557728feebfa671e4c83
 
 
 git module pals:

@@ -4,7 +4,7 @@
 ::    -fund!get-proz %ethereum ~ ~
 ::    -fund!get-proz %sepolia `6.000.000 `6.001.000
 ::
-/-  spider, fund-watcher, f=fund
+/-  spider, chain-watcher, f=fund
 /+  ethereum, config, io=strandio, fc=fund-chain, ff=fund-form
 =,  strand=strand:spider
 ^-  thread:spider
@@ -27,10 +27,10 @@
   spider-start+!>([`tid.bol `tid byk.bol(r da+now.bol) %get-pact !>([~ can ~ sub tub])])
 ;<  caj=cage  bind:m  (take-fact:io /awaiting/[tid])
 ;<  ~  bind:m  (take-kick:io /awaiting/[tid])
-=/  loz=loglist:fund-watcher
+=/  loz=loglist:chain-watcher
   ?+  p.caj  ~|([%strange-thread-result p.caj %child tid] !!)
     %thread-fail  ~|([%failed-thread-result p.caj %child tid] !!)
-    %thread-done  =+(!<(res=* q.caj) ;;(loglist:fund-watcher res))
+    %thread-done  =+(!<(res=* q.caj) ;;(loglist:chain-watcher res))
   ==
 =/  paz=(list pact:f)
   %+  murn  loz

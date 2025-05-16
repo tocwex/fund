@@ -112,12 +112,13 @@ git module gin-tonic:
 
 git module chain-watcher:
   url: https://github.com/tocwex/chain-watcher
+  recursive: false
   export: src
   pick:
     - src/mar/
     - src/sur/chain-watcher.hoon
   reup: release
-  rev: 1906a8d25cd32be8acbd557728feebfa671e4c83
+  rev: 99a0604b07ca573124c1a460677e2d7764f7a75e
 
 
 git module pals:

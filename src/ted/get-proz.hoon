@@ -2,7 +2,8 @@
 ::  projects (optionally within a given block window)
 ::
 ::    -fund!get-proz %ethereum ~ ~
-::    -fund!get-proz %sepolia `6.000.000 `6.001.000
+::    -fund!get-proz %sepolia `6.000.000 `6.100.000
+::    -fund!get-proz %ethereum `20.425.500 `20.500.000
 ::
 /-  spider, chain-watcher, f=fund
 /+  ethereum, config, io=strandio, fc=fund-chain, ff=fund-form
@@ -16,10 +17,10 @@
 =/  xet=xeta:f  (~(got by xmap:fc) can)
 ::  FIXME: This is a really ugly hack to account for the different
 ::  Alchemy endpoint versions
-=/  rp2=tape  (trip rpc.xet)
-=/  rp3=tape
-  =/  vid=@  (need (find "v2" rp2))
-  :(welp (scag vid rp2) "nft/v3" (slag (add vid (lent "v2")) rp2))
+=/  key=tape  (trip !<(@t (slot:config %alch-akey)))
+=/  net=tape  ?+(can "mainnet" %ethereum "mainnet", %sepolia "sepolia")
+=/  rp2=tape  "https://eth-{net}.g.alchemy.com/v2/{key}"
+=/  rp3=tape  "https://eth-{net}.g.alchemy.com/nft/v3/{key}"
 =/  tid=@ta  (cat 3 'fund_proz_' (scot %uv (sham %child eny.bol)))
 ;<  ~  bind:m  (watch-our:io /awaiting/[tid] %spider /thread-result/[tid])
 ;<  ~  bind:m

@@ -3,8 +3,8 @@
 ::
 ::    -fund!fix-launch %proj-name %ethereum '0xabcd…1234'
 ::
-::  this thread takes a while to run (~60 seconds) and can be a bit
-::  fickle; try running it 3 times if it comes back with errors
+::  this thread takes a long time to run and can be a bit fickle; try
+::  running it 3 times if it comes back with errors
 ::
 /-  spider, chain-watcher, f=fund
 /+  ethereum, io=strandio, fc=fund-chain

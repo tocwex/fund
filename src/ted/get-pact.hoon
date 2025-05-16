@@ -3,10 +3,10 @@
 ::  block)
 ::
 ::    -fund!get-pact %ethereum ~ ~ ~
-::    -fund!get-pact %sepolia `'0xabcd…1234' `6.000.000 `6.001.000
+::    -fund!get-pact %sepolia `'0xabcd…1234' `6.000.000 `6.100.000
 ::
 /-  spider, chain-watcher, f=fund
-/+  ethereum, io=strandio, fc=fund-chain
+/+  ethereum, config, io=strandio, fc=fund-chain
 =,  strand=strand:spider
 ^-  thread:spider
 |=  arg=vase
@@ -25,11 +25,13 @@
   :-  %chain-watcher-poke  !>
   :+  %watch  pat
   :*  url=rpc.xet
-      eager=|  refresh-rate=~m1  timeout-time=~s30
+      eager=|
+      refresh-rate=!<(@dr (slot:config %scan-herz))
+      timeout-time=!<(@dr (slot:config %scan-tout))
       from=sob  to=tub
       contracts=[pad]~  confirms=~  topics=~
   ==
-;<  ~  bind:m  (sleep:io ~s30)
+;<  ~  bind:m  (sleep:io !<(@dr (slot:config %scan-tout)))
 ;<  ~  bind:m  (watch-our:io [%watch pat] %chain-watcher [%logs pat])
 ;<  caj=cage  bind:m  (take-fact:io [%watch pat])
 =+  !<(dif=diff:chain-watcher q.caj)

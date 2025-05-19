@@ -58,7 +58,7 @@
           0x33ee.cbf9.0847.8c10.6146.26a9.d304.bfe1.8b78.dd73
           'Azimuth Points'
           'AZP'
-          |=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
+          |=(i=@ud "https://azimuth.network/erc721/{(a-co:co i)}.json")
           (malt ~[[%size |=(=@t =(%star t))]])
       ==
       :*  %coin  ::  sepolia-usdc
@@ -80,7 +80,7 @@
           0xabe2.8c76.e1c9.750e.b78f.32a0.7c29.5afa.99b5.57fd
           'Urbit Azimuth NFT (TEST)'
           'AZP-TEST'
-          |=(i=@ud "https://azimuth.network/erc721/{<i>}.json")
+          |=(i=@ud "https://azimuth.network/erc721/{(a-co:co i)}.json")
           (malt ~[[%size |=(=@t =(%star t))]])
       ==
       ::  [%chip %0 %0x0 'Fiat USD' 'USD' 2]  ::  none-fusd
@@ -99,16 +99,20 @@
       [`@`chain.swa `@`symbol.swa]
       [`@`tag:(~(got by xmap) chain.swa) `@`symbol.swa]
   ==
+++  scan-path
+  |=  [act=xfer sob=(unit bloq) tob=(unit bloq)]
+  ^-  path
+  /scan/[act]/[?~(sob %$ (scot %ud u.sob))]/[?~(tob %$ (scot %ud u.tob))]
 ++  scan-cfgz
   |=  [oat=oath sob=(unit bloq) tob=(unit bloq) swa=swap]
   ^-  (list [path config])
   ?:  |(=(0x0 safe.oat) ?=(%chip -.swa))  ~
   ?~  con=(~(get by smap) [chain addr]:swa)  ~
   ?~  can=(~(get by xmap) chain.u.con)  ~
-  %+  turn  `(list @tas)`~[%depo %with]
-  |=  act=term
+  %+  turn  `(list xfer)`~[%depo %with]
+  |=  act=xfer
   =/  [src=@ux dst=@ux]  ?:(?=(%depo act) [0x0 safe.oat] [safe.oat 0x0])
-  :-  /scan/[act]/[?~(sob %$ (scot %ud u.sob))]/[?~(tob %$ (scot %ud u.tob))]
+  :-  (scan-path act sob tob)
   :*  url=rpc.u.can
       eager=|
       refresh-rate=!<(@dr (slot:fund-config %scan-herz))

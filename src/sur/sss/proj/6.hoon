@@ -1,4 +1,4 @@
-/-  pold=sss-proj-6
+/-  pold=sss-proj-5
 /+  *fund-proj, fc=fund-core, config, sss
 |%
 +|  %misc
@@ -29,38 +29,9 @@
   --
 
 +|  %core
-+$  vers  _%7
++$  vers  _%6
 +$  path  [%fund %proj sip=@ nam=@ ~]
 ++  lake
-  =/  up
-    |_  pro=proj:pold
-    ++  proj
-      ^-  ^proj
-      :*  title=title.pro
-          summary=summary.pro
-          image=image.pro
-          assessment=assessment.pro
-      ::
-            ^=  payment
-          ?.  ?=(%enft -.payment.pro)  payment.pro
-          :*  %enft
-              chain=chain.payment.pro
-              addr=addr.payment.pro
-              name=name.payment.pro
-              symbol=symbol.payment.pro
-              ::  NOTE: Hardcoded so as not to create a dependency on the
-              ::  /lib/fund/chain/hoon file
-              uri=|=(i=@ud "https://azimuth.network/erc721/{(a-co:co i)}.json")
-              limits=limits.payment.pro
-          ==
-      ::
-          milestones=milestones.pro
-          contract=contract.pro
-          pledges=pledges.pro
-          contribs=contribs.pro
-          proofs=proofs.pro
-      ==
-    --
   |%
   ++  name  %proj
   +$  rock  [vers proj]
@@ -72,7 +43,7 @@
     ^-  rock
     ?+  -.voc     $(voc (urck:lake:pold voc))
       vers        voc
-      vers:pold   $(voc [*vers ~(proj up +.voc)])
+      vers:pold   $(voc [*vers +.voc])
     ==
   ++  uwve
     |=  vav=vave
@@ -83,31 +54,28 @@
         vers:pold
       =-  $(vav [*vers -])
       ?+    +.vav      +.vav
-        [* * %init *]  [bol.vav p.pok.vav %init ~(proj up pro.q.pok.vav)]
+        [* * %redo *]  [bol.vav p.pok.vav %redo ~ ~]
       ==
     ==
   ++  wash
+    ::  TODO: Add useful error messages to all the various error cases
     |=  [[vers pro=proj] [vers bol=bowl:gall lag=^flag pod=prod]]
     ^-  rock
-    =*  miz  `(list mile)`milestones.pro
     =*  mes  `(mess prod)`[src.bol /fund/proj/(scot %p p.lag)/[q.lag] pod]
-    =+  avow=|=([y=@t w=?] ~|([why=/bad-pj-wash/[`@tas`(cat 3 %not- y)] mes] ?>(w %.y)))
+    =*  miz  `(list mile)`milestones.pro
     =>  |%
-        +|  %cheq
-        ++  from-work  |-(=(our src):bol)
-        ++  from-orac  |-(=(p.assessment.pro src.bol))
+        ++  aver-work  |-(~|(bad-wash+mes ?>(=(our.bol src.bol) %.y)))
+        ++  aver-orac  |-(~|(bad-wash+mes ?>(=(p.assessment.pro src.bol) %.y)))
+        ++  edit-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
+        ++  edit-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
         ++  good-sigm  |=([s=sigm w=(set addr)] &((~(has in w) from.s) (csig:fc s)))
         ++  orac-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy [orac.-]~))))
         ++  team-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.-]))))
         ++  peer-sigm  |=(s=sigm =+((need contract.pro) (good-sigm s (sy ~[orac.- work.- !<(addr (slot:config %sign-addr))]))))
-        +|  %edit
-        ++  edit-mile  |=([i=@ m=mile] %_(pro milestones ;;((lest mile) (snap miz i m))))
-        ++  edit-milz  |=(t=$-(mile mile) %_(pro milestones ;;((lest mile) (turn miz t))))
-        ++  kill-milz
+        ++  dead-milz
           |=  oat=oath
-          ?>  (avow %from-team (team-sigm sigm.oat))
-          ?>  %+  avow  %dead-sign
-              ?|  ?=([%| @ux] mesg.sigm.oat)
+          ?>  (team-sigm sigm.oat)
+          ?>  ?|  ?=([%| @ux] mesg.sigm.oat)
                   =((crip (~(bail pj pro) (dec (lent miz)) %dead)) +.mesg.sigm.oat)
               ==
           %_    pro
@@ -127,26 +95,25 @@
     :-  *vers
     ?+    -.pod  pro
         %init
-      ?>  (avow %from-work from-work)
-      ?>  (avow %proj-born =(%born sat))
-      ?>  (avow %poke-born =(%born ~(stat pj pro.pod)))
-      ?>  (avow %orac-star (star:fx p.assessment.pro.pod))
+      ?>  aver-work
+      ?>  =(%born sat)
+      ?>  =(%born ~(stat pj pro.pod))
+      ?>  (star:fx p.assessment.pro.pod)
       pro.pod
     ::
         %bump
       =/  [min=@ mil=mile]  ~(next pj pro)
       ?:  ?=(%born status.mil)
-        ?>  (avow %from-work from-work)
-        ?>  (avow %next-prop &(?=(%prop sat.pod) ?=(~ oat.pod)))
+        ?>  &(?=(%prop sat.pod) ?=(~ oat.pod))
+        ?>  aver-work  ::  born=>prop:worker
         (edit-milz |=(m=mile m(status %prop)))
       ?:  ?=(%prop status.mil)
-        ?>  %+  avow  %valid-oath
-            ?|  &(?=(%born sat.pod) ?=(~ oat.pod))
+        ?>  ?|  &(?=(%born sat.pod) ?=(~ oat.pod))
                 &(?=(?(%prop %lock) sat.pod) ?=(^ oat.pod))
             ==
-        ?>  (avow %has-permit |(?=(?(%born %prop) sat.pod) from-work))
-        ?>  (avow %has-permit |(?=(?(%born %lock) sat.pod) from-orac))
-        ?>  (avow %has-permit |(?=(?(%prop %lock) sat.pod) ?=(~ contract.pro) from-work))
+        ?>  |(?=(?(%born %prop) sat.pod) aver-work)  ::  prop=>lock:worker
+        ?>  |(?=(?(%born %lock) sat.pod) aver-orac)  ::  prop=>prop:oracle
+        ?>  |(?=(?(%prop %lock) sat.pod) ?=(~ contract.pro) aver-work)  ::  prop=>born:worker(post-orac-accept)
         =.  contract.pro
           ?+  sat.pod  !!
               %born
@@ -154,8 +121,7 @@
           ::
               %prop
             =+  sig=sigm:(need oat.pod)
-            ?>  %+  avow  %valid-mesg
-                %.  (trip `@t`p.mesg.sig)
+            ?>  %.  (trip `@t`p.mesg.sig)
                 ::  NOTE: Try all versions listed in simple type union `over`
                 %~  has  in  %-  silt
                 =-  (turn vez |=(v=@ (~(vath pj pro) our.bol ;;(over v))))
@@ -163,38 +129,37 @@
                 =/  typ=type  ~(repo ut -:!>(*over))
                 ?>  ?=([%hint * %fork *] typ)
                 (murn ~(tap in p.q.typ) |=(t=type ?>(?=([%atom *] t) q.t)))
-            ?>  (avow %valid-sign (csig:fc sig))
+            ?>  (csig:fc sig)
             =+(o=*oath `o(sigm sig))
           ::
               %lock
             =+  our-oat=(need contract.pro)
             =+  pod-oat=(need oat.pod)
-            ?>  (avow %same-sign =(sigm.our-oat sigm.pod-oat))
-            ?>  (avow %orac-signer =(orac.pod-oat from.sigm.pod-oat))
+            ?>  =(sigm.our-oat sigm.pod-oat)
+            ?>  =(orac.pod-oat from.sigm.pod-oat)
             `pod-oat
           ==
         (edit-milz |=(m=mile m(status sat.pod)))
       ?:  ?=(%lock status.mil)
         ?:  ?=(%work sat.pod)
-          ?>  (avow %from-work from-work)
+          ?>  aver-work  ::  lock=>work:worker
           (edit-mile min mil(status sat.pod))
         ?:  ?=(%dead sat.pod)
-          (kill-milz (need oat.pod))
-        ?>((avow %lock-next %.n) pro)
+          (dead-milz (need oat.pod))
+        ~|(bad-wash+mes !!)  ::  %lock =X=> ?(%born %prop %sess %done)
       ?:  ?=(?(%work %sess) status.mil)
         ?:  ?=(%work sat.pod)
-          ?>  (avow %from-orac from-orac)
+          ?>  aver-orac  ::  work/sess=>work:oracle
           (edit-mile min mil(status sat.pod))
         ?:  ?=(%sess sat.pod)
-          ?>  (avow %from-work from-work)
+          ?>  aver-work  ::  work/sess=>sess:worker
           (edit-mile min mil(status sat.pod))
         ?:  ?=(%done sat.pod)
-          ?>  (avow %from-orac from-orac)
+          ?>  aver-orac  ::  work/sess=>done:oracle
           =/  sig=sigm  sigm:(need oat.pod)
           =/  mod=odit  (snag min ~(odim pj pro))
-          ?>  (avow %orac-signer (orac-sigm sig))
-          ?>  %+  avow   %done-sign
-              ?|  ?=([%| @ux] mesg.sig)
+          ?>  (orac-sigm sig)
+          ?>  ?|  ?=([%| @ux] mesg.sig)
                   =((crip (~(bail pj pro) min sat.pod)) +.mesg.sig)
               ==
           %_    pro
@@ -209,19 +174,19 @@
             |=([p=plej d=peta] [p d(view `%stif)])
           ==
         ?:  ?=(%dead sat.pod)
-          (kill-milz (need oat.pod))
-        ?>((avow %work-sess-next %.n) pro)
-      ?>((avow %done-dead-next %.n) pro)
+          (dead-milz (need oat.pod))
+        ~|(bad-wash+mes !!)  ::  ?(%work %sess %done %dead) =X=> ?(%born %lock)
+      ~|(bad-wash+mes !!)  ::  %dead =X=> status
     ::
         %mula
-      ?>  (avow %proj-live ?!(?=(?(%born %prop) sat)))
-      ?>  (avow %some-cash (gth cash.pod 0))
+      ?<  ?=(?(%born %prop) sat)
+      ?>  (gth cash.pod 0)
       ?-    +<.pod
           %pruf
         ::  TODO: When duplicate attestations come in, they currently
         ::  overwrite the existing data; this hasn't been an issue, but
         ::  it's unclear if this is the best behavior
-        ?>  (avow %pruf-local =(src our):bol)
+        ?>  =(src our):bol
         ?-    note.pod
             %depo
           ?~  teb=(~(get by contribs.pro) q.xact.when.pod)
@@ -243,7 +208,7 @@
         ==
       ::
           ?(%plej %trib)
-        ?>  (avow %proj-live ?!(?=(?(%done %dead) sat)))
+        ?<  ?=(?(%done %dead) sat)
         ::  FIXME: Very inefficient, but also very convenient!
         =/  nid=@ud
           .+  %+  max
@@ -254,15 +219,15 @@
           ::  NOTE: This is a sufficient check because we only allow the
           ::  host of a project to accept donations on the project's behalf
           ::  (so src.bol must always be the %plej attestor; no forwarding!)
-          ?>  (avow %from-poker =(src.bol ship.pod))
-          ?>  (avow %has-permit (plan:fx src.bol))
-          ?>  (avow %only-plej !(~(has by pledges.pro) ship.pod))
+          ?>  =(src.bol ship.pod)
+          ?>  (plan:fx src.bol)
+          ?<  (~(has by pledges.pro) ship.pod)
           %_(pro pledges (~(put by pledges.pro) ship.pod +>.pod ~ nid &))
         ::
             %trib
           =/  pej=(unit [plej peta])  ?~(ship.pod ~ (~(get by pledges.pro) u.ship.pod))
           =/  puf=(unit pruf)  (~(get by proofs.pro) q.xact.when.pod)
-          ?>  (avow %match-plej |(?=(~ pej) &(=(src.bol ship.u.pej) =(cash.u.pej cash.pod))))
+          ?>  |(?=(~ pej) &(=(src.bol ship.u.pej) =(cash.u.pej cash.pod)))
           %_    pro
               pledges
             ?~  pej  pledges.pro
@@ -307,10 +272,9 @@
     ::
         %draw
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
-      ?>  (avow %mile-fini ?=(?(%dead %done) status.mil))
-      ?>  (avow %dead-end |(?=(%done status.mil) =((lent miz) +(min))))
-      ?>  (avow %mile-signed &(?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil)))
-      ?>  ?=(^ withdrawal.mil)  ::  redundant; structural
+      ?>  ?=(?(%dead %done) status.mil)
+      ?>  |(?=(%done status.mil) =((lent miz) +(min)))
+      ?>  &(?=(^ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))
       =/  puf=(unit pruf)  (~(get by proofs.pro) q.dif.pod)
       %_    pro
           milestones
@@ -325,15 +289,13 @@
     ::
         %wipe
       =/  [min=@ mil=mile]  [min.pod (snag min.pod miz)]
-      ?>  (avow %mile-fini ?=(?(%dead %done) status.mil))
-      ?>  (avow %dead-end |(?=(%done status.mil) =((lent miz) +(min))))
-      ?>  (avow %mile-partial |(?=(~ withdrawal.mil) ?=(~ xact.u.withdrawal.mil)))
-      ?>  ?=(?(%dead %done) status.mil)  ::  redundant; structural
+      ?>  ?=(?(%dead %done) status.mil)
+      ?>  |(?=(%done status.mil) =((lent miz) +(min)))
+      ?>  |(?=(~ withdrawal.mil) ?=(~ xact.u.withdrawal.mil))
       =/  mod=odit  (snag min ~(odim pj pro))
       ?~  sig.pod  (edit-mile min mil(withdrawal ~))
-      ?>  (avow %from-peer (peer-sigm u.sig.pod))
-      ?>  %+  avow  %dead-sign
-          ?|  ?=([%| @ux] mesg.u.sig.pod)
+      ?>  (peer-sigm u.sig.pod)
+      ?>  ?|  ?=([%| @ux] mesg.u.sig.pod)
               =((crip (~(bail pj pro) min status.mil)) +.mesg.u.sig.pod)
           ==
       =+  fil=?:(?=(%done status.mil) fill.mod (sub ~(fill pj pro) ~(take pj pro)))
@@ -342,15 +304,13 @@
         %redo
       =/  sob=bloq  (fall sob.pod ?~(contract.pro 0 p.xact.u.contract.pro))
       =/  tob=bloq  (fall tob.pod 1.000.000.000.000.000)  ::  NOTE: Basically 'Number.MAX'
-      ?>  (avow %sane-range (lte sob tob))
-      ::  NOTE: We omit everything in the [sob-tob] range so it can be requeried
-      =+  redo=|=(p=pruf `?`&((lte sob p.xact.when.p) (lte p.xact.when.p tob)))
+      =+  gud=|=(p=pruf &((gte sob p.xact.when.p) (lte tob p.xact.when.p)))
       %_    pro
           proofs
         %-  ~(rep by proofs.pro)
         |=  [[key=addr val=pruf] acc=(map addr pruf)]
         ^-  (map addr pruf)
-        ?:((redo val) acc (~(put by acc) key val))
+        ?.((gud val) acc (~(put by acc) key val))
       ::
           contribs
         %-  ~(run by contribs.pro)
@@ -359,7 +319,7 @@
         %_    teb
             pruf
           ?~  pruf.teb  ~
-          ?:  (redo u.pruf.teb)  ~
+          ?.  (gud u.pruf.teb)  ~
           pruf.teb
         ==
       ::
@@ -374,7 +334,7 @@
           %_    wit
               pruf
             ?~  pruf.wit  ~
-            ?:  (redo u.pruf.wit)  ~
+            ?.  (gud u.pruf.wit)  ~
             pruf.wit
           ==
         ==

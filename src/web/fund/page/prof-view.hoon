@@ -1,7 +1,7 @@
 ::  /web/fund/page/prof-view/hoon: profile page for ship
 ::
 /-  fd=fund-data, f=fund
-/+  fj=fund-proj, fk=fund-core, fh=fund-http, fc=fund-chain, fx=fund-xtra
+/+  fj=fund-proj, fk=fund-core, fh=fund-http, fc=fund-chain, fz=fund-alien, fx=fund-xtra
 /+  rudder
 %-  :(corl dump:preface:fh init:preface:fh (prof:preface:fh |))
 ^-  page:fd
@@ -38,9 +38,9 @@
         ;h1: {(ship:enjs:ff:fh sip)}'s Profile
         ;h2-alt: {(ship:enjs:ff:fh our.bol)}'s Lens
       ==
-      ;+  %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(~(ship-logo fa:fh bol) sip)
+      ;+  %^  ~(mold-card ui:fh ~)  syz=%lg  pic=(~(ship-logo fz bol) sip)
           :-  ^=  liz
-              :~  [txt=(~(ship-tytl fa:fh bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip) xin=~]
+              :~  [txt=(~(ship-tytl fz bol) sip) lin=(prot:enrl:ff:fh sip) cop=(ship:enjs:ff:fh sip) xin=~]
                   [txt="AZP: {<`@`sip>}" lin=(nurt:enrl:ff:fh sip) cop=(bloq:enjs:ff:fh `@`sip) xin=~]
               ==
           ^=  buz
@@ -229,4 +229,4 @@
     ==
   ==
 --
-::  VERSION: [1 5 5]
+::  VERSION: [1 6 0]

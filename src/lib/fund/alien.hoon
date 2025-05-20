@@ -4,6 +4,36 @@
 /+  ff=fund-form
 |_  bol=bowl:gall
 ::
+::  |util: alien utility functions
+::
++|  %util
+::
+::  +live: is given agent installed and running?
+::
+++  live
+  |=  dap=@tas
+  ^-  bean
+  .^(bean %gu (en-beam [our.bol dap da+now.bol] /[%$]))
+::
+::  |chain: all %chain-watcher ffis
+::
++|  %chain
+::
+::  +chain-bloq: %chain-watcher path block number
+::
+++  chain-bloq
+  |=  pat=path  ~+
+  ^-  @
+  =/  pre=path  (en-beam [our.bol %chain-watcher da+now.bol] /)
+  ?.  .^(? %gu (snoc pre %$))  0
+  =+  .^(pam=(map path *) %gx (welp pre /dogs/configs/noun))
+  ?.  (~(has by pam) pat)  0
+  .^(@ %gx :(welp pre /block pat /atom))
+::
+::  |tlon: all %tlon ffis
+::
++|  %tlon
+::
 ::  +contacts-rolo: %contacts app "rolodex" data (ship/info map)
 ::
 ++  contacts-rolo
@@ -69,4 +99,24 @@
   ?~  avatar.u.con             def
   ?:  =(%$ u.avatar.u.con)     def
   (trip u.avatar.u.con)
+::
+::  |pals: all %pals ffis
+::
++|  %pals
+::
+::  +pals-pals: set of all our pals (targets), derived from %pals
+::
+++  pals-pals
+  ~+
+  ^-  (set @p)
+  =/  pre=path  (en-beam [our.bol %pals da+now.bol] /)
+  ?.  .^(? %gu (snoc pre %$))  *(set @p)
+  .^((set @p) %gx (weld pre /targets/noun))
+::
+::  +ship-pals: ship is pal?, derived from %pals
+::
+++  ship-pals
+  |=  sip=@p  ~+
+  ^-  bean
+  (~(has in pals-pals) sip)
 --

@@ -1,6 +1,6 @@
 /-  f=fund, p=pals
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
-/+  fy=fund, fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fx=fund-xtra
+/+  fy=fund, fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fz=fund-alien, fx=fund-xtra
 /+  config, default-agent, rudder, *sss
 /+  dbug, verb, tonic, vita-client
 /~  pagz  page:fd  /web/fund/page
@@ -64,9 +64,7 @@
 ::
 ++  init
   ^+  cor
-  =.  cor  open-eyre:action
-  =.  cor  renew-surl:action
-  cor
+  open
 ::
 ++  load
   |=  vas=vase
@@ -346,6 +344,11 @@
     ?>  ?=(%poke-ack -.syn)
     ?~  p.syn  cor(init.state &)
     ((slog u.p.syn) cor)
+  ::  watcher responses  ::
+      [%fund %watcher res=@ ~]
+    ?>  ?=(%poke-ack -.syn)
+    ?~  p.syn  cor
+    ((slog u.p.syn) cor)
   ::  pals responses  ::
       [%fund %pals ~]
     ?+    -.syn  cor
@@ -382,7 +385,7 @@
         ?^  p.syn  ((slog u.p.syn) cor)
         %-  emit
         :*  %pass   pat
-            %agent  [our.bol %fund-watcher]
+            %agent  [our.bol %chain-watcher]
             %watch  [%logs pat]
         ==
       ::  watch response  ::
@@ -391,7 +394,7 @@
         ((slog u.p.syn) cor)
       ::  watch update response  ::
           %fact
-        ?.  ?=(%fund-watcher-diff p.cage.syn)  cor
+        ?.  ?=(%chain-watcher-diff p.cage.syn)  cor
         =+  !<(dif=diff:fc q.cage.syn)
         ::  TODO: Handle the %disavow case properly
         =/  loz=loglist:fc   ?+(-.dif loglist.dif %disavow ~)
@@ -429,9 +432,9 @@
         ::  %+  welp
         ::    ^-  (list card)
         ::    ?:  |(?=(~ tob) (lth (pj-pj-bloq:por sob tob) u.tob))  ~
-        ::    =+  car=[%pass pat=pat %agent [our.bol %fund-watcher] act=~]
+        ::    =+  car=[%pass pat=pat %agent [our.bol %chain-watcher] act=~]
         ::    :~  car(act [%leave ~])
-        ::        car(act [%poke %fund-watcher-poke !>([%clear pat])])
+        ::        car(act [%poke %chain-watcher-poke !>([%clear pat])])
         ::    ==
         ?:  &(?=(%enft -.payment.pro) ?=(^ limits.payment.pro))
           %-  ~(rep by xap)
@@ -488,31 +491,62 @@
 ::
 ++  open
   ^+  cor
-  =/  kiq=?
-    ?|  !(~(has by pf-myn) our.bol)        ::  pre-v1.1 need any watch paths
-        =>(scan-vold:watch:audit ?=(^ .))  ::  pre-%6 %proj need new-style watch paths
+  =/  kiq=?                                ::  renew %proj chain watches if:
+    ?|  !(~(has by pf-myn) our.bol)        ::  - pre-v1.1 (before chain support)
+        =>(scan-vold:watch:audit ?=(^ .))  ::  - pre-v1.6 (before %chain-watcher)
     ==
-  =/  kup=?                                ::  in kernel upgrade mode?
-    =+  .^(dex=rock:tire:clay %cx (en-beam [our.bol %$ da+now.bol] /tire))
-    =+  .^(duz=(set [dude:gall ?]) %ge (en-beam [our.bol %base da+now.bol] [%$ ~]))
-    ?&  ?=([~ [%live *]] (~(get by dex) %base))
-        (~(has in duz) %dojo %.n)
-    ==
+  =.  cor  open-eyre:action
+  =.  cor  open-watcher:action
   =.  cor  renew-surl:action
   =.  cor  watch-pals:action
-  ::  NOTE: Don't refresh project state during kernel upgrades! This can
-  ::  cause bad level triggers as %pals can be unduly suspended.
-  =?  cor  !kup  (renew-projs:action kiq)
+  ::  NOTE: Only refresh project state during "normal" upgrades and not
+  ::  kernel upgrades! Refreshing during a kernel upgrade can cause bad
+  ::  level triggers as %pals can be unduly suspended.
+  =?    cor
+      .^(rup=? %gu (en-beam [our.bol %dojo da+now.bol] /[%$]))
+    (renew-projs:action kiq)
   cor
 ++  action
   |%
   ++  open-eyre                                  ::  open up HTTP %eyre channel
     ^+  cor
+    =>  |%
+        +$  eybi  [binding:eyre duct act=action:eyre]
+        --
+    =+  .^(eyz=(list eybi) %e (en-beam [our.bol %bindings da+now.bol] /))
+    ?^  (skim eyz |=(e=eybi &(=(/apps/[dap.bol] path.e) =([%app dap.bol] act.e))))  cor
     %-  emit
     :*  %pass     /eyre/connect
         %arvo     %e
         %connect  `/apps/[dap.bol]  dap.bol
     ==
+  ++  open-watcher                               ::  open %chain-watcher (install/revive)
+    ^+  cor
+    =-  ?~(cau cor (emit u.cau))
+    ^-  cau=(unit card)
+    =/  [dek=@tas dap=@tas]  [%chain-watcher %chain-watcher]
+    =+  car=[%pass pat=`path`/fund/watcher %agent [our.bol %hood] %poke pok=noun+!>(~)]
+    =+  .^(dex=rock:tire:clay %cx (en-beam [our.bol %$ da+now.bol] /tire))
+    ?~  deu=(~(get by dex) dek)                    ::  if desk missing, install it
+      :-  ~
+      %=  car
+        pat  (snoc pat.car %install)
+        pok  kiln-install+!>([dek !<(@p (slot:config %point)) dek])
+      ==
+    ?:  ?=([%dead *] u.deu)                        ::  if desk suspended, revive it
+      :-  ~
+      %=  car
+        pat  (snoc pat.car %rev-desk)
+        pok  kiln-revive+!>(dek)
+      ==
+    =+  .^(lyv=bean %gu (en-beam [our.bol dap da+now.bol] /[%$]))
+    ?.  lyv                                        ::  if app suspended, revive it
+      :-  ~
+      %=  car
+        pat  (snoc pat.car %rev-agent)
+        pok  kiln-rein+!>([dek (malt [dap &]~)])
+      ==
+    ~
   ++  watch-pals                                 ::  watch %pals /targets endpoint
     ^+  cor
     ?:  (~(has by wex.bol) /fund/pals our.bol %pals)  cor
@@ -567,36 +601,32 @@
   |%
   ++  watch
     |%
-    ++  boat                                     ::  filtered outgoing watch paths
+    ++  subs-skim                                ::  filtered outgoing watch paths
       |=  fil=$-([wire @p @tas] ?)  ~+
       ^-  (set path)
       %-  ~(rep in ~(key by wex.bol))
       |=  [[wyr=(pole knot) sip=@p dap=@tas] acc=(set path)]
       ?.((fil wyr sip dap) acc (~(put in acc) wyr))
-    ++  scan-vold                                ::  %fund-watcher old-style watch paths
+    ++  scan-vold                                ::  %fund old-style watch paths
       ~+
       ^-  (set path)
-      %-  boat
+      %-  subs-skim
       |=  [wyr=(pole knot) sip=@p dap=@tas]
       ?&  =(sip our.bol)
           =(dap %fund-watcher)
-          ?=([%fund %proj sip=@ nam=@ %scan typ=@ ~] wyr)
-          ?=(^ (slaw %p sip.wyr))
-          ?=(xfer:f typ.wyr)
       ==
-    ++  scan-vnow                                ::  %fund-watcher new-style watch paths
+    ++  scan-vnow                                ::  %fund new-style watch paths
       ~+
       ^-  (set path)
-      %-  boat
+      %-  subs-skim
       |=  [wyr=(pole knot) sip=@p dap=@tas]
-      ^-  bean
       ?&  =(sip our.bol)
-          =(dap %fund-watcher)
+          =(dap %chain-watcher)
           ?=([%fund %proj sip=@ nam=@ %scan typ=@ sob=@ tob=@ ~] wyr)
           ?=(^ (slaw %p sip.wyr))
           ?=(xfer:f typ.wyr)
       ==
-    ++  scan-vany                                ::  %fund-watcher any-style watch paths
+    ++  scan-vany                                ::  %fund any-style watch paths
       ~+
       ^-  (set path)
       (~(uni in scan-vold) scan-vnow)
@@ -634,10 +664,8 @@
   ::
   ++  pj-pj-bloq
     ^-  bloq
-    =/  pre=path  (en-beam [our.bol %fund-watcher da+now.bol] /)
-    =+  .^(pam=(map path *) %gx (welp pre /dogs/configs/noun))
-    =/  pat=path  (welp pj-pa-pub (scan-path:fc %depo ~ ~))
-    ?.((~(has by pam) pat) 0 .^(@ %gx :(welp pre /block pat /atom)))
+    %-  ~(chain-bloq fz bol)
+    (welp pj-pa-pub (scan-path:fc %depo ~ ~))
   ++  pj-pj-push
     |=  pod=prod:proj:f
     ^+  pj-core
@@ -670,8 +698,8 @@
     ^-  (list card)
     =/  pat=path  (welp pj-pa-pub suf)
     =/  pen=@ud   (sub (lent pat) 2)  ::  path w/o start/end delimiters
-    =+  car=[%pass pat=~ %agent [our.bol %fund-watcher] act=~]
-    %-  snoc  :_  `card`car(pat pat, act [%poke %fund-watcher-poke !>([%watch pat cfg])])
+    =+  car=[%pass pat=~ %agent [our.bol %chain-watcher] act=~]
+    %-  snoc  :_  `card`car(pat pat, act [%poke %chain-watcher-poke !>([%watch pat cfg])])
     ^-  (list card)
     ?^  tob  ~
     %-  zing
@@ -679,7 +707,7 @@
     |=  old=path
     :-  car(pat old, act [%leave ~])  ::  leave all overlapping paths
     ?:  =(old pat)  ~                 ::  but only clear non-identical paths (restarts 'pat')
-    [car(pat old, act [%poke %fund-watcher-poke !>([%clear old])])]~
+    [car(pat old, act [%poke %chain-watcher-poke !>([%clear old])])]~
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f
@@ -722,8 +750,8 @@
   ++  pj-push
     |=  pod=prod:proj:f
     ^+  pj-core
-    ::  NOTE: These `avow` statements are all inlined because using a
-    ::  wet gate fails to the preserve the type when printing the `mess`
+    ::  NOTE: These `+avow` statements are all inlined because using a
+    ::  wet gate fails to the preserve the type when printing the `$mess`
     =*  mes  `(mess:f prod:proj:f)`[src.bol pj-pa-pub pod]
     =+  avow=|=([y=@t w=?] ~|([why=/bad-pj-push/[`@tas`(cat 3 %not- y)] mes] ?>(w %.y)))
     ?+    -.pod
@@ -916,10 +944,7 @@
     pf-core(cor me-abet:(me-push:(me-abed:me-core lag) pod))
   ++  pf-is-pals
     ^-  bean
-    =+  .^(duz=(set [=dude:gall live=?]) %ge (en-beam [our.bol %pals da+now.bol] [%$ ~]))
-    ?.  (~(has in duz) %pals %.y)  |
-    =+  .^(taz=(set ship) %gx (en-beam [our.bol %pals da+now.bol] /targets/noun))
-    (~(has in taz) sip)
+    (~(ship-pals fz bol) sip)
   ::
   ++  pf-pull
     |=  res=into:pf-suz

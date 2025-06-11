@@ -4,10 +4,9 @@
 ::
 %-  malt
 ^-  (list [@tas vase])
-=/  key=tape  (flop ~['5' 'a' '8' 'c' '7' '1' '2' '2' '5' '8' '7' 'd' '-' 'c' 'c' '9' '9' '-' '5' '6' '3' '4' '-' 'a' '0' '4' '1' '-' '9' '8' 'b' '7' 'c' 'f' 'f' '3'])
+=/  key=tape  (flop ~['1' 'e' 'c' 'b' 'd' 'c' '8' 'a' 'a' '2' '0' '5' 'd' 'c' '7' '8' '7' '4' '8' '4' '8' 'e' '8' 'd' '1' '1' '8' 'a' '0' '9' '7' '3'])
 :~  [%debug !>(%|)]
-    ::  [%point !>(~tocwex)]
-    [%point !>(~zod)]
+    [%point !>(~tocwex)]
     [%sign-addr !>(0x78e6.603f.0393.3e0f.ebc6.88a7.734e.a8b4.b63f.42d0)]
     [%safe-addr !>(0x8a00.b1d0.8e0f.efad.85c9.fb69.e318.16e2.4002.d6b1)]
     [%uprl-herz !>(~h1)]
@@ -15,8 +14,8 @@
     [%scan-tout !>(~m10)]
     [%scan-bloq !>(10)]
     [%alch-akey !>(`@t`(crip (flop ~['2' '2' 'B' 'W' '4' '-' 'c' 'W' 'F' 'F' 'B' 'J' 'n' 'b' 'b' '3' '1' 'r' 'L' 'n' 'V' 'W' 'F' 'i' 'j' 'C' 'l' 'G' 'u' '1' 'E' '3'])))]
-    [%rpce-ethe !>(`@t`(crip "https://mainnet.chainnodes.org/{key}"))]
-    [%rpce-sepo !>(`@t`(crip "https://sepolia.chainnodes.org/{key}"))]
+    [%rpce-ethe !>(`@t`(crip "https://mainnet.infura.io/v3/{key}"))]
+    [%rpce-sepo !>(`@t`(crip "https://sepolia.infura.io/v3/{key}"))]
     [%feat-oraz !>(`(list @p)`~[~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg ~dalten ~firbex ~moddux ~pandux ~fogbus])]
     [%meta-site !>('https://tocwexsyndicate.com')]
     [%meta-help !>('https://docs.tocwexsyndicate.com')]

@@ -80,6 +80,12 @@ Here are some additional tests for `%fund-watcher` behavior:
 :fund &fund-poke [%proj [our %wat3] %bump %prop ~]
 :fund &fund-poke [%proj [our %wat3] %bump %prop `o(sigm si-wat3)]
 :fund &fund-poke [%proj [our %wat3] %bump %lock `o(sigm si-wat3, xact [20.744.577 0xa7f9.94c6.38ec.06ed.b3b6.ef9a.b643.eec3.7e39.e297.b233.134f.d8bf.7d5f.2138.1de1], work ad2, orac ad1, safe 0xb955.eab8.6a84.75b0.de09.6140.4d68.7dcb.828d.42e3)]
+=po-wat4 p(title 't', summary 'd', assessment [our 0], milestones ~[m(title '1', summary '!', cost 2) m(title '2', summary '@', cost 3) m(title '3', summary '#', cost 4)], payment (~(got by smap:x) 11.155.111 'AZP-TEST'))
+=si-wat4 `sigm:f`[0x7f.5932.20c8.7189.bb94.a0fa.ab37.e04f.c42b.efb5.58d1.7357.b9b9.e6be.357d.c158.532b.d2ba.302c.470b.99eb.094e.bce7.63f9.3ada.5633.91f5.32df.840c.7ab4.661f.ea19.881c ad1 [%& (crip (~(oath pj:f po-wat4) our))]]
+:fund &fund-poke [%proj [our %wat4] %init po-wat4]
+:fund &fund-poke [%proj [our %wat4] %bump %prop ~]
+:fund &fund-poke [%proj [our %wat4] %bump %prop `o(sigm si-wat4)]
+:fund &fund-poke [%proj [our %wat4] %bump %lock `o(sigm si-wat4, xact [7.205.437 0x82d7.5375.b57b.54fa.a1ae.2a73.ea11.d0ad.c462.9426.9c95.8f99.aa81.905d.be7b.2ccb], work ad2, orac ad1, safe 0xdf52.b8bb.490b.e630.dcb3.902c.43bf.237a.4b07.58a3)]
 ```
 
 And run this to test `%redo` and watch path updating behavior:
@@ -210,27 +216,27 @@ need to be accounted for:
 
 # Ethereum Testing
 
-Here are some of the basic queries that can be submitted to `%fund-watcher` (a
+Here are some of the basic queries that can be submitted to `%chain-watcher` (a
 gentle fork of `%eth-watcher`):
 
 ```
-=s -build-file /=fund=/sur/fund-watcher/hoon
-.^((set path) %gx /=fund-watcher=/dogs/noun)
-.^((map path config:s) %gx /=fund-watcher=/dogs/configs/noun)
-.^(@ %gx /=fund-watcher=/block/…/atom)
+=s -build-file /=fund=/sur/chain-watcher/hoon
+.^((set path) %gx /=chain-watcher=/dogs/noun)
+.^((map path config:s) %gx /=chain-watcher=/dogs/configs/noun)
+.^(@ %gx /=chain-watcher=/block/…/atom)
 ```
 
 Here are some basic commands to track Ethereum contract interactions:
 
 ```
 ::  track all %fund usdc transactions on Sepolia
-:fund-watcher &fund-watcher-poke [%watch path=/fund/usdc config=['https://sepolia.drpc.org' | ~s10 ~m1 5.621.625 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~]]
+:chain-watcher &chain-watcher-poke [%watch path=/fund/usdc config=['https://sepolia.drpc.org' | ~s10 ~m1 5.621.625 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~]]
 ::  track all %fund usdc transactions to a specific safe
-:fund-watcher &fund-watcher-poke [%watch path=/fund/safe config=['https://sepolia.drpc.org' | ~s10 ~m1 6.227.269 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~[0x0 0x0 0x1117.bfea.1e43.d16b.a9c2.6d06.1a77.a347.3908.330e]]]
+:chain-watcher &chain-watcher-poke [%watch path=/fund/safe config=['https://sepolia.drpc.org' | ~s10 ~m1 6.227.269 ~ [0xb962.e45f.3381.4833.744b.8a10.2c7c.626a.98b3.2e38]~ `6 ~[0x0 0x0 0x1117.bfea.1e43.d16b.a9c2.6d06.1a77.a347.3908.330e]]]
 ::  track all %fund azp transactions to a specific safe
-:fund-watcher &fund-watcher-poke [%watch path=/fund/sazp config=['https://sepolia.drpc.org' | ~s10 ~m1 5.823.305 ~ [0xabe2.8c76.e1c9.750e.b78f.32a0.7c29.5afa.99b5.57fd]~ `6 ~[0x0 0x0 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf 0x0]]]
+:chain-watcher &chain-watcher-poke [%watch path=/fund/sazp config=['https://sepolia.drpc.org' | ~s10 ~m1 5.823.305 ~ [0xabe2.8c76.e1c9.750e.b78f.32a0.7c29.5afa.99b5.57fd]~ `6 ~[0x0 0x0 0x6e3d.b180.ad7d.ea45.08f7.766a.5c05.c406.cd6c.9dcf 0x0]]]
 ::  cancel the tracking for a specific path
-:fund-watcher &fund-watcher-poke [%clear path=/fund/usdc]
+:chain-watcher &chain-watcher-poke [%clear path=/fund/usdc]
 ```
 
 # Markdown Testing

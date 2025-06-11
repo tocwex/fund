@@ -1,6 +1,6 @@
 :: /lib/fund/alien/hoon: foreign/external interface helper functions for %fund
 ::
-/-  cn=contacts, se=settings
+/-  cn=contacts, se=settings, cw=chain-watcher
 /+  ff=fund-form
 |_  bol=bowl:gall
 ::
@@ -19,16 +19,24 @@
 ::
 +|  %chain
 ::
+::  +chain-cfgz: %chain-watcher watch paths + configurations
+::
+++  chain-cfgz
+  ~+
+  ^-  (map path config:cw)
+  =/  pre=path  (en-beam [our.bol %chain-watcher da+now.bol] /)
+  ?.  .^(? %gu (snoc pre %$))  *(map path config:cw)
+  .^((map path config:cw) %gx (welp pre /dogs/configs/noun))
+::
 ::  +chain-bloq: %chain-watcher path block number
 ::
 ++  chain-bloq
   |=  pat=path  ~+
   ^-  @
-  =/  pre=path  (en-beam [our.bol %chain-watcher da+now.bol] /)
-  ?.  .^(? %gu (snoc pre %$))  0
-  =+  .^(pam=(map path *) %gx (welp pre /dogs/configs/noun))
+  =/  pam=(map path config:cw)  chain-cfgz
   ?.  (~(has by pam) pat)  0
-  .^(@ %gx :(welp pre /block pat /atom))
+  =/  pre=path  (en-beam [our.bol %chain-watcher da+now.bol] /block)
+  .^(@ %gx :(welp pre pat /atom))
 ::
 ::  |tlon: all %tlon ffis
 ::

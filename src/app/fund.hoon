@@ -505,13 +505,12 @@
   =?    cor
       .^(rup=? %gu (en-beam [our.bol %dojo da+now.bol] /[%$]))
     ::  NOTE: %chain-watcher can be only queried during "normal" upgrades
+    ::  NOTE: We have new RPC urls if there are live %chain-watcher
+    ::  urls that don't match the currently configured RPC urls
+    ::  (equivalent to 'live is subset of config')
     =/  nur=?
-      ::  NOTE: We have new RPC urls if there are live %chain-watcher
-      ::  urls that don't match the currently configured RPC urls
-      ::  (equivalent to 'live is subset of config')
       ?!  .=  rpcs-conf:chain:audit
               (~(uni in rpcs-live:chain:audit) rpcs-conf:chain:audit)
-          ==
     (renew-projs:action |(kiq nur))
   cor
 ++  action

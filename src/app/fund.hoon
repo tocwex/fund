@@ -504,7 +504,14 @@
   ::  level triggers as %pals can be unduly suspended.
   =?    cor
       .^(rup=? %gu (en-beam [our.bol %dojo da+now.bol] /[%$]))
-    (renew-projs:action kiq)
+    ::  NOTE: %chain-watcher can be only queried during "normal" upgrades
+    ::  NOTE: We have new RPC urls if there are live %chain-watcher
+    ::  urls that don't match the currently configured RPC urls
+    ::  (equivalent to 'live is subset of config')
+    =/  nur=?
+      ?!  .=  rpcs-conf:chain:audit
+              (~(uni in rpcs-live:chain:audit) rpcs-conf:chain:audit)
+    (renew-projs:action |(kiq nur))
   cor
 ++  action
   |%
@@ -599,6 +606,32 @@
 ::
 ++  audit
   |%
+  ++  chain
+    =>  |%
+        ::  NOTE: Using this instead of `en-purl:html` makes it so that
+        ::  endpoints with different keys are treated as the same.
+        ++  urta  |=(u=purl:eyre (en-purl:html ?^(r.u u(r ~) u(q q.u(q (snip q.q.u))))))
+        --
+    |%
+    ++  rpcs-conf                                ::  rpc endpoints from config
+      ~+
+      ^-  (set tape)
+      =-  (~(run in urz) urta)
+      ^-  urz=(set purl:eyre)
+      %-  silt
+      %+  murn  `(list @tas)`~[%rpce-ethe %rpce-sepo]
+      |=(v=@tas (de-purl:html !<(@t (slot:config v))))
+    ++  rpcs-live                                ::  rpc endpoints from %chain-watcher
+      ~+
+      ^-  (set tape)
+      =-  (~(run in urz) urta)
+      ^-  urz=(set purl:eyre)
+      %-  ~(rep by ~(chain-cfgz fz bol))
+      |=  [[pat=path cfg=config:fc] acc=(set purl:eyre)]
+      ?.  (~(has in scan-vnow:watch) pat)  acc
+      ?~  url=(de-purl:html url.cfg)  acc
+      (~(put in acc) u.url)
+    --
   ++  watch
     |%
     ++  subs-skim                                ::  filtered outgoing watch paths
@@ -705,9 +738,9 @@
     %-  zing
     %+  turn  (skim ~(tap in scan-vany:watch:audit) |=(p=path =((scag pen pat) (scag pen p))))
     |=  old=path
-    :-  car(pat old, act [%leave ~])  ::  leave all overlapping paths
-    ?:  =(old pat)  ~                 ::  but only clear non-identical paths (restarts 'pat')
-    [car(pat old, act [%poke %chain-watcher-poke !>([%clear old])])]~
+    :~  car(pat old, act [%leave ~])
+        car(pat old, act [%poke %chain-watcher-poke !>([%clear old])])
+    ==
   ::
   ++  pj-do-read
     |=  pod=prod:proj:f

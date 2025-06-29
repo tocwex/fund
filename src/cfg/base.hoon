@@ -16,7 +16,7 @@
     [%alch-akey !>(`@t`(crip (flop ~['2' '2' 'B' 'W' '4' '-' 'c' 'W' 'F' 'F' 'B' 'J' 'n' 'b' 'b' '3' '1' 'r' 'L' 'n' 'V' 'W' 'F' 'i' 'j' 'C' 'l' 'G' 'u' '1' 'E' '3'])))]
     [%rpce-ethe !>(`@t`(crip "https://mainnet.infura.io/v3/{key}"))]
     [%rpce-sepo !>(`@t`(crip "https://sepolia.infura.io/v3/{key}"))]
-    [%feat-oraz !>(`(list @p)`~[~reb ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg ~dalten ~firbex ~moddux ~pandux ~fogbus])]
+    [%feat-oraz !>(`(list @p)`~[~reb ~rus ~bitdeg ~roswet ~nisfeb ~hosdys ~ridlyd ~darlur ~mocbel ~posdeg ~dalten ~firbex ~moddux ~pandux ~fogbus])]
     [%meta-site !>('https://tocwexsyndicate.com')]
     [%meta-help !>('https://docs.tocwexsyndicate.com')]
     [%meta-tlon !>('https://tlon.network/lure/~tocwex/syndicate-public')]

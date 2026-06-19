@@ -18,7 +18,7 @@
 =/  pac=pact:f  (~(got by pmap:fc) can)
 =/  pad=addr:f  ?~(puc addr.pac (rash u.puc ;~(pfix (jest '0x') hex)))
 =/  sob=bloq:f  (fall sub start.pac)
-=/  pat=path  /fund/get-pact/(scot %ux pad)/(scot %da now.bol)
+=/  pat=path  /fund/get-pact/(scot %ux pad)/(scot:h136 %da now.bol)
 ;<    ~
     bind:m
   %+  poke:io  [our.bol %chain-watcher]

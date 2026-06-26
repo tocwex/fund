@@ -34,7 +34,7 @@ git module base:
     - pkg/base-dev/sur/spider.hoon
     - pkg/base-dev/sur/verb.hoon
   reup: master
-  rev: 410k
+  rev: 408k-rc2
 git module arvo:
   url: https://github.com/urbit/urbit
   export: pkg/arvo
@@ -43,7 +43,7 @@ git module arvo:
     - pkg/arvo/lib/naive-transactions.hoon
     - pkg/arvo/lib/tiny.hoon
   reup: master
-  rev: 410k
+  rev: 408k-rc2
 
 git module yard:
   url: https://github.com/urbit/yard

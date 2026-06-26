@@ -3,7 +3,7 @@
 ++  grad  %noun
 ++  grow
   |%
-  ++  noun  pro
+  ++  noun  met
   --
 ++  grab
   |%

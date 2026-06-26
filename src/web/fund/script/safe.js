@@ -71,13 +71,14 @@ export const safeGetBlock = async () => {
 
 export const safeGetAccount = (chainId) => {
   const account = getAccount(window.Wagmi);
+  const walletChainId = account.chain?.id ?? account.chainId;
   if (account.isDisconnected)
     throw new SafeError(`wallet not connected; please click the 'connect' button in the top-right corner of the page to continue`);
-  if (account.chain === undefined)
+  if (walletChainId === undefined)
     throw new SafeError(`error with blockchain network; unable to recognize connected network`);
-  if (NETWORK.NAME?.[account.chain.id] === undefined)
-    throw new SafeError(`error with blockchain network; the chain ${account.chain.id} is unsupported`);
-  if (chainId !== undefined && account.chain.id !== chainId)
+  if (NETWORK.NAME?.[walletChainId] === undefined)
+    throw new SafeError(`error with blockchain network; the chain ${walletChainId} is unsupported`);
+  if (chainId !== undefined && walletChainId !== chainId)
     throw new SafeError(`using the wrong blockchain network for this project; please switch your network to '${NETWORK.NAME[chainId].toLowerCase()}' instead`);
   return account;
 }

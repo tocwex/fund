@@ -23,7 +23,7 @@
 ;<  txt=noun  bind:m  (scry:io noun %cx q.byk.bol pin)
 ;<    ~
     bind:m
-  =+  pre=|=(p=path [(scot %p our.bol) q.byk.bol (scot %da now.bol) p])
+  =+  pre=|=(p=path [(scot %p our.bol) q.byk.bol (scot:h136 %da now.bol) p])
   %+  poke:io  [our.bol %hood]
   ?.  add  kiln-rm+!>((pre pin))
   =/  pou=path  (pre [%cfg (slaj:fx 2 pin)])

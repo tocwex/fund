@@ -2,7 +2,7 @@
 /-  fd=fund-data, fd-1=fund-data-1, fd-0=fund-data-0
 /+  fy=fund, fh=fund-http, fc=fund-chain, fj=fund-proj, fp=fund-prof, fz=fund-alien, fx=fund-xtra
 /+  config, default-agent, rudder, *sss
-/+  dbug, verb, tonic, vita-client
+/+  dbug, verb, tonic
 /~  pagz  page:fd  /web/fund/page
 |%
 +$  card       card:agent:gall
@@ -16,7 +16,6 @@
         (verb | (agent:dbug -))
         ::  FIXME: Why is the tonic auto-loading version so slow?
         ::  (verb | (agent:dbug (agent:tonic -)))
-    %-  (agent:vita-client | !<(@p (slot:config %point)))
     |_  bol=bowl:gall
     +*  tis  .
         def  ~(. (default-agent tis |) bol)
@@ -69,7 +68,12 @@
 ++  load
   |=  vas=vase
   ^+  cor
-  |^  =+  !<([sat=state-any @] vas)  ::  NOTE: @ is unused `epic` flag
+  |^  =/  lav=vase
+        ?:  ?=([[%vita-client *] *] q.vas)
+          =+  !<([[%vita-client *] ile=vase] vas)
+          ile
+        vas
+      =+  !<([sat=state-any @] lav)  ::  NOTE: @ is unused `epic` flag
       =-  =.(state.cor nat open)
       |-  ^-  nat=state-now
       ?-  -.sat
@@ -151,11 +155,7 @@
       %prof  pf-abet:(pf-push:(pf-abed:pf-core p.pok) q.pok)
     ::
         %fund
-      %-  emit
-      :*  %pass   /fund/vita
-          %agent  [our.bol dap.bol]
-          %poke   vita-client+!>([%set-enabled sat.pok])
-      ==
+      cor
     ==
   ::  sss pokes  ::
       %sss-on-rock
@@ -206,9 +206,7 @@
   ::  http pokes  ::
       %handle-http-request
     =+  !<(ord=order:rudder vas)
-    =/  vaz=(list card)
-      ?:  |(!=(our src):bol ?=([%asset *] (slag:derl:ff:fh url.request.ord)))  ~
-      [(active:vita-client bol)]~
+    =/  vaz=(list card)  ~
     =-  cor(caz (welp (flop (welp kaz vaz)) caz), +.state dat)
     ^-  [kaz=(list card) dat=data:fd]
     %.  [bol ord +.state]
@@ -242,6 +240,12 @@
   |=  pat=(pole knot)
   ^-  (unit (unit cage))
   ?+    pat  [~ ~]
+  ::  inert %vita compatibility peeks  ::
+      [%u %vita ~]
+    ``noun+!>(&)
+  ::
+      [%x %vita %enabled ~]
+    ``noun+!>(|)
   ::  %dbug library peeks  ::
       [%x %dbug %state ~]
     ``noun+!>(state)

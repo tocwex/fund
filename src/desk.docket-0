@@ -2,7 +2,7 @@
     info+'A sovereign P2P work completion funder/tracker with on-chain settlement.'
     color+0x11.1111
     image+'https://github.com/tocwex/fund/raw/refs/tags/v1.5.4/dat/tile.jpeg'
-    version+[1 6 1]
+    version+[1 6 4]
     website+'https://www.tocwexsyndicate.com/'
     license+'GNU GPLv3'
     base+'fund'

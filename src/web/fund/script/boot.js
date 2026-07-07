@@ -1,5 +1,5 @@
 import * as alpineTurboDriveAdapter from 'https://cdn.jsdelivr.net/npm/alpine-turbo-drive-adapter@2.1.0/+esm';
-import hotwiredTurbo from 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.1.0/+esm';
+import 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.1.0/+esm';
 import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@v3.13.9/+esm';
 // import AlpineFocus from 'https://cdn.jsdelivr.net/npm/@alpinejs/focus@v3.13.9/+esm';
 import * as twind from 'https://cdn.jsdelivr.net/npm/@twind/core@1.1.3/+esm';

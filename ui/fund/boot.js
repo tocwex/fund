@@ -22,6 +22,9 @@ if (window.Alpine === undefined) {
   // NOTE: We store TailwindCSS style rules as normal CSS files with the
   // `--apply` variable as a stand-in for Tailwind's `@apply directive
   // so that this data can be read in through the JS `import` mechanism
+  function revealPage() {
+    document.documentElement.style.display = "";
+  }
   function twindCSSToString(css) {
     const cssLines = [...css.cssRules].map(rule => (
       rule.cssText.replace(/--apply: /, '@apply ')
@@ -152,6 +155,10 @@ if (window.Alpine === undefined) {
     //  work when using `twind` (because class names are recognized and
     //  properly added/removed by `alpine.js`)
     }, false);
+    revealPage();
+  }).catch(error => {
+    console.error("failed to install fund styles", error);
+    revealPage();
   });
 
   // FIXME: For some reason, twind's style refresher doesn't fire when a

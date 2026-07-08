@@ -369,7 +369,7 @@
     =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
     =+  ape=(trip !<(@t (slot:config %meta-aset)))
     %-  alix
-    |^  ;html(class "!block")
+    |^  ;html(class "!block", style "display: none;")
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
@@ -391,6 +391,7 @@
             ::      :~  ;script(src "/session.js");
             ::          (inject:tonic q.byk.bol)
             ::      ==
+            ;script: setTimeout(() => document.documentElement.style.display = '', 5000);
             ;script(type "module", src "{(dest:enrl:ff /asset/[~.boot.js])}");
           ==
           ;body(class "fund-body {cas}", x-data "fund")

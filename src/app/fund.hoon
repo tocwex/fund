@@ -155,7 +155,10 @@
       %prof  pf-abet:(pf-push:(pf-abed:pf-core p.pok) q.pok)
     ::
         %fund
-      cor
+      =+  pro=+.pok
+      ?-  -.pro
+        %vita  cor(init.state &)
+      ==
     ==
   ::  sss pokes  ::
       %sss-on-rock

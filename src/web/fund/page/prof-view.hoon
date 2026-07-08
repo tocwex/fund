@@ -21,7 +21,6 @@
     [%auth url.request.ord]
   =/  mes=(map flag:f mete:meta:f)  ~(ours conn:meta:fd bol [meta-subs meta-pubs]:dat)
   =+  .^(waz=(list addr:f) (beag:fx bol /prof/(scot %p sip)/adrz))
-  =+  .^(vit=? (beag:fx bol /vita/enabled))
   :-  %page
   %-  page:ui:fh
   :^  bol  ord  "{(ssip:enjs:ff:fh sip)}'s profile"
@@ -63,13 +62,7 @@
                 ;img.fund-butn-icon@"{(aset:enrl:ff:fh ast)}";
               ==
           ::
-                ?.  &(=(%admin aut) =(sip src.bol))  ~
-              :_  ~
-              ;div(class "flex flex-col justify-start items-center")
-                ;span.text-xs: usage?
-                ;+  %+  flip-cheq:ui:fh  vit
-                    "toggleUsage().then(() => window.location.reload())"
-              ==
+                ~
           ==
       ;h1-alt: Favorites
       ;+  %:  meta-mosa:ui:fh  bol  %sm  'No favorites found.'

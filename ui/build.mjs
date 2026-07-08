@@ -1,7 +1,8 @@
-import { rm } from 'node:fs/promises';
+import { mkdir, rename, rm } from 'node:fs/promises';
 import { build } from 'esbuild';
 
-await rm('src/web/fund/script', {recursive: true, force: true});
+const outDir = 'src/web/fund/script';
+const tmpDir = 'src/web/fund/.script-build';
 
 const shared = {
   bundle: true,
@@ -17,27 +18,38 @@ const shared = {
   },
 };
 
-await build({
-  ...shared,
-  entryPoints: ['ui/fund/chain.js'],
-  outfile: 'src/web/fund/script/chain.js',
-});
+await rm(tmpDir, {recursive: true, force: true});
+await mkdir(tmpDir, {recursive: true});
 
-await build({
-  ...shared,
-  entryPoints: ['ui/fund/markdown.js'],
-  outfile: 'src/web/fund/script/markdown.js',
-});
+try {
+  await build({
+    ...shared,
+    entryPoints: ['ui/fund/chain.js'],
+    outfile: `${tmpDir}/chain.js`,
+  });
 
-await build({
-  ...shared,
-  entryPoints: ['ui/fund/widgets.js'],
-  outfile: 'src/web/fund/script/widgets.js',
-});
+  await build({
+    ...shared,
+    entryPoints: ['ui/fund/markdown.js'],
+    outfile: `${tmpDir}/markdown.js`,
+  });
 
-await build({
-  ...shared,
-  entryPoints: ['ui/fund/boot.js'],
-  outfile: 'src/web/fund/script/boot.js',
-  external: [...shared.external, './chain.js', './markdown.js', './widgets.js'],
-});
+  await build({
+    ...shared,
+    entryPoints: ['ui/fund/widgets.js'],
+    outfile: `${tmpDir}/widgets.js`,
+  });
+
+  await build({
+    ...shared,
+    entryPoints: ['ui/fund/boot.js'],
+    outfile: `${tmpDir}/boot.js`,
+    external: [...shared.external, './chain.js', './markdown.js', './widgets.js'],
+  });
+
+  await rm(outDir, {recursive: true, force: true});
+  await rename(tmpDir, outDir);
+} catch (error) {
+  await rm(tmpDir, {recursive: true, force: true});
+  throw error;
+}

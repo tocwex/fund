@@ -23,6 +23,9 @@ if (window.Alpine === undefined) {
   // `--apply` variable as a stand-in for Tailwind's `@apply directive
   // so that this data can be read in through the JS `import` mechanism
   function revealPage() {
+    if (document.body) {
+      document.body.style.visibility = "";
+    }
     document.documentElement.style.display = "";
   }
   function twindCSSToString(css) {

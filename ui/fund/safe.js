@@ -2,13 +2,13 @@ import {
   getAccount, getClient, getChainId, getPublicClient, getBalance, getBlockNumber,
   signMessage, readContract, writeContract,
   getTransactionReceipt, waitForTransactionReceipt,
-} from 'https://esm.sh/@wagmi/core@2.13.8';
+} from '@wagmi/core';
 import {
   encodeFunctionData, encodePacked, keccak256,
   fromHex, toHex, fromBytes, toBytes, concat, parseUnits,
   recoverAddress, recoverMessageAddress, verifyMessage,
-} from 'https://esm.sh/viem@2.21.16';
-import BigNumber from 'https://cdn.jsdelivr.net/npm/bignumber.js@9.1.2/+esm'
+} from 'viem';
+import BigNumber from 'bignumber.js';
 import { FUND_SIGN_ADDR, FUND_SAFE_ADDR } from './config.js';
 import { FUND_CUT, ADDRESS, NETWORK, ABI, CONTRACT } from './const.js';
 

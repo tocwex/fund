@@ -369,7 +369,7 @@
     =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
     =+  ape=(trip !<(@t (slot:config %meta-aset)))
     %-  alix
-    |^  ;html(class "!block", style "display: none;")  ::  NOTE: https://twind.style/installation
+    |^  ;html(class "!block")
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");

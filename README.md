@@ -71,6 +71,14 @@ find ./src/web/fund/page/ -type f -exec sh -c "sed -i '/^::  RELOAD$/d' {}" \;
 
 ### Deployment Workflows
 
+The frontend boot script is bundled locally. After changing files under `ui/`,
+run:
+
+```bash
+npm install
+npm run build:web
+```
+
 To generate a new full desk from the existing base desk, run the following
 command:
 

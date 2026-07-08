@@ -10,8 +10,10 @@ OUT_DIR = $(BASE_DIR)/out
 SRC_DIR = $(BASE_DIR)/src
 DESK_DIR = $(OUT_DIR)/desk
 EXEC_DIR = $(OUT_DIR)/exec
+WEB_BOOT = $(SRC_DIR)/web/fund/script/boot.js
 
 DESK_FILES := $(shell find $(SRC_DIR) -type f)
+WEB_SRC_FILES := $(shell find $(BASE_DIR)/ui -type f) $(BASE_DIR)/package.json $(BASE_DIR)/package-lock.json
 PERU_FILE := $(BASE_DIR)/.peru/lastimports
 LISC_FILE := $(BASE_DIR)/LICENSE.txt
 SLUP := $(EXEC_DIR)/slup
@@ -32,9 +34,9 @@ endef
 export HELP_MESSAGE
 
 
-.PHONY : all help release ship-desk ship-glob desk glob tidy clean phony
+.PHONY : all help release ship-desk ship-glob desk web glob tidy clean phony
 
-all : desk glob
+all : web desk glob
 
 help :
 	@echo "$$HELP_MESSAGE"
@@ -49,7 +51,11 @@ release : $(DESK_DIR) $(SLUP)
 ship-desk : $(DESK_DIR)
 	durploy desk $(IN_SHIP) $(IN_DESK) $(DESK_DIR)/
 desk : $(DESK_DIR)
-$(DESK_DIR) : $(DESK_FILES) $(LISC_FILE) $(PERU_FILE) $(OUT_DIR)
+web : $(WEB_BOOT)
+$(WEB_BOOT) : $(WEB_SRC_FILES)
+	npm run build:web
+
+$(DESK_DIR) : $(WEB_BOOT) $(DESK_FILES) $(LISC_FILE) $(PERU_FILE) $(OUT_DIR)
 	cp -r $(SRC_DIR)/* $(DESK_DIR)
 	cp $(LISC_FILE) $(DESK_DIR)/license.txt
 	touch $(DESK_DIR)

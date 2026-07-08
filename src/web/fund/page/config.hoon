@@ -9,13 +9,12 @@
 ++  argue
   |=  [hed=header-list:http bod=(unit octs)]
   ^-  $@(brief:rudder diff:fd)
-  =+  .^(vit=? (beag:fx bol /vita/enabled))
   ?+  arz=(parz:fh bod (sy ~[%dif]))  p.arz  [%| *]
     ?+    dif=(~(got by p.arz) %dif)
         (crip "bad dif; expected vita-* or prof-sign, not {(trip dif)}")
       %vita-enable   [%fund %vita &]
       %vita-disable  [%fund %vita |]
-      %vita-toggle   [%fund %vita !vit]
+      %vita-toggle   [%fund %vita |]
     ==
   ==
 ++  final
@@ -31,10 +30,9 @@
   :^  bol  ord  "config"
   :+  fut=&  hed=|
   %^    hero-plaq:ui:fh
-      ?.(init.dat "Thanks for installing %fund!" "Would you like to send usage data?")
-    "Will you help us by sending usage information? You can change your decision at any time."
-  :~  (prod-butn:ui:fh %md %true %vita-enable "yes ✓" ~ ~)
-      (prod-butn:ui:fh %md %false %vita-disable "no ✗" ~ ~)
+      ?:(init.dat "Settings" "Thanks for installing %fund!")
+    "Usage data collection is disabled in this release."
+  :~  (prod-butn:ui:fh %md %action %vita-disable "continue ->" ~ ~)
   ==
 --
-::  VERSION: [1 6 1]
+::  VERSION: [1 6 6]

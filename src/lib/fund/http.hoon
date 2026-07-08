@@ -369,7 +369,7 @@
     =.  tyt  (weld "%fund - " ?~(tyt "home" tyt))
     =+  ape=(trip !<(@t (slot:config %meta-aset)))
     %-  alix
-    |^  ;html(class "!block", style "display: none;")  ::  NOTE: https://twind.style/installation
+    |^  ;html(class "!block")
           ;head
             ;meta(charset "UTF-8");
             ;meta(name "viewport", content "width=device-width, initial-scale=1.0");
@@ -391,9 +391,10 @@
             ::      :~  ;script(src "/session.js");
             ::          (inject:tonic q.byk.bol)
             ::      ==
+            ;script: setTimeout(() => document.body && (document.body.style.visibility = ''), 30000);
             ;script(type "module", src "{(dest:enrl:ff /asset/[~.boot.js])}");
           ==
-          ;body(class "fund-body {cas}", x-data "fund")
+          ;body(class "fund-body {cas}", x-data "fund", style "visibility: hidden;")
             ;*  ?.(hed ~ [(head bol ord ~)]~)
             ;+  modl
             ;+  bod

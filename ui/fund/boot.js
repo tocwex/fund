@@ -1,0 +1,666 @@
+import 'alpine-turbo-drive-adapter';
+import '@hotwired/turbo';
+import Alpine from 'alpinejs';
+import * as twind from '@twind/core';
+import presetTwind from '@twind/preset-tailwind';
+import presetLineClamp from '@twind/preset-line-clamp';
+import presetAutoPrefix from '@twind/preset-autoprefix';
+import UrbitOb from 'urbit-ob';
+import { CONTRACT, NETWORK } from './const.js';
+
+// NOTE: This syntax is really convenient, but it isn't supported on Firefox
+// import FUND_PREFLIGHT_CSS from './twind.css' with {type: 'css'};
+// import FUND_MARKDOWN_CSS from './md.css' with {type: 'css'};
+// import FUND_TOMSELECT_CSS from './toms.css' with {type: 'css'};
+// import FUND_TIPPY_CSS from './tippy.css' with {type: 'css'};
+
+if (window.Alpine === undefined) {
+  /////////////////////////////////////////////////////////////////////////////
+  //                              twind.css                                  //
+  /////////////////////////////////////////////////////////////////////////////
+
+  // NOTE: We store TailwindCSS style rules as normal CSS files with the
+  // `--apply` variable as a stand-in for Tailwind's `@apply directive
+  // so that this data can be read in through the JS `import` mechanism
+  function revealPage() {
+    if (document.body) {
+      document.body.style.visibility = "";
+    }
+    document.documentElement.style.display = "";
+  }
+  function twindCSSToString(css) {
+    const cssLines = [...css.cssRules].map(rule => (
+      rule.cssText.replace(/--apply: /, '@apply ')
+    ));
+    return cssLines.join("\n");
+  }
+  function twindSizeRules(base, types) {
+    const sizes = ['sm', 'md', 'lg'];
+    //  NOTE: https://stackoverflow.com/a/43053803
+    const cartesian = (...a) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+    return cartesian(sizes, types).map(([size, type]) => ([
+      `${base}-${type.substring(0, 2)}-${size}`,
+      `${base}-${size} ${base}-${type}`,
+    ]));
+  }
+  // NOTE: We use this instead of `import … with …` for wider browser support
+  function twindCSSLoad(filename) {
+    return fetch(`/apps/fund/asset/${filename}`).then((response) => (
+      response.text()
+    )).then((text) => (
+      new CSSStyleSheet().replace(text)
+    )).then((sheet) => (
+      Promise.resolve(twindCSSToString(sheet))
+    ));
+  }
+
+  Promise.all(
+    ["twind.css", "toms.css", "tippy.css"].map(twindCSSLoad)
+  ).then((cssStrings) => {
+    twind.install({
+      presets: [
+        presetTwind(),
+        presetLineClamp(),
+        presetAutoPrefix(),
+      ],
+      theme: {
+        fontFamily: {
+          serif: ['Chaney Wide', 'Noto Emoji', 'serif'],
+          sans: ['Safiro Medium', 'Noto Emoji', 'sans-serif'],
+          mono: ['Ubuntu Mono', 'mono'],
+        },
+        extend: {
+          fontSize: {
+            '3xs': ['0.25rem', {lineHeight: '0.5rem'}],
+            '2xs': ['0.50rem', {lineHeight: '0.75rem'}],
+          },
+          colors: {
+            palette: {
+              primary: '#2f2f2f',
+              secondary: '#dbdbdb',
+              label: '#1e1e1e',
+              background: '#efefef',
+              contrast: '#dbdbdb',
+              system: '#adadad',
+            },
+          },
+        },
+      },
+      // TODO: Are there any issues including the library CSS rules in 'preflight'?
+      preflight: twind.css(cssStrings.join("\n")),
+      rules: [
+        ['text-nowrap', {'text-wrap': 'nowrap'}], // FIXME: Not defined in twind
+        ['text-link', {'font-weight': 700, 'text-decoration': 'underline'}],
+        ['text-shadow-(.+)', ({1: c}, {theme}) => {
+          const v = theme('colors', c);
+          const l = "1px";
+          const b = "0";
+          return {'text-shadow': `
+            -${l} -${l} ${b} ${v},
+            ${l} -${l} ${b} ${v},
+            -${l} ${l} ${b} ${v},
+            ${l} ${l} ${b} ${v}
+          `};
+        }],
+        ['bg-gradient-mix-(.+)_(.+)', ({1: c1, 2: c2}, {theme}) => {
+          const [v1, v2] = [theme('colors', c1), theme('colors', c2)];
+          return {'background': `
+            repeating-linear-gradient(-45deg, ${v1}, ${v1} 10px, ${v2} 10px, ${v2} 20px)
+          `};
+        }],
+        ['fund-loader', 'w-full p-1 text-xl text-center animate-ping'],
+        ['fund-select', 'w-full p-2 rounded-md bg-white placeholder-palette-contrast disabled:bg-palette-system'],
+        ['fund-head', 'sticky z-40 top-0'],
+        ['fund-foot', 'sticky z-40 bottom-0'],
+        // NOTE: Using a trick to always push footer to the bottom:
+        // https://stackoverflow.com/a/59865099
+        ['fund-main', 'flex flex-col gap-2 min-h-[100vh] py-2 px-3 sm:px-6'],
+        ['fund-body', 'font-sans max-w-screen-2xl min-h-screen mx-auto bg-palette-background text-palette-label'],
+        ['fund-card-base', 'rounded-md px-3 py-2 border-[3px] border-palette-contrast'],
+        ['fund-card-back', 'fund-card-base bg-palette-background'],
+        ['fund-card-fore', 'fund-card-base bg-palette-contrast'],
+        ['fund-warn', 'italic mx-4'],
+        ['fund-clip', 'min-w-0 text-ellipsis overflow-hidden'],
+        ['fund-addr', 'font-normal leading-normal tracking-wide line-clamp-1'],
+        ['fund-input', 'fund-select read-only:bg-palette-system'],
+        ['fund-title', 'font-sans font-medium text-2xl sm:text-4xl'],
+        ['fund-form-group', 'flex flex-col-reverse w-full p-1 gap-1'],
+        ['fund-butn-icon', 'p-1 max-w-none rounded-md text-palette-secondary'], /*hover:bg-palette-background*/
+        ['fund-pill', 'text-nowrap text-center font-medium rounded-full border-[3px]'],
+        ['fund-pill-sm', 'fund-pill px-2 py-0.5'],
+        ['fund-pill-md', 'fund-pill px-3 py-1'],
+        ['fund-pill-lg', 'fund-pill px-4 py-2'],
+        ['fund-pill-born', 'text-palette-label bg-palette-background border-palette-background'],
+        ['fund-pill-lock', 'text-palette-label bg-palette-contrast border-palette-primary'],
+        ['fund-pill-done', 'text-palette-background bg-palette-primary border-palette-primary'],
+        ['fund-pill-dead', 'text-palette-label bg-palette-background border-palette-contrast border-dashed'],
+        ...twindSizeRules('fund-pill', ['born', 'lock', 'done', 'dead']),
+        ['fund-butn', 'text-nowrap font-medium leading-tight tracking-wide rounded-md border-2'],
+        ['fund-butn-sm', 'fund-butn text-xs px-1.5 py-0.5'],
+        ['fund-butn-md', 'fund-butn text-sm px-3 py-1.5'],
+        ['fund-butn-lg', 'fund-butn text-base px-4 py-2'],
+        //  FIXME: These classes should use 'hover:enabled' to stop
+        //  disabled buttons from changing colors, but this causes hover
+        //  styling for links not to work.
+        ['fund-butn-disabled', 'bg-palette-system border-palette-system text-palette-contrast shadow-none'],
+        ['fund-butn-default', 'bg-palette-primary border-palette-primary text-palette-secondary hover:(bg-palette-background border-palette-primary text-palette-primary shadow) active:(bg-palette-primary border-palette-primary text-palette-secondary) disabled:fund-butn-disabled'],
+        ['fund-butn-action', 'bg-palette-background border-palette-primary text-palette-primary hover:(bg-palette-primary border-palette-primary text-palette-background shadow) active:(bg-palette-background border-palette-primary text-palette-primary) disabled:fund-butn-disabled'],
+        ['fund-butn-true', '~(fund-butn-default)'],
+        ['fund-butn-false', '~(fund-butn-action)'],
+        ...twindSizeRules('fund-butn', ['disabled', 'default', 'action', 'true', 'false']),
+        ['fund-aset', 'h-6 aspect-square'],
+        ['fund-aset-circ', 'fund-aset bg-white rounded-full'],
+        ['fund-aset-rect', 'fund-aset bg-white rounded'],
+        ['fund-odit-ther', 'w-full flex h-4 sm:h-8 text-black'],
+        ['fund-odit-sect', 'h-full flex rounded-lg'],
+      ],
+    //  NOTE: Setting `isProduction` here to `false` allows for `:class` to
+    //  work when using `twind` (because class names are recognized and
+    //  properly added/removed by `alpine.js`)
+    }, false);
+    revealPage();
+  }).catch(error => {
+    console.error("failed to install fund styles", error);
+    revealPage();
+  });
+
+  // FIXME: For some reason, twind's style refresher doesn't fire when a
+  // submission fails, so we replicate its "reveal content" behavior manually
+  // https://turbo.hotwired.dev/reference/events#turbo%3Asubmit-end
+  document.documentElement.addEventListener('turbo:submit-end', (event) => {
+    if (!event.detail.success) {
+      document.documentElement.setAttribute("class", "");
+      document.documentElement.setAttribute("style", "");
+    }
+  });
+
+  // NOTE: In order to get TomSelect elements to work when using Turbo navigation,
+  // we need to clean up the page listeners on old instances
+  document.documentElement.addEventListener('turbo:visit', (event) => {
+    document.querySelectorAll('.fund-tsel').forEach((tselElem) => {
+      tselElem?.tomselect?.destroy();
+    });
+  });
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                              markdown                                   //
+  /////////////////////////////////////////////////////////////////////////////
+
+  let fundMarkdownPromise;
+  function loadMarkdown() {
+    if (!fundMarkdownPromise) {
+      fundMarkdownPromise = import('./markdown.js').then(({ defineMarkdownElement }) => {
+        defineMarkdownElement();
+      }).catch(error => {
+        fundMarkdownPromise = undefined;
+        throw error;
+      });
+    }
+    return fundMarkdownPromise;
+  }
+  function loadMarkdownIfPresent() {
+    if (document.querySelector("zero-md")) loadMarkdown().catch(console.error);
+  }
+  document.addEventListener('turbo:load', loadMarkdownIfPresent);
+  document.addEventListener('turbo:render', loadMarkdownIfPresent);
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                              chain.js                                   //
+  /////////////////////////////////////////////////////////////////////////////
+
+  let fundChainAPI;
+  let fundChainPromise;
+  function loadChain() {
+    if (!fundChainPromise) {
+      fundChainPromise = import('./chain.js').then(({ initChain }) => {
+        fundChainAPI = initChain({Alpine, limit});
+        return fundChainAPI;
+      }).catch(error => {
+        fundChainPromise = undefined;
+        throw error;
+      });
+    }
+    return fundChainPromise;
+  }
+  function afterIdle(task) {
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(task, {timeout: 1_500});
+    } else {
+      setTimeout(task, 0);
+    }
+  }
+  function loadChainIdle() {
+    afterIdle(() => loadChain().catch(console.error));
+  }
+  function shortAddress(address) {
+    return !address ? "" : `${address.slice(0, 5)}…${address.slice(-4)}`;
+  }
+  const safeProxyNames = [
+    "ethGetChain", "txnGetURL", "nftsGetURL", "ownersGetURL",
+    "safeGetURL", "safeGetBlock", "safeGetAccount", "nftsGetAll",
+    "ownersGetAll", "safeGetBalance", "safeGetTransfers",
+    "safeSignDeploy", "safeExecDeploy", "safeExecDeposit",
+    "safeSignClaim", "safeExecClaim", "safeSignRefund", "safeExecRefund",
+  ];
+  const safeProxy = Object.fromEntries(safeProxyNames.map(name => [name, (...args) => (
+    fundChainAPI ? fundChainAPI[name](...args) : loadChain().then(api => api[name](...args))
+  )]));
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                             widgets.js                                  //
+  /////////////////////////////////////////////////////////////////////////////
+
+  let fundWidgetsPromise;
+  function loadWidgets() {
+    if (!fundWidgetsPromise) {
+      fundWidgetsPromise = import('./widgets.js').catch(error => {
+        fundWidgetsPromise = undefined;
+        throw error;
+      });
+    }
+    return fundWidgetsPromise;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                              alpine.js                                  //
+  /////////////////////////////////////////////////////////////////////////////
+
+  window.Alpine = Alpine;
+  // Alpine.plugin(AlpineFocus);
+
+  Alpine.store("page", {
+    size: undefined,
+  });
+  Alpine.store("wallet", {
+    address: null,
+    chain: null,
+    connected: false,
+    balance: "…loading…",
+    status: "…loading…",
+    update(address, chain) {
+      this.address = address;
+      this.chain = chain;
+      this.connected = !!address;
+      if (!address) {
+        this.balance = 0;
+        this.status =
+          (address === undefined) ? "connect 💰"
+          : (address === null) ? "…loading…"
+          : "error ✗";
+      } else {
+        this.balance = "…loading…";
+        this.status = shortAddress(address);
+      }
+      window.dispatchEvent(new CustomEvent("fund-wallet", {detail: address}));
+    },
+  });
+  Alpine.store("project", {
+    type: undefined,
+    symbol: undefined,
+    assets: {},
+    update(type, symbol) {
+      this.type = type;
+      this.symbol = symbol;
+      this.assets = {};
+      window.dispatchEvent(new CustomEvent("fund-project", {detail: symbol}));
+    },
+    loadAssets(addr, assets) {
+      this.assets[addr] = assets;
+    },
+  });
+
+  document.addEventListener('alpine:init', () => Alpine.data('fund', () => ({
+    init() {
+      watchViewport();
+      loadChainIdle();
+      afterIdle(loadMarkdownIfPresent);
+    },
+    styleMD,
+    delay,
+    queryPage,
+    copyText,
+    swapHTML,
+    openHREF,
+    scrollTo,
+    sendFormData,
+    sendForm,
+    showModal,
+    checkWallet,
+    toggleWallet,
+    // switchWallet,
+    initENS,
+    initAZP,
+    initTippy,
+    initTomSelect,
+    tsUpdateToken,
+    tsCreateOracle,
+    tsLoadNFTs,
+    CONTRACT,
+    NETWORK,
+    ...safeProxy, // FIXME: Makes 'safe.js' available to inline/non-module scripts
+  })));
+
+  Alpine.start();
+
+  /////////////////////////////////////////////////////////////////////////////
+  //                         library functions                               //
+  /////////////////////////////////////////////////////////////////////////////
+
+  function delay(ms) {
+    return new Promise(res => setTimeout(res, ms));
+  }
+
+  function limit(maxReqs, perSecs) {
+    let frameStart = 0;
+    let frameCount = 0;
+    let frameQueue = [];
+    let untilNext = 0;
+
+    // https://stackoverflow.com/a/33946793
+    return function limiter(func) {
+      func && frameQueue.push(func);
+      untilNext = perSecs * 1000 - (Date.now() - frameStart);
+      if (untilNext <= 0) {
+        frameStart = Date.now();
+        frameCount = 0;
+      }
+      if (++frameCount <= maxReqs) {
+        (frameQueue.shift() ?? (() => null))();
+      } else {
+        // console.log(`limiting function for ${untilNext/ 1000}s`);
+        setTimeout(limiter, untilNext);
+      }
+    };
+  }
+
+  // https://twind.run/junior-crazy-mummy?file=script
+  function styleMD() {
+    // NOTE: This has been inlined because it's short and loading it
+    // from a file is annoying
+    return twind.css(`
+      .markdown-body > * { @apply mt-3; }
+      .markdown-body > *:first-child: {@apply mt-0; }
+      & h1 { @apply text-2xl font-bold; }
+      & h2 { @apply text-xl font-semibold; }
+      & h3 { @apply text-lg font-semibold; }
+      & h4 { @apply underline font-medium italic; }
+      & h5 { @apply underline font-medium italic; }
+      & h6 { @apply underline italic; }
+      & a { color: -webkit-link; text-decoration: underline; }
+    `);
+  }
+
+  function queryPage(url, {
+    maxAttempts=1, // Number
+    timeout=5000, // Number (ms)
+  } = {}) {
+    const baseUrl = !url.startsWith("/")
+      ? url
+      : `${window.location.origin}${url}`;
+    var queryUrl = !(window.location.protocol === "https:" && new URL(baseUrl).protocol === "http:")
+      ? baseUrl
+      : baseUrl.replace(/^http:/, 'https:');
+
+    const getPage = async (attempts = 0) => (
+      attempts++ >= maxAttempts
+      ? undefined
+      : fetch(queryUrl, {
+          method: "GET",
+          signal: AbortSignal.timeout(timeout),
+        }).then(response => (
+          response.ok
+          ? response
+          : delay(timeout).then(() => getPage(attempts))
+        )).catch(error => (
+          delay(timeout).then(() => getPage(attempts))
+        ))
+    );
+
+    return getPage();
+  }
+
+  function swapHTML(elem, html) {
+    if (elem.getAttribute("data-html") === null) {
+      elem.setAttribute("data-html", elem.innerHTML);
+    }
+    elem.innerHTML = html;
+    setTimeout(() => {elem.innerHTML = elem.dataset.html;}, 2000);
+  }
+
+  function fallbackCopyText(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
+  }
+
+  function copyText(text) {
+    if (!navigator.clipboard) {
+      fallbackCopyText(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+  }
+
+  // FIXME: It's better to use this instead of `window.open` for local URLs
+  // because the `<a>` click emulation prompts a partial turbojs reload where
+  // `window.open` prompts a full page reload
+  function openHREF(href, tab=false) {
+    const link = document.createElement("a");
+    link.setAttribute("class", "hidden");
+    link.setAttribute("href", href);
+    if (tab) { link.setAttribute("target", "_blank"); }
+    document.body.appendChild(link);
+    link.click();
+  }
+
+  function scrollTo(anchor) {
+    const anchorElem = document.querySelector(`#${anchor}`);
+    if (anchorElem) {
+      const headHeight = document.querySelector("#fund-head")?.offsetHeight ?? 0;
+      const anchorTop = anchorElem.offsetTop;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      const anchorFloorDist = documentHeight - anchorTop - headHeight;
+      const screenHeight = window.screen.height;
+
+      // FIXME: Needs work when `headTop` is near `screenHeight`
+      location.hash = `#${anchor}`;
+      window.scrollBy(0, (screenHeight >= anchorFloorDist) ? 0 : -headHeight);
+    }
+  }
+
+  function sendForm(event, checks=[], action=Promise.resolve(undefined)) {
+    event.preventDefault();
+    if ((event.target.form !== undefined) && !event.target.form.reportValidity()) {
+      return Promise.resolve(undefined);
+    } else {
+      event.target.insertAdjacentHTML("beforeend", "<span class='animate-ping'>⏳</span>");
+      return Promise.all(checks.map(check => check())).then(action).then(formData => (
+        sendFormData(formData, event)
+      )).catch((error) => {
+        if (
+          (error?.name === "UserRejectedRequestError") ||
+          error?.message?.startsWith("User rejected the request.")
+        ) {
+          showModal("⚠ warning ⚠", "User rejected the blockchain wallet request.");
+        } else {
+          showModal("⚠ error ⚠", error.message);
+        }
+      }).finally(() => {
+        // TODO: Consider moving this to the error case
+        event.target.querySelectorAll(".animate-ping").forEach((elem) => {
+          elem.remove();
+        });
+      });
+    }
+  }
+
+  // NOTE: 'formData' is not a 'FormData' object; it's a {str => str} map
+  function sendFormData(formData, event=undefined) {
+    const form = document.createElement("form");
+    form.method = "post";
+    // FIXME: This is necessary in order to send the raw message
+    // payload to the BE (e.g. sending the signed contract text as
+    // part of the submission), but the %rudder's `+frisk` method
+    // would need to be extended to support this
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+    // form.enctype = "multipart/form-data";
+    form.enctype = "application/x-www-form-urlencoded";
+    form.setAttribute("class", "hidden");
+    const button = event?.target?.cloneNode(true) ?? document.createElement("button");
+    form.appendChild(button);
+
+    const appendInput = ([key, value]) => {
+      const useInput = !/\r|\n/.exec(value);
+      const field = document.createElement(useInput ? "input" : "textarea");
+      field.name = key;
+      field[useInput ? "value" : "innerHTML"] = value;
+      form.appendChild(field);
+    };
+    Object.entries(formData).forEach(appendInput);
+    if (event?.target?.form !== undefined) {
+      [...(new FormData(event.target.form).entries())].forEach(appendInput);
+    }
+    // NOTE: Safari doesn't recognize the form attributes of the
+    // `requestSubmit` button, so we redundantly include them as fields
+    appendInput([button.getAttribute("name"), button.getAttribute("value")]);
+
+    document.body.appendChild(form);
+    form.requestSubmit(button);
+  }
+
+  function showModal(title, text) {
+    const dialog = document.querySelector('#fund-modl');
+
+    document.querySelector('#fund-modl-tytl').innerText = title;
+    if (!text.includes("\n")) {
+      document.querySelector('#fund-modl-xtra').classList.add('hidden');
+      document.querySelector('#fund-modl-mesg').innerText = text;
+    } else {
+      document.querySelector('#fund-modl-xtra').classList.remove('hidden');
+      document.querySelector('#fund-modl-mesg').innerText =
+        "There was an error processing your request. Please contact ~tocwex for support.";
+      document.querySelector('#fund-modl-xesg').innerText = text;
+    }
+
+    // FIXME: If a click event generates the modal, we wait for a bit so
+    // as not to overlap with a click outside closing event
+    delay(50).then(() => dialog.showModal());
+  }
+
+  function checkWallet(expectedAddresses, roleTitle) {
+    return loadChain().then(api => api.checkWallet(expectedAddresses, roleTitle));
+  }
+
+  function toggleWallet(event) {
+    return loadChain()
+      .then(api => api.toggleWallet(event))
+      .catch(error => showModal("⚠ error ⚠", error.message));
+  }
+
+  function initENS(elem, address) {
+    elem.innerHTML = shortAddress(address);
+    afterIdle(() => loadChain().then(api => api.initENS(elem, address)).catch(() => null));
+  }
+
+  function initAZP(elem, point) {
+    elem.innerHTML = "…loading…";
+    afterIdle(() => loadChain().then(api => api.initAZP(elem, point)).catch(() => null));
+  }
+
+  function initTippy(elem, opts={}) {
+    loadWidgets().then(widgets => {
+      if (elem.isConnected) widgets.initTippy(elem, opts);
+    }).catch(console.error);
+  }
+
+  function initTomSelect(elem, opts={}) {
+    loadWidgets().then(widgets => {
+      if (elem.isConnected) widgets.initTomSelect(elem, opts);
+    }).catch(console.error);
+  }
+
+  function tsUpdateToken(chainElem, tokenElem) {
+    return (option) => {
+      const tokenChain = chainElem.value;
+      const tokenSelect = tokenElem.tomselect;
+      const tokenOpts = document.querySelectorAll('#proj-token-options > option');
+      const tokenChainOpts = Array.from(tokenOpts).map(elem => ({
+        value: elem.value,
+        text: elem.innerText,
+        image: elem.dataset.image,
+        chain: elem.dataset.chain,
+        href: elem.dataset.href,
+      })).filter(({value, chain}) => (
+        chain === tokenChain || value === ""
+      ));
+
+      tokenSelect.clear(true);
+      tokenSelect.clearOptions();
+      tokenSelect.addOptions(tokenChainOpts);
+      tokenSelect.addItem(
+        (tokenChainOpts.find(({value}) => value === option) ?? tokenChainOpts[0]).value
+      );
+    };
+  }
+
+  function tsCreateOracle(elem) {
+    return (value, data) => {
+      const okClans = new Set(["galaxy", "star"]);
+      if (!UrbitOb.isValidPatp(value) || !okClans.has(UrbitOb.clan(value))) {
+        elem.tomselect.removeOption(value);
+      } else if (data?.image === undefined) {
+        elem.tomselect.updateOption(value, {
+          value: data.value,
+          text: data.text,
+          image: `https://azimuth.network/erc721/${UrbitOb.patp2dec(value)}.svg`,
+        });
+      }
+    };
+  }
+
+  function tsLoadNFTs(elem) {
+    return (query, callback) => {
+      loadChain()
+        .then(api => api.tsLoadNFTs(elem)(query, callback))
+        .catch(() => callback());
+    };
+  }
+
+  // https://css-tricks.com/working-with-javascript-media-queries/
+  function watchViewport() {
+    const viewportConfigs = [
+      ["mobile", "(max-width: 640px)"],
+      ["tablet", "(min-width: 640px) and (max-width: 1023px)"],
+      ["desktop", "(min-width: 1024px)"],
+    ];
+    viewportConfigs.forEach(([size, query]) => {
+      const sizeQuery = window.matchMedia(query);
+      const handleSizeChange = e => {if (e.matches) Alpine.store("page").size = size;};
+      sizeQuery.addListener(handleSizeChange);
+      handleSizeChange(sizeQuery);
+    });
+  }
+}

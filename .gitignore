@@ -6,6 +6,7 @@
 .urb
 
 # Generated Files #
+node_modules/
 .peru/
 out/desk/
 out/exec/
